@@ -1,0 +1,122 @@
+\documentclass[../manuscript.tex]{subfiles}
+\def\biblio{\bibliographystyle{plainnat}\bibliography{bibliography}}
+
+\begin{document}
+\section[Experiment 1]{Experiment 1. Scaling of critical spacing with eccentricity.}\label{sec:constant}
+
+%{{{
+%This loads a large data file, which takes a bit of time.
+%For better turnaround times, I use cacheSweave
+<<loaddata, results=hide,echo=false,cache=true>>=
+library(plyr)
+load("../pools/All_constant.calcs.RData")
+
+latex.format <- function (x, ...) {
+  ## format a number to look pretty in latex.
+  ## based on 'scinot' in the 'emdbook' package
+  y <- strsplit(as.character(format(x, ...)), 
+                "e")[[1]]
+  y[1] <- gsub("^0+", "", y[1])
+  y[2] <- ifelse(length(grep("^\\+", y[2])) > 0, gsub("^\\+0+", 
+                                                      "", y[2]), gsub("^-0+", "-", y[2]))
+  ifelse(is.na(y[2]), y[1],
+         ifelse(y[1] == "1",
+                paste("10^{", y[2], "}", sep = ""),
+                paste(y[1], "\\\\times 10^{", y[2], "}", sep = "")))
+}
+
+pretty.pval <- function(p, alpha=0.0001) {
+  ##format scientific notion as TeX
+  if (p < alpha) {
+    paste("\\\\ensuremath{p < ", latex.format(alpha), "}", sep="")
+  } else {
+    paste("\\\\ensuremath{p = ", latex.format(p, digits=2), "}", sep="")
+  }
+}
+
+paste.comma <- function(..., comma=",", sep=" ", sep.and = "and", 
+                        oxford.comma=TRUE, collapse=FALSE,
+                        collapse.sep=sep, collapse.and=sep.and, collapse.comma=comma) {
+  args <- lapply(list(...), as.character)
+  if (length(args) > 1)
+    args[[length(args)]] <- paste(sep.and, args[[length(args)]], sep=sep)
+  if (length(args) > 2) {
+    if (oxford.comma)
+      args[1:(length(args)-1)] <- lapply(args[1:(length(args)-1)], paste, comma, sep="")
+    else
+      args[1:(length(args)-2)] <- lapply(args[1:(length(args)-2)], paste, comma, sep="")
+  }
+  pasted <- do.call(paste, c(args, sep=sep))
+  if (collapse)
+    splat(paste.comma)(pasted, sep=collapse.sep, sep.and=collapse.and, comma=collapse.comma, oxford.comma=oxford.comma)
+  else pasted
+}
+@
+%}}}
+\subsection{Methods}
+
+<<eccentricities,results=hide,echo=false,cache=true>>=
+radii <- unique(trials$trial.motion.process.radius)
+radii[length(radii)) <- paste("and ", radii[length(radii)])
+@
+
+We presented stimuli at eccentricities of
+\unit[\Sexpr{paste.comma(sapply(radii, latex.format, digits=2, nsmall=1),collapse=TRUE)}]{degrees}, using the parameters described above for \autoref{movie:wheels} but scaling all spatial parameters ($\Deltax$, $w$, and $\nicefrac{1}{f}$) of the elements along with the eccentricity; i.e. at eccentricity of 6.67 degrees, ${\Delta}x$ and $w$ decreased to \nicefrac{2}{3} the value used at 10 degrees and $f$ increased to \nicefrac{3}{2} its previous value. The global apparent motion was shown over 4 stations at intervals of ${\Delta}t=\unit[ms]{100}$.	
+
+At each eccentricity, we varied the number of elements in the circle (and consequently the inter-element spacing) in the circle using the method of constant stimuli, using values chosen for each subject based on preliminary sessions.
+
+\subsection{Results}
+
+\todo[inline]{If you look at raw.data.plot and alt.data.plot, which are two methods of organizing the same data, you will see that for counterphase motion, in subjects SK and SM, the sensitivity to global motion drops close to chance at higher densities (despite a lack of diretional cue). You will also notice that for ingongruent motion, these subjects are not entirely ``captured'' by the local motion at low densities. There may be a number of reasons for this. For example this may reflect a delibarate strategy on the part of subjects -- ``reverse your initial impression when it looks jumpy'' (DT told me as much, and this is part of why I had all the subjects respond so quickly.) 
+
+It may also just be that incongruent motion is not a metamer for congruent motion (it looks less smooth, for instance) and the subjects pick up on that. And global motion when extremely dense is just not as strong a stimulus for simple reasons (marquee illusion) -- though my data ought not to be 
+
+It also reminds me that comparing the congruent, incongruent and counterphase trials may helpus to establish the relative _strengths_ of the global and local motion signals; I have had this idea before but haven't donemuch in teh way of it. It may come in handy for \autoref[sec:grid}.
+
+All of thees motivate a modification to my fitting procedure wi have movable asymptotes -- and that's on top of the Wichmann & Hill results that you get a more robust estimate of PSE that way.}
+
+\todo[inline]{Another issue: In working on \autoref{sec:occlusion} I found that I obtained much better fits using ``number of targets'' rather than ``target spacing.'' This doesn't have to do with the subject of \autoref{sec:occlusion}, namely, number vs. density, which is answered in favor of density. Rather, it's to do with how density is expressed: 1/distance produces a better fit than distance (or log distance.) but I wonder why the curve of crowding effect seems to be shaped that way? Also, when you let the slope vary with the eccentricity, you get steeper slopes at larger eccentricities, or at least you seem to. Though, in playing with plotting some of these functions, it seems this all may exactly be a matter of asymptote matching after all. So I may need to think about doing \autoref{sec:occlusion} with a ``number'' that maps to prdinary density (or, once asymptotes are added it probably doesn't matter all that much.}
+% curve(invlogit(log(x)*5-5), from=0, to=10); curve(invlogit((-15/x)+6), add=TRUE); curve(invlogit(3*x - 8), add=TRUE)
+
+\todo[inline]{You will also noti
+
+\begin{figure}
+	\begin{subfigure}[b]{.3\linewidth}
+			\includegraphics[width=\linewidth]{A}	
+			\subcaption{Task illustration. Subjects first fixate and after a brief delay a motion stimulus of constant duration appears. Subjects judge the apparent direction of motion and respond by turning a knob before the time window has expired. Subject receives feedback about whether their response falls inside the time window.}
+			\label{fig:task}
+	\end{subfigure}	
+	\begin{subfigure}[b]{.6\linewidth}
+		\includegraphics[angle=270, width=\linewidth]{c}	
+		\subcaption{Example data. The responses of observer DT to incongruent stimuli are plotted as a function of between-element spacing, for four values of eccentricity. The values plotted are the proportion of responses that agree with the global motion direction.  Curved lines are fit to the data by a cumulative logistic with a constant guess rate. The point of subjective equality (PSE) is indicated on each fit.}
+		\label{fig:sigmoids}
+	\end{subfigure}
+	\begin{subfigure}[b]{.3\linewidth}
+		\includegraphics[width=\linewidth]{B}	
+		\subcaption{Example stimuli in space-time form, where time progresses down along the vertical axis. Stimuli were `congruent', 'conterphase' or incongruent, based on whether the global direction of motion agreed with the local. Counterphase stimuli are a superposition of congruent and incongruent stimuli.}
+		\label{fig:stimuli}
+	\end{subfigure}
+	\begin{subfigure}[b]{.6\linewidth}
+		\includegraphics[width=\linewidth]{d}
+		\subcaption{Points of subjective equality (target separation subserving 50\% response probability) for each eccentricity for all subjects. Intervals show standard errors. Lines show a power-law fit between eccentricity and critical target separation. Shaded region shows standard error of the power-law fit.}
+		\label{fig:scaling}
+	\end{subfigure}
+        \caption{}
+        \label{fig:constant}
+\end{figure}
+
+\todo{The sigmoids need to be refit with a constant slope per subject (since that is how we will approach the variations and occlusions data; QUEST data doesn't well support calculating slope and it adds noise to the PSE calculation. Also, look at different choices of scaling in element spacing to see what is the best fit? Maybe plot on log but fit linearly? Does that scale?}
+
+Using the third of trials where global motion opposed local, we obtained a
+psychometric function relating the target spacing to the probability
+that the stimulus is seen to rotate in the direction of the global
+motion. The data were fit to a cumulative logistic function using a
+maximum likelihood estimator. We estimated the pointofsubjective equality (PSE) as the spacing where the
+logistic curve intersected 50\%.
+
+We fit the subject's responses at each eccentricity to a logistic function, as illustrated for subject D.T. by the curves in \autoref{fig:sigmoids}. A separate curve was fit for each eccentricity, with a guessing rate that was fit for each subject \citep{Wichmann:2001kx} \todo{actually do this}. From these fits we estimated the point at which subject responses would be equally split between local and global directions of motion. This point of subjective equivalence (PSE) \todo{I'm not happy abut calling this 'subjective equivalence' because I'm not sure what the stimuli are 'equivalent' to, they're not metamers. Perhaps a point of equivocation?} is indicated by the horizontal error bars in \autoref{fig:sigmoids}, and are plotted using vertical error bars in \autoref{fig:scaling} for all subjects. This spacing at the PSE appears to scale with the eccentricity of the stimulus. We made another fit to a model where the size of the PSE was proportional to the stimulus eccentricity; this model fit is shown as lines and shaded regions in \autoref{fig:scaling}. When compared to estimates taken at each individual eccentricity, we saw XXXX significant differences at YYYY conditions. \todo{OK, so what's the appropriate test? Fit a model plus one data point, at each data point, and see if the added coefficient was a significant change? (ONLY X conditions, significant marked with a star; were these differences explainable?)}
+
+The scalar dependence on critical separation is broadly similar to the phenomenon of crowding, in which recognition or discrimination of a target object is impaired by the presence of flanking objects. \todo{does this need a cite? ``Who defined crowding'' is a hard thing to cite.} It is also suggestive of a cortical mechanism. There are several areas of cortex that are organized into retinotopic maps\todo{cite?}. The foveated scaling of space within these maps has the property that network interactions that span a constant distance in cortex, including V1, will correspond to interactions in visual space whose distance approximately scales with retinal eccentricity. \todo{I can cite papers for MT and V4 that make the claim that those maps are just simple linear scalings of the V1 map.}
+
+\biblio
+\end{document}

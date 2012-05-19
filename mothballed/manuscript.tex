@@ -1,0 +1,60 @@
+%preamble / header file for total document and each subsection.
+
+\documentclass[11pt]{amsart}
+\usepackage{natbib}
+
+%went through a series of different packages trying to find the best support for author/year
+%style citations. So far apacite was incompatible with subfiles, i don't want to upgrade to 
+%biblatex for biblatex-apa, etc. so...
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage[textsize=tiny]{todonotes}
+\usepackage[]{caption}
+\usepackage[]{subcaption}
+\usepackage{units}
+\usepackage{nicefrac}
+\usepackage{movie15}
+\usepackage{float}
+\usepackage{Sweave}
+\usepackage{tikz}
+\usepackage{pgf}
+\newfloat{movie}{htb}{lom}
+\floatname{movie}{Movie}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+
+\title{A fixed cortical distance governs perceptual integration of local motion and position}
+\author{Peter B. Meilstrup and Michael N. Shadlen}
+\def\biblio{\bibliographystyle{plainnat}\bibliography{bibliography}}
+
+%there was a conflict between subfiles (which wants to insert a \usepackage{Sweave}) and the 
+%subfiles package. the "standalone" package doesn't seem to have that conflict.
+\usepackage{Sweave}
+\usepackage{standalone}
+\usepackage{import}
+
+\usepackage{hyperref}
+
+\begin{document}
+
+\maketitle
+
+\def\biblio{}
+
+\subimport{}{introduction}
+\subimport{}{methods}
+\subimport{figure_1/}{figure_1}
+\subimport{figure_2/}{figure_2}
+\subimport{figure_3/}{figure_3}
+\subimport{}{discussion}
+
+
+\bibliographystyle{plainnat}
+\bibliography{bibliography}
+
+\end{document}
