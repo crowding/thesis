@@ -106,7 +106,7 @@ function column = downcast(column, type)
     %first try boolean
     [x, what] = ismember(column, {'false', 'true', 'FALSE', 'TRUE', '0', '1', 'f', 't'});
     if all(x)
-        ix = logical([0 1]);
+        ix = logical([0;1]);
         column = ix(mod(what, 2) + 1);
         return
     end 

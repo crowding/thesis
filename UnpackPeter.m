@@ -48,17 +48,11 @@ contentData = read_csv('content_series_trials.csv');
 spacingData = read_csv('spacing_series_trials.csv');
 
 fields = fieldnames(contentData);
-allData = [];
-for i = 1:length(fields)
-    if size(getfield(contentData,fields{i}),2) == 1;
-        allData = setfield(allData,fields{i},[getfield(contentData,fields{i});getfield(spacingData,fields{i})]);
-    else
-        allData = setfield(allData,fields{i},[getfield(contentData,fields{i}),getfield(spacingData,fields{i})]);
-    end
-    
-end
-
-
+allData = cell2struct(cellfun(@(x,y)vertcat(x,y), ...
+                              struct2cell(contentData), ...
+                              struct2cell(orderfields(spacingData, fields)), ...
+                              'UniformOutput', 0), ...
+                      fields, 1)
 
 save data allData contentData spacingData
 
