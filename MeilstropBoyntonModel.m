@@ -18,7 +18,7 @@
 
 % Which data sets to fit
 expTypes = {'content','spacing','all'};
-expNum = 3;  %3 fits both types together
+expNum = 2;  %3 fits both types together
 
 subjectNum  =10;  %s10 is pbm
 
@@ -209,6 +209,46 @@ switch(expNum)
     case {2, 3}
         tile(3,4)
 end
+%% plot the underlying model
+[svals, cvals, dvals] = ndgrid(.5:.5:21, 0:.05:1, -1:.02:1);
+[a1, b1, c1] = MotionModel(p,svals,cvals,dvals);
+[probM,muM, sigM] = MotionModel(p,svals,cvals,dvals);
+
+% svals=.5:.5:21;  
+% cvals=0:.05:1;
+% dvals=-1:.02:1;  
+% for s=1:length(svals)
+% for c=1:length(cvals)
+%     for d=1:length(dvals)
+% 
+%           [a1, b1, c1] = MotionModel(p,svals(s),cvals(c),dx);
+%         [probM(c,s, d),muM(c,s, d), sigM(c, s, d)] = MotionModel(p,svals(s),cvals(c),dvals(d));
+%     end
+% end
+% end
+
+figure(100)
+subplot(1, 3, 1)
+imagesc(probM(:, :, round(length(dvals)/2)));
+colormap(gray)
+
+xlabel('direction content')
+ylabel('spacing');
+title('probability saying clockwise')
+
+subplot(1, 3, 2)
+imagesc(muM(:, :, round(length(dvals)/2)));
+colormap(gray)
+xlabel('direction content')
+ylabel('spacing');
+title('relative strength of carrier motion')
+
+subplot(1, 3, 3)
+imagesc(sigM(:, :, round(length(dvals)/2)));
+colormap(gray)
+xlabel('direction content')
+ylabel('spacing');
+title('standard deviation')
 
 
 
