@@ -88,7 +88,7 @@ id = strcmp(data.subject,subjectList{subjectNum});
 s = data.target_spacing(id);         
 c = data.folded_direction_content(id);
 dx = data.folded_displacement(id);
-response = 1-data.folded_response_with_carrier(id)';  %note the 1-response.
+response = 1-data.folded_response_with_carrier(id);  %note the 1-response.
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
 p = fit('fitMotionModel',p,freeParams,s,c,dx,response);
