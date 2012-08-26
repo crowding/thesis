@@ -99,16 +99,28 @@ p
 %% Plot each psychometeric function and model prediction
 close all
 
-%Find the list of parameters used in the experiments using 'unique'
-eccentrities = unique(data.eccentricity(id));  %not used, always one eccentricity (6.667 deg)
-sList = unique(spacing);   
-dxList = unique(dx);
-cList = unique(content);
-
 colList = cool(length(cList));  %colormap for plotting
 
-%Loop through each spacing and plot the psychometric functions
+%Find the list of parameters used in the experiments using 'unique'
+eccentrities = unique(data.eccentricity(id));  %not used, always one eccentricity (6.667 deg)
+[sList, ~, sIndex] = unique(spacing);   
+[dxList, ~, dxIndex] = unique(dx);
+[cList, ~, cIndex] = unique(content);
+
 clear n pc mu sig
+%calculate number of samples and probability correct for each
+%condition
+split_by = [sIndex(:), cIndex(:), dxIndex(:)];
+splits = unique(split_by, 'rows', 'first');
+for cond = splits'
+    mask = all(bsxfun(@eq, split_by, cond'), 2);
+    n(cond(1),cond(2),cond(3)) = sum(mask); %number of trials
+    pc(cond(1),cond(2),cond(3)) = mean(response(mask)); %percent clockwise
+end
+    
+
+%Loop through each spacing and plot the psychometric functions
+
 for sNum = 1:length(sList)
     clear h
     figure(sNum)
@@ -119,10 +131,6 @@ for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         % loop through the dx's
         for dxNum = 1:length(dxList)
-            %Find all trials for this set of s, c and dx
-            id = spacing==sList(sNum) & content == cList(cNum) & dx == dxList(dxNum);
-            n(sNum,cNum,dxNum) = sum(id);  %number of trials
-            pc(sNum,cNum,dxNum) = mean(response(id)); %percent clockwise
             if n(sNum,cNum,dxNum)  %plot that point, scaled in size if there are any trials here
                 plot(dxList(dxNum),pc(sNum,cNum,dxNum),'o',...
                     'MarkerSize',n(sNum,cNum,dxNum)/20+5,'MarkerFaceColor',colList(cNum,:));
