@@ -84,14 +84,16 @@ nSubjects = length(subjectList);
 % Find trials for the current subject
 id = strcmp(data.subject,subject);
 
-% Pull out all conditions and responses for all trials for this subject
-s = data.target_spacing(id);         
-c = data.folded_direction_content(id);
-dx = data.folded_displacement(id);
-response = 1-data.folded_response_with_carrier(id);  %note the 1-response.
+% Pull out all conditions and responses for all trials for this
+% subject
+sData = structfun(@(x)x(id), data, 'UniformOutput', 0)
+spacing = sData.target_spacing;
+content = sData.folded_direction_content;
+dx = sData.folded_displacement;
+response = 1 - sData.folded_response_with_carrier; %note the 1-response.
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
-p = fit('fitMotionModel',p,freeParams,s,c,dx,response);
+p = fit('fitMotionModel', p, freeParams, spacing, content, dx, response)
 p
 
 %% Plot each psychometeric function and model prediction
@@ -99,9 +101,9 @@ close all
 
 %Find the list of parameters used in the experiments using 'unique'
 eccentrities = unique(data.eccentricity(id));  %not used, always one eccentricity (6.667 deg)
-sList = unique(s);   
+sList = unique(spacing);   
 dxList = unique(dx);
-cList = unique(c);
+cList = unique(content);
 
 colList = cool(length(cList));  %colormap for plotting
 
@@ -118,7 +120,7 @@ for sNum = 1:length(sList)
         % loop through the dx's
         for dxNum = 1:length(dxList)
             %Find all trials for this set of s, c and dx
-            id = s==sList(sNum) & c == cList(cNum) & dx == dxList(dxNum);
+            id = spacing==sList(sNum) & content == cList(cNum) & dx == dxList(dxNum);
             n(sNum,cNum,dxNum) = sum(id);  %number of trials
             pc(sNum,cNum,dxNum) = mean(response(id)); %percent clockwise
             if n(sNum,cNum,dxNum)  %plot that point, scaled in size if there are any trials here
@@ -148,7 +150,7 @@ for sNum = 1:length(sList)
         pNorm.shutup = 'yes'; 
         
         %Find all trials for this s and c (and all dx)
-        id = s==sList(sNum) & c == cList(cNum);
+        id = spacing == sList(sNum) & content == cList(cNum);
         if sum(id)
             %Fit the cumulative normal 
             pNormBest = fit('fitCumNormal',pNorm,{'mu'},dx(id),response(id));
