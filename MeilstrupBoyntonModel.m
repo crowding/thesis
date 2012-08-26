@@ -18,7 +18,7 @@
 
 % Which data sets to fit
 expTypes = {'content','spacing','all'};
-expNum = 2;  %3 fits both types together
+expType = 'spacing';
 
 subjectNum  =10;  %s10 is pbm
 
@@ -75,7 +75,7 @@ if ~exist('Sdata','var')
 end
 
 % Copy the approprate structure to 'data'
-data = Sdata.([expTypes{expNum} 'Data']);
+data = Sdata.([expType 'Data']);
 
 %% Pull out the relevant trials and fit the model to the data
 % List of all subjects
@@ -204,11 +204,13 @@ ylabel('sig');
 legend(h,num2str(cList));
 
 %Tile the figures
-switch(expNum)
-    case 1
-        tile(2,2)
-    case {2, 3}
-        tile(3,4)
+switch(expType)
+  case 'content'
+      tile(2,2)
+  case 'spacing'
+      tile(3,4)
+  case 'all'
+    tile(3,4)
 end
 %% plot the underlying model
 [svals, cvals, dvals] = ndgrid(.5:.5:21, 0:.05:1, -1:.02:1);
