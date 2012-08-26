@@ -1,30 +1,29 @@
 % AnalyzePeter.m
 
 % Notes 
-% s1 is hard to fit all without c0 = -.1
-% s2 is OK
-% s3 is hard.  No dependency of mu on c
-% s4 is pretty good
-% s5 is sparse and OK except for s=2.62
-% s6 is unfittable
-% s7 is good
-% s8 is pretty good
-% s9 is OK
-% s10 (pbm) is pretty good
-% s11 is sparse
-% s12 is pretty good
-% s13 is sparse but OK anywa
-
+% as is hard to fit all without c0 = -.1
+% cj is OK
+% jb is hard.  No dependency of mu on c
+% je is pretty good
+% ko is sparse and OK except for s=2.62
+% mc is unfittable
+% ml is good
+% nj is pretty good
+% ns is OK
+% pbm is pretty good
+% sm is sparse
+% tl is pretty good
+% to is sparse but OK anywa
 
 % Which data sets to fit
 expTypes = {'content','spacing','all'};
 expType = 'spacing';
 
-subjectNum  =10;  %s10 is pbm
+subject = 'pbm';
 
 %Initial parameters
-switch subjectNum
-    case 1
+switch subject
+    case 'as'
         p.sig0 = .065;
         p.sigk = .75;
         p.siga = 3;
@@ -34,7 +33,7 @@ switch subjectNum
         p.muks = 1.5;
         p.mu0 = -.1;
         
-    case 3
+    case 'jb'
         p.sig0 = .1;
         p.sigk = .75;
         p.siga = .5;
@@ -61,8 +60,8 @@ switch subjectNum
         p.mua = 8;
         p.muks = 1;
         p.mukc = 1;
-         p.mu0 = 0;
-        
+        p.mu0 = 0;
+         
 end
 freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
 
@@ -83,7 +82,7 @@ subjectList = unique(data.subject);
 nSubjects = length(subjectList);
 
 % Find trials for the current subject
-id = strcmp(data.subject,subjectList{subjectNum});
+id = strcmp(data.subject,subject);
 
 % Pull out all conditions and responses for all trials for this subject
 s = data.target_spacing(id);         
@@ -113,7 +112,7 @@ for sNum = 1:length(sList)
     figure(sNum)
     clf
     hold on
-    title(sprintf('subject %s, s = %5.2f',subjectList{subjectNum},sList(sNum)));
+    title(sprintf('subject %s, s = %5.2f',subject,sList(sNum)));
     % loop through the c's, generating separate psychometric functions
     for cNum = 1:length(cList)
         % loop through the dx's
