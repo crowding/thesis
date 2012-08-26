@@ -86,7 +86,7 @@ id = strcmp(data.subject,subject);
 
 % Pull out all conditions and responses for all trials for this
 % subject
-sData = structfun(@(x)x(id), data, 'UniformOutput', 0)
+sData = structfun(@(x)x(id), data, 'UniformOutput', 0);
 spacing = sData.target_spacing;
 content = sData.folded_direction_content;
 dx = sData.folded_displacement;
@@ -107,17 +107,14 @@ eccentrities = unique(data.eccentricity(id));  %not used, always one eccentricit
 [dxList, ~, dxIndex] = unique(dx);
 [cList, ~, cIndex] = unique(content);
 
+
 clear n pc mu sig
 %calculate number of samples and probability correct for each
 %condition
-split_by = [sIndex(:), cIndex(:), dxIndex(:)];
-splits = unique(split_by, 'rows', 'first');
-for cond = splits'
-    mask = all(bsxfun(@eq, split_by, cond'), 2);
-    n(cond(1),cond(2),cond(3)) = sum(mask); %number of trials
-    pc(cond(1),cond(2),cond(3)) = mean(response(mask)); %percent clockwise
-end
-    
+nc = accumarray([sIndex, cIndex, dxIndex], response);
+ncc = accumarray([sIndex, cIndex, dxIndex], 1-response);
+n = nc + ncc;
+pc = nc ./ n;
 
 %Loop through each spacing and plot the psychometric functions
 
@@ -127,7 +124,8 @@ for sNum = 1:length(sList)
     clf
     hold on
     title(sprintf('subject %s, s = %5.2f',subject,sList(sNum)));
-    % loop through the c's, generating separate psychometric functions
+    % loop through the c's, generating separate psychometric
+    % functions
     for cNum = 1:length(cList)
         % loop through the dx's
         for dxNum = 1:length(dxList)
