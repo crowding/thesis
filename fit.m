@@ -1,10 +1,10 @@
-function [params,err] = fit(funName,params,freeList,varargin)
-%[params,err] = fit(funName,params,freeList,var1,var2,var3,...)
+function [params,err] = fit(fun,params,freeList,varargin)
+%[params,err] = fit(@fun,params,freeList,var1,var2,var3,...)
 %
 %Helpful interface to matlab's 'fmins' function.
 %
 %INPUTS
-% 'funName':  function to be optimized.  Has form <funName>(params,var1,var2,...)
+% @fun     :  function be optimized.  Has form fun(params,var1,var2,...)
 % params   :  structure of parameter values for fitted function
 % freeList :  List of parameter names to be free in fit
 % var<n>   :  extra variables to be sent into fitted function
@@ -40,21 +40,14 @@ if isempty(freeList)
 end
 
 var = params2var(params,freeList);
-%disp(sprintf('Fitting "%s" with %d free parameters.',funName,length(var)));
-var = fminsearch('fitFun',var,options,funName,params,freeList,varargin);
+%disp(sprintf('Fitting "%s" with %d free parameters.',fun,length(var)));
+var = fminsearch(@fitFun,var,options,fun,params,freeList,varargin);
 
 %get final parameters
 params=  var2params(var,params,freeList);
 
 %evaluate the function
-
-evalStr = sprintf('err = %s(params',funName);
-for i=1:length(varargin)
-  evalStr= [evalStr,',varargin{',num2str(i),'}'];
-end
-evalStr = [evalStr,');'];
-eval(evalStr);
-
+err = fun(params, varargin{:});
 
 return
 

@@ -93,7 +93,7 @@ dx = sData.folded_displacement;
 response = 1 - sData.folded_response_with_carrier; %note the 1-response.
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
-p = fit('fitMotionModel', p, freeParams, spacing, content, dx, response)
+p = fit(@fitMotionModel, p, freeParams, spacing, content, dx, response)
 p
 
 %% Plot each psychometeric function and model prediction
@@ -147,9 +147,7 @@ for sNum = 1:length(sList)
         %fit the psychometric functions separately
         
         %Initial parameters for the cumulative normal
-        
-            [prob,predMu,predSig] = MotionModel(p,sList(sNum),cList(cNum),0);
-
+        [prob,predMu,predSig] = MotionModel(p,sList(sNum),cList(cNum),0);
         
         pNorm.sig =  predSig;       
         pNorm.mu = predMu;
@@ -159,7 +157,7 @@ for sNum = 1:length(sList)
         id = spacing == sList(sNum) & content == cList(cNum);
         if sum(id)
             %Fit the cumulative normal 
-            pNormBest = fit('fitCumNormal',pNorm,{'mu'},dx(id),response(id));
+            pNormBest = fit(@fitCumNormal,pNorm,{'mu'},dx(id),response(id));
             %Save the best-fitting parameters
             mu(sNum,cNum) = pNormBest.mu;
             sig(sNum,cNum) = pNormBest.sig;
