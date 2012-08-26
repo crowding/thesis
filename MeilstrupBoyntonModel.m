@@ -70,11 +70,12 @@ freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
 
 
 % Load the data if it isn't already loaded ('see UnpackPeter.m')
-if ~exist('contentData','var')
-    load data
+if ~exist('Sdata','var')
+    Sdata = load('data');
 end
+
 % Copy the approprate structure to 'data'
-eval(sprintf('data = %sData;',expTypes{expNum}));
+data = Sdata.([expTypes{expNum} 'Data']);
 
 %% Pull out the relevant trials and fit the model to the data
 % List of all subjects
