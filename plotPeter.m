@@ -1,4 +1,4 @@
-function analysePeter(varargin)
+function plotPeter(varargin)
     
 clf;
 
@@ -21,7 +21,7 @@ for i = 1:numel(datasets)
     plotData(datasets{i});
 end
 
-print('ione/analysePeter.fig')
+print('modeling/analysePeter.fig')
 
 end
 
