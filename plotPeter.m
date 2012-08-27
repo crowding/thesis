@@ -21,7 +21,7 @@ for i = 1:numel(datasets)
     plotData(datasets{i});
 end
 
-print('modeling/analysePeter.fig')
+print('modeling/plotPeter.fig')
 
 end
 

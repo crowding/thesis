@@ -11,11 +11,6 @@
 --input --invisible  discrimination.sqlite.DONE
 --output             modeling/{0}_trials.csv
 
-#type "make csv" to refresh all these
---command
---output --invisible --phony csv
---input --invisible --match .*\.csv
-
 #plot threshold values
 --command            --once ./runmatlab 
 --input --invisible  modeling/plotPeter.m
@@ -26,3 +21,14 @@
 #type "make figures" to try to refresh the figures
 --command --input --invisible --match '.*\.fig$'
 --output --invisible --phony figures
+
+#matlab stuff requires we unpack all the data into a matlab file.
+--command --once ./runmatlab --once "\"cd('modeling');\" UnpackPeter"
+--input --invisible --once modeling/unpackPeter.m
+--input --match modeling/(.*_trials\.csv)$
+--output --invisible --once modeling/data.mat
+
+#the model-fitting function
+--command ./runmatlab "\"cd('modeling'); MeilstrupBoyntonModel\""
+--input --invisible --match "modeling/data\.mat"
+--output --invisible modeling/results.mat
