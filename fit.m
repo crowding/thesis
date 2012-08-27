@@ -19,7 +19,7 @@ function [params,err] = fit(fun,params,freeList,varargin)
 % params.c = 3;
 % freeList = {'a(1:2)','c'};
 %
-%[params,err] = fit('myTestFun',params,freeList,fee,fi,fo,fum);
+%[params,err] = fit(@myTestFun,params,freeList,fee,fi,fo,fum);
 %
 %note the use if indices to set a subset of parameters free 'a(1:2)'
 %
@@ -44,16 +44,12 @@ var = params2var(params,freeList);
 var = fminsearch(@fitFun,var,options,fun,params,freeList,varargin);
 
 %get final parameters
-params=  var2params(var,params,freeList);
+params = var2params(var,params,freeList);
 
 %evaluate the function
 err = fun(params, varargin{:});
 
 return
-
-%debug
-
-clear params
 
 
 
