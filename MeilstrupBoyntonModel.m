@@ -1,4 +1,4 @@
-% AnalyzePeter.m
+function MeilstrupBoyntonModel
 
 % Notes 
 % as is hard to fit all without c0 = -.1
@@ -99,16 +99,14 @@ p
 %% Plot each psychometeric function and model prediction
 close all
 
-colList = cool(length(cList));  %colormap for plotting
-
 %Find the list of parameters used in the experiments using 'unique'
 eccentrities = unique(data.eccentricity(id));  %not used, always one eccentricity (6.667 deg)
 [sList, ~, sIndex] = unique(spacing);   
 [dxList, ~, dxIndex] = unique(dx);
 [cList, ~, cIndex] = unique(content);
 
+colList = cool(length(cList));  %colormap for plotting
 
-clear n pc mu sig
 %calculate number of samples and probability correct for each
 %condition
 nc = accumarray([sIndex, cIndex, dxIndex], response);
@@ -258,7 +256,4 @@ xlabel('direction content')
 ylabel('spacing');
 title('standard deviation')
 
-
-
-
-
+save modelResults.mat
