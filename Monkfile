@@ -31,4 +31,5 @@
 #the model-fitting function
 --command ./runmatlab "\"cd('modeling'); MeilstrupBoyntonModel\""
 --input --invisible --match "modeling/data\.mat"
---output --invisible modeling/results.mat
+--input --invisible modeling/MeilstrupBoyntonModel.m
+--output --invisible modeling/modelResults.mat
