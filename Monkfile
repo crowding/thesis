@@ -28,8 +28,19 @@
 --input --match modeling/(.*_trials\.csv)$
 --output --invisible --once modeling/data.mat
 
+#might as well unpack into an R data file.
+--command --once Rscript --once --input modeling/unpack.R
+--input --invisible modeling/unpack.R
+--output --once modeling/data.Rd
+--input --match modeling/(.*_trials\.csv)
+
 #the model-fitting function
 --command ./runmatlab "\"cd('modeling'); MeilstrupBoyntonModel\""
 --input --invisible --match "modeling/data\.mat"
 --input --invisible modeling/MeilstrupBoyntonModel.m
 --output --invisible modeling/modelResults.mat
+
+#and let's start translating this to R also.
+--command --once Rscript --input modeling/MeilstrupBoyntonModel.R
+--input --match 'modeling/data\.Rd'
+--output --once modeling/result.Rd
