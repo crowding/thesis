@@ -112,9 +112,22 @@ colList = cool(length(cList));  %colormap for plotting
 nc = accumarray([sIndex, cIndex, dxIndex], response);
 ncc = accumarray([sIndex, cIndex, dxIndex], 1-response);
 n = nc + ncc;
-pc = nc ./ n;
+pc = nc ./ n; %this will be NaN
 
 %Loop through each spacing and plot the psychometric functions
+
+%Obtain predictions from the model
+model_pred = nan(size(n));
+for sNum = 1:length(sList)
+    for cNum = 1:length(cList)
+        if sum(n(sNum,cNum,:))
+            pred(sNum, cNum, :) = ...
+                MotionModel(p,sList(sNum)*ones(size(dxList)), ...
+                            cList(cNum)*ones(size(dxList)), ...
+                            dxList);
+        end
+    end
+end
 
 for sNum = 1:length(sList)
     clear h
@@ -127,20 +140,19 @@ for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         % loop through the dx's
         for dxNum = 1:length(dxList)
-            if n(sNum,cNum,dxNum)  %plot that point, scaled in size if there are any trials here
+            %plot that point, scaled in size if there are any trials here
+            if n(sNum,cNum,dxNum)  
                 plot(dxList(dxNum),pc(sNum,cNum,dxNum),'o',...
-                    'MarkerSize',n(sNum,cNum,dxNum)/20+5,'MarkerFaceColor',colList(cNum,:));
+                    'MarkerSize',n(sNum,cNum,dxNum)/20+5,...
+                     'MarkerFaceColor',colList(cNum,:));
             end
         end
         %plot a dashed line through the points
         h(cNum) = plot(dxList,squeeze(pc(sNum,cNum,:)),':','Color',colList(cNum,:));
         
         %plot the model prediction as a solid line
+        plot(dxList,squeeze(model_pred(sNum, cNum, :)),'-','Color',colList(cNum,:));
         
-        if sum(n(sNum,cNum,:))
-            pred = MotionModel(p,sList(sNum)*ones(size(dxList)),cList(cNum)*ones(size(dxList)),dxList);
-            plot(dxList,pred,'-','Color',colList(cNum,:));
-        end
         
         %fit the psychometric functions separately
         
