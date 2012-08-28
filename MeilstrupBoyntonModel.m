@@ -93,8 +93,8 @@ dx = sData.folded_displacement;
 response = 1 - sData.folded_response_with_carrier; %note the 1-response.
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
-p = fit(@fitMotionModel, p, freeParams, spacing, content, dx, response)
-p
+p = fit(@fitMotionModel, p, freeParams, spacing, content, dx, response);
+p;
 
 %% Plot each psychometeric function and model prediction
 close all
@@ -121,7 +121,7 @@ model_pred = nan(size(n));
 for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         if sum(n(sNum,cNum,:))
-            pred(sNum, cNum, :) = ...
+            model_pred(sNum, cNum, :) = ...
                 MotionModel(p,sList(sNum)*ones(size(dxList)), ...
                             cList(cNum)*ones(size(dxList)), ...
                             dxList);
@@ -129,6 +129,31 @@ for sNum = 1:length(sList)
     end
 end
 
+norm_pred = nan(size(n));
+%also fit cumulative normals per condition. They go into mu and
+%sig, indexed by sNum and cNum.
+for sNum = 1:length(sList)
+    for cNum = 1:length(cList)
+        %Initial parameters for the cumulative normal
+        [prob,predMu,predSig] = MotionModel(p,sList(sNum),cList(cNum),0);
+        pNorm.sig =  predSig;       
+        pNorm.mu = predMu;
+        pNorm.shutup = 'yes'; 
+
+        %Find all trials for this s and c (and all dx)
+        id = spacing == sList(sNum) & content == cList(cNum);
+        if sum(id)
+            %Fit the cumulative normal (with slope fixed by model fit?)
+            pNormBest = fit(@fitCumNormal,pNorm,{'mu'},dx(id),response(id));
+            %Save the best-fitting parameters
+            mu(sNum,cNum) = pNormBest.mu;
+            sig(sNum,cNum) = pNormBest.sig;
+        end
+        norm_pred(sNum, cNum, :) = normcdf(dxList,mu(sNum,cNum),sig(sNum,cNum));
+    end
+end
+
+%then plot the whole mess
 for sNum = 1:length(sList)
     clear h
     figure(sNum)
@@ -149,32 +174,14 @@ for sNum = 1:length(sList)
         end
         %plot a dashed line through the points
         h(cNum) = plot(dxList,squeeze(pc(sNum,cNum,:)),':','Color',colList(cNum,:));
-        
-        %plot the model prediction as a solid line
-        plot(dxList,squeeze(model_pred(sNum, cNum, :)),'-','Color',colList(cNum,:));
-        
-        
-        %fit the psychometric functions separately
-        
-        %Initial parameters for the cumulative normal
-        [prob,predMu,predSig] = MotionModel(p,sList(sNum),cList(cNum),0);
-        
-        pNorm.sig =  predSig;       
-        pNorm.mu = predMu;
-        pNorm.shutup = 'yes'; 
-        
-        %Find all trials for this s and c (and all dx)
-        id = spacing == sList(sNum) & content == cList(cNum);
-        if sum(id)
-            %Fit the cumulative normal 
-            pNormBest = fit(@fitCumNormal,pNorm,{'mu'},dx(id),response(id));
-            %Save the best-fitting parameters
-            mu(sNum,cNum) = pNormBest.mu;
-            sig(sNum,cNum) = pNormBest.sig;
-            
+
+        if sum(n(sNum, cNum, :))
+            %plot the model prediction as a solid line
+            plot(dxList,squeeze(model_pred(sNum, cNum, :)),'-', ...
+                 'Color',colList(cNum,:));
             %Plot the best fitting cumulative normal
-            pred = normcdf(dxList,mu(sNum,cNum),sig(sNum,cNum));
-            %plot(dxList,pred,'-.','Color',colList(cNum,:));
+            plot(dxList,squeeze(norm_pred(sNum, cNum, :)),'-.', ...
+                 'Color',colList(cNum,:));
         end
     end
     xlabel('dx');
