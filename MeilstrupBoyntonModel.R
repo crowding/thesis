@@ -1,6 +1,6 @@
 #!/bin/Rscript
 source(ifelse(file.exists("modeling"), "modeling/library.R", "library.R"))
-linrary(plyr)
+library(plyr)
 
 ##initial parameters
 
