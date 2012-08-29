@@ -1,4 +1,4 @@
-function MeilstrupBoyntonModel(1)
+function MeilstrupBoyntonModel(export)
 %if given value of 1, will assign everything to base workspace to
 %play with.
 
@@ -196,3 +196,9 @@ switch(expType)
 end
 
 save modelResults.mat
+if (exist('export', 'var') && export)
+    for varname = who()'
+        assignin('base', varname{1}, eval(varname{1}));
+    end
+end
+
