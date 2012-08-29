@@ -1,11 +1,13 @@
-function [prob,mu,sig] = MotionModel(p,s,c,dx)
-%[prob,mu,sig] = MotionModel(p,s,c,dx)
+function [prob,mu,sig] = MotionModel(p,d)
+%[prob,mu,sig] = MotionModel(p,data)
 %
 % Inputs:
 % p structure containing model parameters 
-% s spacing
-% c local motion index
-% dx global motion step
+% d a struct with fields:
+% 'spacing'
+% 'contentt'
+% 'dx'
+% 
 %
 % Model:
 %   Assume that on any trial, there is a global motion signal and local
@@ -19,6 +21,7 @@ function [prob,mu,sig] = MotionModel(p,s,c,dx)
 %   is a separable function consisting of an exponential that increases
 %   with c with a constant p.cck and and exponential that decreases with s
 %   with a constant p.ck, scaled by p.a plus an offset p.c0
+[s, c, dx] = deal(d.spacing, d.content, d.dx);
 
 mu = -p.mua*exp(p.mukc*c).*exp(-p.muks*s)+p.mu0;
 
@@ -29,4 +32,3 @@ sig = p.siga*exp(-p.sigk*s)+p.sig0;
 
 %    This is the probability of responding 'clockwise' on any trial.
 prob = normcdf(dx,mu,sig);
-

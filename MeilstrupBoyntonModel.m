@@ -1,4 +1,6 @@
-function MeilstrupBoyntonModel
+function MeilstrupBoyntonModel(1)
+%if given value of 1, will assign everything to base workspace to
+%play with.
 
 % Notes 
 % as is hard to fit all without c0 = -.1
@@ -21,60 +23,15 @@ expType = 'spacing';
 
 subject = 'pbm';
 
-%Initial parameters
-switch subject
-    case 'as'
-        p.sig0 = .065;
-        p.sigk = .75;
-        p.siga = 3;
-        
-        p.mua = 2;
-        p.mukc = 1.5;
-        p.muks = 1.5;
-        p.mu0 = -.1;
-        
-    case 'jb'
-        p.sig0 = .1;
-        p.sigk = .75;
-        p.siga = .5;
-        
-        p.mua = 1;
-        p.mukc = .5;
-        p.muks = 0;
-        p.mu0 = -.2;
-    otherwise
-        % These are some pretty good initial parameters for most subjects
-%         p.sig0 = .065;
-%         p.sigk = 2;
-%         p.siga = 11;
-%         
-%         p.mua = 3.2;
-%         p.mukc = 2;
-%         p.muks = 7.7;
-%         p.mu0 = 0;
-        
-        p.siga = 3;
-        p.sigk = .75;
-        p.sig0 = .75;
-        
-        p.mua = 8;
-        p.muks = 1;
-        p.mukc = 1;
-        p.mu0 = 0;
-         
-end
+p = initialParams(subject);
+
 freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
 
-%freeParams = {'sigk','siga','mua','mukc','muks'};
-
-
 % Load the data if it isn't already loaded ('see UnpackPeter.m')
-if ~exist('Sdata','var')
-    Sdata = load('data');
-end
+S = load('data');
 
 % Copy the approprate structure to 'data'
-data = Sdata.([expType 'Data']);
+data = S.([expType 'Data']);
 
 %% Pull out the relevant trials and fit the model to the data
 % List of all subjects
@@ -86,31 +43,33 @@ id = strcmp(data.subject,subject);
 
 % Pull out all conditions and responses for all trials for this
 % subject
-sData = structfun(@(x)x(id), data, 'UniformOutput', 0);
-spacing = sData.target_spacing;
-content = sData.folded_direction_content;
-dx = sData.folded_displacement;
-response = 1 - sData.folded_response_with_carrier; %note the 1-response.
+data = structfun(@(x)x(id), data, 'UniformOutput', 0);
+data = rename(data, ...
+              'target_spacing', 'spacing', ...
+              'folded_direction_content', 'content', ...
+              'folded_displacement', 'dx', ...
+              'folded_response_with_carrier', 'response');
+
+data.response = 1 - data.response;
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
-p = fit(@fitMotionModel, p, freeParams, spacing, content, dx, response);
-p;
+p = fit(@fitMotionModel, p, freeParams, data);
 
 %% Plot each psychometeric function and model prediction
 close all
 
 %Find the list of parameters used in the experiments using 'unique'
-eccentrities = unique(data.eccentricity(id));  %not used, always one eccentricity (6.667 deg)
-[sList, ~, sIndex] = unique(spacing);   
-[dxList, ~, dxIndex] = unique(dx);
-[cList, ~, cIndex] = unique(content);
+eccentrities = unique(data.eccentricity);  %not used, always one eccentricity (6.667 deg)
+[sList, ~, sIndex] = unique(data.spacing);   
+[dxList, ~, dxIndex] = unique(data.dx);
+[cList, ~, cIndex] = unique(data.content);
 
 colList = cool(length(cList));  %colormap for plotting
 
 %calculate number of samples and probability correct for each
 %condition
-nc = accumarray([sIndex, cIndex, dxIndex], response);
-ncc = accumarray([sIndex, cIndex, dxIndex], 1-response);
+nc = accumarray([sIndex, cIndex, dxIndex], data.response);
+ncc = accumarray([sIndex, cIndex, dxIndex], 1-data.response);
 n = nc + ncc;
 pc = nc ./ n; %this will be NaN
 
@@ -122,29 +81,28 @@ for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         if sum(n(sNum,cNum,:))
             model_pred(sNum, cNum, :) = ...
-                MotionModel(p,sList(sNum)*ones(size(dxList)), ...
-                            cList(cNum)*ones(size(dxList)), ...
-                            dxList);
+                MotionModel(p,struct('spacing', sList(sNum)*ones(size(dxList)), ...
+                            'content', cList(cNum)*ones(size(dxList)), ...
+                            'dx', dxList));
         end
     end
 end
 
-norm_pred = nan(size(n));
 %also fit cumulative normals per condition. They go into mu and
 %sig, indexed by sNum and cNum.
+norm_pred = nan(size(n));
 for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         %Initial parameters for the cumulative normal
-        [prob,predMu,predSig] = MotionModel(p,sList(sNum),cList(cNum),0);
-        pNorm.sig =  predSig;       
-        pNorm.mu = predMu;
+        [~,pNorm.mu,pNorm.sig] = ...
+            MotionModel(p,struct('spacing', sList(sNum), 'content', cList(cNum), 'dx', 0));
         pNorm.shutup = 'yes'; 
 
         %Find all trials for this s and c (and all dx)
-        id = spacing == sList(sNum) & content == cList(cNum);
+        id = data.spacing == sList(sNum) & data.content == cList(cNum);
         if sum(id)
             %Fit the cumulative normal (with slope fixed by model fit?)
-            pNormBest = fit(@fitCumNormal,pNorm,{'mu'},dx(id),response(id));
+            pNormBest = fit(@fitCumNormal,pNorm,{'mu'},data.dx(id),data.response(id));
             %Save the best-fitting parameters
             mu(sNum,cNum) = pNormBest.mu;
             sig(sNum,cNum) = pNormBest.sig;
@@ -203,7 +161,8 @@ for cNum =1:length(cList)
     %plot mu from the best fitting Cumulative Normal 
     h(cNum) = plot(sList,mu(:,cNum),'o','Color',colList(cNum,:));
     %get and plot mu from the model fit 
-    [prob,predMu,predSig] = MotionModel(p,sList,cList(cNum),0);
+    [~,predMu,~] = ...
+        MotionModel(p,struct('spacing', sList, 'content', cList(cNum), 'dx', 0));
     plot(sList,predMu,'-','Color',colList(cNum,:));
 end
 xlabel('s');
@@ -218,7 +177,8 @@ for cNum =1:length(cList)
     id = sig(:,cNum) >0;
     h(cNum) = plot(sList(id),sig(id,cNum),'o','Color',colList(cNum,:));
     %get and plot sig from the model fit
-    [prob,predMu,predSig] = MotionModel(p,sList,cList(cNum),0);
+    [prob,predMu,predSig] = ...
+        MotionModel(p,struct('spacing',  sList,'content', cList(cNum), 'dx',  0));
     plot(sList,predSig,'-','Color',colList(cNum,:));
 end
 xlabel('s');
@@ -234,45 +194,5 @@ switch(expType)
   case 'all'
     tile(3,4)
 end
-%% plot the underlying model
-[svals, cvals, dvals] = ndgrid(.5:.5:21, 0:.05:1, -1:.02:1);
-[a1, b1, c1] = MotionModel(p,svals,cvals,dvals);
-[probM,muM, sigM] = MotionModel(p,svals,cvals,dvals);
-
-% svals=.5:.5:21;  
-% cvals=0:.05:1;
-% dvals=-1:.02:1;  
-% for s=1:length(svals)
-% for c=1:length(cvals)
-%     for d=1:length(dvals)
-% 
-%           [a1, b1, c1] = MotionModel(p,svals(s),cvals(c),dx);
-%         [probM(c,s, d),muM(c,s, d), sigM(c, s, d)] = MotionModel(p,svals(s),cvals(c),dvals(d));
-%     end
-% end
-% end
-
-figure(100)
-subplot(1, 3, 1)
-imagesc(probM(:, :, round(length(dvals)/2)));
-colormap(gray)
-
-xlabel('direction content')
-ylabel('spacing');
-title('probability saying clockwise')
-
-subplot(1, 3, 2)
-imagesc(muM(:, :, round(length(dvals)/2)));
-colormap(gray)
-xlabel('direction content')
-ylabel('spacing');
-title('relative strength of carrier motion')
-
-subplot(1, 3, 3)
-imagesc(sigM(:, :, round(length(dvals)/2)));
-colormap(gray)
-xlabel('direction content')
-ylabel('spacing');
-title('standard deviation')
 
 save modelResults.mat
