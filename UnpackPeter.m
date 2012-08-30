@@ -24,12 +24,14 @@ S.allData = cellfun(@(x) struct2cell(orderfields(x, fields)), ...
 S.allData = cell2struct(cellfun(@vertcat, S.allData{:}, 'UniformOutput', 0)...
                         , fields, 1);
 
+
+
 %or, with datasets
 data = cellfun(@load_data_set, filenames, 'UniformOutput', 0);
 function d = load_data_set(filename)
     groupname = regexp(filename, '([a-zA-Z])*_series_trials.*', 'tokens');
     d = dataset(read_csv(filename));
-    d.exp_type = repmat(groupname, size(d,1),1);
+    d.exp_type = repmat(groupname{1}, size(d,1),1);
 end
 
 S.data = cat(1, data{:});
