@@ -80,10 +80,10 @@ multiply by 10 to get envelope speed in degrees/sec.
 `pse_25` and `pse_75` gives a confidence intervals on the PSE
 measurement (these are calculated by parametric bootstrap; I draw
 random psychometric functions using the fitted likelihood function,
-and find the 25and 75quantiles of the PSE)
+and find the 25% and 75% quantiles of the PSE)
 
 `threshold` measures how much envelope motion it takes to move between
-50and 75on the psychometric function. `threshold_25` and
+50% and 75% on the psychometric function. `threshold_25` and
 `threshold_75` give a confidence interval.
 
 Note that when sensitivity is low enough that you aren't entirely sure
