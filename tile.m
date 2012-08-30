@@ -1,5 +1,5 @@
-function tile(m,n,monitor)
-%tile([m],[n],[monitor])
+function tile(m,n,monitor, figs)
+%tile([m],[n],[monitor], [figs])
 %
 %Tiles matlab figures in the monitor in rows starting at the top-right.
 %
@@ -8,6 +8,7 @@ function tile(m,n,monitor)
 %   n  #of columns (default is 3)
 %   monitor monitor number (1 is desktop, 2 is extended, default is
 %       highest available)
+%   handles array of figure handles to tile (defaults to all open figures)
 
 %Written 3/30/12 gmb (after getting frustrated by Matlab's positioning of
 %figures outside the monitor by default)
@@ -39,7 +40,7 @@ end
 
 nMonitors = size(monitorPos,1);
 
-if ~exist('monitor','var')
+if ~exist('monitor','var') || isempty(monitor)
     monitor= nMonitors;
 end
 
@@ -49,12 +50,16 @@ end
 
 sz = monitorPos(monitor,[3,4]);
 
-if ~exist('m','var')
+if ~exist('m','var') || isempty(m)
     m = 3;
 end
 
-if ~exist('n','var')
+if ~exist('n','var') || isempty(n)
     n = 3;
+end
+
+if ~exist('figs', 'var') || isempty(figs)
+    figs = sort(get(0,'Children'))';
 end
 
 x = 0;
@@ -74,7 +79,6 @@ x =x0;
 y =y0;
 
 
-figs = sort(get(0,'Children'))';
 set(0,'Units','pixels');
 
 [xi, yi] = ind2sub([n m], 1:numel(figs));
