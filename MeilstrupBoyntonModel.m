@@ -2,7 +2,7 @@ function MeilstrupBoyntonModel(export)
 %if given value of 1, will assign everything to base workspace to
 %play with.
 
-% Notes 
+% Notes
 % as is hard to fit all without c0 = -.1
 % cj is OK
 % jb is hard.  No dependency of mu on c
@@ -59,8 +59,8 @@ p = fit(@fitMotionModel, p, freeParams, data);
 close all
 
 %Find the list of parameters used in the experiments using 'unique'
-eccentrities = unique(data.eccentricity);  %not used, always one eccentricity (6.667 deg)
-[sList, ~, sIndex] = unique(data.spacing);   
+eccentrities = unique(data.eccentricity);  %not used, always 6.667 deg
+[sList, ~, sIndex] = unique(data.spacing);
 [dxList, ~, dxIndex] = unique(data.dx);
 [cList, ~, cIndex] = unique(data.content);
 
@@ -81,9 +81,10 @@ for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         if sum(n(sNum,cNum,:))
             model_pred(sNum, cNum, :) = ...
-                MotionModel(p,struct('spacing', sList(sNum)*ones(size(dxList)), ...
-                            'content', cList(cNum)*ones(size(dxList)), ...
-                            'dx', dxList));
+                MotionModel(p,struct(...
+                    'spacing', sList(sNum)*ones(size(dxList)), ...
+                    'content', cList(cNum)*ones(size(dxList)), ...
+                    'dx', dxList));
         end
     end
 end
@@ -95,14 +96,16 @@ for sNum = 1:length(sList)
     for cNum = 1:length(cList)
         %Initial parameters for the cumulative normal
         [~,pNorm.mu,pNorm.sig] = ...
-            MotionModel(p,struct('spacing', sList(sNum), 'content', cList(cNum), 'dx', 0));
-        pNorm.shutup = 'yes'; 
+            MotionModel(p,struct(...
+                'spacing', sList(sNum), 'content', cList(cNum), 'dx', 0));
+        pNorm.shutup = 'yes';
 
         %Find all trials for this s and c (and all dx)
         id = data.spacing == sList(sNum) & data.content == cList(cNum);
         if sum(id)
             %Fit the cumulative normal (with slope fixed by model fit?)
-            pNormBest = fit(@fitCumNormal,pNorm,{'mu'},data.dx(id),data.response(id));
+            pNormBest = fit(@fitCumNormal,pNorm,{'mu'}, ...
+                            data.dx(id),data.response(id));
             %Save the best-fitting parameters
             mu(sNum,cNum) = pNormBest.mu;
             sig(sNum,cNum) = pNormBest.sig;
@@ -124,14 +127,15 @@ for sNum = 1:length(sList)
         % loop through the dx's
         for dxNum = 1:length(dxList)
             %plot that point, scaled in size if there are any trials here
-            if n(sNum,cNum,dxNum)  
+            if n(sNum,cNum,dxNum)
                 plot(dxList(dxNum),pc(sNum,cNum,dxNum),'o',...
                     'MarkerSize',n(sNum,cNum,dxNum)/20+5,...
                      'MarkerFaceColor',colList(cNum,:));
             end
         end
         %plot a dashed line through the points
-        h(cNum) = plot(dxList,squeeze(pc(sNum,cNum,:)),':','Color',colList(cNum,:));
+        h(cNum) = plot(dxList,squeeze(pc(sNum,cNum,:)),':',...
+                       'Color',colList(cNum,:));
 
         if sum(n(sNum, cNum, :))
             %plot the model prediction as a solid line
@@ -158,11 +162,12 @@ subplot(2,1,1) %mu as a function of s and c
 hold on
 clear h
 for cNum =1:length(cList)
-    %plot mu from the best fitting Cumulative Normal 
+    %plot mu from the best fitting Cumulative Normal
     h(cNum) = plot(sList,mu(:,cNum),'o','Color',colList(cNum,:));
-    %get and plot mu from the model fit 
+    %get and plot mu from the model fit
     [~,predMu,~] = ...
-        MotionModel(p,struct('spacing', sList, 'content', cList(cNum), 'dx', 0));
+        MotionModel(p,struct('spacing', ...
+                             sList, 'content', cList(cNum), 'dx', 0));
     plot(sList,predMu,'-','Color',colList(cNum,:));
 end
 xlabel('s');
@@ -171,14 +176,15 @@ legend(h,num2str(cList));
 
 subplot(2,1,2); %sig as a function of s and c
 hold on
-clear h
+
 for cNum =1:length(cList)
     %Plot sig for the best fitting cumulative normal
     id = sig(:,cNum) >0;
     h(cNum) = plot(sList(id),sig(id,cNum),'o','Color',colList(cNum,:));
     %get and plot sig from the model fit
     [prob,predMu,predSig] = ...
-        MotionModel(p,struct('spacing',  sList,'content', cList(cNum), 'dx',  0));
+        MotionModel(p,struct('spacing', sList, ...
+                             'content', cList(cNum), 'dx',  0));
     plot(sList,predSig,'-','Color',colList(cNum,:));
 end
 xlabel('s');
@@ -201,4 +207,3 @@ if (exist('export', 'var') && export)
         assignin('base', varname{1}, eval(varname{1}));
     end
 end
-
