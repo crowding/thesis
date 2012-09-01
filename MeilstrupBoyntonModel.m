@@ -50,8 +50,6 @@ data = rename(data, ...
               'folded_displacement', 'dx', ...
               'folded_response_with_carrier', 'response');
 
-data.response = 1 - data.response;
-
 %Fit the model (uncomment the next line to see initial parameter predictions)
 p = fit(@fitMotionModel, p, freeParams, data);
 
