@@ -38,24 +38,30 @@ function handles = ...
         set(handles.ax, 'XLim', xlim, 'YLim', ylim);
         %enable axes, legend, h/v based on which subplot.
         if chunk.figRow_(1) == numel(rowVals)
-            xlabel(handles.ax, ...
-                   sprintf('%s\n(%s = %s)', ...
-                           xVar, colVar, num2str(chunk.(colVar)(1),3)));
+            xl = xVar;
+            if ~strcmp(colVar, 'const_')
+                xl = sprintf('%s\n(%s = %s)', ...
+                             xl, colVar, num2str(chunk.(colVar)(1),3));
+            end
+            xlabel(handles.ax, xl);
         else
             set(handles.ax, 'XTickLabel', []);
         end
 
         if chunk.figCol_(1) == 1
-            ylabel(handles.ax, ...
-                   sprintf('(%s = %s)\n%s', ...
-                           rowVar, num2str(chunk.(rowVar)(1),3), yVar));
+            yl = yVar;
+            if ~strcmp(rowVar, 'const_')
+                yl = sprintf('%s\n(%s = %s)', ...
+                             yl, rowVar, num2str(chunk.(rowVar)(1),3));
+            end
+            ylabel(handles.ax, yl);
         else
             set(handles.ax, 'YTickLabel', []);
         end
 
         if chunk.figRow_(1) == 1
             tit = 'Residual values for model fit';
-            if ~strcmp(colorVar, 'const_')
+            if ~strcmp(figVar, 'const_')
                 tit = sprintf('%s\n%s = %s', tit, figVar, chunk.(figVar)(1));
             end
             if ~strcmp(colorVar, 'const_')
