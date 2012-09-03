@@ -2,53 +2,35 @@ function MeilstrupBoyntonModel(export)
 %if given value of 1, will assign everything to base workspace to
 %play with.
 
-% Notes
-% as is hard to fit all without c0 = -.1
-% cj is OK
-% jb is hard.  No dependency of mu on c
-% je is pretty good
-% ko is sparse and OK except for s=2.62
-% mc is unfittable
-% ml is good
-% nj is pretty good
-% ns is OK
-% pbm is pretty good
-% sm is sparse
-% tl is pretty good
-% to is sparse but OK anywa
-
 % Which data sets to fit
-expTypes = {'content','spacing','all'};
-expType = 'spacing';
-
-subject = 'pbm';
-
-p = initialParams(subject);
+subset = dataset(struct('exp_type', {{'spacing'}}, ...
+                        'subject',  {{'pbm'}}));
 
 freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
 
-% Load the data if it isn't already loaded ('see UnpackPeter.m')
-S = load('data');
-
-% Copy the approprate structure to 'data'
-data = S.([expType 'Data']);
+% Load the data if it isn't already loaded ('see UnpackPeter.m') WHy
+% isn't this just load('data.mat', 'data')? 
+%
+% Because something weird
+% happens when in the scope of a function.
+load('data.mat', 'data');
 
 %% Pull out the relevant trials and fit the model to the data
 % List of all subjects
-subjectList = unique(data.subject);
-nSubjects = length(subjectList);
+
 
 % Find trials for the current subject
-id = strcmp(data.subject,subject);
+data = join(data, subset, 'Type', 'inner', 'MergeKeys', true);
 
 % Pull out all conditions and responses for all trials for this
 % subject
-data = structfun(@(x)x(id), data, 'UniformOutput', 0);
 data = rename(data, ...
               'target_spacing', 'spacing', ...
               'folded_direction_content', 'content', ...
               'folded_displacement', 'dx', ...
               'folded_response_with_carrier', 'response');
+
+p = initialParams(data, {'subject', 'expType'});
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
 p = fit(@fitMotionModel, p, freeParams, data);
@@ -118,9 +100,9 @@ for sNum = 1:length(sList)
     figure(sNum)
     clf
     hold on
-    title(sprintf('subject %s, s = %5.2f',subject,sList(sNum)));
     % loop through the c's, generating separate psychometric
     % functions
+    title(sprintf('subject %s, s = %5.2f', subset.subject{1}, sList(sNum)));
     for cNum = 1:length(cList)
         % loop through the dx's
         for dxNum = 1:length(dxList)
@@ -190,14 +172,10 @@ ylabel('sig');
 legend(h,num2str(cList));
 
 %Tile the figures
-switch(expType)
-  case 'content'
-      tile(2,2)
-  case 'spacing'
-      tile(3,4)
-  case 'all'
-    tile(3,4)
-end
+nfigs = length(get(0, 'Children'));
+ncol = ceil(sqrt(nfigs) * 1.2);
+nrow = ceil(nfigs/ncol);
+tile(nrow,ncol);
 
 save modelResults.mat
 if (exist('export', 'var') && export)
