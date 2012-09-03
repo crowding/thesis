@@ -16,9 +16,9 @@ function tile(m,n,monitor, figs)
 % Updated 8/2012 PBM because matlab's idea of "screen coordinates" is
 % more horribly broken than sensible people like GMB suspect.
 
-% Did you know, MonitorPositions gives you coordinates that grow down
+% Did you know, MonitorPositions gives you coordinates that grow DOWN
 % and to the right, while FIgure placement uses coordinates that grow
-% up and to the right? So, at least, we want the screen coordinates
+% UP and to the right? So, at least, we want the screen coordinates
 % going the same way that we're going to place the figures.
 
 monitorPos = get(0,'MonitorPositions');
@@ -50,17 +50,23 @@ end
 
 sz = monitorPos(monitor,[3,4]);
 
-if ~exist('m','var') || isempty(m)
-    m = 3;
-end
-
-if ~exist('n','var') || isempty(n)
-    n = 3;
-end
-
 if ~exist('figs', 'var') || isempty(figs)
     figs = sort(get(0,'Children'))';
 end
+
+if ~exist('n','var') || isempty(n)
+    if ~exist('m', 'var') || isempty(m)
+        n = ceil(sqrt(length(figs)) * 1.2);
+    else
+        n = ceil(length(figs) / m)
+    end
+end
+
+if ~exist('m','var') || isempty(m)
+    m = ceil(length(figs) / n);
+end
+
+
 
 x = 0;
 

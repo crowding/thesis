@@ -55,10 +55,7 @@ end
 resid = residuals(data, model, params, split, binvar, binsize);
 handles = plotResiduals(resid, 'const_', 'dx', 'pearson_resid', ...
                         'content', 'const_', 'spacing');
-nfigs = unique(unique(handles.fig));
-ncol = ceil(sqrt(nfigs));
-nrow = ceil(nfigs/ncol);
-tile(nrow,ncol,[],unique(handles.fig));
+tile([],[],[],unique(handles.fig));
 
 %list the outputs produced
 if exist('outfile', 'var')

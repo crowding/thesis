@@ -172,10 +172,7 @@ ylabel('sig');
 legend(h,num2str(cList));
 
 %Tile the figures
-nfigs = length(get(0, 'Children'));
-ncol = ceil(sqrt(nfigs) * 1.2);
-nrow = ceil(nfigs/ncol);
-tile(nrow,ncol);
+tile();
 
 save modelResults.mat
 if (exist('export', 'var') && export)
