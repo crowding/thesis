@@ -30,7 +30,7 @@ data = rename(data, ...
               'folded_displacement', 'dx', ...
               'folded_response_with_carrier', 'response');
 
-p = initialParams(data, {'subject', 'expType'});
+p = initialParams(data, {'subject', 'exp_type'});
 
 %Fit the model (uncomment the next line to see initial parameter predictions)
 p = fit(@fitMotionModel, p, freeParams, data);
