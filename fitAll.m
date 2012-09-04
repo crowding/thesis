@@ -24,17 +24,17 @@ data = doRename(data);
 %Select the subset.
 data = join(data, subset, 'type', 'inner', 'MergeKeys', true);
 
-%Look up some initial parameters. Fit the model independently per
-%subject and experiment type.
+%Look up some initial parameters. Fit the model independently for each split.
 params = initialParams(data, splits);
 
 freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
 
 fits = groupfun(data, splits, @makeFit)
-function f = makeFit(chunk)
+function [f, err] = makeFit(chunk)
     split = chunk(1,splits)
     chunkParams = join(params, split, 'type', 'inner', 'MergeKeys', true);
-    f = fit(@fitMotionModel, chunkParams, freeParams, chunk);
+    [f, f.err] = fit(@fitMotionModel, chunkParams, freeParams, chunk);
+    f.n_obs = size(chunk, 1);
 end
 
 save(outfile, 'fits');
