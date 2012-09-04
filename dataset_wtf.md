@@ -39,7 +39,7 @@ the principle of least surprise, it's an _asymmetric_ operation; it
 insists that all keys in B are matched my some key in A, while also
 insisting that all keys of B have unique values.
 
-Let's just look through sqlzoo.com, and see how often the default join would 
+Let's just look through sqlzoo.com, and see how often the default join would
 
 So, let's set up one of hte simplest join operations imaginable, you
 have a table of names `firstname, lastname, personID, householdID` and
@@ -85,9 +85,9 @@ perhaps behavior, on nargout:
 
     [C,IB] = JOIN(...) returns an index vector IB, where JOIN constructs C by
     horizontally concatenating A(:,LEFTVARS) and B(IB,RIGHTVARS).
-	
+
 	...
-	
+
 	[C,IA,IB] = JOIN(A, B, 'Type',TYPE, ...) returns index vectors IA and IB
     indicating the correspondence between observations in C and those in A and
     B.
@@ -95,7 +95,7 @@ perhaps behavior, on nargout:
 Whaaaat?! IS the second output an index into A, or into B? Or does the
 behavior of join actually change based on nargout? Does it produce
 left outer joins when nargout is 2 and inner joins when nargout is 3?
-    
+
 Also, you can't do the join using no key bariables. (Yes, you want to
 do this often, to get the cartesian product of two sets. the
 dataset equivalent of `meshgrid`.)
