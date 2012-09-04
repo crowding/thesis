@@ -56,9 +56,9 @@ end
 
 if ~exist('n','var') || isempty(n)
     if ~exist('m', 'var') || isempty(m)
-        n = ceil(sqrt(length(figs)) * 1.2);
+        n = ceil(sqrt(length(figs)));
     else
-        n = ceil(length(figs) / m)
+        n = ceil(length(figs) / m);
     end
 end
 
