@@ -49,7 +49,14 @@ function r = residuals(d, model, params, split, binvar, binsize)
         d.n_obs = size(x,1);
         d.n_pred_sd = sqrt(sum(x.pred_var));
         d.total_resid = sum(x.resid);
-        d.pearson_resid = sum(x.resid) / sqrt(sum(x.pred_var));
+        d.pearson_resid = d. / sqrt(sum(x.pred_var));
+
+        % the deviance residual is basically the difference between "expected"
+        % log likelihood and observed log likelihood. It should follow
+        % a chi-quoare distribution, so we can convert it to p-values.
+        %
+        % d.expected_log_likelihood = d.  d.likelihood_deviance =
+        % d.deviance_x2 =
         %something about the log-likelihood residual deviance, but I don't
         %understand that stat yet enough to say what it is when you
         %bin over observations.

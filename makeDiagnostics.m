@@ -50,7 +50,7 @@ end
 
 resid = residuals(data, model, params, split, binvar, binsize);
 handles = plotResiduals(resid, 'const_', 'dx', 'pearson_resid', ...
-                        'content', 'const_', 'spacing');
+                        'content', 'const_', 'spacing', 'n_obs');
 tile([],[],[],unique(handles.fig));
 
 %list the outputs produced
