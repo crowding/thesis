@@ -49,7 +49,7 @@ function r = residuals(d, model, params, split, binvar, binsize)
         d.n_obs = size(x,1);
         d.n_pred_sd = sqrt(sum(x.pred_var));
         d.total_resid = sum(x.resid);
-        d.pearson_resid = d. / sqrt(sum(x.pred_var));
+        d.pearson_resid = d.total_resid ./ sqrt(sum(x.pred_var));
 
         % the deviance residual is basically the difference between "expected"
         % log likelihood and observed log likelihood. It should follow

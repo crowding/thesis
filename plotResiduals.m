@@ -2,43 +2,60 @@ function handles = ...
     plotResiduals(data, figVar, xVar, yVar, rowVar, colVar, ...
                   colorVar, sizeVar, morePlotting)
     %function handles = ...
-    %    plotResiduals(data, figVar, xVar, yVar, rowVar, colVar, colorVar, sizeVar)
+    %    plotResiduals(data, figVar, xVar, yVar, rowVar, ...
+    %                  colVar, colorVar, sizeVar, morePlotting)
+    %
     %Build up a big lattice-type scatterplot.
     %and here's a function for plotting the residuals over some
     %variables. Returns a dataset of handles to axes, linesseries,
     %figures, etc.
-    %use 'const_' to not marginalize over that var.
+    %
+    %use 'const_' in a var to not marginalize over that var.
+    %
+    %'morePlotting', if present is a function handle that will take
+    %the data chunk and list of graphics handles and be called once 
+    %per subplot.
     data.const_ = ones(size(data, 1),1);
 
     %need to set the xlim globally.
-    xlim = [min(data.(xVar)) max(data.(xVar))];
-    ylim = [min(data.(yVar)) max(data.(yVar))];
 
     [~, figno, figix] = unique(data.(figVar), 'first');
     fighandles = arrayfun(@figure, (1:numel(figno))');
     data.fighandle_ = fighandles(figix);
 
-    [rowVals, ~, data.figRow_] = unique(data.(rowVar));
-    [colVals, ~, data.figCol_] = unique(data.(colVar));
-    [colorVals, ~, data.color_] = unique(data.(colorVar));
-    colormap = cool(length(colorVals));
-    data.color_ = colormap(data.color_, :);
-    nrow = length(rowVals);
-    ncol = length(colVals);
+    %I want the rows and columns to be assigned per figure. xlim and ylim
+    %should vary per figure also.
+    data = groupfun(data, figVar, @setupFigures);
+    function figData = setupFigures(figData)
+        [rowVals, ~, figData.figRow_] = unique(figData.(rowVar));
+        [colVals, ~, figData.figCol_] = unique(figData.(colVar));
+        [colorVals, ~, figData.color_] = unique(figData.(colorVar));
+        figData.nRows_ = zeros(size(figData, 1),1) + length(rowVals);
+        figData.nCols_ = zeros(size(figData, 1),1) + length(colVals);
+
+        colormap = cool(length(colorVals));
+        figData.color_ = colormap(figData.color_, :);
+
+        figData.xmin_ = zeros(size(figData, 1),1) + min(figData.(xVar));
+        figData.xmax_ = zeros(size(figData, 1),1) + max(figData.(xVar));
+        figData.ymin_ = zeros(size(figData, 1),1) + min(figData.(yVar));
+        figData.ymax_ = zeros(size(figData, 1),1) + max(figData.(yVar));
+    end
 
     handles = groupfun(data, {figVar rowVar colVar}, @subplot);
     function handles = subplot(chunk)
         handles.fig = chunk.fighandle_(1);
         figure(handles.fig);
-        handles.ax = subplotix(length(rowVals), length(colVals), ...
+        handles.ax = subplotix(chunk.nRows_(1), chunk.nCols_(1), ...
                                chunk.figRow_(1), chunk.figCol_(1));
         handles.handle = {...
             gscatter(chunk.(xVar), chunk.(yVar), ...
                      1:size(chunk,1), chunk.color_, '.', ...
                      sqrt(chunk.(sizeVar)) * 5, 0)};
-        set(handles.ax, 'XLim', xlim, 'YLim', ylim);
+        set(handles.ax, 'XLim', [chunk.xmin_(1) chunk.xmax_(1)], ...
+                        'YLim', [chunk.ymin_(1) chunk.ymax_(1)]);
         %enable axes, legend, h/v based on which subplot.
-        if chunk.figRow_(1) == numel(rowVals)
+        if chunk.figRow_(1) == chunk.nRows_(1);
             xl = xVar;
             if ~strcmp(colVar, 'const_')
                 val = chunk.(colVar)(1);
@@ -69,7 +86,7 @@ function handles = ...
         end
 
         if chunk.figRow_(1) == 1
-            tit = 'Residual values for model fit';
+            tit = 'insert title here';
             if ~strcmp(figVar, 'const_')
                 val = chunk.(figVar)(1);
                 if iscell(val)

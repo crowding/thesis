@@ -13,17 +13,21 @@ function f = plotFits(fitfile, datafile, outfile)
     data = doRename(data);
     split = {'subject', 'dx', 'content', 'spacing', 'exp_type'};
 
-    %break down the trials in terms of number yes and number no
-    rates = countdata(data, split);
 
     %plot only data that matches one of our fits.
     [~, ia, ib] = join(data, fits, 'type', 'inner');
-    data = data(ia,:);
-    fits = fits(ib,:);
+    data = data(unique(ia),:);
+    fits = fits(unique(ib),:);
+
+    %break down the trials in terms of number yes and number no per unique
+    %condition
+    rates = countdata(data, split);
 
     %make a lattice plot for all the data. It says plotResiduals but it's
     %just a scatter plot.
+    %                              figure,    x     y    row
     handles = plotResiduals(rates, 'subject', 'dx', 'p', 'exp_type', ...
+    ...%                    col        color      size
                             'content', 'spacing', 'n');
 
     %evaluate model predictions
@@ -42,7 +46,7 @@ function f = plotFits(fitfile, datafile, outfile)
 
         pred = MotionModel(chunk, params)
     end
-    
+
     %Plot on top of that the model fits. which involves making
     %predictions. I wish I had ggplot2 for this.
 
