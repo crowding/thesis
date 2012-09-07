@@ -87,7 +87,7 @@ y =y0;
 
 set(0,'Units','pixels');
 
-[xi, yi] = ind2sub([n m], 1:numel(figs));
+[xi, yi] = ind2sub([n m], 1+mod(1:numel(figs), m*n));
 x = x0 + (xi-1)*dx;
 y = y0 + (yi-1)*dy;
 

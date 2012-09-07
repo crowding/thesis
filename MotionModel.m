@@ -61,12 +61,12 @@ function [prob,mu,sig,vars] = MotionModel(p,d)
 %   with a constant p.ck, scaled by p.a plus an offset p.c0
 [s, c, dx] = deal(d.spacing, d.content, d.dx);
 
-mu = -p.mua.*exp(p.mukc*c).*exp(-p.muks*s)+p.mu0;
+mu = -p.mua.*exp(p.mukc.*c).*exp(-p.muks.*s)+p.mu0;
 
 %   The standard deviation of the two signals decreases with s as an
 %   exponential function with constant p.sk, scale p.sa and offsed p.sig0.
 
-sig = p.siga*exp(-p.sigk*s)+p.sig0;
+sig = p.siga.*exp(-p.sigk.*s)+p.sig0;
 
 %    This is the probability of responding 'clockwise' on any trial.
 prob = normcdf(dx,mu,sig);
