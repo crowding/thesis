@@ -13,18 +13,18 @@
 
 #plot threshold values
 --command            --once ./runmatlab 
---input --invisible  modeling/plotPeter.m
---once               "\"addpath('modeling');\" plotPeter"
+--input --invisible  modeling/plotThresholds.m
+--once               "\"addpath('modeling');\" plotThresholds"
 --input --match      'modeling/.*_series_calculations.csv'
---output --invisible modeling/plotPeter.fig
+--output --invisible modeling/plotThresholds.fig
 
 #type "make figures" to try to refresh the figures
 --command --input --invisible --match '.*\.fig$'
 --output --invisible --phony figures
 
 #matlab stuff requires we unpack all the data into a matlab file.
---command --once ./runmatlab --once "\"cd('modeling');\" UnpackPeter"
---input --invisible --once modeling/unpackPeter.m
+--command --once ./runmatlab --once "\"cd('modeling');\" unpack"
+--input --invisible --once modeling/unpack.m
 --input --match modeling/(.*_trials\.csv)$
 --output --invisible --once modeling/data.mat
 
@@ -33,3 +33,14 @@
 --input --invisible --match "modeling/data\.mat"
 --input --invisible modeling/MeilstrupBoyntonModel.m
 --output --invisible modeling/modelResults.mat
+
+#fit all the models
+--command ./runmatlab --once "\"cd('modeling'); fitAll\""
+--input --invisible modeling/fitAll.m
+--input --match 'modeling/data\.mat'
+--output 'modeling/fits.mat'
+
+#make raw fit figures?
+
+
+#make diagnostic figures?
