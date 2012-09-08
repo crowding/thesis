@@ -1,5 +1,5 @@
-function tile(m,n,monitor)
-%tile([m],[n],[monitor])
+function tile(m,n,monitor, figs)
+%tile([m],[n],[monitor], [figs])
 %
 %Tiles matlab figures in the monitor in rows starting at the top-right.
 %
@@ -8,6 +8,7 @@ function tile(m,n,monitor)
 %   n  #of columns (default is 3)
 %   monitor monitor number (1 is desktop, 2 is extended, default is
 %       highest available)
+%   handles array of figure handles to tile (defaults to all open figures)
 
 %Written 3/30/12 gmb (after getting frustrated by Matlab's positioning of
 %figures outside the monitor by default)
@@ -15,9 +16,9 @@ function tile(m,n,monitor)
 % Updated 8/2012 PBM because matlab's idea of "screen coordinates" is
 % more horribly broken than sensible people like GMB suspect.
 
-% Did you know, MonitorPositions gives you coordinates that grow down
+% Did you know, MonitorPositions gives you coordinates that grow DOWN
 % and to the right, while FIgure placement uses coordinates that grow
-% up and to the right? So, at least, we want the screen coordinates
+% UP and to the right? So, at least, we want the screen coordinates
 % going the same way that we're going to place the figures.
 
 monitorPos = get(0,'MonitorPositions');
@@ -39,7 +40,7 @@ end
 
 nMonitors = size(monitorPos,1);
 
-if ~exist('monitor','var')
+if ~exist('monitor','var') || isempty(monitor)
     monitor= nMonitors;
 end
 
@@ -49,13 +50,23 @@ end
 
 sz = monitorPos(monitor,[3,4]);
 
-if ~exist('m','var')
-    m = 3;
+if ~exist('figs', 'var') || isempty(figs)
+    figs = sort(get(0,'Children'))';
 end
 
-if ~exist('n','var')
-    n = 3;
+if ~exist('n','var') || isempty(n)
+    if ~exist('m', 'var') || isempty(m)
+        n = ceil(sqrt(length(figs)));
+    else
+        n = ceil(length(figs) / m);
+    end
 end
+
+if ~exist('m','var') || isempty(m)
+    m = ceil(length(figs) / n);
+end
+
+
 
 x = 0;
 
@@ -74,10 +85,9 @@ x =x0;
 y =y0;
 
 
-figs = sort(get(0,'Children'))';
 set(0,'Units','pixels');
 
-[xi, yi] = ind2sub([n m], 1:numel(figs));
+[xi, yi] = ind2sub([n m], 1+mod(1:numel(figs), m*n));
 x = x0 + (xi-1)*dx;
 y = y0 + (yi-1)*dy;
 

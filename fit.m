@@ -50,11 +50,3 @@ params = var2params(var,params,freeList);
 err = fun(params, varargin{:});
 
 return
-
-
-
-
-
-
-
-
