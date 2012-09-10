@@ -1,4 +1,7 @@
-
+suppressPackageStartupMessages({
+  library(plyr)
+  library(ggplot2)
+})
 
 ##' @title Interpret command line arguments and invoke a main
 ##' function with them.

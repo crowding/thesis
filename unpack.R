@@ -1,18 +1,14 @@
 #!/bin/Rscript
-source(ifelse(file.exists("modeling"), "modeling/library.R", "library.R"))
+source("library.R")
 
 # unpack the CSV files into an R data file, with a column "exp_type"
 # for the experiment type
-main <- function(outfile="data.Rd", ...) {
-  filenames <- c(...)
-  if (length(filenames) == 0) {
-    filenames <- dir(".", "*.series.trials.csv");
-  }
+main <- function(outfile="data.RData",
+                 filenames=dir(".", "*.series_trials.csv"), ...) {
+  filenames <- c(filenames, ...)
   types <- sub('.*?([a-zA_Z]*)_series_trials.*', '\\1', filenames)
-  data <- mapply(function(f, t) cbind(read.csv(f), exp_type=t)
-                 , filenames, types, SIMPLIFY=FALSE)
-  data <- do.call(rbind, data)
-  
+  data <- adply(data.frame(f=I(filenames), t=types), 1,
+                with, cbind(read.csv(f), exp_type=t))
   save(data, file=outfile)
 }
 

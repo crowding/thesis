@@ -18,8 +18,6 @@ function d = load_data_set(filename)
     %This flip is because the knob recorded values with a flipped mapping.
     d.folded_response_with_carrier = ~d.folded_response_with_carrier;
     d.abs_response_cw = ~d.abs_response_cw;
-    %d.folded_displacement = -d.folded_displacement;
-    %d.abs_displacement = -d.abs_displacement;
 end
 
 data = cat(1, data{:});
