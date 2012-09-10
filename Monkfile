@@ -23,24 +23,40 @@
 --output --invisible --phony figures
 
 #matlab stuff requires we unpack all the data into a matlab file.
---command --once ./runmatlab --once "\"cd('modeling');\" unpack"
+--command --once ./runmatlab --once "\"addpath('modeling');\" unpack"
 --input --invisible --once modeling/unpack.m
 --input --match modeling/(.*_trials\.csv)$
 --output --invisible --once modeling/data.mat
 
 #the model-fitting function
---command ./runmatlab "\"cd('modeling'); MeilstrupBoyntonModel\""
---input --invisible --match "modeling/data\.mat"
+--command ./runmatlab "\"addpath('modeling'); MeilstrupBoyntonModel\""
 --input --invisible modeling/MeilstrupBoyntonModel.m
+--input --invisible --match "modeling/data\.mat"
 --output --invisible modeling/modelResults.mat
 
 #fit all the models
---command ./runmatlab --once "\"cd('modeling'); fitAll\""
+--command ./runmatlab --once "\"addpath('modeling'); fitAll\""
 --input --invisible modeling/fitAll.m
 --input --match 'modeling/data\.mat'
 --output 'modeling/fits.mat'
 
-#make raw fit figures?
+#plot all the fits
+#
+#TODO: --intermediate does not respect --listing files
+#appropriately. Furthermore multiple outputs inappropriately result in
+#multiple commands issued from Make. THis results in a bunch of
+#repeated commands...
+--command ./runmatlab --once "\"addpath('modeling'); plotFits\""
+--input --invisible modeling/plotFits.m
+--input --match 'modeling/fits\.mat'
+--input 'modeling/data.mat'
+--output --listing --intermediate 'modeling/fit_plots.list'
 
+#bundle them all into a multipage PDF
+--command --once pdfjoin
+--once %--outfile
+--once --output 'modeling/fit_plots.pdf'
+--input --match 'modeling/fit_.*\.pdf$'
+--invisible --phony --once figures
 
 #make diagnostic figures?

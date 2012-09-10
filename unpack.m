@@ -1,4 +1,4 @@
-function UnpackPeter(varargin)
+function unpack(varargin)
 % loads all the data into structs.
 % output variables are S, a struct containing all the experiment
 % types, and 'data', in which experiment type is another column.
@@ -24,6 +24,6 @@ end
 
 data = cat(1, data{:});
 
-save('data.mat', 'data')
+save(fullfile(fileparts(mfilename('fullpath')), 'data.mat'), 'data')
 
 end
