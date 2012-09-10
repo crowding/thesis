@@ -1,6 +1,6 @@
 function fitAll(infile, outfile, splits, subset)
 
-if ~exist('filename', 'var')
+if ~exist('infile', 'var')
     infile = fullfile(fileparts(mfilename('fullpath')), 'data.mat');
 end
 
