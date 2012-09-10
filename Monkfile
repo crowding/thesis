@@ -31,7 +31,7 @@
 #might as well unpack into an R data file.
 --command --once Rscript --once --input modeling/unpack.R
 --input --invisible modeling/unpack.R
---output --once modeling/data.Rd
+--output --once modeling/data.RData
 --input --match modeling/(.*_trials\.csv)
 
 #the model-fitting function
