@@ -13,7 +13,7 @@ freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
 %
 % Because something weird
 % happens when in the scope of a function.
-load('data.mat', 'data');
+load(fullfile(fileparts(mfilename('fullpath')), 'data.mat'), 'data');
 
 %% Pull out the relevant trials and fit the model to the data
 % List of all subjects
@@ -170,7 +170,7 @@ legend(h,num2str(cList));
 %Tile the figures
 tile();
 
-save modelResults.mat
+save(fullfile(fileparts(mfilename('fullpath')),'modelResults.mat'))
 if (exist('export', 'var') && export)
     for varname = who()'
         assignin('base', varname{1}, eval(varname{1}));

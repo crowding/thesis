@@ -1,5 +1,5 @@
-function plotPeter(varargin)
-    
+function plotThresholds(varargin)
+
 clf;
 
 if nargin == 0
@@ -21,7 +21,7 @@ for i = 1:numel(datasets)
     plotData(datasets{i});
 end
 
-print('modeling/plotPeter.fig')
+print('modeling/plotThresholds.fig')
 
 end
 

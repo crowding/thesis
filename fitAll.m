@@ -1,11 +1,11 @@
 function fitAll(infile, outfile, splits, subset)
 
 if ~exist('filename', 'var')
-    infile = fullfile(fileparts(mfilename), 'data.mat');
+    infile = fullfile(fileparts(mfilename('fullpath')), 'data.mat');
 end
 
 if ~exist('outfile', 'var')
-    outfile = fullfile(fileparts(mfilename), 'fits.mat');
+    outfile = fullfile(fileparts(mfilename('fullpath')), 'fits.mat');
 end
 
 if ~exist('splits', 'var')
