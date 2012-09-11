@@ -135,7 +135,8 @@ classdef BoyntonModel < LikelihoodModel
             mu = -p.mua.*exp(p.mukc.*c).*exp(-p.muks.*s)+p.mu0;
 
             %   The standard deviation of the two signals decreases with s as an
-            %   exponential function with constant p.sk, scale p.sa and offsed p.sig0.
+            %   exponential function with constant p.sk, scale p.sa
+            %   and offset p.sig0.
 
             sig = p.siga.*exp(-p.sigk.*s)+p.sig0;
 

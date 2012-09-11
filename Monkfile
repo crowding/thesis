@@ -54,12 +54,19 @@
 #bundle them all into a multipage PDF
 --command --once pdfjoin
 --once %--outfile
---once --output 'modeling/fit_plots.pdf'
---input --match 'modeling/fit_.*\.pdf$'
+--once --output 'modeling/fits_{0}.pdf'
+--input --match 'modeling/fit_(.*)_.*\.pdf$'
 --invisible --phony --once figures
 
 #make diagnostic figures?
 --command runmatlab "\"addpath('modeling'); makeDiagnostics\""
 --input --match 'modeling/fits\.mat'
 --output --listing 'modeling/diagnosticPlots.pdf'
+--invisible --phony --once figures
+
+#and bundle them
+--command --once pdfjoin
+--once %--outfile
+--once --output 'modeling/residuals_{0}_plots.pdf'
+--input --match 'modeling/residual_(.*)_.*\.pdf$'
 --invisible --phony --once figures

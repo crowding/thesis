@@ -24,9 +24,11 @@ data = doRename(data);
 %Select the subset.
 data = join(data, subset, 'type', 'inner', 'MergeKeys', true);
 
-models = {BoyntonModel()};
+%models = {BoyntonModel()};
+models = {SlopeModel()};
 models = cellfun(@(x) x.fit(data), models, 'UniformOutput', 0);
-modelNames = {'BoyntonModel'};
+modelNames = {'SlopeModel'};
+%modelNames = {'BoyntonModel'};
 
 %for backward compatibility right now.
 fits = models{1}.parameters;

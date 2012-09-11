@@ -18,8 +18,13 @@ classdef LikelihoodModel
         function params = initialParams(M, data)
             conditions = unique(data(:,M.splits));
 
-            [params, ~, ib] = join(M.initialParamsTable, conditions, ...
-                                   'type', 'inner', 'MergeKeys', true);
+            if ~isempty(M.initialParamsTable)
+                [params, ~, ib] = join(M.initialParamsTable, conditions, ...
+                                       'type', 'inner', 'MergeKeys', true);
+            else
+                params = dataset();
+                ib = [];
+            end
 
             %any conditions that weren't matched get default...
             %Ugh, doing it thisway was more trouble than it was worth.
@@ -112,7 +117,7 @@ classdef LikelihoodModel
             %sort of thing for you, and all this code here is for if
             %you don't use R.
 
-            %this binning function is pretty damn slow.
+            %this bin-splitter function is pretty damn slow. Hmm.
             d = groupfun(d, split, @bin);
             function x = bin(x)
                 [~, ord] = sort(x.(binvar));
