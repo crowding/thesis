@@ -50,8 +50,8 @@ function f = plotFits(fitfile, outfile)
             %and add these predictions to the graph. They are keyed by color.
             hold(handle.ax(1), 'on');
             groupfun(pred, 'line', @predLine);
-            %this doesn't return the actual graphics handles corresponding to the
-            %predicted line though.
+            %this doesn't return the actual graphics handles corresponding to
+            %the predicted line though.
             function predLine(line)
                 [x, o] = sort(line.dx);
                 y = line.p(o);

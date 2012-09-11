@@ -91,7 +91,7 @@ set(0,'Units','pixels');
 x = x0 + (xi-1)*dx;
 y = y0 + (yi-1)*dy;
 
-arrayfun(@place, figs, x, y)
+arrayfun(@place, figs(:), x(:), y(:))
 function place(fig,x,y)
     set(fig,'units','pixels');
     set(fig,'OuterPosition',[x,y,dx,dy]);

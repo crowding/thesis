@@ -46,7 +46,7 @@
 #appropriately. Furthermore multiple outputs inappropriately result in
 #multiple commands issued from Make. THis results in a bunch of
 #repeated commands...
---command ./runmatlab --once "\"addpath('modeling'); plotFits\""
+--command --once ./runmatlab --once "\"addpath('modeling'); plotFits\""
 --input --invisible modeling/plotFits.m
 --input --match 'modeling/fits\.mat'
 --output --listing --intermediate 'modeling/fit_plots.list'
@@ -59,3 +59,7 @@
 --invisible --phony --once figures
 
 #make diagnostic figures?
+--command runmatlab "\"addpath('modeling'); makeDiagnostics\""
+--input --match 'modeling/fits\.mat'
+--output --listing 'modeling/diagnosticPlots.pdf'
+--invisible --phony --once figures
