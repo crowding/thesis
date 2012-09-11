@@ -46,8 +46,10 @@ classdef LikelihoodModel
 
             function [f, err] = makeFit(chunk)
                 split = chunk(1,M.splits)
-                chunkParams = join(params, split, 'type', 'inner', 'MergeKeys', true);
-                [f, f.err] = fit(@M.negLogLikelihood, chunkParams, M.freeParams, chunk);
+                chunkParams = join(params, split, ...
+                                   'type', 'inner', 'MergeKeys', true);
+                [f, f.err] = fit(@M.negLogLikelihood, chunkParams, ...
+                                 M.freeParams, chunk);
                 f.n_obs = size(chunk, 1);
             end
             M.parameters = params;
@@ -63,7 +65,21 @@ classdef LikelihoodModel
             prob = M.predict(params, data);
 
             prob = prob*.99+.005;
-            err = -sum(data.response.*log(prob) + (1-data.response).*log(1-prob));
+            err = -sum(  data.response.*log(prob) ...
+                       + (1-data.response).*log(1-prob));
+        end
+
+        function p = fullPredict(M, params, data)
+            if ~exist('data', 'var') || isempty(data)
+                data = M.data;
+            end
+            if ~exist('params', 'var') || isempty(params)
+                params=M.parameters;
+            end
+            %use the model's predict method but first join the parameter table
+            %to account for varying parameters.
+            param = join(data, params, 'type', 'inner', 'MergeKeys', true);
+            p = M.predict(param, data);
         end
     end
 end

@@ -49,7 +49,6 @@
 --command ./runmatlab --once "\"addpath('modeling'); plotFits\""
 --input --invisible modeling/plotFits.m
 --input --match 'modeling/fits\.mat'
---input 'modeling/data.mat'
 --output --listing --intermediate 'modeling/fit_plots.list'
 
 #bundle them all into a multipage PDF
