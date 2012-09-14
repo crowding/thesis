@@ -1,6 +1,6 @@
 function data = doRename(data, folding)
 %rename to shorter fields, for analysis of folded or unfolded data.
-    if ~exist('folding', 'var') || ismepty(folding)
+    if ~exist('folding', 'var') || isempty(folding)
         folding = true;
     end
     if folding
