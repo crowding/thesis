@@ -1,18 +1,25 @@
-function handles = plotModel(model, modelName, split)
+function handles = plotModel(model, varargin)
+%Plots a fitted model, with lines denoting the predictions.
 
-if ~exist('split', 'var')
-    split = {'subject', 'dx', 'content', 'spacing', 'exp_type'};
-end
+pars = inputParser();
+pars.addParamValue('modelName', '');
+pars.addParamValue('split', {'subject', 'dx', 'content', 'spacing', 'exp_type'});
+pars.addParamValue('plotBy', {'fig', 'subject', ...
+                    'x', 'dx', 'y', 'p', ...
+                    'row', 'exp_type', 'col', 'content', ...
+                    'color', 'spacing', 'size', 'n'});
+
+pars.parse(varargin{:});
+split = pars.Results.split;
+plotBy = pars.Results.plotBy;
+modelName = pars.Results.modelName;
+
 %break down the trials in terms of number yes and number no per unique
 %condition
 rates = countdata(model.data, split);
 
-%make a lattice plot for all the data. It says plotResiduals but it's
-%just a scatter plot.
-%                              figure,    x     y    row
-handles = plotResiduals(rates, 'subject', 'dx', 'p', 'exp_type', ...
-                        'content', 'spacing', 'n', @addPredictions);
-%                       col        color      size
+%make a lattice plot for all the data.
+handles = facetScatter(rates, plotBy{:}, 'morePlotting',  @addPredictions);
 
 %for each subplot, plot over dx and add handles.
 function [handle] = addPredictions(handle, chunk)

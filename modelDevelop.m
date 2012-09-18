@@ -25,10 +25,7 @@ plotModel(M);
 %be more clear what's going on if I plot residuals binned over dx,
 %conditional on spacing.
 resid_base = M.residuals({'spacing'}, 'dx', 25);
-%                    figure    x     y                row       col
-plotResiduals(resid_base, 'const_', 'dx', 'pearson_resid', 'const_', 'const_', ...
-              'spacing', 'n_obs');
-%             color,     size
+facetPlot(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
 
 %Here the horizontal axis is dx (or "global speed") and the vertical
 %axis is spacing. Colors indicate spacing, with cool colors indicating
@@ -125,7 +122,7 @@ plotResiduals(resid_content, 'const_', ...
 %explicitly represented distributions, adds the signals in inverse
 %proportion to their reliability.)
 
-%If you do this the atraighforward way, it just works out to adding a
+%If you do this the straighforward way, it just works out to adding a
 %term for diretion content; it determines come of the response at wide
 %spacing, and when envelope response is attenuated at close spacings,
 %it determines more of the response. The new constant is called
@@ -140,7 +137,7 @@ plotModel(M);
 %and the model fit tries to split the difference. This is not easy to
 %see when plotting curve fits directly (since the steep slope at large
 %spacing visually obscures residuals that are just as large is those
-%around shallow slopes) but looking at residuals brings out the
+%around shallow slopes) but plotting the residuals brings out the
 %problem.
 
 %So I'm going to borrow a point from Murakami and Shimojo (1993),
@@ -164,6 +161,7 @@ plotModel(M);
 %response.
 M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'};
 M = M.fit();
+M_content.parameters
 plotModel(M);
 
 %Ah, this starts looking pretty good. Let's see those residuals as a
@@ -180,112 +178,139 @@ plotResiduals(resid_with_switch, 'const_', ...
               'const_', 'const_', ...
               'spacing', 'n_obs');
 
-resid_dx = M.residuals({}, 'dx', 50);
-plotResiduals(resid_with_switch, 'const_', ...
-              'dx', 'pearson_resid', ...
-              'const_', 'const_', ...
-              'const_', 'n_obs');
+%I don't seem much of a pattern left over either way.
 
+resid_dx = M.residuals({}, 'dx', 50);
+facet_scatter(resid_with_switch, ...
+              'x', 'dx', 'y', 'pearson_resid', 'size', 'n_obs');
 %Not sure if there's anything there with that last one.
 
-%I don't seem much of a pattern left over either way
-
 %How about if we see how this works for the content-based
-%experiment. Note that the direction-content experiment doesn't have
-%data to localize the critical spacing, so I will leave it fixed at
-%the value we already know:
+%experiment. Note that the direction-content experiment only tests at
+%two spacings, so it is pointless to try fitting the critical spacing.
+%I will leave 'cs' fixed at the value we already have:
 
 M_content = M;
-content_subset = data(strcmp(data.subject, 'pbm') & strcmp(data.exp_type, ...
-                                                  'content'), :);
+content_subset = data(strcmp(data.subject, 'pbm') ...
+                      & strcmp(data.exp_type, 'content'), :);
+M_content.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'}
+M_content = fit(M_content, content_subset);
+M_content.parameters
+%that's interesting, it came up with some different numbers. Much less
+%difference between summation and induced motion for one.
 
-%So the dependency on direction content also needs to interact with
-%spacing.
+%Here's the model fit for PBM, 'content' experiment.
+plotModel(M_content);
+%that all looks fairly reasonable.
 
-%%{ I'm not sure of any of the following
-Sketching this out, we see that adding the direction content signal
-%cue-combination style requires two additional parameters: the
-%variability of the direction content signal, and the proportionality
-%constant of the direction content signal.
+r = M_content.residuals({'content', 'spacing'}, 'dx', Inf);
 
-%Now, we don't have to write the equations in terms of the cue
-%combination model, just use any two parameteters that capture the
-%same behavior.  combination model. So instead of explicitly using
-%variance and constant-of-direction-constant-dependence as model
-%parameters, I'll pick two parameters that are capable of capturing
-%the same behavior, but will be nicer to do fminsearch or regression
-%with.
+facetScatter(r, 'x', 'content', 'y', 'pearson_resid', ...
+             'color', 'spacing', 'size', 'n_obs');
+%That one starts to look like a linear dependence on direction content
+%isn't quite right. There's a sort of S-shaped pattern to thsi
+%graph. I could believe it's noise, until I see the same thing in
+%another subject, where I'll put an asterisk (*)
 
-%Now, of you sketch out the behavior we're postulating, you'll find
-%that in completely crowded conditions, response rate will be
-%determined by the ratio of the carrier signal to the carrier
-%variability, while in completely uncrowded situations, any effect of
-%the carrier content will be weighted by the proportion of carrier
-%signal variability to envelope signal variability. Working through
-%the math, this just makes for a carrier sensitivity term determining
-%the response.
-%%}
+%How about fitting both experiment types?
+M_content = M;
+content_subset = data(strcmp(data.subject, 'pbm') ...
+                      & strcmp(data.exp_type, 'content'), :);
 
+%Now we should stop playing around with this particularly well behaved
+%subject and start looking at some others. Let's try JB since he's
+%such a treat
 
-%First, with just one coefficient for the direction content. This is
-%what straight up cue combination would have happen.
+subset = data(strcmp(data.subject, 'jb') ...
+              & strcmp(data.exp_type, 'spacing'), :);
+%Exceeding the maximum iterations is a bad sign and it looks like a bad fit.
+%Let's add parameters one at a dime and see what the data look like.
+M = SlopeModel;
+M.freeParams = {'mu_0', 'beta_0'}; M = M.fit(subset);
+plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                    'color', 'content', 'size', 'n'});
 
-%Huh, that hardly changed a thing, did it?
-%You see, direction content is pulling this model in both directions. 
+%You'll need a very tall window for that.  And really, look at
+%that. Here, cool colors denote CCW direction contents, while warm
+%colors denote CW direction contents.  You see that the influence of
+%direction content, again, reverses from close to wide spacing -- Same
+%thing as with PBM but here the slope change is not much, for some
+%reason. 
 
+M.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'}; M = M.fit();
+plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                    'color', 'content', 'size', 'n'});
 
-%So what about the part where the sensitivity to carrier moteion
-%actually _reverses_? I This has a similarity to the observed
-%phemomena (Mareschal, Morgan and Solomon 2010; Murakami and Shimojo
-%1993) where assimilation turns into repulsion. I will presume at first
-%this is controlled by the same "critical distance" as the sensitivity
-%to global motion, anthough this might have to be adjusted.
+%Hmm. adding direction content was not as nice as I hoped -- still underestimating the slope everywhere.
+M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'}; M = M.fit();
+plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                    'color', 'content', 'size', 'n'});
 
+%So my puzzle for you is, what is making JB so sensitive at the small
+%spacings while so insensitive at the large spacings? I'll think this
+%over but in the meantime add an extra parameter ('beta_small') to
+%reflect this kind of anomalous sensitivity to envelope motion when
+%you should be crowded.
+M.parameters.beta_small = 0;
+M.parameters.cs = 4;
+M.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced', 'beta_small'}; M = M.fit();
+plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                    'color', 'content', 'size', 'n'});
+%Interestingly, that parameter didn't work. Ah, I see a potential
+%problem. Look what's happening at spacing = 10.5: There's a lot of
+%direction contents being tested, but they all collapse onto these
+%'leftward' or 'rightward' functions. So what's the deal there? The
+%magnitude of induced motion isn't really sensitive to content?
 
+%So, what the heck is going on there? Notice that the response
+%actually seems nonmonotonic, with the blues/reds actually being less
+%important than the grays.
 
-%But let's parameterize it so that it's more amenable to model nesting
-%and such.
+%Does that happen for the content experiment as well?
+subset = data(strcmp(data.subject, 'jb') ...
+              & strcmp(data.exp_type, 'content'), :);
+Mjb_c = SlopeModel();
+Mjb_c.initialParamsDefaults.cs = 4;
+Mjb_c.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'};
+Mjb_c = Mjb_c.fit(subset);
+%Let's look at the residuals against content here.
+Rjb_c = Mjb_c.residuals({'content', 'spacing'}, 'dx', Inf);
+facetScatter(Rjb_c, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
+%Wow, there's that S-shaped thing again (*). and it looks too similar at
+%both spacings to be a coincidence.  Comparing the residuals to the
+%earlier fit plot, it appears to be saying that middling direction
+%contents cause more shift than the model really tolerates -- it's not
+%linear in direction content. So the fit is not reacting strongly
+%enough to middling direction contents.
 
-%Sneakily, by allowing the this parameterization allows the "local weight" to be
-%negative as well as positive.
+%Let's try again with log scaling the direction content.
+Mjb_c.parameters.beta_summation = 0;
+Mjb_c.parameters.beta_induced = 0;
+Mjb_c.freeParams = {'mu_0', 'beta_0', 'sbeta_summation', 'sbeta_induced', 'beta_small'}; Mjb_c = Mjb_c.fit();
+Rjb_c = Mjb_c.residuals({'content', 'spacing'}, 'dx', Inf);
+facetScatter(Rjb_c, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
+plotModel(Mjb_c, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', 'color', 'content'});
 
-%Note I have no reason to distinguish variability from
-%while our idea of the variability of the
-%envelope signal is not constant
+%So I've put a compressive transform on direction content. Does that
+%help us with the modeling? Looks like answer is YES.
 
+M.parameters.beta_summation = 0;
+M.parameters.beta_induced = 0;
+M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_small', 'sbeta_summation', 'sbeta_induced'}; M = M.fit();
+plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', 'color', 'content'});
 
-%Now, we already have this model of the sensitivity to global
-%motion. If we say that the signal from direction content is roughly
-%constant in its uncertainty, and the, then, using cue combination
-%ideas, the influence of direction content should be proportional to
-%its share of the uncertainty.
+%So we've learned to put a compressive transform on direction content. 
+%And it looks like beta_small might not be needed after all.
+%(Brainstorm: depending on the interaction between dx and motion
+%energy, and people's differing amounts of summation/induced motion
+%tradeoff, that may explain why beta_small looks needed sometimes.
 
-%Another thing you can see here is that the spacing effect
-%looks nearly as large for 0.05 direction content as it did for 1.0
-%direction content. It certainly doesn't look 3 times bigger when the
-%content is three times bigger, at least. So what's going on there?
-%One problem is that 0.05 and 0.15 contents were tested in separate
-%sessions, and there may be some adaptation going on.
+%Let's look at a bunch of residuals here, binned over dx, colored by spacing.
+R_jb = M.residuals({'content', 'spacing'}, 'dx', Inf);
+facetScatter(R_jb, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing');
 
-%So now let's look at what this does with data where direction content
-%is varied within the course of an experiment.
-subset = data(strcmp(data.subject, 'pbm') & ...
-              strcmp(data.exp_type, 'content'), :);
-M = SlopeModel()
-M.freeParams = {'mu_0', 'beta_0', 'cs'};
-M = M.fit(subset);
-plotModel(M);
-%Okay, that's really bad, it even got the wrong sign on the slopw on
-%account of the adaptive psychophysics. We can see that the also needs
-%to move up and down in response to the direction content.
+%Hmm. looks like direction content response may actually be nonmonotonic...
 
-%Approaching thsi from a cue combination standoint, The _bias_, that is, the will be proportional to the 
+%Before messing any more with the compressive term, it would be
+%instructive to look at actual motion energy.
 
-%That effect is harder to see on the raw graphs, because the slope is
-%steeper. But Pearson residuals are normalized against predictive
-%uncertainty, and under that scaling both signs of the
-%content-dependency look equally large.
-
-
-
-M.freeParams{end+1} = 'beta_ks';
