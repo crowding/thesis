@@ -3,16 +3,22 @@ classdef SlopeModel < LikelihoodModel
 
     methods
         function SM = SlopeModel()
-            SM.freeParams = {'ke', 'ks', 'kdx', 'cs'};
+            SM.initialParamsDefaults = dataset(struct(...
+                'mu_0', 0, ...
+                'beta_0', 0, ...
+                'cs', 0, ...
+                'beta_summation', 0, ...  %or BOTH these parameters
+                'beta_induced', 0 ...    %(not all three, not another combo)
+                ));
 
-            args = cellfun(@(x) {0 x}, SM.freeParams, 'UniformOutput', 0);
-            SM.initialParamsDefaults = dataset(args{:});
-            SM.initialParamsDefaults.cs = 4;
+            SM.freeParams = setdiff(...
+                get(SM.initialParamsDefaults, 'VarNames'), ...
+                {'beta_content'});
         end
 
         function prob = predict(SM, p, data)
             if ~exist('data', 'var') || isempty(data)
-                data = BM.data;
+                data = SM.data;
             end
             if ~exist('p', 'var') || isempty(p)
                 if isempty(SM.parameters)
@@ -23,20 +29,20 @@ classdef SlopeModel < LikelihoodModel
                 end
             end
 
-            [s, c, dx] = deal(data.spacing, data.content, data.dx);
+            %the sensitivity to is controlled by the critical spacing.
+            sens = (2 - 2./(1+exp(-p.cs./data.spacing)));
 
-            logit = @(x)1./(1+exp(-x));
+            %alternately there is the degree of "summation" 
+            summation = 1./data.spacing;
 
-            %more motion energy ("e") affects bias
-            r = p.ke .* c ./ s;
+            bias = p.mu_0 ...
+                   + p.beta_induced.*data.content ...
+                   + p.beta_summation.*summation.*data.content;
 
-            %more motion inside "critical distance" (ks for summation) affects bias
-            r = r + p.ks .* c .* (1 + p.cs ./ s);
+            prelink = bias + p.beta_0.*data.dx.*sens;
 
-            %more motion inside "critical spacing" affects sensitivity to dx
-            r = r + dx .* p.kdx ./ (1 + p.cs ./ s);
-
-            prob = logit(r);
+            logit = @(x)0.98./(1+exp(-x)) + 0.01;
+            prob = logit(prelink);
         end
     end
 end

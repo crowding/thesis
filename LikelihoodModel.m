@@ -41,18 +41,26 @@ classdef LikelihoodModel
         end
 
         function M = fit(M, data)
-            M.data = data;
+            if exist('data', 'var')
+                M.data = data;
+            end
             if isempty(M.parameters)
-                params = M.initialParams(data);
+                params = M.initialParams(M.data);
                 M.parameters = params;
+            else
+                params = M.parameters;
             end
 
-            params = groupfun(data, M.splits, @makeFit);
+            params = groupfun(M.data, M.splits, @makeFit);
 
             function [f, err] = makeFit(chunk)
                 split = chunk(1,M.splits)
-                chunkParams = join(params, split, ...
-                                   'type', 'inner', 'MergeKeys', true);
+                if isempty(split)
+                    chunkParams = params;
+                else
+                    chunkParams = join(params, split, ...
+                                       'type', 'inner', 'MergeKeys', true);
+                end
                 [f, f.err] = fit(@M.negLogLikelihood, chunkParams, ...
                                  M.freeParams, chunk);
                 f.n_obs = size(chunk, 1);
@@ -83,7 +91,11 @@ classdef LikelihoodModel
             end
             %use the model's predict method but first join the parameter table
             %to account for varying parameters.
-            param = join(data, params, 'type', 'inner', 'MergeKeys', true);
+            if ~isempty(intersect(get(data, 'VarNames'), get(params, 'VarNames')))
+                param = join(data, params, 'type', 'inner', 'MergeKeys', true);
+            else
+                param = params;
+            end
             p = M.predict(param, data);
         end
 
