@@ -1,0 +1,3443 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{ae}
+
+%% maxwidth is the original width if it's less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\def\maxwidth{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+
+\usepackage{todonotes}
+\usepackage[thickspace]{SIunits}
+\usepackage{movie15}
+
+\usepackage{hyperref}
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\end_preamble
+\use_default_options true
+\begin_modules
+pgfsweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Note that the APA class provides three different 
+\begin_inset Quotes eld
+\end_inset
+
+modes
+\begin_inset Quotes erd
+\end_inset
+
+ that generate different looks: 
+\emph on
+Manuscript mode (man)
+\emph default
+, 
+\emph on
+Printed Journal mode (jou)
+\emph default
+ and 
+\emph on
+Regular LaTeX mode (doc)
+\emph default
+.
+ The modes can be switched by entering the class options 
+\emph on
+man
+\emph default
+, 
+\emph on
+jou
+\emph default
+ or 
+\emph on
+doc
+\emph default
+ to Document\SpecialChar \menuseparator
+Settings\SpecialChar \menuseparator
+Options.
+ This template uses the Printed Journal mode.
+\end_layout
+
+\begin_layout Plain Layout
+Have a look at Document\SpecialChar \menuseparator
+Settings\SpecialChar \menuseparator
+Preamble for further settings.
+ A brief documentation can be found at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://ctan.basemirror.de/macros/latex/contrib/apa/apacls.html
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Cortical distance determines the perception of two competing types of visual
+ motion
+\end_layout
+
+\begin_layout RightHeader
+MOTION REVERAL
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+for manuscript mode, use 
+\emph on
+ShortTitle
+\emph default
+ instead
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Peter B.
+ Meilstrup and Michael N.
+ Shadlen
+\end_layout
+
+\begin_layout Affiliation
+Psysiology and Biophysics
+\begin_inset Newline newline
+\end_inset
+
+University of Washington
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+If your paper is written by multiple authors from the same affiliation,
+ just enter them as 
+\begin_inset Quotes eld
+\end_inset
+
+Author1 and Author2
+\begin_inset Quotes erd
+\end_inset
+
+.
+ However, if there are multiple authors from different affiliations involved,
+ chose 
+\emph on
+TwoAuthors
+\emph default
+, 
+\emph on
+ThreeAuthors
+\emph default
+ or 
+\emph on
+FourAuthors
+\emph default
+ instead auf 
+\emph on
+Author
+\emph default
+.
+ Note that in this case, authors have to be separated by 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+ in TeX mode, e.
+\begin_inset space \thinspace{}
+\end_inset
+
+g.
+\begin_inset space \space{}
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+My name
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+My colleague's name
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Note further that you must use the corresponding Affiliation style, i.
+\begin_inset space \thinspace{}
+\end_inset
+
+g.
+\begin_inset space \space{}
+\end_inset
+
+
+\emph on
+TwoAffiliations
+\emph default
+ for 
+\emph on
+TwoAuthors
+\emph default
+, etc.
+ (using again the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+ separator).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+prefix.string=Rfigs/,echo=F,results=hide,cache=T,external=T
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%setup
+\end_layout
+
+\begin_layout Plain Layout
+
+<<setup,cache=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+setCacheDir("cache")
+\end_layout
+
+\begin_layout Plain Layout
+
+options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
+\end_layout
+
+\begin_layout Plain Layout
+
+require(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+require(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+theme_set(theme_bw())
+\end_layout
+
+\begin_layout Plain Layout
+
+theme_update(panel.grid.major = theme_blank(),
+\end_layout
+
+\begin_layout Plain Layout
+
+             panel.grid.minor = theme_blank())
+\end_layout
+
+\begin_layout Plain Layout
+
+source("common.manipulations.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+source("latexing.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+source("programming.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%% 
+\backslash
+maxwidth has been defined in the preamble; see document settings
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setkeys{Gin}{width=
+\backslash
+maxwidth}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+for pgfSweave...
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<setup,cache=F>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+setCacheDir("cache/values")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+We did stuff.
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I have been stuck on the terminology (short range/long range, first/second
+ order, local/global, etc), and have just realized part of the problem is
+ that a lot fo the terminology confuses stimulus and mechanism.
+ We do not presume that out somewhat arbitrarily constructed (if principled)
+ stimulus effects a clean separation of the qualitatively different motion
+ mechanisms that we have imagined.
+ We even know that they do not; a delta-x without change in potion contrast
+ has a perceptual effect that we explain via motion-energy.
+ A more factual description of the STIMULUS would be that there is movement
+ in the carries versus movement in the envelope, whereas we can pick some
+ arbitrary name (short-range, vs long-range, say) for the MECHANISM
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+General Methods
+\end_layout
+
+\begin_layout Subsection
+Observers
+\end_layout
+
+\begin_layout Standard
+Observers were one of the authors (P.B.M.) and SOME NUMBER OF na
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+"{i}
+\end_layout
+
+\end_inset
+
+ve observers ().
+ All had normal or corrected-to-normal vision.
+\end_layout
+
+\begin_layout Subsection
+Equipment
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%data
+\end_layout
+
+\begin_layout Plain Layout
+
+<<data, cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("Constant.Rdata")
+\end_layout
+
+\begin_layout Plain Layout
+
+common.manipulations(environment())
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%settings
+\end_layout
+
+\begin_layout Plain Layout
+
+<<settings,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+calibration <- runs[[1,'afterRun.params']][['cal',1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+screen.distance <- calibration[["distance",1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+display.resolution <- calibration[["rect",1,1]][c(3,4)]
+\end_layout
+
+\begin_layout Plain Layout
+
+display.size <- display.resolution*calibration[["spacing",1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+black.luminance <- calibration[["calibration",1,1]][["stage2",1,1]][["readings",1
+,1]][c(1)]
+\end_layout
+
+\begin_layout Plain Layout
+
+white.luminance <- calibration[["calibration",1,1]][["stage2",1,1]][["readings",1
+,1]][c(256)]
+\end_layout
+
+\begin_layout Plain Layout
+
+refresh.rate <- round(1/calibration[["interval",1,1]])
+\end_layout
+
+\begin_layout Plain Layout
+
+sample.rate <- runs[[1,'beforeRun.params']][['eyelinkSettings',1,1]][['sample.rate'
+,1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+example.trial <- tail(subset(trials, trial.version...function == "ConcentricTrial"
+ & subject == "jt" & result.success),n=1)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Stimuli were presented on a flat CRT video monitor (ViewSonic PF790).
+ Its resolution was set to 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{display.resolution[1]}
+\backslash
+times
+\backslash
+Sexpr{display.resolution[2]}
+\backslash
+;
+\backslash
+mathrm{pixels}$
+\end_layout
+
+\end_inset
+
+ over a display area of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(display.size[1],nsmall=1)}
+\backslash
+times
+\backslash
+Sexpr{format(display.size[1],nsmall=1)}
+\backslash
+centi
+\backslash
+meter$
+\end_layout
+
+\end_inset
+
+ and it used a 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{refresh.rate}
+\backslash
+hertz$
+\end_layout
+
+\end_inset
+
+ refresh rate.
+ Experiments were programmed in MATLAB using the Psychtoolbox 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Brainard:1997gq"
+
+\end_inset
+
+ and Eyelink toolbox extensions 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cornelissen:2002wl"
+
+\end_inset
+
+, along with custom OpenGL code.
+ Grayscale stimuli were shown using equal red, green, and blue signals.
+ The monitor was calibrated using a Tektronix photometer.
+ A 50% gray background was chosen to lie at the midpoint between mimimum
+ (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(black.luminance,nsmall=2)} 
+\backslash
+candela
+\backslash
+per
+\backslash
+meter
+\backslash
+squared$
+\end_layout
+
+\end_inset
+
+) and maximum (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(white.luminance,nsmall=2)} 
+\backslash
+candela
+\backslash
+per
+\backslash
+meter
+\backslash
+squared$
+\end_layout
+
+\end_inset
+
+) luminances, which were in turn measured as patches against the gray background.
+ A hardware lookup table with 10-bit resolution was constructed to linearize
+ the display luminance.
+ 
+\end_layout
+
+\begin_layout Standard
+Subjects sat behind a blackout curtain so that ambient illumination was
+ mostly due to the monitor and viewed the screen binocularly using a chin
+ and forehead rest with the eyes 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{screen.distance}
+\backslash
+centi
+\backslash
+meter$
+\end_layout
+
+\end_inset
+
+ from the screen.
+ Eye position was monitored using a video-based eye tracker (EyeLink 1000;
+ SR Research) using a sample rate of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{sample.rate}
+\backslash
+hertz$
+\end_layout
+
+\end_inset
+
+.
+ Eye movements were recorded but are not reported in this paper.
+ Subjects gave responses by turning a knob (PowerMate; Griffin Technologies)
+ with their preferred hand.
+ 
+\end_layout
+
+\begin_layout Subsection
+Stimuli
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:stimuli"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename x_t_stimuli.eps
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli"
+
+\end_inset
+
+Example stimuli in space-time form, where time progresses down along the
+ vertical axis.
+ All plots depict a stimulus containing a single element whose carrier motion
+ is to the right.
+ Stimuli were 
+\emph on
+congruent
+\emph default
+, 
+\emph on
+conterphase
+\emph default
+ or 
+\emph on
+incongruent
+\emph default
+, based on whether the direction of carrier agreed with that of long-range
+ motion.
+ Counterphase stimuli are a superposition of congruent and incongruent stimuli.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{2in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_counter.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:stimuli"
+
+\end_inset
+
+A demonstration of the three stimulus types, at low density.
+ In all cases the envelope motion is counterclockwise, while the carrier
+ motion varies.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Stimuli used in this report.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Example stimuli are shown in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:stimuli"
+
+\end_inset
+
+.
+ The stimuli consisted of a number of identical elements arranged into a
+ circle, each with a direction of motion.
+ A space-time diagram of the motion of a single elment is shown in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:stimuli"
+
+\end_inset
+
+ (
+\begin_inset Formula $x$
+\end_inset
+
+ being taken along the circle that the element travels on.) The motion of
+ each elament consisted of a set of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{example.trial$trial.motion.process.n+1}
+\end_layout
+
+\end_inset
+
+ discrete appearances of an envelope, each offset by regular space (
+\begin_inset Formula $\Delta x$
+\end_inset
+
+) and time (
+\begin_inset Formula $\Delta t$
+\end_inset
+
+) intervals.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+...
+ 
+\begin_inset Quotes eld
+\end_inset
+
+as in apparent motion
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Okay, I just need to express this annoyance: I just hate the term “apparent
+ motion,” whose existence in the jargon of its field does nothing but force
+ me to write awkward doubletalk to avoid that collocation.
+ As it turns out we are very concerned with the sensation of the appearance
+ of visual motion, which ought to be called apparent motion.
+ Indeed, the original problem of 
+\begin_inset Quotes eld
+\end_inset
+
+apparent motion
+\begin_inset Quotes erd
+\end_inset
+
+ was, why a temporally dicrete stimulus, which does not have a real motion,
+ has an apparent motion.
+ But in the parlance of the field, “apparent motion” is now taken to refer
+ to the temporally discrete stimulus, not the apparent motion it elicits!
+ So it is a jargon named after a sensation but understood as a type of stimulus.
+ This is bonkers, so I'm not using the phrase 
+\begin_inset Quotes eld
+\end_inset
+
+apparent motion
+\begin_inset Quotes erd
+\end_inset
+
+ to mean what it shouldn't.
+\end_layout
+
+\end_inset
+
+ Within each envelope, the carrier was continuously in motion with a constant
+ temporal frequency 
+\begin_inset Formula $\omega$
+\end_inset
+
+.
+ The temporal profile of each envelope was Gaussian, with standard deviation
+ 
+\begin_inset Formula $d/2$
+\end_inset
+
+; at the peak of the temporal envelope the carrier was in cosine phase.
+ At right angles to the direction of motion, the envelope is Gaussian envelope
+ with standard deviation 
+\begin_inset Formula $w/2$
+\end_inset
+
+.
+ Along the direction of motion, the carrier modulated by the spatial envelope
+ forms a Cauchy filter function 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Klein:1985rz"
+
+\end_inset
+
+ with peak spatial frequency 
+\begin_inset Formula $f$
+\end_inset
+
+.
+ The equation describing the luminance profile of a patch as a function
+ of position and time is then: 
+\begin_inset Formula 
+\[
+L(x,y,t)=\mathrm{cos}^{n}(\mathrm{tan}^{-1}(fx/n))\mathrm{cos}(n\cdot\mathrm{tan}^{-1}(fx/n)+\omega t)e^{-(t/2d)^{2}-(y/2d)^{2}}
+\]
+
+\end_inset
+
+ with the direction of motion along 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ The spatial bandwidth parameter 
+\begin_inset Formula $n$
+\end_inset
+
+ was set to 4 for all stimuli.
+ 
+\end_layout
+
+\begin_layout Standard
+The examples in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:stimuli"
+
+\end_inset
+
+ have the following settings, the same as used in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:reversal"
+
+\end_inset
+
+: For all trials, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Delta t = 
+\backslash
+Sexpr{example.trial$trial.motion.process.dt*1000}
+\backslash
+milli
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+omega = 
+\backslash
+Sexpr{with(example.trial, abs(trial.motion.process.velocity[[1]][1] / trial.motion.pro
+cess.wavelength))} 
+\backslash
+hertz$
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$d = 
+\backslash
+Sexpr{format(example.trial$trial.motion.process.duration, digits=2)}
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+.
+ For stimuli at 
+\begin_inset Formula $10^{\circ}$
+\end_inset
+
+ eccentricity, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$f = 
+\backslash
+Sexpr{format(1 / (example.trial$trial.extra.wavelengthScalar * 10), digits=2,nsmall
+=2)} 
+\backslash
+mathrm{cyc}
+\backslash
+per
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Delta x = 
+\backslash
+Sexpr{with(example.trial, trial.extra.globalVScalar * trial.motion.process.dt)*10}
+ 
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$w = 
+\backslash
+Sexpr{example.trial$trial.extra.widthScalar*10}
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+, and these three parameters were scaled proportionately to eccentricity.
+\end_layout
+
+\begin_layout Standard
+We used three types of motion stimuli, illustrated as (
+\begin_inset Formula $x$
+\end_inset
+
+,
+\begin_inset Formula $t$
+\end_inset
+
+) diagrams in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:stimuli"
+
+\end_inset
+
+ and demonstrated in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:stimuli"
+
+\end_inset
+
+.
+ In 
+\emph on
+congruent
+\emph default
+ stimuli the displacement of each successive presentation of a motion element
+ (
+\begin_inset Formula $\Delta x$
+\end_inset
+
+) agreed in direction with the short-range motion contained in each element.
+ In 
+\emph on
+incongruent
+\emph default
+ stimuli, the direction of displacement was opposite the direction of short-rang
+e motion.
+ In 
+\emph on
+counterphase
+\emph default
+ stimuli, the motion elements contained a counterphase flicker formed by
+ superposing motion elements with equal and opposite short-range motion
+ content.
+ That is, the counterphase stimuli have the same spatial and temporal frequency
+ distribution as in congruent and incongruent stimuli, but their motion
+ energy is equivocal between opposite directions.
+ The second stimulus in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:stimuli"
+
+\end_inset
+
+ shows counterphase local motion.
+ The contrast of the local motion elements was 70.7% for congruent and incongruen
+t trials, and 100% for trials using counterphase stimuli (that is, 50% contrast
+ in each direction).
+ These contrast values appeared to equalize the subjective contrast of the
+ stimuli of each type.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+I chose this exact contrast value on account of 
+\begin_inset Quotes eld
+\end_inset
+
+equal energy.
+\begin_inset Quotes erd
+\end_inset
+
+ This also made the stimuli appear to me to have the same subjective contrast,
+ but I did not formally try to measure it.
+ I would think the stimuli are so supra-threshold, that it shouldn't matter
+ much, and so do not make any attempts to measure a contrast threshold for
+ detection (how would you do that anyway for incongruent motion? Is the
+ threshold for 
+\begin_inset Quotes eld
+\end_inset
+
+detection
+\begin_inset Quotes erd
+\end_inset
+
+ detection of presence of stimulus, or detection of local motion, or detection
+ of global motion? All three of those might interact in interesting ways.)
+ Short answer: I picked this and I don't think it's worth much worry.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Demonstrations and Subjective Observations
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:lookatthis"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Structurally I view this section as a sort of 
+\begin_inset Quotes eld
+\end_inset
+
+Experiment 0
+\begin_inset Quotes erd
+\end_inset
+
+.
+ To me it has the fewest sequencing problems I describe the stimulus before
+ this section, and if I describe the task after this section.
+ So task description would go into submethods for experiment 1.
+ If I have had some demonstrations before motivating Experiment 1, and for
+ the demonstrations to follow a description of how the stimuli are constructed.
+\end_layout
+
+\begin_layout Plain Layout
+I think I want to talk about subjective observations in a model-neutral
+ matter here, whole perhaps coming back to model-relevant things suggested
+ by subjective appearance later in discussion (under the rubric of 
+\begin_inset Quotes eld
+\end_inset
+
+what kind of motion system is this stimulating?
+\begin_inset Quotes erd
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is worth commenting about some properties of this type of stimulus that
+ can be subjectively observed, and (so far as we can tell) aknowledged by
+ almost all colleagues we show our displays to, even though we do not attempt
+ to establish them quantitatively.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ demonstrates the effect of eccentric viewing on the subjective appearance
+ of motion in the display.
+ Two 
+\begin_inset Quotes eld
+\end_inset
+
+wheels
+\begin_inset Quotes erd
+\end_inset
+
+ are shown, each containing five moving elements.
+ Each element has a short range motion, and a long range displacement.
+ In the wheel on the right, the direction of short-range and long-range
+ components is in agreement (both counterclockwise) whereas for the wheel
+ on the left, the short range component is clockwise while the long range
+ component is counterclockwise.
+ What is striking in this display is that its appearance changes depending
+ on the viewer's gaze.
+ With the eyes fixated on the point in the center of the left wheel, the
+ elements on both wheels appear to orbit counterclockwise.
+ But if gaze is focused on the right wheel, the left wheel now appears to
+ rotate counterclockwise.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:singles"
+
+\end_inset
+
+ shows only one element in each circle, but is otherwise identical to 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+.
+ In this case the direction of gaze does does not cause a change in the
+ perceived direction of motion of the element on the left.
+ Therefore it would appear that it is not just eccentric viewing that causes
+ short range motion to dominate over long range, but also the 
+\emph on
+density
+\emph default
+ of the elements in the stimulus.
+\end_layout
+
+\begin_layout Standard
+Taken together, these demonstrations motivate our investigation of the interplay
+ of three factors in determining motion perception: the agreement of short-range
+ and long-range movement, the eccentricity of the stimulus, and the density
+ of elements contained therein.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_counter.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:wheels"
+
+\end_inset
+
+When fixating at the center of the left wheel, both wheels appear to move
+ in the same direction.
+ But when fixating the center of the right wheel, both wheels appear to
+ move in opposite directions.
+ The appearance of the right wheel's movement reverses depending on the
+ viewing eccentricity.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_single.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:singles"
+
+\end_inset
+
+Same stimulus as 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ with only one element used in each.
+ The perceived direction of motion is independent of eccentricity.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_eyemovements.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:eyemovements"
+
+\end_inset
+
+As above, but there is no displacement of the envelopes over time.
+ In this case the sensation of motion appears to be affected by fixational
+ eye movements.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:wheels"
+
+\end_inset
+
+Demonstrations of subjective phenomena.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The primary phenomenon we will be exploring in this paper is the density-driven
+ reversal of the apparent direction of motion 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Can I just say: I just hate the term "apparent motion," whose existence
+ in the jargon of its field does nothing but force me to write awkward doubletal
+k to avoid that collocation.
+ As t turns out I am very concerned with the sensation of the appearance
+ of visual motion, which ought to be called apparent motion -- the original
+ meaning of the phrase -- to distinguish the sensation from the stimulus
+ that elicits it.
+ Instead, "apparent motion" has ossified into a jargon, taken to refer to
+ stimuli composed of discrete momentary images, lacking a continuous physical
+ translation of the light-generating object.
+ It is a phrase named after a sensation but understood as a type of stimulus.
+ This is bonkers.
+ 
+\end_layout
+
+\end_inset
+
+ that occurs in incongruent stimuli (those whose short range and long range
+ components are in opposition.) When elements are widely spaced, the apparent
+ direction of motion follows that of the envelopes; as element spacing decreases
+, the direction of motion changes to agree with that of the carrier.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+start by describing narrow spacings, then intermediate, then wide.
+ I might want specific looping demonstrations of narrow/intermediate/wide
+ spacings.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We will proceed to quantify this reversal effect below.
+ In order to do so we ask subjects to make forced classifications of the
+ stimulus' overall direction (clockwise or counterclockwise.) However, the
+ subjective appearance of our stimulus can be complex, with several properties
+ that change aside from overall direction.
+ Although we do not attempt to quantify these details of the appearance
+ of our stimuli, we feel it is worth describing our impressions of them.
+ Suitable individual adjustments of element spacing and other properties
+ appear to elicit the same kinds of descriptions in everyone we have shown
+ these stimuli to.
+\end_layout
+
+\begin_layout Standard
+When elements are closely spaced, it is generally impossible to see the
+ direction of envelope motion; the overall impression is of motion the the
+ direction of the carrier.
+ However, the amount of subjective flicker does appear to differ between
+ incongruent and congruent motion, with ingongruent motion having more flicker.
+\end_layout
+
+\begin_layout Standard
+Increasing the inter-element spacing somewhat, we approach a critical spacing,
+ where for incongruent stimuli, subjects equivocate in their reports of
+ perveived motion direction, 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+[NOTE: This would be the first introduction of 
+\begin_inset Quotes eld
+\end_inset
+
+critical distance.
+\begin_inset Quotes erd
+\end_inset
+
+ ]
+\end_layout
+
+\end_inset
+
+ The subjective appearance of a critically spaced, incongruent motion stimulus
+ is somewhat variable.
+ To some observers, it appears to first move in the direction of the carrier,
+ and then to reverse direction shortly after stimulus onset.
+ Although both the carrier and envelope motions are (considered separately)
+ consistent with an underlying rigid rotation of a surface around the fixation
+ point, or alternately a rotation of the observer, the perception does not
+ appear to obey a rigid body constraint; elements can appear to move clockwise
+ in some parts of the circle and counterclockwise elsewhere.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Further, when motion direction appears to reverse after stimulus onset,
+ the perceptual reversal (and its behavioral correlate) occurs much faster
+ than the perceptual change that occurs when separate moving objects are
+ reinterpreted as a smaller number of rigidly moving bodies 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anstis:2011vn"
+
+\end_inset
+
+
+\emph on
+.
+
+\emph default
+ Nor is the perception of movement bistable; a change in perceived direction
+ for some element of the circle does not, in general, cause the perceived
+ motion of the entire stimulus switch direction.
+ Attention does play a role; for incongruent displays with closely spaced
+ elements, it is possible to direct attention to one (or sometimes several)
+ elements in the circle.
+ These elements are seen to move in the direction of envelope motion, but
+ the rest of the circle is seen to move in the contrary direction, making
+ for a somewhat paradoxical percept wherein movement is in opposite directions,
+ but individual elements are not seen to cross over or collide.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Increasing the spacings further to where element motion tends to dominate,
+ observers often describe the motion contained in the stimulus as belonging
+ to two components, one belonging to the motion of the elements themselves,
+ and the other being a kind of 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+ overlaid on top of the elements.
+ This seems similar to the perception elicited by a moving grating superposed
+ on a stationary pedestal 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lu:2001fv"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+At even wider element spacings the envelope motion dominates the perception.
+ It becomes difficult to even tell the direction of motion of the carrier,
+ apart from the amount of flicker.
+ That is, the 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+ seen at slightly smaller spacings becomes less evident.
+ This 
+\begin_inset Quotes eld
+\end_inset
+
+capture
+\begin_inset Quotes erd
+\end_inset
+
+ phemomenon was characterized by Hedges et al.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+This would happen to be the 
+\begin_inset Quotes eld
+\end_inset
+
+capture
+\begin_inset Quotes erd
+\end_inset
+
+ effect that Hedges et al.
+ explore.
+\end_layout
+
+\end_inset
+
+ for single element stimuli constructed similarly to ours.
+ 
+\end_layout
+
+\begin_layout Standard
+The subjective speed of the elements also changes with the element spacing.
+ As element spacing is reduced, the perceived speed of element motion (as
+ distinguished from the 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+) also seems to reduce, until spacing near the critical distance, where
+ the elements almost appear to be at a near standstill over the brief duration
+ of the stimulus.
+\end_layout
+
+\begin_layout Standard
+Thus at very narrow and very wide element spacings it becomes difficult
+ to tell congruent motion apart from incongruent motion via the sensation
+ of motion direction.
+ However, the sensation of subjective flicker and smoothness of movement
+ does tend to tell the two stimuli apart.
+ Incongruent stimuli have more flicker, at both narrow and wide element
+ spacings, and appear to move less smoothly.
+ We have attempted to correlate this sensation of smoothness or lack thereof
+ with reports of the instantaneous position of the elements, 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+, e.g.
+ relative to a flash,
+\end_layout
+
+\end_inset
+
+ without success.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Which demos are necessary to underscore these points?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+This next paragraph doesn't really connect to anything unless I perform
+ an analysis of microsaccades in the task....
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As a final note, in some instances it appears that small fixational eye
+ movements have some influence over the appearance of these stimuli.
+ This is most easily demonstrated in a where the long range displacement
+ is zero but the carrier has a consistent direction, as shown in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:eyemovements"
+
+\end_inset
+
+.
+ Viewing this stimulus with the elements in the periphery, one sees a counterclo
+ckwise motion of the stimulus, which appears to fade and slow over time.
+ Hovever, large or small saccades seem to re-awaken the movement, causing
+ it to speed up again.
+ The impression is similar to that seen in versions of the peripheral drift
+ illusion, such as the 
+\begin_inset Quotes eld
+\end_inset
+
+rotating snakes
+\begin_inset Quotes erd
+\end_inset
+
+ illusion of Kitaoka 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kitaoka:2007fv"
+
+\end_inset
+
+.
+ However, while perceived motion in the peripheral drift illusion appears
+ to be driven by slight shifts of a stationary image on the retina, the
+ construction of our stimulus would tend to rule that out as a mechanism;
+ the motion is directly contained in the stimulus.
+\end_layout
+
+\begin_layout Standard
+NOTE: Comparing further to rotating snakes would be overthinking, but: each
+ retinal slip has a direction, which (in the rotating snakes) interacts
+ with a chiral asymmetry of the stimulus to produce a coherent direction
+ of perceived motion.
+ But our stimulus lacks this chiral asymmetry; a retinal slip would have
+ an opposite effect in each side of the circle.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Experiment 1
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:reversal"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The demonstrations in
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:singles"
+
+\end_inset
+
+ seem to suggest that the perceived reversal of motion direction is a function
+ not only of eccentricity viewing but of an interaction between multiple
+ moving elements.
+ We explored this spatial interaction by varying the distance between elements
+ that were moving at a constant eccentricity.
+ 
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%radii
+\end_layout
+
+\begin_layout Plain Layout
+
+<<radii,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+radii <- sort(unique(subset(trials, trial.version...function == "ConcentricTrial")$t
+rial.motion.process.radius))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Observers viewed stimuli at four different eccentricities (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{paste.comma(sapply(radii, latex.format, digits=2, nsmall=2),collapse=TRUE)}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\degree$
+\end_inset
+
+), with parameters as described in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:stimuli"
+
+\end_inset
+
+.
+ Elements were spaced evenly around a circle surrounding the fixation point;
+ therefore varying the spacing of the elements is equivalent to increasing
+ the number of elements in the stimulus.
+ We ued the method of constant stimuli.
+ The stimulus in each trial with equal probability contained either congruent,
+ incongruent, or counterphase motion elements, with the direction of long
+ range motion being with equal probability clockwise or counterclockwise.
+ The set of element spacings was chosen to cover the psychometric function
+ for each observer, based on preliminary sessions.
+ Data shown is an aggregate of multiple sessions (at least 3 for each subject).
+\end_layout
+
+\begin_layout Subsubsection
+Task
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename task.eps
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:task"
+
+\end_inset
+
+The timecourse of the task.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The timecourse of a trial is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:task"
+
+\end_inset
+
+.
+ A fixation point was presented.
+ The computer then waited for the observer to fixate.
+ 250 ms after detecting fixation, the motion stimulus was shown.
+ After the motion stimulus concluded, observers indicated the direction
+ of perceived motion by turning a knob.
+ If subjects blinked or broke fixation before the offset of the motion stimulus,
+ the trial was aborted and reshuffled into the stimulus set to be repeated
+ later in the session.
+ Observers were also asked to respond within a fixed temporal window.
+ Response latency was defined as the elapsed time between motion onset and
+ the knob being turned.
+  If the response latency was more than 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{example.trial$minResponseTime*1000}
+\backslash
+milli
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+ or less than 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{example.trial$maxResponseTime*1000}
+\backslash
+milli
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+, subjects received visual feedback that their response was either too fast
+ or too slow, and the trial was reshuffled into the stimulus set to be repeated
+ later in the session.
+\end_layout
+
+\begin_layout Standard
+For congruent and counterphase stimuli, subjects received audio feedback
+ immediately after they gave a response, in the form of a high or low tone
+ depending on whether their responses agreed with the direction of long-range
+ motion.
+ For incongruent stimuli, a neutral click was given as feedback instead
+ of a tone; observers were told that there is no 
+\begin_inset Quotes eld
+\end_inset
+
+correct
+\begin_inset Quotes erd
+\end_inset
+
+ answer for those stimuli.
+ This audio feedback seemed to help subjects establish a rhythm through
+ the experiment.
+ 
+\end_layout
+
+\begin_layout Standard
+Although we are most concerned with the appearance of incongruent motion
+ stimuli, we used an equal proportion of congruent, counterphase, and incongruen
+t stimuli in all experiments.
+ We felt this was necessary to verify that observers were judging the long
+ range motion component of the stimulus, rather than developing alternate
+ strategies (such as simply countermanding the perceived short range motion.)
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(...which some observers did in the absence of any feedback or instruction
+ other than to report the subjective direction of motion.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+However, I'm wondering if this is really the case.
+ It does waste a lot of time for a not very sensitive measurement.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Subjects performed the task in sessions of at most 1 hour, divided into
+ 4 to 6 blocks of 10 to 200 trials each, and were prompted to take a break
+ between blocks.
+ Subjects could also rest at any point by simply delaying fixation.
+ At the beginning of each block, the eye tracking system was automatically
+ recalibrated by asking the subject to make saccades to a sequence of targets
+ at randomly chosen locations on the screen.
+\end_layout
+
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%response-rates
+\end_layout
+
+\begin_layout Plain Layout
+
+<<response-rates,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+raw.response.rates <-
+\end_layout
+
+\begin_layout Plain Layout
+
+  ddply(subset(trials, !is.na(responseTime)
+\end_layout
+
+\begin_layout Plain Layout
+
+               & (responseTime > 0.40 & responseTime < .90)),
+\end_layout
+
+\begin_layout Plain Layout
+
+        .(subject, trial.extra.r, motionCondition, target.spacing),
+\end_layout
+
+\begin_layout Plain Layout
+
+        summarize, p=mean(correct), n=length(correct)
+\end_layout
+
+\begin_layout Plain Layout
+
+        ) 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%response-rate-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<response-rate-plot,fig=TRUE,external=TRUE,width=7,height=4>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+require(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+print(ggplot(subset(raw.response.rates, abs(trial.extra.r - 10.0) < .01))
+\end_layout
+
+\begin_layout Plain Layout
+
+ + aes(log(target.spacing), p, color=motionCondition)
+\end_layout
+
+\begin_layout Plain Layout
+
+ + geom_line()
+\end_layout
+
+\begin_layout Plain Layout
+
+ + facet_grid(~subject)
+\end_layout
+
+\begin_layout Plain Layout
+
+ + opts(aspect.ratio=1)  )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:rawdata"
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:raw-response-rates"
+
+\end_inset
+
+Percieved direction of motion as a function of inter-element spacing.
+ The vertical axis plots the proportion of responses where the percieved
+ direction of motion agrees with the long-range component of the motion
+ stimulus.
+ The horizontal axis the spacing between elements, in visual arc.
+ Stimuli plotted here were presented at 6.67 degrees eccentricity.
+ Only responses that fall within the time window are used in the computation
+ of response rates.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%response-time
+\end_layout
+
+\begin_layout Plain Layout
+
+<<response-time,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+response.time.subset <- subset(trials,
+\end_layout
+
+\begin_layout Plain Layout
+
+                              abs(trial.motion.process.radius - 10.0) < .01
+\end_layout
+
+\begin_layout Plain Layout
+
+                               & motionCondition=="incongruent")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%response-time-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<response-time-plot,fig=TRUE,external=TRUE,width=7,height=4>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+require(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+print(ggplot(response.time.subset) 
+\end_layout
+
+\begin_layout Plain Layout
+
++ aes(log(target.spacing), responseTime, color=factor(correct))  
+\end_layout
+
+\begin_layout Plain Layout
+
++ facet_grid(~subject)  
+\end_layout
+
+\begin_layout Plain Layout
+
++ geom_jitter(width=0.005, height=0)  
+\end_layout
+
+\begin_layout Plain Layout
+
++ geom_point(size=0.05)    
+\end_layout
+
+\begin_layout Plain Layout
+
++ coord_cartesian(ylim=c(0.25, 1.25))  
+\end_layout
+
+\begin_layout Plain Layout
+
++ scale_color_discrete(name="Reported direction", 
+\end_layout
+
+\begin_layout Plain Layout
+
+               breaks=c(FALSE,TRUE),
+\end_layout
+
+\begin_layout Plain Layout
+
+               labels=c("With short-range", "With long-range"))  
+\end_layout
+
+\begin_layout Plain Layout
+
++ scale_y_continuous("Response time (s)", 
+\end_layout
+
+\begin_layout Plain Layout
+
+                     breaks=c(0,0.25,0.5,0.75,1))  
+\end_layout
+
+\begin_layout Plain Layout
+
++ scale_x_continuous("Element spacing (degrees)", 
+\end_layout
+
+\begin_layout Plain Layout
+
+           breaks=log(c(1,2,4,8)),
+\end_layout
+
+\begin_layout Plain Layout
+
+           labels=c(1,2,4,8))
+\end_layout
+
+\begin_layout Plain Layout
+
++ opts(aspect.ratio=1)  )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:response-times"
+
+\end_inset
+
+Responses to incongruent stimuli are color-coded according to whether the
+ responses agree with the direction of long-range motion.
+ All responses are shown, including those falling outside of the response
+ time window.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Element spacing drives the perceptual reversal of perceived direction for
+ incongruent stimuli
+\end_layout
+
+\begin_layout Standard
+Here we display only the data from the 
+\begin_inset Formula $6.67\degree$
+\end_inset
+
+ eccentricity.
+ In 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:rawdata"
+
+\end_inset
+
+we fold together clockwise and counterclockwise motions and compute the
+ proportion with which the overall motion was perceived to be in teh same
+ direction as the actual envelope motion.
+ This proportion is plotted as a function of inter-element spacing for each
+ of the three motion types (concruent, incongruent, and counterphase.)
+\end_layout
+
+\begin_layout Standard
+The main effect evidenced is for incongruent motion, where the direction
+ of short-range motion is opposite that of the long-range motion.
+ At large inter-element spacings, observers judged the stimuli to move according
+ to its global direction of motion.
+ However, as inter-element spacing decreases,
+\end_layout
+
+\begin_layout Standard
+For congruent motion, as expected, subjects are able to judge its motion
+ nearly perfectly.
+ For counterphase motion, however, there is a trend for increased errors
+ at smaller spacings.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Comment on individual trends.
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Compare this to the condition where delta-x equals half the spacing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Critical spacing
+\end_layout
+
+\begin_layout Standard
+We fit cumulative logistic functions to subjects' responses, which are overlaid
+ on
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:rawdata"
+
+\end_inset
+
+.
+ For robustness, we fixed the lower asymptote, corresponding to responses
+ in the direction of short-range motion at 10% and the upper asymptote,
+ corresponding to responses in the direction of long-range motion at 95%.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Or be symmetric? These two naive subjects are not good enough to actually
+ demonstrate the presence of an asymptote.
+\end_layout
+
+\end_inset
+
+ This curve fitting was implemented as generalized linear model, with binomial
+ errors and an inverse link function corresponding to a modified logistic
+ curve scaled to have the chosen asymptotes.
+ We define the critical spacing to be where the fitted curve crosses 50%;
+ this is indicated in the graph with horizontal error bars.
+ In all subjects this critical spacing 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+compare its magnitude to the size of the elements, the spacing, and the
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Dependence on response time
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I'm saying a number of things in here that might need reference to data,
+ which is hard because I WANT to be saying 
+\begin_inset Quotes eld
+\end_inset
+
+never mind, just using a window is fine.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Some observers' responses varied with their response time.
+ In 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:response-times"
+
+\end_inset
+
+, we show an aggregate of all data including data which fell outside the
+ response time window.
+ Each trial is plotted as a single point, color coded according to whether
+ the observer judged the subjective motion to be inagreement with the stimulus'
+ short-range motion or with its long-range motion (only data from incongruent
+ motion trials is shown, so these possibilities are mutually exclusive.)
+ Points are horizontally jittered to avoid overlap; we only tested discrete
+ values of element spacing.
+ What is evident is that there is not only a dependence on the target spacing,
+ but for two subjects (D.A.
+ and J.T.) there is also a dependence on response time.
+ For fast trials where obervers responded sooner than about 400 ms from
+ motion onset, most responses agreed with the short-range component of the
+ motion stimulus.
+ But for longer response times, observers tended to agree with the 
+\end_layout
+
+\begin_layout Standard
+These observers' verbal descriptions of the stimulus tended to agree with
+ this temporal depencence.
+ Observers reported that some stimuli started with an apparent motion in
+ one direction, but then the direction appeared to reverse.
+ Another frequent report was a sensation of second-guessing oneself after
+ giving an initial response.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+CF reports 
+\begin_inset Quotes eld
+\end_inset
+
+A profound sense of 
+\begin_inset Quotes els
+\end_inset
+
+oops
+\begin_inset Quotes ers
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+There may be a number of resons fot this dependence on response time.
+ It may be due to a longer time required for the long-range motion system
+ to activate 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Lots of references to spport this, elaborate more in Discussion.
+\end_layout
+
+\end_inset
+
+ and may also simply be due to the fact that information about short-range
+ motion is present in the stimulus slightly earlier than information about
+ long-range motion (as the direction of long-range motion is only established
+ when the envelopes have been seen at two locations,) although there was
+ not a strong tendency for observers' responses to counterphase motion trials
+ to change as a function of response time.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+show this?
+\end_layout
+
+\end_inset
+
+ Information about short and long-range motion may be integrated in a desision
+ process which favors long-range motion as more information is gathered.
+ Or other cues such as flicker may be involved.
+ However, there was not a tendency for observers to change their reponse
+ times as a function of element spacing, or other physical properties of
+ the stimulus.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+For example, this statement could use some quantitative justification.
+ But how much?
+\end_layout
+
+\end_inset
+
+ For the purposes of investigating the effect of element spacing, we set
+ a 500 ms wide window beginning 400 ms from motion onset, for this and further
+ experiments.
+ Subjects received feedback for whether their responses fell in this window
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Another approach is to just include response time as a term in the logistic
+ regression.
+ This allows you to 
+\begin_inset Quotes eld
+\end_inset
+
+normalize
+\begin_inset Quotes erd
+\end_inset
+
+ for a particular response time.
+ I've played with doing this, and the results don't change much in character
+ vs.
+ just using a window.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Change in spacing with eccentricity
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:eccentricity"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If subjects don't seem so scale well when you measure their PSEs, see if
+ there is a correction for slope (look at a scatter of PSE vs.
+ slope, grouped by subject on the same graph.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%eccentricity
+\end_layout
+
+\begin_layout Plain Layout
+
+<<eccentricity,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:eccentricity-psychfuns"
+
+\end_inset
+
+Response rates for incongruent stimuli for each subject.
+ Element spacing is plotted on the horizontal axis, and response rate is
+ plotted on the vertical axis.
+ Colors indicate stimuli tested at different eccentricities.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:eccentricity-pse"
+
+\end_inset
+
+Horizontal intercepts are computed and shown with standard error bars.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This section is what Experimetn 1 is really all about 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Experiment 3
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:number"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I'm working on this in a separate document at the moment.
+\end_layout
+
+\begin_layout Section
+Changes in stimulus size
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This type of experiment can also speak to counterphase motion.
+ Is the decay in discriminability at high densities for counterphase motion
+ we see at high densities merely an effect of the wagonwheel/ marquee illusion?
+ we can answer by looking at delta-x.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Standard
+We should discuss the ways in which this stimulus differs from crowding
+ (and yet, how the phenomena are similar.) Draw the connection between 
+\begin_inset Quotes eld
+\end_inset
+
+feature spread
+\begin_inset Quotes erd
+\end_inset
+
+ and crowding.
+ I.e.
+ Several studies have 
+\end_layout
+
+\begin_layout Standard
+First there is the question of what kind of motion system the long-range
+ component is engaging.
+ We have tried to avoid the tempting terms 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ to describe the two 
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing single
+Another form of large-scale integration of short range motion occurs in
+ the computation of optic flow, which term 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+need cite that describes optic flow stimuli generally.
+\end_layout
+
+\end_inset
+
+ describes a pattern of motion over the entire visual field that is consistent
+ with being generated by the motion of an observer through the environment,
+ opposed to the motion of objects relative to a stationary observer.
+ The simplest examples of optic flow stimuli are patterns such as global
+ expantion or contraction, or rotation around a central point.
+ The patterns of motion that in our motion illusion are consistent with
+ a rotation around the axis parallel to the viewer's gaze, so an optic flow
+ mechanism is likely being driven my our stimulus.
+ This raises the question of whether optic flow mechanisms are involved
+ in the illusion of reversal.
+ [some sense of] However, [no second order global motion] [our experiment
+ on number versus shape] [however we found that...]
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing single
+In the monkey, it appears that [the dorsal subdivision of] area MST is specializ
+ed for optic flow patterns.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+cite
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Classification of this stimulus among the various types of motion stimuli
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+What mechanism are we playing with here?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Some models for detection of non-luminance-defined motion posit a mechanism
+ that operates much like first-order, short-range motion, but applies some
+ (space-time separable) nonlinearity to the image before applying the motion
+ energy analysis.
+ This would be called 
+\begin_inset Quotes eld
+\end_inset
+
+second order
+\begin_inset Quotes erd
+\end_inset
+
+ motion system in the scheme of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Lu:1995la"
+
+\end_inset
+
+.
+ We noted in
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:lookatthis"
+
+\end_inset
+
+that for a lone element, it is more difficult to discern the direciton of
+ its short-range motion than the clear long-range movement.
+ By adjusting the parameters to further favor the long-range component,
+ we can produce stimuli where the direction of the short-range motion is
+ nearly undetectable, yet these stimuli still elicit a motion after-effect
+ according only to the direction of hort range motion.
+ Nonetheless, these stimuli still elicit a direction-elective response in
+ area MT only to the short-range component
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Shadlen:1993ne"
+
+\end_inset
+
+.
+ motion and independent the direction of long-range motion.
+ Thus, while 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+INCOHERENT CUTOFF ABOUT HERE.
+ STRAIGHTEN UP THIS PARAGRAPH.
+\end_layout
+
+\end_inset
+
+the have added 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Hedges et al....unpublished
+\end_layout
+
+\end_inset
+
+ have quantitatively demonstrated the presence of this phenomenon, which
+ they term 'motion capture.' That is, the long-range motion is capable of
+ masking and obscuring short range motion.
+ Additionally, a mechanism driven by a single input nonlinearity (and in
+ some formulations, any purely local mechanism 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zanker:1993uq"
+
+\end_inset
+
+ would be driven by first-order motion stimuli as well as second-order;
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I know I have read this, is it in Sperling?
+\end_layout
+
+\end_inset
+
+ this is consistent with results showing that adding second-order noise,
+ or even coherent second-order motion, does not interfere with the decection
+ of first-order motion, but first-order noise does interfere with detection
+ of second-order motion 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Edwards:1995fk,Cassanello:2011uq"
+
+\end_inset
+
+.
+ However, this behavior is not consistent with our separate long-range and
+ short-range motion; local motion opposes it.
+ So while a second-order mechanism seems to exist and is able to detect
+ some forms of non-Fourier motion, we do not think a second-order mechanism
+ plays a significant explanatory role in our illusion and is not responsible
+ for the illusory reversal.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Model of crowding as adding noise in position; connected to Interactions
+ of local and global motion in position (Peter Tse, Al Shapiro relevant
+ illusions)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Dakin:2011fk"
+
+\end_inset
+
+: the discussion about spanning hemifields and which this indicates v4 as
+ a locus (crowding is lessened for stimuli spanning the horizontal meridian???
+ I wonder if that replicates) Moreover, the contrary result for multiple
+ object tracking: MOT works on left and right hemifields!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Bex:2003ix"
+
+\end_inset
+
+investigated crowding for discrimination of moving objects in a variation
+ of the typical crowding task where targets and flankers moved around an
+ annulus.
+ They found that the size of the region of interference between the target
+ and a lateral flanker was invariant with target speed (if anything, there
+ was a maximum at 2-4 
+\begin_inset Quotes eld
+\end_inset
+
+angular degrees per frame
+\begin_inset Quotes erd
+\end_inset
+
+ (at 75 Hz; at 8 degrees ecentricity, 2 degrees per frame ~21 degrees-of-visual-
+angle per second.
+ That's a lot faster than out stimuli.) They did find that the zone of interferen
+ce around a moving target was asymmetric contingent on motion; a flanker
+ moving ahead of the target crowded at a greater distance than a flanker
+ that trailed the target.
+ If this were simply due to temporal summation (i.e.
+ motion blurring,) 
+\begin_inset Quotes eld
+\end_inset
+
+we would expect crowding to increase with speed because motion blur increases
+ with speed of sharp objects
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Does the temporal asynchrony of crowding line up with Bex/Dakin and does
+ it comport with our results on changed in delta-x?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Bex:2005zm"
+
+\end_inset
+
+show that crowding applies to the identificaiton of direciton of motion
+ of a textured patch within a window.
+ Since the stimulus in that study does not include a global direction component,
+ it is not (all of our local motion features are identical.) Actually the
+ format of this study shares many similarities to our own, but what they
+ establish is the spatial interference of flanking (short-range) motion
+ on identification of neighboring patches of (short--range) motion, wherewas
+ what be identify in this study is the interference of flanking (short-range)
+ motion in the identification of (long-range) motion -- this is an interesting
+ distinction, as it shows that spatial interference happens in a way that
+ prevents 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Bex and Dakin 2005: 
+\begin_inset Quotes eld
+\end_inset
+
+Our observation that the spatial extent of crowding is larger for complex
+ mo- tion conﬁgurations is consistent with the large receptive ﬁelds (up
+ to 60 deg) that have been reported for optic ﬂow detectors (Burr et al,
+ 1998)
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Sequential recruitment (McKee) leading up to self-cuing (Verghese)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Write about Lu/Sperling's characterization of the third motion system in
+ terms of temporal frequency selectivity and why that fails here.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Response times! Review evidence that the computation of long range motion
+ takes longer than that for short range motion -- as evidenced in eye movements
+ as well as perception.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Let us now have a discussion of M-scaling -- it's here, every region does
+ it, what does that mean for our data?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Wallis and Bex 2011 find that crowding (letterforms) is associated with
+ the number of targets that rech awareness.
+ They use an adaptation-induced-blindness technique and ask for observer
+ reports of how many flankers were seen.
+ Reference this in discussion or motivation of number/density experiment.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Murkami and Shimojo 1993.
+ Motion capture.
+ Motion capture is an effect that is more easily seen parafoveally or peripheral
+ly.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The APA class has a hardcoded bibliography style (apacite).
+ So whatever you chose below in the BibTeX setting as a bibliography style,
+ it will be ignored.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "xampl,bibliography"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,7 @@
+*.makefile
+*.figlist
+*.mov
+*.dpth
+cache
+*.tikz
+Rfigs

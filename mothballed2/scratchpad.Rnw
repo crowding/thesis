@@ -1,0 +1,67 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usepackage[margin=1in]{geometry}
+\title{Minimal pgfSweave Example}
+\author{Peter Meilstrup}    
+
+\begin{document}
+\SweaveOpts{prefix.string=Rfig,echo=F,results=hide,cache=T}
+<<setup,cache=F>>= 
+setCacheDir("cache") 
+options(keep.space=TRUE)
+
+options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
+require(ggplot2)
+require(plyr)
+
+theme_set(theme_bw())
+theme_update(panel.grid.major = theme_blank(),
+             panel.grid.minor = theme_blank())
+@ 
+
+
+\maketitle
+
+Here is a thing I've been having problems with.
+
+<<fakedata>>=
+#fake data for the sake of reproducibility
+segment.rates <- 
+  expand.grid(
+              motionCondition = c("congruent", "incongruent", "counterphase"),
+              trial.extra.nVisibleTargets = 3:8,
+              spacing = 2*pi*20/3/c(9,12,15,18,21,25),
+              trial.extra.side=c("top","left","right","bottom"),
+              subject=c("pbm","cf")
+              )
+segment.rates <- 
+  mutate(segment.rates,
+         n = rpois(length(trial.extra.side),24),
+         correct = rbinom(length(n),n,0.5)/n
+         )
+@ 
+
+\begin{figure}[!ht]
+\centering
+<<testplot,fig=T,width=6,height=3>>=
+(ggplot(subset(segment.rates, motionCondition == "incongruent"))
+ + aes(factor(spacing), factor(trial.extra.nVisibleTargets), fill=correct)
+ + geom_point()
+ + geom_tile()
+ + scale_fill_gradient("Prop. long-range")
+ + facet_grid(subject ~ trial.extra.side)
+ + opts(aspect.ratio=1,
+        axis.text.x = theme_text(angle=45))
+ + scale_x_discrete("Spacing (deg.)", 
+                    formatter=function(x) format(as.numeric(x),digits=2))
+ + scale_y_discrete("No. moving elements")
+ ) -> segment.colormap
+print(segment.colormap)
+@
+
+\caption{This plot works in R but not pgfSweave?}
+\end{figure}
+
+
+\end{document}
