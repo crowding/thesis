@@ -1,0 +1,1203 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+
+\usepackage{movie15}
+
+\usepackage{hyperref}
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 0.5in
+\rightmargin 0.5in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B) 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{demo-multiple.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "movie:demo"
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ [MOVIE 1]
+\end_layout
+
+\end_inset
+
+ (A).
+ Motion elements moving alone.
+ At left, the carrier motion is opposite the envelope motion.
+ At right, the carrier motion is congruent with the envelope motion.
+ (B) Five elements are placed around each circle instead of one; otherwise
+ the stimulus is identical to A.
+ When elements are placed in close proximity, there is an eccentricity-dependent
+ change in appearance.
+ The appearance of the wheel on the left (with opposing carrier and envelope
+ motions) will change depending on where the eyes fixate.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) 
+\begin_inset Graphics
+	filename stimuli-motion-pulse.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B) 
+\begin_inset Graphics
+	filename stimuli-motion-element.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C) 
+\begin_inset Graphics
+	filename stimuli-direction-content.pdf
+	width 4in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(D) 
+\begin_inset Graphics
+	filename stimuli-circle.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli"
+
+\end_inset
+
+Construction of motion-direction stimuli.
+ (A)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-motion-pulse"
+
+\end_inset
+
+ A single motion pulse, shown in a space-time diagram.
+ Space is shown across the horizontal axis, and time is shown running down
+ the vertical axis.
+ Elements are Gabor-like with a moving carrier (visible as the tilt in this
+ diagram) and a fixed envelope.
+ The same motion elements are used for all experiments in this report.
+ (B) 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-motion-elements"
+
+\end_inset
+
+ Motion elements were constructed of several motion pulses, offset at regular
+ intervals in space and time.
+ "Envelope displacement" refers to the spatial dimension of the step.
+ The temporal dimension was fixed at 100 ms for these experiments.
+ (C) 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-direction-content"
+
+\end_inset
+
+We varied the directional content of the motion elements by mixing two carriers
+ in opposite directions.
+ A direction content of 0 is counterphase flicker, with equal energy along
+ both directions of carrier motion.
+ A direction content of 1 uses only the clockwise carrier.
+ The total contrast of counterclockwise and clockwise carriers was fixed
+ at 50%.
+ (D)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-circle"
+
+\end_inset
+
+ Stimuli comprised several motion elements arranged around a circle, with
+ the directions of carrier and envelope motion along its circumference.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout --Separator--
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{4in}{sample-stimuli.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "movie:sample-stimuli"
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+[MOVIE 2]
+\end_layout
+
+\end_inset
+
+ Example stimuli.
+ For these experiments, identically scaled stimuli were shown at 6.67 degrees
+ eccentricity.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A)
+\begin_inset Graphics
+	filename measurements-task.pdf
+	width 2in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(D)
+\begin_inset Graphics
+	filename measurements-measurements.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B)
+\begin_inset Graphics
+	filename measurements-wide.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C)
+\begin_inset Graphics
+	filename measurements-narrow.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements"
+
+\end_inset
+
+Task and example measurements.
+ (A)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements-task"
+
+\end_inset
+
+ Illustration of task.
+ Subjects viewed motion stimuli such as in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "movie:sample-stimuli"
+
+\end_inset
+
+ and indicated the apparent direction of motion within 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+check on actual numbers
+\end_layout
+
+\end_inset
+
+ 500-900 ms from stimulus onset.
+ (B)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements-narrow"
+
+\end_inset
+
+ Example data from subject FAKE, taken at a wide element spacing.
+ We measured the proportion of subjects' responses clockwise, as a function
+ of the envelope displacement 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+how about a schematic showing slow and fast motion?
+\end_layout
+
+\end_inset
+
+ for different conditions of carrier content.
+ Curves show best fits a logistic psychometric function 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+or a model fit as will be discussed later
+\end_layout
+
+\end_inset
+
+.
+ For the blue dots, carrier motion is biased to the left, and for the red
+ dots, carrier motion is biased to the right.
+ Note that a leftward shift of the psychometric function reflects that the
+ observer respond "clockwise" more often, so this observer sees more countercloc
+kwise motion when clockwise content is added to the carrier (that is, there
+ is repulsion.) (C)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements-wide"
+
+\end_inset
+
+ Example data taken at narrow target spacing.
+ The slopes of the psychometric functions are shallower and the effect of
+ carrier motion is stronger (and has reversed direction.) 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Probably, I only need one of B or C here.
+\end_layout
+
+\end_inset
+
+ (D)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements-measurements"
+
+\end_inset
+
+ To summarize each psychometric function we characterize each psychometric
+ function in terms of sensitivity and bias, here indicated on an example
+ psychometric function.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) 
+\begin_inset Graphics
+	filename content-wide.pdf
+	width 3in
+	rotateOrigin centerBaseline
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B)
+\begin_inset Graphics
+	filename content-narrow.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C) 
+\begin_inset Graphics
+	filename content-bias.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(D)
+\begin_inset Graphics
+	filename content-sensitivity.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(E) per-subject bias
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(F) Per-subject sensitivity
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:content"
+
+\end_inset
+
+ Effects of direction content.
+ Data was collected at four levels of direction content.
+ (A) Example data.
+ Colors code different levels of direction content.
+ In these figures, clockwise and counterclockwise direction contents are
+ folded together.
+ At left, data collected at wide spacing.
+ At right, data collected with narrow spacing.
+ Narrow spacing results in a shallower slope to the psychometric function,
+ while wide spacing results in a steeper slope.
+ At the same time, narrower spacing reveals a greater influence of direction
+ content on subjects' responses.
+ (B) Averaged bias and threshold over all subjects, plotted as a function
+ of direction content.
+ Line pattern and symbol shape correspond to spacing; colored tick marks
+ reference direction content from part A.
+ (C) Curves indicate model fits.
+ (D) Data for bias and spacing is averaged across subjects, with curves
+ indicating model fits.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) 
+\begin_inset Graphics
+	filename spacing-shifty.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B) 
+\begin_inset Graphics
+	filename spacing-bias.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename spacing-slopey.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename spacing-sensitivity.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C) bias shift vs.
+ sensitivity change
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spacing"
+
+\end_inset
+
+ Spacing manipulation.
+ Direction content was held constant (randomized between clockwise and countercl
+ockwise.
+ (A) Example data for three subjects, showing a variety of effects.
+ For [Subject A], spacing appears to shift the psychometric function.
+ For JB, spacing appears to flatten the psychometric function without shifting
+ the point of subjective equality.
+ For [Subject B], a combination of the effects is evident.
+ (B) Row 1: Bias as a function of element spacing for 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+number
+\end_layout
+
+\end_inset
+
+N subjects.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+[Since there is a color mapping for these data, there should be a color
+ mapping connecting the two plots.]
+\end_layout
+
+\end_inset
+
+ (C) The bias shift versus sensitivity change for each subject.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{4in}{demo_segment.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Example stimuli for number and density experiment.
+ Elements were presented in one hemifield.
+ There are stationary flankers, which have zero direction content and zero
+ displacement.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) Example stimulus
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B) Spacing and color values used
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C) Repeat 
+\begin_inset Formula $\psi$
+\end_inset
+
+ functions for PBM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Repeat 
+\begin_inset Formula $\psi$
+\end_inset
+
+ functions for NJ
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(D) number vs.
+ spacing plot for PBM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+number vs.
+ spacing plot for NJ
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Swap PBM (do colors still code spacing)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Swap PBM (do colors still code spacing?)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(E) Spacing-coefficient versus number-coefficient
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number and density experiment.
+ (A) Example stimuli.
+ Elements were presented in one hemifield.
+ There are stationary flankers, which have zero direction content and zero
+ displacement.
+ (B) The combinations of element number (not including flankers) and element
+ spacing used.
+ (C) Example data, as in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spacing"
+
+\end_inset
+
+, for two subjects.
+ We selected a value of contrast and spacing that provided a good dynamic
+ range in each subject's behavior (indicated as vertical line.) (D) These
+ content and spacing values were tested using single-hemifield stimuli with
+ varying number (as in A).
+ Line pattern represents element spacing and symbol shape corresponds to
+ element number.
+ Element spacing explains most of the variation in PBM's responses but does
+ not explain NJ's responses.
+ The same data replotted with color and x-axis swapped.
+ Element number explains most of NJ's variation but not PBM's.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Establishment of model (A) Calculation of motion energy (B) Cartoon explaining
+ model with Gabors, etc.
+ (C) model parameter fits (compare to shiftiness versus steepiness etc.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
