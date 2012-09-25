@@ -1,0 +1,694 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Demonstrations and Subjective Observations
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:lookatthis"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Structurally I view this section as a sort of 
+\begin_inset Quotes eld
+\end_inset
+
+Experiment 0
+\begin_inset Quotes erd
+\end_inset
+
+.
+ To me it has the fewest sequencing problems I describe the stimulus before
+ this section, and if I describe the task after this section.
+ So task description would go into submethods for experiment 1.
+ If I have had some demonstrations before motivating Experiment 1, and for
+ the demonstrations to follow a description of how the stimuli are constructed.
+\end_layout
+
+\begin_layout Plain Layout
+I think I want to talk about subjective observations in a model-neutral
+ matter here, whole perhaps coming back to model-relevant things suggested
+ by subjective appearance later in discussion (under the rubric of 
+\begin_inset Quotes eld
+\end_inset
+
+what kind of motion system is this stimulating?
+\begin_inset Quotes erd
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It is worth commenting about some properties of this type of stimulus that
+ can be subjectively observed, and (so far as we can tell) aknowledged by
+ almost all colleagues we show our displays to, even though we do not attempt
+ to establish them quantitatively.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ demonstrates the effect of eccentric viewing on the subjective appearance
+ of motion in the display.
+ Two 
+\begin_inset Quotes eld
+\end_inset
+
+wheels
+\begin_inset Quotes erd
+\end_inset
+
+ are shown, each containing five moving elements.
+ Each element has a short range motion, and a long range displacement.
+ In the wheel on the right, the direction of short-range and long-range
+ components is in agreement (both counterclockwise) whereas for the wheel
+ on the left, the short range component is clockwise while the long range
+ component is counterclockwise.
+ What is striking in this display is that its appearance changes depending
+ on the viewer's gaze.
+ With the eyes fixated on the point in the center of the left wheel, the
+ elements on both wheels appear to orbit counterclockwise.
+ But if gaze is focused on the right wheel, the left wheel now appears to
+ rotate counterclockwise.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:singles"
+
+\end_inset
+
+ shows only one element in each circle, but is otherwise identical to 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+.
+ In this case the direction of gaze does does not cause a change in the
+ perceived direction of motion of the element on the left.
+ Therefore it would appear that it is not just eccentric viewing that causes
+ short range motion to dominate over long range, but also the 
+\emph on
+density
+\emph default
+ of the elements in the stimulus.
+\end_layout
+
+\begin_layout Standard
+Taken together, these demonstrations motivate our investigation of the interplay
+ of three factors in determining motion perception: the agreement of short-range
+ and long-range movement, the eccentricity of the stimulus, and the density
+ of elements contained therein.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_counter.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:wheels"
+
+\end_inset
+
+When fixating at the center of the left wheel, both wheels appear to move
+ in the same direction.
+ But when fixating the center of the right wheel, both wheels appear to
+ move in opposite directions.
+ The appearance of the right wheel's movement reverses depending on the
+ viewing eccentricity.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_single.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:singles"
+
+\end_inset
+
+Same stimulus as 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ with only one element used in each.
+ The perceived direction of motion is independent of eccentricity.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_eyemovements.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:eyemovements"
+
+\end_inset
+
+As above, but there is no displacement of the envelopes over time.
+ In this case the sensation of motion appears to be affected by fixational
+ eye movements.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:wheels"
+
+\end_inset
+
+Demonstrations of subjective phenomena.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The primary phenomenon we will be exploring in this paper is the density-driven
+ reversal of the apparent direction of motion 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Can I just say: I just hate the term "apparent motion," whose existence
+ in the jargon of its field does nothing but force me to write awkward doubletal
+k to avoid that collocation.
+ As t turns out I am very concerned with the sensation of the appearance
+ of visual motion, which ought to be called apparent motion -- the original
+ meaning of the phrase -- to distinguish the sensation from the stimulus
+ that elicits it.
+ Instead, "apparent motion" has ossified into a jargon, taken to refer to
+ stimuli composed of discrete momentary images, lacking a continuous physical
+ translation of the light-generating object.
+ It is a phrase named after a sensation but understood as a type of stimulus.
+ This is bonkers.
+ 
+\end_layout
+
+\end_inset
+
+ that occurs in incongruent stimuli (those whose short range and long range
+ components are in opposition.) When elements are widely spaced, the apparent
+ direction of motion follows that of the envelopes; as element spacing decreases
+, the direction of motion changes to agree with that of the carrier.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+start by describing narrow spacings, then intermediate, then wide.
+ I might want specific looping demonstrations of narrow/intermediate/wide
+ spacings.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We will proceed to quantify this reversal effect below.
+ In order to do so we ask subjects to make forced classifications of the
+ stimulus' overall direction (clockwise or counterclockwise.) However, the
+ subjective appearance of our stimulus can be complex, with several properties
+ that change aside from overall direction.
+ Although we do not attempt to quantify these details of the appearance
+ of our stimuli, we feel it is worth describing our impressions of them.
+ Suitable individual adjustments of element spacing and other properties
+ appear to elicit the same kinds of descriptions in everyone we have shown
+ these stimuli to.
+\end_layout
+
+\begin_layout Standard
+When elements are closely spaced, it is generally impossible to see the
+ direction of envelope motion; the overall impression is of motion the the
+ direction of the carrier.
+ However, the amount of subjective flicker does appear to differ between
+ incongruent and congruent motion, with ingongruent motion having more flicker.
+\end_layout
+
+\begin_layout Standard
+Increasing the inter-element spacing somewhat, we approach a critical spacing,
+ where for incongruent stimuli, subjects equivocate in their reports of
+ perveived motion direction, 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+[NOTE: This would be the first introduction of 
+\begin_inset Quotes eld
+\end_inset
+
+critical distance.
+\begin_inset Quotes erd
+\end_inset
+
+ ]
+\end_layout
+
+\end_inset
+
+ The subjective appearance of a critically spaced, incongruent motion stimulus
+ is somewhat variable.
+ To some observers, it appears to first move in the direction of the carrier,
+ and then to reverse direction shortly after stimulus onset.
+ Although both the carrier and envelope motions are (considered separately)
+ consistent with an underlying rigid rotation of a surface around the fixation
+ point, or alternately a rotation of the observer, the perception does not
+ appear to obey a rigid body constraint; elements can appear to move clockwise
+ in some parts of the circle and counterclockwise elsewhere.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Further, when motion direction appears to reverse after stimulus onset,
+ the perceptual reversal (and its behavioral correlate) occurs much faster
+ than the perceptual change that occurs when separate moving objects are
+ reinterpreted as a smaller number of rigidly moving bodies 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anstis:2011vn"
+
+\end_inset
+
+
+\emph on
+.
+
+\emph default
+ Nor is the perception of movement bistable; a change in perceived direction
+ for some element of the circle does not, in general, cause the perceived
+ motion of the entire stimulus switch direction.
+ Attention does play a role; for incongruent displays with closely spaced
+ elements, it is possible to direct attention to one (or sometimes several)
+ elements in the circle.
+ These elements are seen to move in the direction of envelope motion, but
+ the rest of the circle is seen to move in the contrary direction, making
+ for a somewhat paradoxical percept wherein movement is in opposite directions,
+ but individual elements are not seen to cross over or collide.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Increasing the spacings further to where element motion tends to dominate,
+ observers often describe the motion contained in the stimulus as belonging
+ to two components, one belonging to the motion of the elements themselves,
+ and the other being a kind of 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+ overlaid on top of the elements.
+ This seems similar to the perception elicited by a moving grating superposed
+ on a stationary pedestal 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lu:2001fv"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+At even wider element spacings the envelope motion dominates the perception.
+ It becomes difficult to even tell the direction of motion of the carrier,
+ apart from the amount of flicker.
+ That is, the 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+ seen at slightly smaller spacings becomes less evident.
+ This 
+\begin_inset Quotes eld
+\end_inset
+
+capture
+\begin_inset Quotes erd
+\end_inset
+
+ phemomenon was characterized by Hedges et al.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+This would happen to be the 
+\begin_inset Quotes eld
+\end_inset
+
+capture
+\begin_inset Quotes erd
+\end_inset
+
+ effect that Hedges et al.
+ explore.
+\end_layout
+
+\end_inset
+
+ for single element stimuli constructed similarly to ours.
+ 
+\end_layout
+
+\begin_layout Standard
+The subjective speed of the elements also changes with the element spacing.
+ As element spacing is reduced, the perceived speed of element motion (as
+ distinguished from the 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+) also seems to reduce, until spacing near the critical distance, where
+ the elements almost appear to be at a near standstill over the brief duration
+ of the stimulus.
+\end_layout
+
+\begin_layout Standard
+Thus at very narrow and very wide element spacings it becomes difficult
+ to tell congruent motion apart from incongruent motion via the sensation
+ of motion direction.
+ However, the sensation of subjective flicker and smoothness of movement
+ does tend to tell the two stimuli apart.
+ Incongruent stimuli have more flicker, at both narrow and wide element
+ spacings, and appear to move less smoothly.
+ We have attempted to correlate this sensation of smoothness or lack thereof
+ with reports of the instantaneous position of the elements, 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+, e.g.
+ relative to a flash,
+\end_layout
+
+\end_inset
+
+ without success.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Which demos are necessary to underscore these points?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+This next paragraph doesn't really connect to anything unless I perform
+ an analysis of microsaccades in the task....
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As a final note, in some instances it appears that small fixational eye
+ movements have some influence over the appearance of these stimuli.
+ This is most easily demonstrated in a where the long range displacement
+ is zero but the carrier has a consistent direction, as shown in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:eyemovements"
+
+\end_inset
+
+.
+ Viewing this stimulus with the elements in the periphery, one sees a counterclo
+ckwise motion of the stimulus, which appears to fade and slow over time.
+ Hovever, large or small saccades seem to re-awaken the movement, causing
+ it to speed up again.
+ The impression is similar to that seen in versions of the peripheral drift
+ illusion, such as the 
+\begin_inset Quotes eld
+\end_inset
+
+rotating snakes
+\begin_inset Quotes erd
+\end_inset
+
+ illusion of Kitaoka 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kitaoka:2007fv"
+
+\end_inset
+
+.
+ However, while perceived motion in the peripheral drift illusion appears
+ to be driven by slight shifts of a stationary image on the retina, the
+ construction of our stimulus would tend to rule that out as a mechanism;
+ the motion is directly contained in the stimulus.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+NOTE: Comparing further to rotating snakes would be overthinking, but: each
+ retinal slip has a direction, which (in the rotating snakes) interacts
+ with a chiral asymmetry of the stimulus to produce a coherent direction
+ of perceived motion.
+ But our stimulus lacks this chiral asymmetry; a retinal slip would have
+ an opposite effect in each side of the circle.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,1605 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+General Methods
+\end_layout
+
+\begin_layout Subsection
+Observers
+\end_layout
+
+\begin_layout Standard
+Observers were one of the authors (P.B.M.) and 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+SOME NUMBER OF
+\end_layout
+
+\end_inset
+
+ naïve observers.
+ All had normal or corrected-to-normal vision.
+ 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+verbiage about subject compensation, experiment protocol approval, etc.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Equipment
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:methods-equipment"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%data
+\end_layout
+
+\begin_layout Plain Layout
+
+<<data, cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("Constant.Rdata")
+\end_layout
+
+\begin_layout Plain Layout
+
+common.manipulations(environment())
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%settings
+\end_layout
+
+\begin_layout Plain Layout
+
+<<settings,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+calibration <- runs[[1,'afterRun.params']][['cal',1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+screen.distance <- calibration[["distance",1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+display.resolution <- calibration[["rect",1,1]][c(3,4)]
+\end_layout
+
+\begin_layout Plain Layout
+
+display.size <- display.resolution*calibration[["spacing",1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+black.luminance <- calibration[["calibration",1,1]][["stage2",1,1]][["readings",1
+,1]][c(1)]
+\end_layout
+
+\begin_layout Plain Layout
+
+white.luminance <- calibration[["calibration",1,1]][["stage2",1,1]][["readings",1
+,1]][c(256)]
+\end_layout
+
+\begin_layout Plain Layout
+
+refresh.rate <- round(1/calibration[["interval",1,1]])
+\end_layout
+
+\begin_layout Plain Layout
+
+sample.rate <- runs[[1,'beforeRun.params']][['eyelinkSettings',1,1]][['sample.rate'
+,1,1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+example.trial <- tail(subset(trials, trial.version...function == "ConcentricTrial"
+ & subject == "jt" & result.success),n=1)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Stimuli were presented on a flat CRT video monitor (ViewSonic PF790).
+ Its resolution was set to 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{display.resolution[1]}
+\backslash
+times
+\backslash
+Sexpr{display.resolution[2]}
+\backslash
+;
+\backslash
+mathrm{pixels}$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ over a display area of 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(display.size[1],nsmall=1)}
+\backslash
+times
+\backslash
+Sexpr{format(display.size[1],nsmall=1)}
+\backslash
+centi
+\backslash
+meter$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+800 by 600 pixels and it used a 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{refresh.rate}
+\backslash
+hertz$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 120 Hz refresh rate.
+ Experiments were programmed in MATLAB using the Psychtoolbox 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Brainard:1997gq"
+
+\end_inset
+
+ and Eyelink toolbox extensions 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cornelissen:2002wl"
+
+\end_inset
+
+, along with custom OpenGL code.
+ All guns were fixed at the same voltage to show grayscale stimuli.
+ The monitor was calibrated using a Tektronix 
+\begin_inset Note Greyedout
+status collapsed
+
+\begin_layout Plain Layout
+model-number
+\end_layout
+
+\end_inset
+
+ photometer.
+ A 50% gray background was chosen to lie at the midpoint between mimimum
+ (
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(black.luminance,nsmall=2)} 
+\backslash
+candela
+\backslash
+per
+\backslash
+meter
+\backslash
+squared$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+) and maximum (
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(white.luminance,nsmall=2)} 
+\backslash
+candela
+\backslash
+per
+\backslash
+meter
+\backslash
+squared$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+) luminances, which were in turn measured as patches against the gray background.
+ A hardware lookup table with 10-bit resolution was used to linearize the
+ display response.
+ 
+\end_layout
+
+\begin_layout Standard
+Subjects sat behind a blackout curtain so that ambient illumination was
+ mostly due to the monitor and viewed the screen binocularly using a chin
+ and forehead rest with the eyes 60 cm
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{screen.distance}
+\backslash
+centi
+\backslash
+meter$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ from the screen.
+ Eye position was monitored using a video-based eye tracker (EyeLink 1000;
+ SR Research) using a sample rate of 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+1000 Hz
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{sample.rate}
+\backslash
+hertz$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ Subjects gave responses by turning a knob (PowerMate; Griffin Technologies)
+ with their preferred hand.
+ 
+\end_layout
+
+\begin_layout Subsection
+Stimuli
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:methods-stimuli"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B) 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{2in}{demo-multiple.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "movie:demo"
+
+\end_inset
+
+ (A).
+ Motion elements moving alone.
+ At left, the carrier motion is opposite the envelope motion.
+ At right, the carrier motion is congruent with the envelope motion.
+ (B) Five elements are placed around each circle instead of one; otherwise
+ the stimulus is identical to A.
+ When elements are placed in close proximity, there is an eccentricity-dependent
+ change in appearance.
+ The appearance of the wheel on the left (with opposing carrier and envelope
+ motions) will change depending on where the eyes fixate.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A) 
+\begin_inset Graphics
+	filename stimuli-motion-pulse.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B) 
+\begin_inset Graphics
+	filename stimuli-motion-element.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C) 
+\begin_inset Graphics
+	filename stimuli-direction-content.pdf
+	width 4in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(D) 
+\begin_inset Graphics
+	filename stimuli-circle.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli"
+
+\end_inset
+
+Construction of motion-direction stimuli.
+ (A)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-motion-pulse"
+
+\end_inset
+
+ A single motion element, shown in a space-time diagram.
+ Space is shown across the horizontal axis, and time is shown running down
+ the vertical axis.
+ Elements are Gabor-like with a moving carrier (visible as the tilt in this
+ diagram) and a fixed envelope.
+ The same motion elements are used for all experiments in this report.
+ (B) 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-motion-elements"
+
+\end_inset
+
+ Motion elements were constructed of several motion pulses, offset at regular
+ intervals in space and time.
+ "Envelope displacement" refers to the spatial dimension of the step.
+ The temporal dimension was fixed at 100 ms for these experiments.
+ (C) 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-direction-content"
+
+\end_inset
+
+We varied the directional content of the motion elements by mixing two carriers
+ in opposite directions.
+ A direction content of 0 is counterphase flicker, with equal energy along
+ both directions of carrier motion.
+ A direction content of 1 uses only the clockwise carrier.
+ The total contrast of counterclockwise and clockwise carriers was fixed
+ at 50%.
+ (D)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stimuli-circle"
+
+\end_inset
+
+ Stimuli comprised several motion elements arranged around a circle, with
+ the directions of carrier and envelope motion along its circumference.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Stimuli were designed to provide independent higher-order, position-based
+ motion, and first-order motion energy.
+ We did this by independently controlling the motion of the envelope and
+ the carrier of oriented motion sitmuli.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+I am describing the stimulus from the bottom up in the figure caption and
+ from the top down in this para.
+ I mean why not?
+\end_layout
+
+\end_inset
+
+ This stimuli used are shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:stimuli"
+
+\end_inset
+
+.
+ The stimuli consisted of a number of repeatedly presented, identically
+ moving elements arranged into a circle at centered on the fixation point
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:stimuli-circle"
+
+\end_inset
+
+.
+ The elements were presented 5
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{example.trial$trial.motion.process.n+1}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ times, each offset by regular space (
+\begin_inset Formula $\Delta x$
+\end_inset
+
+) and time (
+\begin_inset Formula $\Delta t$
+\end_inset
+
+) intervals 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:stimuli-motion-elements"
+
+\end_inset
+
+.
+ Along the direction of motion, the luminance distribution of an element
+ was given by a Cauchy filter function 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Klein:1985rz"
+
+\end_inset
+
+ At right angles to the direction of motion the elements were windowed by
+ a Gaussian envelope with standard deviation 
+\begin_inset Formula $w/2$
+\end_inset
+
+, while the temporal onset and offset of each element was a Gaussian with
+ standard deviation equation 
+\begin_inset Formula $d/2$
+\end_inset
+
+.
+ An equation describing the luminance profile of a single envelope, centered
+ at 
+\begin_inset Formula $(x,y,t)=(0,0,0)$
+\end_inset
+
+ with the direction of motion along 
+\begin_inset Formula $x$
+\end_inset
+
+ is: 
+\begin_inset Formula 
+\[
+L(x,y,t)=\mathrm{cos}^{n}(\mathrm{tan}^{-1}(fx/n))\mathrm{cos}(n\cdot\mathrm{tan}^{-1}(fx/n)+\omega t)e^{-(t/2d)^{2}-(y/2w)^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here 
+\begin_inset Formula $\omega$
+\end_inset
+
+ controls the temporal frequency, 
+\begin_inset Formula $f$
+\end_inset
+
+ the spatial frequency, temporal profile of each envelope was Gaussian,
+ with standard deviation ; at the moment of maximum contrast the carrier
+ was always in cosine phase 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:stimuli"
+
+\end_inset
+
+(A).
+ The motion elements were with peak spatial frequency .
+\end_layout
+
+\begin_layout Standard
+To control the amount of motion energy in each element we combined two elements
+ with opposite directions of motion, with varying amounts of relative contrast
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:stimuli-direction-content"
+
+\end_inset
+
+.
+ We define the 
+\noun on
+direction content
+\noun default
+ 
+\begin_inset Formula $C=\frac{C_{CW}-C_{CCW}}{C_{CW}+C_{CCW}}$
+\end_inset
+
+ where 
+\begin_inset Formula $C_{CW}$
+\end_inset
+
+ and 
+\begin_inset Formula $C_{CCW}$
+\end_inset
+
+ denote the contrasts of clockwise and counterclockwise componenets.
+ Thus 
+\begin_inset Formula $C$
+\end_inset
+
+ has a range of 
+\begin_inset Formula $[-1,1]$
+\end_inset
+
+ and a value of 0 indicates a counterphase flicker with equal parts clockwise
+ and counterclockwise motion energy.
+ The total luminance contrast 
+\begin_inset Formula $C_{CW}+C_{CCW}=0.5$
+\end_inset
+
+ for the experiments reported here.
+\end_layout
+
+\begin_layout Standard
+The examples in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:stimuli"
+
+\end_inset
+
+ have the following settings, the same as used in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:reversal"
+
+\end_inset
+
+: For all trials, 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+delta-t
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Delta t = 
+\backslash
+Sexpr{example.trial$trial.motion.process.dt*1000}
+\backslash
+milli
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+omega
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+omega = 
+\backslash
+Sexpr{with(example.trial, abs(trial.motion.process.velocity[[1]][1] / trial.motion.pro
+cess.wavelength))} 
+\backslash
+hertz$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, and 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+d
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$d = 
+\backslash
+Sexpr{format(example.trial$trial.motion.process.duration, digits=2)}
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ For stimuli at 
+\begin_inset Formula $10^{\circ}$
+\end_inset
+
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+update this for 6.67 eccentricity
+\end_layout
+
+\end_inset
+
+ eccentricity, 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+spatial frequency
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$f = 
+\backslash
+Sexpr{format(1 / (example.trial$trial.extra.wavelengthScalar * 10), digits=2,nsmall
+=2)} 
+\backslash
+mathrm{cyc}
+\backslash
+per
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, and
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$w = 
+\backslash
+Sexpr{example.trial$trial.extra.widthScalar*10}
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, and these three parameters were scaled proportionately to eccentricity.
+\end_layout
+
+\begin_layout Section
+Experiment 1
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:reversal"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The demonstrations in
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:singles"
+
+\end_inset
+
+ seem to suggest that the perceived reversal of motion direction is a function
+ not only of eccentricity viewing but of an interaction between multiple
+ moving elements.
+ We explored this spatial interaction by varying the distance between elements
+ that were moving at a constant eccentricity.
+ 
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%radii
+\end_layout
+
+\begin_layout Plain Layout
+
+<<radii,cache=TRUE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+radii <- sort(unique(subset(trials, trial.version...function == "ConcentricTrial")$t
+rial.motion.process.radius))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Observers viewed stimuli at four different eccentricities (
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{paste.comma(sapply(radii, latex.format, digits=2, nsmall=2),collapse=TRUE)}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\degree$
+\end_inset
+
+), with parameters as described in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:stimuli"
+
+\end_inset
+
+.
+ Elements were spaced evenly around a circle surrounding the fixation point;
+ therefore varying the spacing of the elements is equivalent to increasing
+ the number of elements in the stimulus.
+ We ued the method of constant stimuli.
+ The stimulus in each trial with equal probability contained either congruent,
+ incongruent, or counterphase motion elements, with the direction of long
+ range motion being with equal probability clockwise or counterclockwise.
+ The set of element spacings was chosen to cover the psychometric function
+ for each observer, based on preliminary sessions.
+ Data shown is an aggregate of multiple sessions (at least 3 for each subject).
+\end_layout
+
+\begin_layout Subsubsection
+Task
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(A)
+\begin_inset Graphics
+	filename measurements-task.pdf
+	width 2in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(D)
+\begin_inset Graphics
+	filename measurements-measurements.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(B)
+\begin_inset Graphics
+	filename measurements-wide.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(C)
+\begin_inset Graphics
+	filename measurements-narrow.pdf
+	width 3in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:task-1"
+
+\end_inset
+
+Task and example measurements.
+ (A)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:task-timeline"
+
+\end_inset
+
+ Illustration of task.
+ Subjects viewed motion stimuli such as in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "movie:sample-stimuli"
+
+\end_inset
+
+ and indicated the apparent direction of motion within 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+check on actual numbers
+\end_layout
+
+\end_inset
+
+ 500-900 ms from stimulus onset.
+ (B)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:task-measurements-wide"
+
+\end_inset
+
+ Example data from subject FAKE, taken at a wide element spacing.
+ We measured the proportion of subjects' responses clockwise, as a function
+ of the envelope displacement 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+how about a schematic showing slow and fast motion?
+\end_layout
+
+\end_inset
+
+ for different conditions of carrier content.
+ Curves show model fits (as discussed below) to FAKE's data 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+or a model fit as will be discussed later
+\end_layout
+
+\end_inset
+
+.
+ For the blue dots, carrier motion is biased to the left, and for the red
+ dots, carrier motion is biased to the right.
+ Note that a leftward shift of the psychometric function reflects that the
+ observer respond "clockwise" more often, so this observer sees more countercloc
+kwise motion when clockwise content is added to the carrier; that is, there
+ is repulsion.
+ (C)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements-wide"
+
+\end_inset
+
+ Example data taken at narrow target spacing.
+ The slopes of the psychometric functions are shallower and the effect of
+ carrier motion is stronger.
+ Now the bias is in the direction of the carrier motion; there is assimilation.
+ (D)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:measurements-measurements"
+
+\end_inset
+
+ To summarize each psychometric function we characterize each psychometric
+ function in terms of sensitivity and bias, here indicated on an example
+ psychometric function.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The timecourse of a trial is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:task"
+
+\end_inset
+
+.
+ A fixation point was presented.
+ The computer then waited for the observer to fixate.
+ 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+250
+\end_layout
+
+\end_inset
+
+ ms after detecting fixation, the motion stimulus was shown.
+ After the motion stimulus concluded, observers indicated the direction
+ of perceived motion by turning a knob.
+ If an observer blinked or broke fixation before the offset of the motion
+ stimulus, the trial was aborted and reshuffled into the stimulus set, to
+ be repeated later in the session.
+ Response latency was defined as the elapsed time between motion onset and
+ the knob being turned.
+  There was also a time pressure to the task; If the response latency was
+ more than
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{example.trial$minResponseTime*1000}
+\backslash
+milli
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ or less than
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{example.trial$maxResponseTime*1000}
+\backslash
+milli
+\backslash
+second$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+, observers received visual feedback that their response was either too
+ fast or too slow, and the trial was reshuffled into the stimulus set to
+ be repeated later in the session.
+ An audio click was played each time subjects gave a response.
+ This seemed to help subjects establish a consistent rhythm through the
+ experiment.
+ No feedback was given as to the direction of observers' responses, only
+ whether they had responded within the time window.nObservers were instructed
+ to report the apparent direction of motion, and told that there were no
+ correct answers.
+ In some conditions observers reported seeing conflicting directions of
+ motion.
+ In those cases observers were instructed to report whichever direction
+ of motion appeared more salient.
+\end_layout
+
+\begin_layout Standard
+Observers performed the task in sessions of at most 1 hour, divided into
+ 4 to 6 blocks, and were prompted to take a break between blocks.
+ Subjects could also rest at any point by simply delaying fixation.
+ At the beginning of each block, the eye tracking system was automatically
+ recalibrated by asking the subject to make saccades to a sequence of targets
+ at randomly chosen locations on the screen.
+\end_layout
+
+\begin_layout Subsection
+Experiment 1
+\end_layout
+
+\begin_layout Standard
+To measure the sensitivity of observers to envelope motion, we measured
+ psychometric functions of envelope displacement.
+ We used a staircase procedure to locate the 
+\end_layout
+
+\begin_layout Subsubsection
+Effect of spacing
+\end_layout
+
+\begin_layout Standard
+In these sessions the direction content C was fixed for the entire session
+ (though we randomized whether it was clockwise or counterclockwise.) We
+ used several values of the spacing
+\end_layout
+
+\begin_layout Subsubsection
+Effect of content
+\end_layout
+
+\begin_layout Standard
+In these sessions direction content varied among four values
+\end_layout
+
+\begin_layout Subsection
+Experiment 2
+\end_layout
+
+\begin_layout Subsection
+Experiment 3 (effect of eccentricity)
+\end_layout
+
+\end_body
+\end_document
