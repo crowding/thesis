@@ -1,0 +1,654 @@
+#LyX 1.6.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass apa
+\begin_preamble
+%% uncomment the following line to get this information
+% below the tile
+%\note{Draft of \today}
+
+%% Some information on the journal. This will be
+%% printed on the headline of the first page
+%% Just uncomment wir a '%' if you don't want this
+% Journal name
+\journal{The Test Journal}
+% volume, number, pages
+\volume{Vol. 0 (2007), pp.~1--22}
+% copyright notice
+\ccoppy{\textcopyright\ The Author}
+% Serial number or other reference
+\copnum{ISSN XXX-XXXX-XXXX}
+
+%% The usual ...
+\acknowledgements{Author notes, acknowledgements, contact information go here \ldots}
+\end_preamble
+\options jou
+\use_default_options false
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 0
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Note that the APA class provides three different 
+\begin_inset Quotes eld
+\end_inset
+
+modes
+\begin_inset Quotes erd
+\end_inset
+
+ that generate different looks: 
+\emph on
+Manuscript mode (man)
+\emph default
+, 
+\emph on
+Printed Journal mode (jou)
+\emph default
+ and 
+\emph on
+Regular LaTeX mode (doc)
+\emph default
+.
+ The modes can be switched by entering the class options 
+\emph on
+man
+\emph default
+, 
+\emph on
+jou
+\emph default
+ or 
+\emph on
+doc
+\emph default
+ to Document\SpecialChar \menuseparator
+Settings\SpecialChar \menuseparator
+Options.
+ This template uses the Printed Journal mode.
+\end_layout
+
+\begin_layout Plain Layout
+Have a look at Document\SpecialChar \menuseparator
+Settings\SpecialChar \menuseparator
+Preamble for further settings.
+ A brief documentation can be found at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://ctan.basemirror.de/macros/latex/contrib/apa/apacls.html
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+A fixed cortical distance governs perceptual integration of local motion
+ and position
+\end_layout
+
+\begin_layout RightHeader
+MOTION INTEGRATION
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+for manuscript mode, use 
+\emph on
+ShortTitle
+\emph default
+ instead
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Peter B.
+ Meilstrup and Michael N.
+ Shadlen
+\end_layout
+
+\begin_layout Affiliation
+Psysiology and Biophysics
+\begin_inset Newline newline
+\end_inset
+
+University of Washington
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+If your paper is written by multiple authors from the same affiliation,
+ just enter them as 
+\begin_inset Quotes eld
+\end_inset
+
+Author1 and Author2
+\begin_inset Quotes erd
+\end_inset
+
+.
+ However, if there are multiple authors from different affiliations involved,
+ chose 
+\emph on
+TwoAuthors
+\emph default
+, 
+\emph on
+ThreeAuthors
+\emph default
+ or 
+\emph on
+FourAuthors
+\emph default
+ instead auf 
+\emph on
+Author
+\emph default
+.
+ Note that in this case, authors have to be separated by 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+ in TeX mode, e.
+\begin_inset space \thinspace{}
+\end_inset
+
+g.
+\begin_inset space \space{}
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+My name
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+My colleague's name
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Note further that you must use the corresponding Affiliation style, i.
+\begin_inset space \thinspace{}
+\end_inset
+
+g.
+\begin_inset space \space{}
+\end_inset
+
+
+\emph on
+TwoAffiliations
+\emph default
+ for 
+\emph on
+TwoAuthors
+\emph default
+, etc.
+ (using again the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+ separator).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Just to test the bibliography, we are citing some fake authors here: 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "article-full"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "booklet-full"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "misc-full"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Accurate motion perception is essential for visually guided movement; complex
+ behaviors such as chasing prey or catching a thrown ball require that an
+ organism be able to rapidly determine the position and velocity of a moving
+ object, and to anticipate its trajectory through space.
+ Psychological research on motion perception has established that local
+ and global motion are processed by separate mechanisms, an idea that dates
+ back to Wertheimer's phenomenological distinction between fast `phi' and
+ slower `beta' motion
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Steinman:2000ap"
+
+\end_inset
+
+.
+ It is believed that local (or short range) mechanisms respond to the motion
+ of visual features defined by luminance, or by motion energy in the Fourier
+ domain 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Adelson:1985ea"
+
+\end_inset
+
+, at short temporal and spatial scales.
+ Long-range or global motion 
+\backslash
+todo{I have a distaste for `global' as a name for the second process.
+ It leads people down a wrong path of thinking about the wheel stimulus
+ as having a `global' movement i.e.
+ globally consistent with solid body rotation of the wheel, whereas what
+ we are 
+\backslash
+em{actually} talking about here is a perception of the 
+\backslash
+emph{shift in position} of different elements; it's quite easy to have a
+ perception of the wheel stimulus that is 
+\backslash
+emph{not} coherent with a solid body.} does not necessarily require features
+ to differ in mean luminance from the background, does not necessarily contain
+ motion energy in the Fourier domain, and is characterized by operating
+ over longer spatial and temporal scales than the short-range process.
+ Strong global motion percepts can be elicited by stimuli that modulate
+ in contrast or texture rather than in luminance.
+ In general, global motion seems to involve the change in position, over
+ time, of some feature in the image
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Lu:1995la"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+It is thought that local motion mechanism originates in cells in V1.
+ Classic models of local motion include local filters that extract directional
+ signals from space-time correlations in luminance contrast in a small region
+ of space, in a way similar to what has been observed to drive the activity
+ of cells in V1 
+\backslash
+todo{cites:(Reichardt; Adelson; Simoncelli; Ullman 
+\backslash
+& Marr; others)}.
+ Psychophysical data are consistent with the notion that the size of the
+ local motion filters are similar in size of the classical receptive field
+ of a V1 neuron.
+ 
+\backslash
+todo{cites} Global motion on the other hand consists of processes that track
+ an object over distances larger than what can be achieved through individual
+ local filters.
+ A strong sensation of global motion can be created without any local motion
+ signal, so it is possible that local and global mechanisms have independent
+ origins.
+ The anatomical substrate of global motion mechanism is unknown.
+ While MT and MST have been proposed as candidates, 
+\backslash
+emph{certain properties of these regions don't match what is known about
+ our sensations of global motion.
+ (Movshon, etc.)}
+\end_layout
+
+\begin_layout Standard
+One thing that makes accurate estimation of motion particularly difficult
+ is that the local motion signals are not always a reliable indication of
+ the global motion.
+ In a complicated visual world, motion can come from many sources, and accurate
+ perception of the movement of objects requires disambiguating those motion
+ signals attributable to the object from irrelevant motions in the background
+ or of other objects.
+ Take the example of a frog trying to catch a zebra butterfly within waving
+ grass.
+ While many of the local signals will correctly signal the motion of the
+ butterfly, the motion of the grass creates a subset of local motion signals
+ that are substantially incorrect.
+ Thus, a simple average of the motion over any receptive field large enough
+ to cover more than a tiny portion of the scene will not accomplish the
+ goal of tracking the motion of the butterfly.
+ On the other hand, an average of motion signals within very small regions
+ will also be incorrect; small regions containing only one edge cannot uniquely
+ determine the motion of an object (the `aperture problem', etc.) To track
+ the butterfly, then requires integrating local motion signals over space
+ and time in a way that is consistent with the global change in position
+ of an object, while discarding local signals that are inconsistent with
+ the object's trajectory.
+\end_layout
+
+\begin_layout Standard
+In this paper we begin to examine how local motion and global changes in
+ position interact in forming an overall perception of motion.
+ We constructed stimuli that combined a local motion with global position
+ shift; such that the local and the global motion can either be congruent
+ or incongruent.
+\backslash
+autoref{mov:wheels} shows an example of how local and global motion signals
+ can interact.
+ 
+\end_layout
+
+\begin_layout Standard
+The movie shows two wheels, each composed of five moving elements.
+ The elements are composed of a succession of brief wavelet pulses, at $
+\backslash
+unit[100]{ms}$ intervals.
+ These pulses have the same mean luminance as the background, and the envelope
+ of each pulse does not move, however, the peaks and troughs of the wavelet
+ move within the envelope during the pulse, giving the 
+\backslash
+emph{local} component of the motion stimulus.
+ The 
+\backslash
+emph{global} motion component of the stimulus is created by offsetting the
+ position of each pulse relative to the last.
+ In this way we can control local and global motion of an object largely
+ independently On the right side of the display, the local and global motion
+ components move in the same direction; on the left side the local and global
+ components are in opposite directions.
+ Full details of the construction of this display are given in 
+\backslash
+autoref{sec:stimuli}.
+ 
+\end_layout
+
+\begin_layout Section
+General Methods
+\end_layout
+
+\begin_layout Standard
+Descibing our methods \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout Subsection
+Participants
+\end_layout
+
+\begin_layout Standard
+Involved participants \SpecialChar \ldots{}
+
+\end_layout
+
+\begin_layout Subsection
+Stimulus and procedures
+\end_layout
+
+\begin_layout Standard
+\SpecialChar \ldots{}
+ and procedures
+\end_layout
+
+\begin_layout Section
+Experiment 1
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:reversal"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A little bit about experiment 1.
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+...
+ and specific methods
+\end_layout
+
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Standard
+...
+ and what came out.
+\end_layout
+
+\begin_layout Section
+Experiment 2
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:eccentricity"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A little bit about experiment 1.
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+...
+ and specific methods
+\end_layout
+
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Standard
+...and what came out.
+\end_layout
+
+\begin_layout Section
+Experiment 3
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:number"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+The task was identical to that in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:reversal"
+
+\end_inset
+
+and
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:eccentricity"
+
+\end_inset
+
+.
+ A single eccentricity of 
+\begin_inset Formula $6.6^{\circ}$
+\end_inset
+
+ was used for this experiment.
+ The stimulus consisted of a number of moving elements, but instead of being
+ evenly distributed around a circle, the elements were limited to a region
+ on either the left or right side of the display.
+ At the beginning of the trial, the region of the display in which motion
+ elements would appear was delineated by two stationary flankers.
+ The flankers were Cauchy wavelets, with no drift motion, but otherwise
+ identical to the motion elements.
+ The angle formed by the fixation point and the centers of two flankers
+ was at least 
+\begin_inset Formula $90^{\circ}$
+\end_inset
+
+ and at most 
+\begin_inset Formula $135^{\circ}$
+\end_inset
+
+.
+ The flankers serve two functions.
+ First, they indicate the region in which subjects can expect a stimulus
+ to appear.
+ We found in preliminary experiments that subjects did not perform well
+ (as judged by the proportion of correct responses to counterphase and congruent
+ motion) when they could not anticipate the region of the display in which
+ stimuli appeared.
+\end_layout
+
+\begin_layout Standard
+each stimulus, the motion element closest to the flanker never moved further
+ away from the flanker than This arrangement allowed us to vary both the
+ number of moving elements on screen, and the spacing between elements,
+ so that each inter-element spacing was tested with more than one count
+ of elements, and vice versa.
+ The combinations of element count and element spacing that we used are
+ indicated as points in [FIGURE B].
+\end_layout
+
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Standard
+Raw data is shown in [FIGURE C,D].
+ for one subject.
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The APA class has a hardcoded bibliography style (apacite).
+ So whatever you chose below in the BibTeX setting as a bibliography style,
+ it will be ignored.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "xampl,~/bibdesk/bibliography"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
