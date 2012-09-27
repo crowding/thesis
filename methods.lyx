@@ -3,6 +3,13 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+
+\usepackage{movie15}
+
+\usepackage{hyperref}
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -25,6 +32,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -32,7 +40,7 @@
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -82,7 +90,7 @@ name "sub:methods-observers"
 \end_layout
 
 \begin_layout Standard
-Observers were one of the authors (P.B.M.) and 
+Observers were one of the authors (P.B.M.) and 
 \begin_inset Note Greyedout
 status open
 
@@ -274,7 +282,7 @@ mathrm{pixels}$
 
 \end_inset
 
- over a display area of 
+ 800 by 600 pixels over a display area of 
 \begin_inset Note Note
 status collapsed
 
@@ -304,7 +312,7 @@ meter$
 
 \end_inset
 
-800 by 600 pixels and it used a 
+x by y cm and it used a 
 \begin_inset Note Note
 status collapsed
 
@@ -513,104 +521,6 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="1">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-(A) 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-(B) 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemovie[poster,repeat]{4in}{2in}{demo-multiple.mov}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "movie:demo"
-
-\end_inset
-
- (A).
- Motion elements moving alone.
- At left, the carrier motion is opposite the envelope motion.
- At right, the carrier motion is congruent with the envelope motion.
- (B) Five elements are placed around each circle instead of one; otherwise
- the stimulus is identical to A.
- When elements are placed in close proximity, there is an eccentricity-dependent
- change in appearance.
- The appearance of the wheel on the left (with opposing carrier and envelope
- motions) will change depending on where the eyes fixate.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
@@ -786,7 +696,7 @@ name "fig:stimuli-task"
  Subjects viewed motion stimuli such as in 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "movie:sample-stimuli"
+reference "mov:sample-stimuli"
 
 \end_inset
 
@@ -939,11 +849,11 @@ Here
  was always in cosine phase 
 \begin_inset CommandInset ref
 LatexCommand formatted
-reference "fig:stimuli"
+reference "fig:stimuli-motion-pulse"
 
 \end_inset
 
-(A).
+.
  The motion elements were with peak spatial frequency .
 \end_layout
 
@@ -974,7 +884,7 @@ direction content
 \begin_inset Formula $C_{CCW}$
 \end_inset
 
- denote the contrasts of clockwise and counterclockwise componenets.
+ denote the contrasts of clockwise and counterclockwise components.
  Thus 
 \begin_inset Formula $C$
 \end_inset
@@ -993,17 +903,47 @@ direction content
 \end_layout
 
 \begin_layout Standard
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Talk more about this example movie.
+ May need to redo it with reference to 
+\begin_inset Quotes eld
+\end_inset
+
+direction content
+\begin_inset Quotes erd
+\end_inset
+
+ rather than 
+\begin_inset Quotes eld
+\end_inset
+
+congruent/incongruent
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 The examples in 
 \begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:stimuli"
+LatexCommand formatted
+reference "mov:sample-stimuli"
 
 \end_inset
 
  have the following settings, the same as used in 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sec:reversal"
+reference "sec:results-basic"
 
 \end_inset
 
@@ -1198,6 +1138,80 @@ degree$
 , and these three parameters were scaled proportionately to eccentricity.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="1" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{4in}{4in}{sample-stimuli.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:sample-stimuli"
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+[MOVIE 2]
+\end_layout
+
+\end_inset
+
+ Example stimuli.
+ For these experiments, identically scaled stimuli were shown at 6.67 degrees
+ eccentricity.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Methods
 \end_layout
@@ -1359,8 +1373,8 @@ name "fig:measurements-schematic"
 \begin_layout Standard
 The timecourse of a trial is illustrated in 
 \begin_inset CommandInset ref
-LatexCommand nameref
-reference "fig:task"
+LatexCommand formatted
+reference "fig:stimuli-task"
 
 \end_inset
 
@@ -1576,40 +1590,18 @@ counterclockwise
 , and count these two circumstances as the same.
 \end_layout
 
-\begin_layout Subsection
-Experiment 1
-\end_layout
-
-\begin_layout Subsubsection
-Effect of spacing
-\end_layout
-
 \begin_layout Standard
-In these sessions the direction content 
+Note that the staircase procedures were run with folding.
+ So, a staircase that used a 
 \begin_inset Formula $C$
 \end_inset
 
- was fixed for the entire session (though we randomized whether it was clockwise
- or counterclockwise.) To characterise the effect of spacing we used several
- values of spacing, collecting an independent staircase for each one.
-\end_layout
-
-\begin_layout Subsubsection
-Effect of content
-\end_layout
-
-\begin_layout Standard
-In separate sessions we focused on the effect of direction content.
- We chose two values for spacing, below and above the critical spacing,
- then 
+ of 0.2 (clockwise) actually used both clockwise and counterclockwise motion
+ in its trials
 \end_layout
 
 \begin_layout Subsection
-Experiment 2 (contrast versus density)
-\end_layout
-
-\begin_layout Subsection
-Experiment 3 (effect of eccentricity)
+Experiment 1
 \end_layout
 
 \begin_layout Standard
@@ -1633,6 +1625,51 @@ reference "mov:singles"
  We explored this spatial interaction by varying the distance between elements
  that were moving at a constant eccentricity.
  
+\end_layout
+
+\begin_layout Subsubsection
+Effect of spacing
+\end_layout
+
+\begin_layout Standard
+In these sessions the direction content 
+\begin_inset Formula $C$
+\end_inset
+
+ was fixed for the entire session (though we randomized whether it was clockwise
+ or counterclockwise.) To characterize the effect of spacing we used several
+ values of spacing, collecting an independent staircase for each one.
+\end_layout
+
+\begin_layout Subsubsection
+Effect of content
+\end_layout
+
+\begin_layout Standard
+In separate sessions we focused on the effect of direction content.
+ We chose two values for spacing, below and above the critical spacing,
+ and ranged direction content over four values (0.1, 0.2, 0.4 and 1.0; both
+ counterclockwise and clockwise), thus collecting eight (folded) psychometric
+ functions.
+\end_layout
+
+\begin_layout Subsection
+Experiment 2 (contrast versus density)
+\end_layout
+
+\begin_layout Subsection
+Experiment 3 (effect of eccentricity)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "bibliography"
+options "apalike"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
