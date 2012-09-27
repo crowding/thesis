@@ -8,6 +8,17 @@
 \usepackage{movie15}
 
 \usepackage{hyperref}
+
+\usepackage{changepage}
+\strictpagecheck
+
+\newlength{\totalleftmargin}
+\newcommand{\calctotalleftmargin}{%
+  \setlength{\totalleftmargin}{\dimexpr+\hoffset+1in+\leftskip}%
+  \checkoddpage%
+  \addtolength{\totalleftmargin}{\ifoddpage\oddsidemargin\else\evensidemargin\fi}%
+}
+
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
@@ -520,6 +531,29 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+calctotalleftmargin 
+\backslash
+vskip-1in
+\backslash
+hskip-
+\backslash
+totalleftmargin
+\backslash
+hskip1in
+\backslash
+relax
+\end_layout
+
+\end_inset
+
+
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="2">
 <features tabularvalignment="middle">
@@ -1145,6 +1179,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="1" columns="1">
 <features tabularvalignment="middle">
@@ -1224,9 +1259,10 @@ Task
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="1">
 <features tabularvalignment="middle">
