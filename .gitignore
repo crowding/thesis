@@ -58,3 +58,4 @@ pools
 *.prv
 *.blg
 DONE
+!*-*.pdf
