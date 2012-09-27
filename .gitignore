@@ -2,7 +2,6 @@
 *.asc
 *.mat
 *.dep
-*.pdf
 *.eps
 *.dvi
 *.Rdata
