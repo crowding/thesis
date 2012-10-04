@@ -60,3 +60,7 @@ pools
 *.blg
 DONE
 !*-*.pdf
+*/figure/*
+*/cache/*
+*.Rnw
+*-tikzDictionary
