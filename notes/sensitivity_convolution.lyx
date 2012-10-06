@@ -1,0 +1,578 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+fig.width=6,fig.height=4,dev="tikz",tidy=FALSE,cache=TRUE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I am thinking about the form of the function of sensitivity when the spacing
+ decreases.
+ Does it matter?
+\end_layout
+
+\begin_layout Standard
+If you think your signal is normally distributed, then your standard error
+ is equal to 
+\begin_inset Formula $\sigma=-\frac{2}{\frac{d^{2}}{dx^{2}}L(x)}$
+\end_inset
+
+ the second derivative of your log-likelihood function.
+ (sketch: the Gaussian density is the function that is log-concave downwards,
+ 
+\begin_inset Formula $f(x,\mu,\sigma)=c\,\exp\left(-\frac{x^{2}}{\sigma^{2}}\right)$
+\end_inset
+
+ so 
+\begin_inset Formula $L(x)=c+-\frac{x^{2}}{\sigma^{2}}$
+\end_inset
+
+ so 
+\begin_inset Formula $\frac{d^{2}}{dx^{2}}L\left(x\right)=-\frac{2}{\sigma^{2}}$
+\end_inset
+
+.
+ (This is how you get standard errors for arbitrary vectors relative to
+ a model fit: compute the Hermetian of your likelihood function, project
+ it onto the vector you want and there you go.)
+\end_layout
+
+\begin_layout Standard
+Now, let's run with the idea of the second derivative of the log-likelihood
+ function when there are several objects.
+ You'd have several sigmas, added together; 
+\begin_inset Formula $\Pr(x)=c{\displaystyle \sum_{i=-N}^{N}\exp\left(-\frac{\left(x-is\right)^{2}}{\sigma^{2}}\right)}$
+\end_inset
+
+; so that 
+\begin_inset Formula $L(x)$
+\end_inset
+
+ would be the log of that.
+\end_layout
+
+\begin_layout Standard
+That's the log of a sum, which resists simplification.
+ What are other ways to cast this problem? Fourier domain?
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Okay, let's think about this without trying to do the math.
+ You have a position signal.
+ It comes in with a roughly bell-shaped distribution.
+ You need to correlate it with a later signal.
+ Those distractor signals come in with relatively Gaussian distribution.
+ Assume those distractor signals provide no information about the motion
+ of the real target.
+ So you have a bunch of overlapping signals, some idea about where the signal
+ 
+\emph on
+was
+\emph default
+, and you need to derive where the signal 
+\emph on
+is
+\emph default
+ now.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<prelims,cache=FALSE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+suppressPackageStartupMessages({
+\end_layout
+
+\begin_layout Plain Layout
+
+library(reshape2)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ptools)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+})
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+theme_set(theme_bw() + theme(panel.grid=element_blank()))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+fplot <- function(f, xlim, ...) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  (  ggplot(data.frame(x=xlim), aes(x))
+\end_layout
+
+\begin_layout Plain Layout
+
+   + stat_function(fun=f, ...))
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So, let's say your position signal is distributed according to a bell-shaped
+ function.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+(fplot(dnorm, c(-5,5)) + xlab("X") 
+\end_layout
+
+\begin_layout Plain Layout
+
+ + ylab("density of source distribution"))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let's consider all the signals coming from all the distractor objects; they're
+ distributed identically.
+ Here I'll make a dataset with all of their signal densities.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+dataset <- function(spacing=1, sigma=1, sources=-10:10,
+\end_layout
+
+\begin_layout Plain Layout
+
+                    sampling=seq(-15, 15, length=201)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  r <- expand.grid(x=sampling, sourceid=sources) 
+\end_layout
+
+\begin_layout Plain Layout
+
+  mutate(r, sourceloc=sourceid*spacing, p=dnorm(x, sourceloc, sigma))
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If we plot the densities stacked on top of each other, it looks like this.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+(ggplot(dataset(spacing=10), aes(x, p, fill=factor(sourceid)))
+\end_layout
+
+\begin_layout Plain Layout
+
+ + geom_area(color="black")
+\end_layout
+
+\begin_layout Plain Layout
+
+ + opts(legend.position="none")
+\end_layout
+
+\begin_layout Plain Layout
+
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And bringing them closer together:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+(ggplot(dataset(spacing=2), aes(x, p, fill=factor(sourceid)))
+\end_layout
+
+\begin_layout Plain Layout
+
+ + geom_area(color="black")
+\end_layout
+
+\begin_layout Plain Layout
+
+ + theme(legend.position="none")
+\end_layout
+
+\begin_layout Plain Layout
+
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At some point the correct signal gets lost among the other distractor signals.
+\end_layout
+
+\begin_layout Standard
+Now let's try computing the 
+\begin_inset Quotes eld
+\end_inset
+
+probability of correct identification.
+\begin_inset Quotes erd
+\end_inset
+
+ That is, supposing you have some idea where you're looking (x), and a bunch
+ of other signals, what is the probability that you come up with the correct
+ signal (here, the one with id=0)?
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+correct.identification <- function(data=dataset(...), ...) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  d <- ddply(data, "x", summarize, c=p[which(sourceid==0)]/sum(p), total=sum(p))
+\end_layout
+
+\begin_layout Plain Layout
+
+  mutate(d, total=total/max(total))
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Computing this 
+\begin_inset Quotes eld
+\end_inset
+
+correct identification
+\begin_inset Quotes erd
+\end_inset
+
+ over a range of spacings.
+ Here each colored line corresponds to a different spacing.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<dev="pdf">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cid <- mdply(data.frame(spacing=seq(0,8,0.1)), correct.identification)
+\end_layout
+
+\begin_layout Plain Layout
+
+(ggplot(cid, aes(x, c, color=spacing, group=spacing)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+  + geom_line() + scale_color_gradientn(colours=rainbow(7)[-7]))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So, as distractors come closer, the range over which you can correctly identify
+ the corresponding signal shrinks and then the probability of identification
+ decreases.
+\end_layout
+
+\begin_layout Standard
+Interchanging X, we see the probability of correct identification as a function
+ of spacing, with the colored lines corresponding to the amount of error
+ in the initial position signal.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<dev="pdf">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+ggplot(cid, aes(x, c, color=spacing, group=spacing)) + geom_line() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After this, I have a notion about iterating this process; what happens when
+ you have a small probability of misbinding, but it's repeated over and
+ over again? This may result in the 
+\begin_inset Quotes eld
+\end_inset
+
+collapse
+\begin_inset Quotes erd
+\end_inset
+
+ when spacing is below the critical distance, where sensitivity drops to
+ near zero (rather than smoothly declining).
+ This may be lead to viewing the motion detecting process as a sort of 
+\begin_inset Quotes eld
+\end_inset
+
+particle filter
+\begin_inset Quotes erd
+\end_inset
+
+ algorithm, where each particle updates subject to a certain distance of
+ summation.
+\end_layout
+
+\end_body
+\end_document
