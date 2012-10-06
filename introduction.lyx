@@ -64,6 +64,7 @@
 \html_css_as_file 0
 \html_be_strict false
 \author -1683065902 "Ione Fine" 
+\author 232785317 "Peter" 
 \end_header
 
 \begin_body
@@ -76,10 +77,28 @@ Introduction
 
 \begin_layout Standard
 
-\change_inserted -1683065902 1349381370
+\change_deleted 232785317 1349516757
 You're flipping between short-range, long-range, local global.
  Choose one for each and stay consistent, when you flip it's hard for the
  reader to know that the change of term isn't significant.
+\change_inserted 232785317 1349516757
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349516767
+(IF) You're flipping between short-range, long-range, local global.
+ Choose one for each and stay consistent, when you flip it's hard for the
+ reader to know that the change of term isn't significant.
+\change_unchanged
+
+\end_layout
+
+\end_inset
+
+
 \change_unchanged
 
 \end_layout
