@@ -50,11 +50,12 @@
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author -1683065902 "Ione Fine" 
 \end_header
 
 \begin_body
@@ -73,22 +74,134 @@ reference "fig:model"
 
 .
  Conceptually the model uses three sources of information to produce decisions
- about motion direction; summation of first order motion signals inside
- a selected region, envelope motion detected within the selected region,
- and repulsion from first order motion signals outside the selected region.
+ about motion direction; 
+\change_inserted -1683065902 1349386520
+C is the 
+\change_deleted -1683065902 1349386524
+summation
+\change_inserted -1683065902 1349386526
+sum
+\change_unchanged
+ of 
+\change_deleted -1683065902 1349386535
+first order motion signals
+\change_inserted -1683065902 1349386539
+carrier direction contect
+\change_unchanged
+ inside a relatively restricted region
+\change_inserted -1683065902 1349386554
+ (shown by the smaller dashed circle).
+ dX is
+\change_deleted -1683065902 1349386545
+, 
+\change_inserted -1683065902 1349386562
+an estimate of 
+\change_unchanged
+envelope motion 
+\change_deleted -1683065902 1349386564
+detected
+\change_unchanged
+ within that same restricted region, and 
+\change_inserted -1683065902 1349386587
+R is 
+\change_unchanged
+repulsion from first order motion signals across a wider
+\change_inserted -1683065902 1349385540
+ region of space (shown by the larger dashed-dotted circle)
+\change_unchanged
+.
+\change_inserted -1683065902 1349386478
+
 \end_layout
 
 \begin_layout Standard
+
+\change_inserted -1683065902 1349386813
+For C, we begin by assuming that the strength of the local motion signal
+ is linear with respect to carrier direction content.
+ However, because we define the summation as being simply a sum of motion
+ energy within the selected region, as spacing decreases and there are more
+ elements within the summation region, we expect this carrier motion signal
+ to become stronger, as follows.
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted -1683065902 1349386817
+\begin_inset Formula 
+\[
+M_{S}=\frac{C}{S}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted -1683065902 1349386824
+Put in figure here.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted -1683065902 1349386643
+For dX, we assume that envelope motion is computed by taking two successive
+ noisy estimates of the position of a given element.
+ The strength of the envelope motion estimate therefore has uncertainty
+ directly proportional to the uncertainty, 1/B, of the successive position
+ estimates.
+ This estimate of displacement was modeled as a probability distribution
+ over displacement in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:model-uncertainty"
+
+\end_inset
+
+.
+ We further assumed that the parameter value representing sensitivity 
+\begin_inset Formula $\nicefrac{1}{\beta(S)}$
+\end_inset
+
+ varies as a function of the spacing between elements as follows: 
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted -1683065902 1349386234
+\begin_inset Formula 
+\[
+\beta(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted -1683065902 1349386270
+This function 
+\begin_inset Formula $\beta(S)$
+\end_inset
+
+ is plotted below.
+ 
+\change_deleted -1683065902 1349386347
 We have seen that sensitivity to envelope motion does not change as a function
  of the number of targets, provided the targets are sufficiently far apart;
- even though the motion of all targets is identical and in principle information
- might be accumulated over all targets, the sensitivity to envelope motion
- with 4 targets is the same as sensitivity with 2 targets.
- So we posit that when performing this task, observers can only make effective
- use of position information coming from one region.
- This region may be identified with the resolution of spatial attention,
- the critical distance of crowding, or some under characteristic size associated
- with higher-order motion detection.
+ 
+\change_unchanged
+ 
+\end_layout
+
+\begin_layout Standard
+
+\change_deleted -1683065902 1349386340
  
 \begin_inset Note Note
 status collapsed
@@ -103,39 +216,8 @@ cites for these two concepts
 \end_layout
 
 \begin_layout Standard
-In 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:model-visual-schematic"
 
-\end_inset
-
- we illustrate the stimulus, indicating the selected region with a dotted
- line around one target.
- Within this local region there is a noisy measurement of the change in
- position of the target.
- We suppose that envelope motion is computed by taking two successive noisy
- estimates of the position of a signal, and computing the difference.
- The difference is then just another estimate with uncertainty directly
- proportional to the uncertainty of the successive position estimates.
- We illustrate this noisy measurement as a probability distribution over
- displacement in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:model-uncertainty"
-
-\end_inset
-
-, whose sensitivity 
-\begin_inset Formula $\nicefrac{1}{\beta(S)}$
-\end_inset
-
- is a function of spacing.
- This function 
-\begin_inset Formula $\beta(S)$
-\end_inset
-
- is plotted below.
+\change_deleted -1683065902 1349386340
  The sensitivity
 \begin_inset Note Greyedout
 status collapsed
@@ -159,18 +241,13 @@ I'm flip-flopping btwn sensitivity and uncertainty (1/sensitivity).
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\[
-\beta(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This function gives a sensitivity that approaches 
+This function 
+\change_deleted -1683065902 1349386354
+gives a
+\change_inserted -1683065902 1349386355
+results in
+\change_unchanged
+ sensitivity that approaches 
 \begin_inset Formula $\beta_{0}$
 \end_inset
 
@@ -208,6 +285,15 @@ critical distance
 \end_inset
 
  in crowding.
+
+\change_inserted -1683065902 1349386386
+ As can be seen from this function,our model assumes that sensitivity to
+ envelope motion asymptotes above Sc, and therefore does not change as a
+ function of the number of targets, once the targets are sufficiently far
+ apart.
+ 
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -231,6 +317,8 @@ This formula for
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted -1683065902 1349386427
 We described envelope motion detection in terms of comparing the uncertain
  estimates of two successive object positions.
  When targets are packed closely together, these estimates of position become
@@ -260,9 +348,13 @@ misbinding,
  When targets are uncrowded, the perception appears to be dominated by the
  higher-order motion; as clutter increases, the visual system will be proportion
 ately more influenced by the local motion.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted -1683065902 1349386687
 At a less prosaic and more mechanistic level, several lines of evidence
  
 \begin_inset Marginal
@@ -290,17 +382,30 @@ obligatory summation
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\[
-M_{S}=\frac{C}{S}
-\]
 
-\end_inset
-
+\change_inserted -1683065902 1349386977
+In other words, the effect of decreasing the spacing between elements has
+ the opposite effect on the strength of the carrier and the global motion.
+ For the carrier motion estimate, cramming more elements into the summation
+ region increases the strength of the carrier motion signal, which is a
+ simple summation of local motion within that region.
+ For the envelope motion estimate, cramming more elements into the summation
+ region makes it difficult to estimate the position of any individual element,
+ and thereby weakens the signal.
+ Thus, increasing the spacing results in carrier motion having a stronger
+ influence on the final percept.
+\change_unchanged
 
 \end_layout
 
 \begin_layout Standard
+
+\change_inserted -1683065902 1349387039
+But ...
+ our model requires one small modification that takes into account the motion
+ of elements outside our small summation region.
+ 
+\change_unchanged
 The third component is an 
 \begin_inset Quotes eld
 \end_inset
@@ -309,23 +414,64 @@ induced motion
 \begin_inset Quotes erd
 \end_inset
 
- effect.
- This we view as a process which integrates order motion over a large scale.
+ effect
+\change_deleted -1683065902 1349387052
+.
+ This we view as a process which
+\change_inserted -1683065902 1349387053
+, whereby
+\change_unchanged
+ 
+\change_inserted -1683065902 1349387071
+the direction of motion within the small window is 
+\change_deleted -1683065902 1349387056
+i
+\change_inserted -1683065902 1349387116
+also influenced by
+\change_deleted -1683065902 1349387056
+ntegrates order
+\change_unchanged
+ 
+\change_inserted -1683065902 1349387149
+the 
+\change_unchanged
+motion 
+\change_deleted -1683065902 1349387123
+over a
+\change_inserted -1683065902 1349387171
+of the full display
+\change_unchanged
+ 
+\change_deleted -1683065902 1349387169
+large scale
+\change_unchanged
+.
  The influence of this process is repulsive; motion outside the integration
- field biases observers to perceive motion in the opposite direction.
- We might identify this process with optic flow mechanisms, with the idea
- that coherent large-scale motion over the entire visual scene is most likely
- to arise from motions of the observer rather than motions of objects in
- the scene.
- When judging the motion of a selected target, it would usually be prudent
- to discount the background motion.
+ field biases observers to
+\change_inserted -1683065902 1349387182
+wards
+\change_unchanged
+ perceiv
+\change_inserted -1683065902 1349387187
+ing the
+\change_deleted -1683065902 1349387185
+e
+\change_unchanged
+ motion 
+\change_inserted -1683065902 1349387196
+of individual elements as being 
+\change_unchanged
+in the opposite direction.
+ 
+\change_deleted -1683065902 1349387218
+.
  As we saw earlier, when element spacing is wide, observers' responses can
  actually be biased against the first order direction content.
  This effect can reverse for strong direction contents.
  However, the strength of this induced motion effect does not appear to
  be 
 \begin_inset Note Greyedout
-status open
+status collapsed
 
 \begin_layout Plain Layout
 which is a curious fact...
@@ -337,10 +483,34 @@ which is a curious fact...
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted -1683065902 1349387223
 the target the decision process against the direction of that motion.
- Furthermore, the magnitude of the induced motion is nonmonotonic 
+ Furthermore, the
+\change_inserted -1683065902 1349387225
+We modeled this
+\change_unchanged
+ 
+\change_deleted -1683065902 1349387227
+magnitude of the 
+\change_unchanged
+induced motion 
+\change_deleted -1683065902 1349387280
+is
+\change_inserted -1683065902 1349387280
+as
+\change_unchanged
+ 
+\change_inserted -1683065902 1349387282
+a 
+\change_unchanged
+nonmonotonic
+\change_inserted -1683065902 1349387287
+ function
+\change_unchanged
+ 
 \begin_inset Note Greyedout
-status open
+status collapsed
 
 \begin_layout Plain Layout
 I presume that I have described this nonmonotonicity in a previous section.
@@ -348,9 +518,32 @@ I presume that I have described this nonmonotonicity in a previous section.
 
 \end_inset
 
- with respect to the first-order direction content; the function is an odd-symme
-tric curve with local maxima.
- So we define the 
+ 
+\change_deleted -1683065902 1349387291
+with respect to the
+\change_inserted -1683065902 1349387293
+of
+\change_unchanged
+ 
+\change_deleted -1683065902 1349387296
+first-order
+\change_inserted -1683065902 1349387297
+carrier
+\change_unchanged
+ direction content; 
+\change_deleted -1683065902 1349387305
+the function is
+\change_inserted -1683065902 1349387305
+using
+\change_unchanged
+ an odd-symmetric curve 
+\change_deleted -1683065902 1349387319
+with local maxima.
+ So we define the
+\change_inserted -1683065902 1349387321
+defined as:
+\change_unchanged
+ 
 \begin_inset Note Note
 status collapsed
 
@@ -465,11 +658,30 @@ number/density experiment)
 \end_inset
 
  we vary these quantities independently.
+\change_inserted -1683065902 1349387369
+
 \end_layout
 
 \begin_layout Standard
-We combine these three sources of information with a simple decision rule;
- 
+We 
+\change_inserted -1683065902 1349387371
+then 
+\change_unchanged
+combine
+\change_inserted -1683065902 1349387373
+d
+\change_unchanged
+ these three 
+\change_deleted -1683065902 1349387377
+sources
+\change_inserted -1683065902 1349387380
+types
+\change_unchanged
+ of 
+\change_inserted -1683065902 1349387383
+motion 
+\change_unchanged
+information with a simple decision rule; 
 \end_layout
 
 \begin_layout Standard
@@ -510,8 +722,15 @@ where
 \begin_inset Formula $c$
 \end_inset
 
- to account for an overall clockwise or counterclockwise bias; when discussing
- folded data we must force 
+ to account for an overall clockwise or counterclockwise bias; 
+\change_deleted -1683065902 1349387412
+when discussing folded data we must forc
+\change_inserted -1683065902 1349387417
+for subjects with no such bias
+\change_deleted -1683065902 1349387418
+e
+\change_unchanged
+ 
 \begin_inset Formula $c=0$
 \end_inset
 
@@ -551,8 +770,20 @@ name "fig:model-visual-schematic"
 
 \end_inset
 
- A motion element and flankers are shown.
- The dotted circle indicates the selected region 
+ A 
+\change_deleted -1683065902 1349387438
+motion element and flankers are shown
+\change_inserted -1683065902 1349387442
+typical motion stimulus is shown
+\change_unchanged
+.
+ The dotted circle indicates 
+\change_deleted -1683065902 1349387460
+the selected 
+\change_inserted -1683065902 1349387462
+a local summation 
+\change_unchanged
+region 
 \begin_inset Note Note
 status collapsed
 
@@ -564,29 +795,78 @@ status collapsed
 \end_inset
 
 .
- The model consists of three processes.
- (B)
+ 
+\change_deleted -1683065902 1349387480
+The model consists of three processes.
+
+\change_unchanged
+ (
+\change_deleted -1683065902 1349387563
+B
+\change_inserted -1683065902 1349387563
+C
+\change_unchanged
+)
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-uncertainty"
 
 \end_inset
 
- The first process is a noisy measurement of position.
- Due to crowding the uncertainty in position 
+ 
+\change_inserted -1683065902 1349387593
+Envelope motion is estimated by taking two successive noisy estimates of
+ the position of a given element
+\change_deleted -1683065902 1349387599
+The first process is a noisy measurement of position.
+ 
+\change_inserted -1683065902 1349387599
+.
+ 
+\change_unchanged
+Due to 
+\change_inserted -1683065902 1349387602
+'
+\change_unchanged
+crowding
+\change_inserted -1683065902 1349387603
+'
+\change_unchanged
+ the uncertainty in position
+\change_inserted -1683065902 1349387609
+ increases
+\change_unchanged
+ 
 \begin_inset Formula $\nicefrac{1}{\beta(S)}$
 \end_inset
 
- is a function of the flanker spacing 
+ 
+\change_inserted -1683065902 1349387611
+as
+\change_deleted -1683065902 1349387611
+is
+\change_unchanged
+ a function of the flanker spacing 
 \begin_inset Formula $S$
 \end_inset
 
+
+\change_deleted -1683065902 1349387622
 .
+
+\change_inserted -1683065902 1349387624
+ EQ here.
+
+\change_unchanged
  The form of 
 \begin_inset Formula $\beta(S)$
 \end_inset
 
- is an sigmoid, as plotted.
+ is an sigmoid, as plotted
+\change_inserted -1683065902 1349387637
+, in Panel XX
+\change_unchanged
+.
  Its parameters are 
 \begin_inset Formula $\beta_{0}$
 \end_inset
@@ -597,15 +877,55 @@ name "fig:model-uncertainty"
 
 , which is the distance at which discrimination thresholds for envelope
  motion double.
- (C)
+ (
+\change_deleted -1683065902 1349387561
+C
+\change_inserted -1683065902 1349387581
+B
+\change_unchanged
+)
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-summation"
 
 \end_inset
 
- The second process is a measurement of the local motion energy of the target.
- This signal is in inverse proportion to the element spacing 
+ 
+\change_deleted -1683065902 1349387506
+The second process
+\change_inserted -1683065902 1349387581
+The carrier motion estimate is a simple summation of the
+\change_unchanged
+ 
+\change_deleted -1683065902 1349387527
+is a
+\change_unchanged
+ 
+\change_deleted -1683065902 1349387525
+measurement of the
+\change_unchanged
+ local motion energy 
+\change_deleted -1683065902 1349387529
+of the targe
+\change_inserted -1683065902 1349387581
+within the summation region
+\change_deleted -1683065902 1349387534
+t
+\change_unchanged
+.
+ This signal is 
+\change_deleted -1683065902 1349387540
+in
+\change_unchanged
+ inverse
+\change_inserted -1683065902 1349387581
+ly
+\change_unchanged
+ proportion
+\change_inserted -1683065902 1349387581
+al
+\change_unchanged
+ to the element spacing 
 \begin_inset Note Note
 status collapsed
 
@@ -623,8 +943,21 @@ name "fig:model-induced"
 
 \end_inset
 
- The third process is a global integration of motion signals outside the
- region of interest.
+ 
+\change_deleted -1683065902 1349387653
+The third process is a
+\change_inserted -1683065902 1349387669
+Motion repulsion is assumed to be proportional to the
+\change_unchanged
+ global integration of 
+\change_inserted -1683065902 1349387674
+carrier 
+\change_unchanged
+motion 
+\change_deleted -1683065902 1349387676
+signals
+\change_unchanged
+ outside the region of interest.
  The strength of this signal is an odd-symmetric function of direction content.
  (E)
 \begin_inset CommandInset label
@@ -633,9 +966,17 @@ name "fig:model-decision"
 
 \end_inset
 
- To decide the direction of motion, the compares successive position signals.
+ T
+\change_inserted -1683065902 1349387729
+he decision rule is modeled as a single logistic cummulative distribution
+ function combining these three estimates of motion.
+ 
+\change_deleted -1683065902 1349387733
+o decide the direction of motion, the compares successive position signals.
  However this comparison is biased by both the local summation of motion
  within the region, and the global repulsion of motion outside the region.
+\change_unchanged
+
 \end_layout
 
 \end_inset

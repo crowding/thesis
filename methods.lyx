@@ -69,11 +69,12 @@
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author -1683065902 "Ione Fine" 
 \end_header
 
 \begin_body
@@ -118,11 +119,23 @@ SOME NUMBER OF
 status open
 
 \begin_layout Plain Layout
-verbiage about subject compensation, experiment protocol approval, etc.
+ver
+\change_deleted -1683065902 1349383779
+biage about subject compensation, experiment protocol approval, e
+\change_inserted -1683065902 1349383787
+no need for details about compensation 
+\change_unchanged
+tc.
 \end_layout
 
 \end_inset
 
+
+\change_inserted -1683065902 1349383764
+All subjects provided informed written consent, and all procedures involved
+ were approved by the Institutional Review Board at the University of Washington.
+ 
+\change_unchanged
 
 \end_layout
 
@@ -438,14 +451,24 @@ squared$
 
 ) luminances, which were in turn measured as patches against the gray background.
  A hardware lookup table with 10-bit resolution was used to linearize the
- display response.
+ display
+\change_deleted -1683065902 1349383827
+ response
+\change_unchanged
+.
  
 \end_layout
 
 \begin_layout Standard
 Subjects sat behind a blackout curtain so that ambient illumination was
- mostly due to the monitor and viewed the screen binocularly using a chin
- and forehead rest with the eyes 60 cm
+ 
+\change_deleted -1683065902 1349383832
+mostly
+\change_inserted -1683065902 1349383833
+mainly
+\change_unchanged
+ due to the monitor and viewed the screen binocularly using a chin and forehead
+ rest with the eyes 60 cm
 \begin_inset Note Note
 status collapsed
 
@@ -509,7 +532,11 @@ hertz$
 
 .
  Subjects gave responses by turning a knob (PowerMate; Griffin Technologies)
- with their preferred hand.
+ with their preferred hand
+\change_inserted -1683065902 1349383844
+ in the direction of the perceived motion
+\change_unchanged
+.
  
 \end_layout
 
@@ -684,7 +711,13 @@ name "fig:stimuli-motion-pulse"
  the vertical axis.
  Elements are Gabor-like with a moving carrier (visible as the tilt in this
  diagram) and a fixed envelope.
- The same motion elements are used for all experiments in this report.
+ The same motion elements are used for all experiments in this 
+\change_deleted -1683065902 1349383874
+report
+\change_inserted -1683065902 1349383875
+paper
+\change_unchanged
+.
  (B) 
 \begin_inset CommandInset label
 LatexCommand label
@@ -694,8 +727,20 @@ name "fig:stimuli-motion-elements"
 
  Motion elements were constructed of several motion pulses, offset at regular
  intervals in space and time.
- "Envelope displacement" refers to the spatial dimension of the step.
- The temporal dimension was fixed at 100 ms for these experiments.
+ "Envelope displacement" refers to the spatial 
+\change_deleted -1683065902 1349383898
+dimension
+\change_inserted -1683065902 1349383903
+displacement of the Gabor
+\change_deleted -1683065902 1349383906
+ of the step
+\change_unchanged
+.
+ The temporal dimension was fixed at 100 ms for these experiments
+\change_inserted -1683065902 1349383964
+ [[unclear]]
+\change_unchanged
+.
  (C) 
 \begin_inset CommandInset label
 LatexCommand label
@@ -708,8 +753,11 @@ We varied the directional content of the motion elements by mixing two carriers
  A direction content of 0 is counterphase flicker, with equal energy along
  both directions of carrier motion.
  A direction content of 1 uses only the clockwise carrier.
- The total contrast of counterclockwise and clockwise carriers was fixed
- at 50%.
+ The total 
+\change_inserted -1683065902 1349383948
+luminance 
+\change_unchanged
+contrast of counterclockwise and clockwise carriers was fixed at 50%.
  (D)
 \begin_inset CommandInset label
 LatexCommand label
@@ -734,6 +782,11 @@ reference "mov:sample-stimuli"
 
 \end_inset
 
+
+\change_inserted -1683065902 1349383995
+.
+ 
+\change_deleted -1683065902 1349384180
  and indicated the apparent direction of motion within 
 \begin_inset Note Note
 status collapsed
@@ -745,6 +798,8 @@ check on actual numbers
 \end_inset
 
  500-900 ms from stimulus onset.
+\change_unchanged
+
 \end_layout
 
 \end_inset
@@ -758,10 +813,27 @@ check on actual numbers
 \end_layout
 
 \begin_layout Standard
-Stimuli were designed to provide independent higher-order, position-based
- motion, and first-order motion energy.
+Stimuli were designed to 
+\change_deleted -1683065902 1349384046
+provide
+\change_inserted -1683065902 1349384055
+allow us to independently manipulate
+\change_unchanged
+ 
+\change_deleted -1683065902 1349384058
+independent
+\change_unchanged
+ higher-order, position-based motion, and first-order motion energy.
  We did this by independently controlling the motion of the envelope and
- the carrier of oriented motion sitmuli.
+ the carrier of oriented motion s
+\change_deleted -1683065902 1349384063
+i
+\change_unchanged
+t
+\change_inserted -1683065902 1349384066
+i
+\change_unchanged
+muli.
  
 \begin_inset Note Note
 status collapsed
@@ -770,6 +842,9 @@ status collapsed
 I am describing the stimulus from the bottom up in the figure caption and
  from the top down in this para.
  I mean why not?
+\change_inserted -1683065902 1349384093
+ Let's discuss this.
+ 
 \end_layout
 
 \end_inset
@@ -782,9 +857,12 @@ reference "fig:stimuli"
 \end_inset
 
 .
- The stimuli consisted of a number of repeatedly presented, identically
- moving elements arranged into a circle at centered on the fixation point
- 
+ The stimuli consisted of a number of repeatedly
+\change_inserted -1683065902 1349384110
+ [??]
+\change_unchanged
+ presented, identically moving elements arranged into a circle at centered
+ on the fixation point 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:stimuli-circle"
@@ -1427,16 +1505,53 @@ status open
 
 \end_inset
 
- ms after detecting fixation, the motion stimulus was shown.
+ ms after detecting fixation, the motion stimulus was shown
+\change_inserted -1683065902 1349384190
+ for XX ms
+\change_unchanged
+.
  After the motion stimulus concluded, observers indicated the direction
- of perceived motion by turning a knob.
- If an observer blinked or broke fixation before the offset of the motion
- stimulus, the trial was aborted and reshuffled into the stimulus set, to
- be repeated later in the session.
+ of perceived motion by turning a knob
+\change_inserted -1683065902 1349384213
+ within a response window that lasted 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\change_inserted -1683065902 1349384208
+check on actual numbers
+\end_layout
+
+\end_inset
+
+ 500-900 ms from stimulus onset.
+ 
+\change_deleted -1683065902 1349384221
+.
+ 
+\change_unchanged
+If an observer blinked
+\change_inserted -1683065902 1349384202
+, 
+\change_deleted -1683065902 1349384202
+ or
+\change_unchanged
+ broke fixation before the offset of the motion stimulus
+\change_deleted -1683065902 1349384251
+, 
+\change_inserted -1683065902 1349384251
+ 
+\change_unchanged
+the trial was aborted and reshuffled into the stimulus set, to be repeated
+ later in the session.
  Response latency was defined as the elapsed time between motion onset and
  the knob being turned.
-  There was also a time pressure to the task; If the response latency was
- more than
+  
+\change_deleted -1683065902 1349384247
+There was also a time pressure to the task;
+\change_unchanged
+ If the response latency was more than
 \begin_inset Note Note
 status collapsed
 
@@ -1495,8 +1610,12 @@ second$
  be repeated later in the session.
  An audio click was played each time subjects gave a response; this seemed
  to help subjects establish a consistent rhythm through the experiment.
- No feedback was given as to the direction of observers' responses, only
- whether they had responded within the time window.
+ No feedback was given as to the direction
+\change_inserted -1683065902 1349384268
+/correctness
+\change_unchanged
+ of observers' responses, only whether they had responded within the time
+ window.
  Observers were instructed to report the apparent direction of motion, and
  told that there were no correct answers.
  In some conditions observers reported seeing conflicting directions of
@@ -1506,8 +1625,14 @@ second$
 \end_layout
 
 \begin_layout Standard
-Observers performed the task in sessions of at most 1 hour, divided into
- 4 to 6 blocks, and were prompted to take a break between blocks.
+Observers performed the task in sessions 
+\change_deleted -1683065902 1349384285
+of at most
+\change_inserted -1683065902 1349384289
+that lasted a maximum of
+\change_unchanged
+ 1 hour, divided into 4 to 6 blocks, and were prompted to take a break between
+ blocks.
  Subjects could also rest at any point by simply delaying fixation.
  At the beginning of each block, the eye tracking system was automatically
  recalibrated by asking the subject to make saccades to a sequence of targets
@@ -1520,14 +1645,42 @@ Staircase procedure
 
 \begin_layout Standard
 To measure the sensitivity of observers to envelope motion, we measured
- psychometric functions of envelope displacement.
- The displacement 
+ psychometric functions 
+\change_inserted -1683065902 1349384312
+measuring the proportion of clockwise responses as a function 
+\change_unchanged
+of
+\change_inserted -1683065902 1349384313
+ the
+\change_unchanged
+ envelope displacement
+\change_deleted -1683065902 1349384320
+.
+ The displacement
+\change_inserted -1683065902 1349384320
+,
+\change_unchanged
+ 
 \begin_inset Formula $\Delta x$
 \end_inset
 
- was placed under computer control, with For each psychometric function
- collected we used two interleaved staircases, one 2up-1down and the other
- 2down-1up, to bracket the particular displacement at which subjects were
+
+\change_deleted -1683065902 1349384325
+ was placed under computer control, with 
+\change_inserted -1683065902 1349384326
+.
+ 
+\change_unchanged
+For each psychometric function collected we used two interleaved staircases,
+ one 2
+\change_inserted -1683065902 1349384337
+-
+\change_unchanged
+up-1down and the other 2
+\change_inserted -1683065902 1349384339
+-
+\change_unchanged
+down-1up, to bracket the particular displacement at which subjects were
  equivocal about perceived direction (PSE).
  In a typical session, 6-8 such staircases were collected concurrently,
  with each staircase operating independently and trials from all staircases
@@ -1552,17 +1705,50 @@ clockwise
 \end_inset
 
  responses on the ordinate.
- In these graphs we scale the area of the drawn points in proportion to
- the number of trials collected at that displacement, to favor a visual
- weighting toward the values where most data was collected.
- note in viewing these graphs that the smaller a point, the further it may
- acceptably lie from the model fit; some values of 
+ In these graphs we scale the area of the 
+\change_deleted -1683065902 1349384359
+drawn
+\change_inserted -1683065902 1349384359
+data
+\change_unchanged
+ points 
+\change_deleted -1683065902 1349384362
+in
+\change_inserted -1683065902 1349384364
+to be proportionate
+\change_unchanged
+ 
+\change_deleted -1683065902 1349384367
+proportion
+\change_unchanged
+ to the number of trials collected at that displacement
+\change_deleted -1683065902 1349384378
+, to favor a visual weighting toward the values where most data was collected
+\change_unchanged
+.
+
+\change_deleted -1683065902 1349384398
+ note in viewing these graphs that
+\change_inserted -1683065902 1349384399
+Thus,
+\change_unchanged
+ the smaller a 
+\change_inserted -1683065902 1349384404
+data 
+\change_unchanged
+point, the further it may acceptably lie from the model fit; some values
+ of 
 \begin_inset Formula $\Delta x$
 \end_inset
 
-, drawn using the smallest dots, may only visited by one trial if that value
- turned out to be far from the PSE; being one trial these points can only
- lie at 
+, drawn using the smallest dots, may 
+\change_deleted -1683065902 1349384412
+only visited by one trial
+\change_inserted -1683065902 1349384415
+represent a single trial
+\change_deleted -1683065902 1349384419
+ if that value turned out to be far from the PSE; being one trial these
+ points can only lie at 
 \begin_inset Formula $p=0$
 \end_inset
 
@@ -1571,6 +1757,10 @@ clockwise
 \end_inset
 
 .
+\change_inserted -1683065902 1349384419
+.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1578,6 +1768,8 @@ Data folding
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted -1683065902 1349384429
 For some questions we will make use of 
 \begin_inset Quotes eld
 \end_inset
@@ -1587,10 +1779,21 @@ folded
 \end_inset
 
  data.
- Presuming that observers do not show a particular bias toward either clockwise
- or counterclockwise directions, we may treat counterclockwise direction
- content as being equivalent to clockwise direction content with the opposite
- direction of displacement.
+ 
+\change_unchanged
+Presuming that observers do not show a particular bias toward either clockwise
+ or counterclockwise directions,
+\change_inserted -1683065902 1349384497
+ we can consider 'flipped' versions of the experiment as equivalent, and
+ can average data together after flipping the sign of both local and motion
+ direction for 
+\change_deleted -1683065902 1349384512
+ we may treat counterclockwise direction content as being equivalent to
+ clockwise direction content with the opposite direction of displacement.
+\change_inserted -1683065902 1349384518
+one of the directions.
+
+\change_unchanged
  That is, we assume that the probability of an observer responding 
 \begin_inset Quotes eld
 \end_inset
@@ -1623,17 +1826,63 @@ counterclockwise
 \begin_inset Formula $-\Delta x$
 \end_inset
 
-, and count these two circumstances as the same.
+, and count these two circumstances as the same
+\change_inserted -1683065902 1349384534
+.
+ 
+\change_deleted -1683065902 1349384531
+.
 \end_layout
 
 \begin_layout Standard
-Note that the staircase procedures were run with folding.
+
+\change_deleted -1683065902 1349384531
+Note that the s
+\change_inserted -1683065902 1349384529
+S
+\change_unchanged
+taircase procedures were run 
+\change_deleted -1683065902 1349384535
+with
+\change_inserted -1683065902 1349384537
+using
+\change_unchanged
+ 
+\change_inserted -1683065902 1349384593
+'
+\change_unchanged
+folding
+\change_inserted -1683065902 1349384595
+'
+\change_unchanged
+.
  So, a staircase that used a 
 \begin_inset Formula $C$
 \end_inset
 
- of 0.2 (clockwise) actually used both clockwise and counterclockwise motion
- in its trials
+ of 0.2 (clockwise) 
+\change_deleted -1683065902 1349384550
+actually used bot
+\change_inserted -1683065902 1349384551
+would actually 
+\change_deleted -1683065902 1349384564
+h
+\change_inserted -1683065902 1349384576
+pseudorandomly present either
+\change_unchanged
+ clockwise 
+\change_deleted -1683065902 1349384580
+and
+\change_inserted -1683065902 1349384580
+or
+\change_unchanged
+ counterclockwise motion 
+\change_deleted -1683065902 1349384582
+in its trials
+\change_inserted -1683065902 1349384586
+on a given trial.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Subsection
@@ -1658,35 +1907,116 @@ reference "mov:singles"
  seem to suggest that the perceived reversal of motion direction is a function
  not only of eccentricity viewing but of an interaction between multiple
  moving elements.
- We explored this spatial interaction by varying the distance between elements
- that were moving at a constant eccentricity.
+ We explored this spatial interaction by 
+\change_inserted -1683065902 1349384628
+examining the interactions between local and global motion as a function
+ of 
+\change_deleted -1683065902 1349384630
+varying
+\change_unchanged
  
+\change_inserted -1683065902 1349384658
+both 
+\change_unchanged
+the distance between elements
+\change_inserted -1683065902 1349384735
+ and the amount of carrier [[use carrier throughout when you talk about
+ ]] direction content.
+
+\change_unchanged
+ 
+\change_deleted -1683065902 1349384632
+that were moving at a constant eccentricity.
+ 
+\change_inserted -1683065902 1349384755
+ Data were collected under two conditions, in the first 
+\change_deleted -1683065902 1349384758
+
 \end_layout
 
 \begin_layout Subsubsection
+
+\change_deleted -1683065902 1349384758
 Effect of spacing
 \end_layout
 
 \begin_layout Standard
-In these sessions the direction content 
+
+\change_deleted -1683065902 1349384758
+In these sessions
+\change_unchanged
+ the
+\change_inserted -1683065902 1349384761
+ carrier
+\change_unchanged
+ direction content 
 \begin_inset Formula $C$
 \end_inset
 
- was fixed for the entire session (though we randomized whether it was clockwise
- or counterclockwise.) To characterize the effect of spacing we used several
- values of spacing, collecting an independent staircase for each one.
+ was fixed 
+\change_inserted -1683065902 1349384767
+across
+\change_deleted -1683065902 1349384765
+for
+\change_unchanged
+ the entire session 
+\change_deleted -1683065902 1349384771
+(though we randomized whether it was clockwise or counterclockwise.) 
+\change_inserted -1683065902 1349384772
+and 
+\change_deleted -1683065902 1349384777
+To characterize the effect of spacing we used
+\change_inserted -1683065902 1349384788
+apparent motion was measured as the spacing between elements was varied.
+
+\change_unchanged
+ 
+\change_deleted -1683065902 1349384791
+several values of spacing, collecting an independent staircase for each
+ one.
+\change_inserted -1683065902 1349384794
+In the second condition 
+\change_deleted -1683065902 1349384799
+
 \end_layout
 
 \begin_layout Subsubsection
+
+\change_deleted -1683065902 1349384799
 Effect of content
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted -1683065902 1349384799
 In separate sessions we focused on the effect of direction content.
- We chose two values for spacing, below and above the critical spacing,
- and ranged direction content over four values (0.1, 0.2, 0.4 and 1.0; both
- counterclockwise and clockwise), thus collecting eight (folded) psychometric
- functions.
+ We chose
+\change_unchanged
+ two 
+\change_inserted -1683065902 1349384802
+fixed 
+\change_unchanged
+values for spacing
+\change_deleted -1683065902 1349384811
+, below and above the critical spacing, 
+\change_inserted -1683065902 1349384813
+ 
+\change_unchanged
+and 
+\change_deleted -1683065902 1349384816
+ranged
+\change_inserted -1683065902 1349384819
+varied
+\change_unchanged
+ direction content over four values (0.1, 0.2, 0.4 and 1.0; 
+\change_deleted -1683065902 1349384885
+both counterclockwise and clockwis
+\change_inserted -1683065902 1349384917
+either consistent or inconsistent with the envelope motion).
+\change_deleted -1683065902 1349384956
+e), thus collecting eight (folded) psychometric functions.
+\change_unchanged
+
 \end_layout
 
 \begin_layout Subsection
