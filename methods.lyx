@@ -992,7 +992,7 @@ reference "sec:results-basic"
 \end_inset
 
 , 
-\begin_inset Formula $\omega=32423153215\hertz$
+\begin_inset Formula $\omega=120\hertz$
 \end_inset
 
 , 
@@ -1027,13 +1027,29 @@ hertz$
 \begin_inset Formula $6.67^{\circ}$
 \end_inset
 
- eccentricity.
- For these 
+ eccentricity
+\change_inserted 232785317 1349734322
+, where 
+\change_deleted 232785317 1349734321
+.
+
+\change_unchanged
+ 
+\change_deleted 232785317 1349734316
+For these
+\change_unchanged
+ 
 \begin_inset Note Greyedout
 status open
 
 \begin_layout Plain Layout
+
+\change_deleted 232785317 1349734326
 spatial frequency
+\change_inserted 232785317 1349734362
+stuff about spatial parameters
+\change_unchanged
+
 \end_layout
 
 \end_inset
@@ -1067,7 +1083,11 @@ degree$
 
 \end_inset
 
+
+\change_deleted 232785317 1349734359
 , and
+\change_unchanged
+
 \begin_inset Note Note
 status open
 
@@ -1092,8 +1112,14 @@ degree$
 
 \end_inset
 
-, When eccentricity was varied, these three parameters were scaled proportionate
-ly.
+
+\change_inserted 232785317 1349734364
+.
+\change_deleted 232785317 1349734364
+,
+\change_unchanged
+ When eccentricity was varied, these three parameters were scaled proportionatel
+y.
 \end_layout
 
 \begin_layout Standard

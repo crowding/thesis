@@ -72,11 +72,22 @@ Model details and motivation
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-<<library-check,cache=FALSE>>=
+<<library-check,cache=FALSE
+\change_inserted 232785317 1349734148
+,echo=FALSE,results="hide"
+\change_unchanged
+>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349734171
+
+suppressPackageStartupMessages({
 \end_layout
 
 \begin_layout Plain Layout
@@ -87,6 +98,17 @@ library(ggplot2)
 \begin_layout Plain Layout
 
 library(plyr)
+\change_inserted 232785317 1349734167
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349734168
+
+})
+\change_unchanged
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -207,8 +229,169 @@ M_{S}=\frac{C}{S}
 \end_layout
 
 \begin_layout Standard
+
+\change_deleted 232785317 1349734215
 Put in figure here.
  
+\change_inserted 232785317 1349734251
+
+\end_layout
+
+\begin_layout Standard
+
+\change_inserted 232785317 1349734251
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+
+\change_inserted 232785317 1349734251
+\begin_inset Graphics
+	filename model-sketch.jpg
+	display false
+	width 4in
+	rotateAngle 270
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349734251
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349734251
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:model"
+
+\end_inset
+
+ Schematic of motion model.
+ (A)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:model-visual-schematic"
+
+\end_inset
+
+ A typical motion stimulus is shown.
+ The dotted circle indicates a local summation region 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349734251
+(critical distance; uncrowded window, window of spatial attention, cortical
+ neighborhood, what do we want to call this?)
+\end_layout
+
+\end_inset
+
+.
+ (C)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:model-uncertainty"
+
+\end_inset
+
+ Envelope motion is estimated by taking two successive noisy estimates of
+ the position of a given element.
+ Due to 
+\begin_inset Quotes eld
+\end_inset
+
+crowding
+\begin_inset Quotes erd
+\end_inset
+
+ the uncertainty in position 
+\begin_inset Formula $\nicefrac{1}{\beta(S)}$
+\end_inset
+
+ increases as a function of the flanker spacing 
+\begin_inset Formula $S$
+\end_inset
+
+ EQ here.
+ The form of 
+\begin_inset Formula $\beta(S)$
+\end_inset
+
+ is an sigmoid, as plotted, in Panel XX.
+ Its parameters are 
+\begin_inset Formula $\beta_{0}$
+\end_inset
+
+, reflecting the sensitivity in position of an uncrowded target, and 
+\begin_inset Formula $S_{C}$
+\end_inset
+
+, which is the distance at which discrimination thresholds for envelope
+ motion double.
+ (B)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:model-summation"
+
+\end_inset
+
+ The carrier motion estimate is a simple summation of the local motion energy
+ within the summation region.
+ This signal is inversely proportional to the element spacing 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\change_inserted 232785317 1349734251
+(and proportional to the direction content?)
+\end_layout
+
+\end_inset
+
+.
+ (D)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:model-induced"
+
+\end_inset
+
+ Motion repulsion is assumed to be proportional to the global integration
+ of carrier motion outside the region of interest.
+ The strength of this signal is an odd-symmetric function of direction content.
+ (E)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:model-decision"
+
+\end_inset
+
+ The decision rule is modeled as a single logistic cumulative distribution
+ function combining these three estimates of motion.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\change_unchanged
+
 \end_layout
 
 \begin_layout Standard
@@ -665,255 +848,6 @@ to
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename model-sketch.jpg
-	display false
-	width 4in
-	rotateAngle 270
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="2">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model"
-
-\end_inset
-
- Schematic of motion model.
- (A)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-visual-schematic"
-
-\end_inset
-
- A typical motion stimulus is shown.
- The dotted circle indicates a local summation region 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-(critical distance; uncrowded window, window of spatial attention, cortical
- neighborhood, what do we want to call this?)
-\end_layout
-
-\end_inset
-
-.
-
-\change_deleted 232785317 1349516545
- 
-\change_unchanged
- (C)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-uncertainty"
-
-\end_inset
-
- Envelope motion is estimated by taking two successive noisy estimates of
- the position of a given element.
- Due to 
-\begin_inset Quotes eld
-\end_inset
-
-crowding
-\begin_inset Quotes erd
-\end_inset
-
- the uncertainty in position
-\change_inserted 232785317 1349516640
- 
-\begin_inset Formula $\nicefrac{1}{\beta(S)}$
-\end_inset
-
-
-\change_unchanged
- increases
-\change_deleted 232785317 1349516650
- 
-\change_unchanged
- as a function of the flanker spacing 
-\begin_inset Formula $S$
-\end_inset
-
- EQ here.
- The form of 
-\begin_inset Formula $\beta(S)$
-\end_inset
-
- is an sigmoid, as plotted, in Panel XX.
- Its parameters are 
-\begin_inset Formula $\beta_{0}$
-\end_inset
-
-, reflecting the sensitivity in position of an uncrowded target, and 
-\begin_inset Formula $S_{C}$
-\end_inset
-
-, which is the distance at which discrimination thresholds for envelope
- motion double.
- (B)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-summation"
-
-\end_inset
-
- The carrier motion estimate is a simple summation of the local motion energy
- within the summation region.
- This signal is inversely proportional to the element spacing 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-(and proportional to the direction content?)
-\end_layout
-
-\end_inset
-
-.
- (D)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-induced"
-
-\end_inset
-
- Motion repulsion is assumed to be proportional to the global integration
- of carrier motion outside the region of interest.
- The strength of this signal is an odd-symmetric function of direction content.
- (E)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-decision"
-
-\end_inset
-
- The decision rule is modeled as a single logistic cumulative distribution
- function combining these three estimates of motion.
- 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_body
