@@ -10,6 +10,9 @@
 \usepackage{hyperref}
 
 \usepackage{changepage}
+
+\usepackage{SIunits}
+
 \strictpagecheck
 
 \newlength{\totalleftmargin}
@@ -22,6 +25,9 @@
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
+\begin_modules
+knitr
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -69,7 +75,7 @@
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
@@ -83,6 +89,20 @@ General Methods
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:methods"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status collapsed
+
+\begin_layout Plain Layout
+
+fig.width=6,fig.height=4,dev="tikz",tidy=FALSE,cache=TRUE
+\end_layout
 
 \end_inset
 
@@ -111,19 +131,24 @@ SOME NUMBER OF
 
 \end_inset
 
- naïve observers.
- All had normal or corrected-to-normal vision.
- 
-\begin_inset Note Greyedout
+ na
+\begin_inset ERT
 status open
 
 \begin_layout Plain Layout
-verbiage about subject compensation, experiment protocol approval, etc.
+
+
+\backslash
+"i
 \end_layout
 
 \end_inset
 
-
+ve observers.
+ All had normal or corrected-to-normal vision.
+ All subjects provided informed written consent, and all procedures involved
+ were approved by the Institutional Review Board at the University of Washington.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -138,122 +163,117 @@ name "sub:methods-equipment"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
+\begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
 
-\begin_layout Plain Layout
-
-%data
+<<calibrationData,echo=FALSE,results="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
 
-<<data, cache=TRUE>>=
+library(plyr)
 \end_layout
 
 \begin_layout Plain Layout
 
-load("Constant.Rdata")
+cdatafile <- "calibrationData.RData"
 \end_layout
 
 \begin_layout Plain Layout
 
-common.manipulations(environment())
+if (file.exists(cdatafile)) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  load(cdatafile)
+\end_layout
+
+\begin_layout Plain Layout
+
+} else {
+\end_layout
+
+\begin_layout Plain Layout
+
+  calib <- local({
+\end_layout
+
+\begin_layout Plain Layout
+
+    load("../unpacked/pbm-2012-03-23__15-04-11-ConcentricAdjustmentPeriodic.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+    with(runs, list(
+\end_layout
+
+\begin_layout Plain Layout
+
+                  resolution=beforeRun.params.cal.rect[[1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+                 , size=beforeRun.params.cal.spacing[[1]] 
+\end_layout
+
+\begin_layout Plain Layout
+
+                   * beforeRun.params.cal.rect[[1]][c(3,4)]
+\end_layout
+
+\begin_layout Plain Layout
+
+                 , distance=beforeRun.params.cal.distance
+\end_layout
+
+\begin_layout Plain Layout
+
+                 , interval=beforeRun.params.cal.interval
+\end_layout
+
+\begin_layout Plain Layout
+
+                 , gamma=beforeRun.params.cal.gamma
+\end_layout
+
+\begin_layout Plain Layout
+
+                 , luminance=beforeRun.params.cal.calibration.stage2.readings[[1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+                 , gamma=beforeRun.params.cal.gamma[[1]]
+\end_layout
+
+\begin_layout Plain Layout
+
+                 ))
+\end_layout
+
+\begin_layout Plain Layout
+
+  })
+\end_layout
+
+\begin_layout Plain Layout
+
+  save(calib, file=cdatafile)
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \begin_layout Plain Layout
 
 @
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-%settings
-\end_layout
-
-\begin_layout Plain Layout
-
-<<settings,cache=TRUE>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-calibration <- runs[[1,'afterRun.params']][['cal',1,1]]
-\end_layout
-
-\begin_layout Plain Layout
-
-screen.distance <- calibration[["distance",1,1]]
-\end_layout
-
-\begin_layout Plain Layout
-
-display.resolution <- calibration[["rect",1,1]][c(3,4)]
-\end_layout
-
-\begin_layout Plain Layout
-
-display.size <- display.resolution*calibration[["spacing",1,1]]
-\end_layout
-
-\begin_layout Plain Layout
-
-black.luminance <- calibration[["calibration",1,1]][["stage2",1,1]][["readings",1
-,1]][c(1)]
-\end_layout
-
-\begin_layout Plain Layout
-
-white.luminance <- calibration[["calibration",1,1]][["stage2",1,1]][["readings",1
-,1]][c(256)]
-\end_layout
-
-\begin_layout Plain Layout
-
-refresh.rate <- round(1/calibration[["interval",1,1]])
-\end_layout
-
-\begin_layout Plain Layout
-
-sample.rate <- runs[[1,'beforeRun.params']][['eyelinkSettings',1,1]][['sample.rate'
-,1,1]]
-\end_layout
-
-\begin_layout Plain Layout
-
-example.trial <- tail(subset(trials, trial.version...function == "ConcentricTrial"
- & subject == "jt" & result.success),n=1)
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -294,10 +314,6 @@ mathrm{pixels}$
 \end_inset
 
  800 by 600 pixels over a display area of 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
 \begin_inset ERT
 status collapsed
 
@@ -305,11 +321,11 @@ status collapsed
 
 $
 \backslash
-Sexpr{format(display.size[1],nsmall=1)}
+Sexpr{format(calib$size[1],nsmall=1)}
 \backslash
 times
 \backslash
-Sexpr{format(display.size[1],nsmall=1)}
+Sexpr{format(calib$size[2],nsmall=1)}
 \backslash
 centi
 \backslash
@@ -318,16 +334,7 @@ meter$
 
 \end_inset
 
-
-\end_layout
-
-\end_inset
-
-x by y cm and it used a 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
+ and it used a 
 \begin_inset ERT
 status collapsed
 
@@ -335,19 +342,14 @@ status collapsed
 
 $
 \backslash
-Sexpr{refresh.rate}
+Sexpr{1/calib$interval}
 \backslash
 hertz$
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\end_inset
-
- 120 Hz refresh rate.
+ refresh rate.
  Experiments were programmed in MATLAB using the Psychtoolbox 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -375,12 +377,7 @@ model-number
 \end_inset
 
  photometer.
- A 50% gray background was chosen to lie at the midpoint between mimimum
- (
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
+ A midpoint gray background of 
 \begin_inset ERT
 status collapsed
 
@@ -388,7 +385,8 @@ status collapsed
 
 $
 \backslash
-Sexpr{format(black.luminance,nsmall=2)} 
+Sexpr{format(mean(calib$luminance[1], tail(calib$luminance,1)),digits=2)}
+ 
 \backslash
 candela
 \backslash
@@ -401,16 +399,28 @@ squared$
 
 \end_inset
 
+ was chosen to lie at the midpoint between minimum (
+\begin_inset ERT
+status collapsed
 
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(calib$luminance[1],digits=2)} 
+\backslash
+candela
+\backslash
+per
+\backslash
+meter
+\backslash
+squared$
 \end_layout
 
 \end_inset
 
 ) and maximum (
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
 \begin_inset ERT
 status collapsed
 
@@ -418,7 +428,7 @@ status collapsed
 
 $
 \backslash
-Sexpr{format(white.luminance,nsmall=2)} 
+Sexpr{format(tail(calib$luminance,1),digits=3)} 
 \backslash
 candela
 \backslash
@@ -431,85 +441,34 @@ squared$
 
 \end_inset
 
-
-\end_layout
-
-\end_inset
-
-) luminances, which were in turn measured as patches against the gray background.
+) luminances.
  A hardware lookup table with 10-bit resolution was used to linearize the
  display response.
- 
 \end_layout
 
 \begin_layout Standard
 Subjects sat behind a blackout curtain so that ambient illumination was
  mostly due to the monitor and viewed the screen binocularly using a chin
- and forehead rest with the eyes 60 cm
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
+ and forehead rest with the eyes 
 \begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
 
-$
-\backslash
-Sexpr{screen.distance}
+$60
 \backslash
 centi
 \backslash
-meter$
-\end_layout
-
-\end_inset
-
-
+metre$
 \end_layout
 
 \end_inset
 
  from the screen.
  Eye position was monitored using a video-based eye tracker (EyeLink 1000;
- SR Research) using a sample rate of 
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-1000 Hz
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-$
-\backslash
-Sexpr{sample.rate}
-\backslash
-hertz$
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-.
+ SR Research) using a sample rate of 1000 Hz.
  Subjects gave responses by turning a knob (PowerMate; Griffin Technologies)
- with their preferred hand.
+ with their preferred hand in the direction of the perceived motion.
  
 \end_layout
 
@@ -528,11 +487,11 @@ name "sub:methods-stimuli"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -684,7 +643,7 @@ name "fig:stimuli-motion-pulse"
  the vertical axis.
  Elements are Gabor-like with a moving carrier (visible as the tilt in this
  diagram) and a fixed envelope.
- The same motion elements are used for all experiments in this report.
+ The same motion elements are used for all experiments in this paper.
  (B) 
 \begin_inset CommandInset label
 LatexCommand label
@@ -694,8 +653,13 @@ name "fig:stimuli-motion-elements"
 
  Motion elements were constructed of several motion pulses, offset at regular
  intervals in space and time.
- "Envelope displacement" refers to the spatial dimension of the step.
- The temporal dimension was fixed at 100 ms for these experiments.
+ "Displacement" refers to the spatial displacement of the Gabor-like elements
+ at each step.
+ The interval between steps was always 
+\begin_inset Formula $100\milli\second$
+\end_inset
+
+.
  (C) 
 \begin_inset CommandInset label
 LatexCommand label
@@ -708,8 +672,8 @@ We varied the directional content of the motion elements by mixing two carriers
  A direction content of 0 is counterphase flicker, with equal energy along
  both directions of carrier motion.
  A direction content of 1 uses only the clockwise carrier.
- The total contrast of counterclockwise and clockwise carriers was fixed
- at 50%.
+ The total luminance contrast of counterclockwise and clockwise carriers
+ was fixed at 50%.
  (D)
 \begin_inset CommandInset label
 LatexCommand label
@@ -734,17 +698,7 @@ reference "mov:sample-stimuli"
 
 \end_inset
 
- and indicated the apparent direction of motion within 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-check on actual numbers
-\end_layout
-
-\end_inset
-
- 500-900 ms from stimulus onset.
+.
 \end_layout
 
 \end_inset
@@ -758,10 +712,10 @@ check on actual numbers
 \end_layout
 
 \begin_layout Standard
-Stimuli were designed to provide independent higher-order, position-based
- motion, and first-order motion energy.
+Stimuli were designed to allow us to independently manipulate higher-order,
+ position-based motion, and first-order motion energy.
  We did this by independently controlling the motion of the envelope and
- the carrier of oriented motion sitmuli.
+ the carrier of oriented motion stimuli.
  
 \begin_inset Note Note
 status collapsed
@@ -769,7 +723,8 @@ status collapsed
 \begin_layout Plain Layout
 I am describing the stimulus from the bottom up in the figure caption and
  from the top down in this para.
- I mean why not?
+ I mean why not? Let's discuss this.
+ 
 \end_layout
 
 \end_inset
@@ -782,7 +737,7 @@ reference "fig:stimuli"
 \end_inset
 
 .
- The stimuli consisted of a number of repeatedly presented, identically
+ The stimuli consisted of a number of repeatedly [??] presented, identically
  moving elements arranged into a circle at centered on the fixation point
  
 \begin_inset CommandInset ref
@@ -982,60 +937,20 @@ reference "sec:results-basic"
 \end_inset
 
 : For all trials, 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-delta-t
-\end_layout
-
+\begin_inset Formula $\Delta t=100\milli\second$
 \end_inset
 
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-$
-\backslash
-Delta t = 
-\backslash
-Sexpr{example.trial$trial.motion.process.dt*1000}
-\backslash
-milli
-\backslash
-second$
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
+, 
+\begin_inset Formula $\omega=120\hertz$
 \end_inset
 
 , 
 \begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-omega
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -1056,61 +971,17 @@ hertz$
 
 \end_inset
 
-, and 
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-d
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-$d = 
-\backslash
-Sexpr{format(example.trial$trial.motion.process.duration, digits=2)}
-\backslash
-second$
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
 .
- For stimuli at 
-\begin_inset Formula $10^{\circ}$
+ Most experiments use stimuli at 
+\begin_inset Formula $6.67^{\circ}$
 \end_inset
 
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-update this for 6.67 eccentricity
-\end_layout
-
-\end_inset
-
- eccentricity, 
+ eccentricity, where 
 \begin_inset Note Greyedout
 status open
 
 \begin_layout Plain Layout
-spatial frequency
+stuff about spatial parameters
 \end_layout
 
 \end_inset
@@ -1144,7 +1015,7 @@ degree$
 
 \end_inset
 
-, and
+
 \begin_inset Note Note
 status open
 
@@ -1169,7 +1040,9 @@ degree$
 
 \end_inset
 
-, and these three parameters were scaled proportionately to eccentricity.
+.
+ When eccentricity was varied, these three parameters were scaled proportionatel
+y.
 \end_layout
 
 \begin_layout Standard
@@ -1427,16 +1300,26 @@ status open
 
 \end_inset
 
- ms after detecting fixation, the motion stimulus was shown.
- After the motion stimulus concluded, observers indicated the direction
- of perceived motion by turning a knob.
+ ms after detecting fixation, the motion stimulus was shown for 500 ms (the
+ initial location, then 4 steps of displacement at 100ms intervals) After
+ the motion stimulus concluded, observers indicated the direction of perceived
+ motion by turning a knob within a response window that lasted 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+check on actual numbers
+\end_layout
+
+\end_inset
+
+ 500-900 ms from stimulus onset.
  If an observer blinked or broke fixation before the offset of the motion
  stimulus, the trial was aborted and reshuffled into the stimulus set, to
  be repeated later in the session.
  Response latency was defined as the elapsed time between motion onset and
  the knob being turned.
-  There was also a time pressure to the task; If the response latency was
- more than
+ If the response latency was more than
 \begin_inset Note Note
 status collapsed
 
@@ -1495,7 +1378,7 @@ second$
  be repeated later in the session.
  An audio click was played each time subjects gave a response; this seemed
  to help subjects establish a consistent rhythm through the experiment.
- No feedback was given as to the direction of observers' responses, only
+ No feedback was given as to the correctness of observers' responses, only
  whether they had responded within the time window.
  Observers were instructed to report the apparent direction of motion, and
  told that there were no correct answers.
@@ -1506,8 +1389,8 @@ second$
 \end_layout
 
 \begin_layout Standard
-Observers performed the task in sessions of at most 1 hour, divided into
- 4 to 6 blocks, and were prompted to take a break between blocks.
+Observers performed the task in sessions that lasted a maximum of 1 hour,
+ divided into 4 to 6 blocks, and were prompted to take a break between blocks.
  Subjects could also rest at any point by simply delaying fixation.
  At the beginning of each block, the eye tracking system was automatically
  recalibrated by asking the subject to make saccades to a sequence of targets
@@ -1519,16 +1402,16 @@ Staircase procedure
 \end_layout
 
 \begin_layout Standard
-To measure the sensitivity of observers to envelope motion, we measured
- psychometric functions of envelope displacement.
- The displacement 
+To measure the sensitivity of observers to envelope motion, we collected
+ psychometric functions measuring the proportion of clockwise responses
+ as a function of the envelope displacement, 
 \begin_inset Formula $\Delta x$
 \end_inset
 
- was placed under computer control, with For each psychometric function
- collected we used two interleaved staircases, one 2up-1down and the other
- 2down-1up, to bracket the particular displacement at which subjects were
- equivocal about perceived direction (PSE).
+.
+ For each psychometric function we used two interleaved staircases, one
+ 2-up-1-down and the other 2-down-1-up, to bracket the particular displacement
+ at which subjects were equivocal about perceived direction (PSE).
  In a typical session, 6-8 such staircases were collected concurrently,
  with each staircase operating independently and trials from all staircases
  being randomly interleaved.
@@ -1552,25 +1435,11 @@ clockwise
 \end_inset
 
  responses on the ordinate.
- In these graphs we scale the area of the drawn points in proportion to
- the number of trials collected at that displacement, to favor a visual
- weighting toward the values where most data was collected.
- note in viewing these graphs that the smaller a point, the further it may
- acceptably lie from the model fit; some values of 
-\begin_inset Formula $\Delta x$
-\end_inset
-
-, drawn using the smallest dots, may only visited by one trial if that value
- turned out to be far from the PSE; being one trial these points can only
- lie at 
-\begin_inset Formula $p=0$
-\end_inset
-
- or 
-\begin_inset Formula $p=1$
-\end_inset
-
-.
+ In these graphs we scale the area of the data points to be proportionate
+ to the number of trials collected at that displacement.
+ Thus, the smaller a data point, the further it may acceptably lie from
+ the model fit; some data drawn using the smallest dots may represent a
+ single trial.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1578,19 +1447,11 @@ Data folding
 \end_layout
 
 \begin_layout Standard
-For some questions we will make use of 
-\begin_inset Quotes eld
-\end_inset
-
-folded
-\begin_inset Quotes erd
-\end_inset
-
- data.
- Presuming that observers do not show a particular bias toward either clockwise
- or counterclockwise directions, we may treat counterclockwise direction
- content as being equivalent to clockwise direction content with the opposite
- direction of displacement.
+Presuming that observers do not show a particular bias toward either clockwise
+ or counterclockwise directions, we can consider 'flipped' versions of the
+ experiment as equivalent, and can average data together after flipping
+ the signs of carrier direction content, envelope displacement, and the
+ observer's response.
  That is, we assume that the probability of an observer responding 
 \begin_inset Quotes eld
 \end_inset
@@ -1627,13 +1488,20 @@ counterclockwise
 \end_layout
 
 \begin_layout Standard
-Note that the staircase procedures were run with folding.
+Note that the sStaircase procedures were run using 
+\begin_inset Quotes eld
+\end_inset
+
+folding.
+\begin_inset Quotes erd
+\end_inset
+
  So, a staircase that used a 
 \begin_inset Formula $C$
 \end_inset
 
- of 0.2 (clockwise) actually used both clockwise and counterclockwise motion
- in its trials
+ of 0.2 would actually pseudorandomly present either clockwise (0.2) or counterclo
+ckwise (-0.2) motion on a given trial.
 \end_layout
 
 \begin_layout Subsection
@@ -1658,39 +1526,33 @@ reference "mov:singles"
  seem to suggest that the perceived reversal of motion direction is a function
  not only of eccentricity viewing but of an interaction between multiple
  moving elements.
- We explored this spatial interaction by varying the distance between elements
- that were moving at a constant eccentricity.
- 
+ We explored this spatial interaction by examining the interactions between
+ local and global motion as a function of both the distance between elements
+ and the amount of carrier 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+[[use carrier throughout when you talk about ]]
 \end_layout
 
-\begin_layout Subsubsection
-Effect of spacing
-\end_layout
+\end_inset
 
-\begin_layout Standard
-In these sessions the direction content 
+ direction content.
+ Data were collected under two conditions, in the first the carrier direction
+ content 
 \begin_inset Formula $C$
 \end_inset
 
- was fixed for the entire session (though we randomized whether it was clockwise
- or counterclockwise.) To characterize the effect of spacing we used several
- values of spacing, collecting an independent staircase for each one.
-\end_layout
-
-\begin_layout Subsubsection
-Effect of content
-\end_layout
-
-\begin_layout Standard
-In separate sessions we focused on the effect of direction content.
- We chose two values for spacing, below and above the critical spacing,
- and ranged direction content over four values (0.1, 0.2, 0.4 and 1.0; both
- counterclockwise and clockwise), thus collecting eight (folded) psychometric
- functions.
+ was fixed across the entire session and the spacing between elements was
+ varied.
+ In the second condition we used two fixed values for spacing and varied
+ direction content over four values (0.1, 0.2, 0.4 and 1.0), thus collecting
+ eight psychometric functions.
 \end_layout
 
 \begin_layout Subsection
-Experiment 2 (contrast versus density)
+Experiment 2 (number versus density)
 \end_layout
 
 \begin_layout Subsection
