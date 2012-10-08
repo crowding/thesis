@@ -63,7 +63,6 @@
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author -1683065902 "Ione Fine" 
 \author 232785317 "Peter" 
 \end_header
 
@@ -74,25 +73,17 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 232785317 1349516757
 \begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 232785317 1349516767
 (IF) You're flipping between short-range, long-range, local global.
  Choose one for each and stay consistent, when you flip it's hard for the
  reader to know that the change of term isn't significant.
-\change_unchanged
-
 \end_layout
 
 \end_inset
 
-
-\change_unchanged
 
 \end_layout
 
@@ -176,13 +167,10 @@ we need to set up the idea that the variety of motion systems can be thought
 \begin_layout Standard
 It is thought that the first-order motion mechanism originates with the
  direction selective response of cells in V1.
- Classic models of local motion include local
-\change_inserted 232785317 1349723465
-, linear
-\change_unchanged
- filters that extract directional signals from space-time correlations in
- luminance contrast in a small region of space, in a way similar to what
- has been observed to drive the activity of cells in V1 
+ Classic models of local motion include local, linear filters that extract
+ directional signals from space-time correlations in luminance contrast
+ in a small region of space, in a way similar to what has been observed
+ to drive the activity of cells in V1 
 \begin_inset Marginal
 status collapsed
 
@@ -212,32 +200,16 @@ cites
 \end_layout
 
 \begin_layout Standard
-
-\change_inserted 232785317 1349723799
-However
-\change_deleted 232785317 1349723798
-In contrast
-\change_unchanged
-, 
-\change_deleted 232785317 1349723786
-higher-order motion
-\change_inserted 232785317 1349723793
-the perception of motion
-\change_unchanged
- does not necessarily require features to differ in mean luminance from
- the background, does not necessarily require motion energy in the Fourier
- domain
-\change_inserted 232785317 1349733960
-.
+However, the perception of motion does not necessarily require features
+ to differ in mean luminance from the background, does not necessarily require
+ motion energy in the Fourier domain.
  Moving stimuli can be constructed that would not be consistently detectable
  to first-order mechanisms, yet nonetheless elicit strong perceptions of
  movement.
  These higher-order stimuli can be constructed variously by modulations
- in contrast, texture, or other stimulus features, but generally 
-\change_deleted 232785317 1349723854
-, and appears to operate over longer spatial and temporal scales than first-orde
-r motion.
- In general, higher-order motion seems to
+ in contrast, texture, or other stimulus features, but generally
+\change_deleted 232785317 1349734913
+ 
 \change_unchanged
  involve the change in position, over time, of some feature in the image
  
@@ -250,10 +222,8 @@ key "Lu:1995la"
 .
  There is evidence that global motion may have a different neural substrate
  from local motion.
- For example, 
-\change_inserted 232785317 1349734039
-adding higher-order motion to a display does not appear to change the threshold
- of detection for first-order motion 
+ For example, adding higher-order motion to a display does not appear to
+ change the threshold of detection for first-order motion 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Edwards:1995fk,Cassanello:2011uq"
@@ -266,53 +236,22 @@ key "Edwards:1995fk,Cassanello:2011uq"
  response properties in V1, stimuli can also be designed to be invisible
  to such a mechanism.
  Higher order motion stimuli can be created these stimuli nonetheless elicit
+ a strong sensation of motion can also be created without any Fourier motion
+ signal, by using stimuli that modulate contrast, texture, or other features
+ - such stimuli being invisible to a system that relies on linear filter
  
-\change_unchanged
-a strong sensation of motion can
-\change_inserted 232785317 1349723261
- also
-\change_unchanged
- be created without any Fourier motion signal
-\change_inserted 232785317 1349722680
-, by using stimuli that modulate contrast, texture, or other features
-\change_unchanged
- - 
-\change_deleted 232785317 1349723143
-such stimuli are expected to be 'invisible' to the filters thought to underlie
- local motion
-\change_inserted 232785317 1349723161
-such stimuli being invisible to a system that relies on linear filter 
 \begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 232785317 1349723026
 ISTR Simoncelli's chapter in Gazzaniga had some discussion?
-\change_unchanged
-
 \end_layout
 
 \end_inset
 
-
-\change_unchanged
-; 
-\change_deleted 232785317 1349723043
-For exanple, strong global motion percepts can be elicited by stimuli that
- modulate in contrast or texture rather than in luminance.
- 
-\change_unchanged
-Another difference between long-range and short-range motion
-\change_deleted 232785317 1349722456
- 
-\change_unchanged
- is that the former seems to be capable of tracking a feature object over
- distances larger than what can be achieved through individual local filters.
-
-\change_deleted 232785317 1349722459
- 
-\change_unchanged
+; Another difference between long-range and short-range motion is that the
+ former seems to be capable of tracking a feature object over distances
+ larger than what can be achieved through individual local filters.
  Interestingly, the anatomical substrate of higher-order motion mechanism
  is still unclear.
  While area MT and MST have been proposed as candidates, response properties
@@ -339,75 +278,7 @@ can provide more cites on this point.
 \end_layout
 
 \begin_layout Standard
-
-\change_deleted 232785317 1349723595
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-Objects moving realistically change position as well as possess local motion
- energy, so that they activate all motion systems concurrently in varying
- ways.
- Although many properties of local and global motion systems have been elucidate
-d by using stimuli designed to isolate the response of one system without
- driving the other, it may be the case that local and global mechanisms
- interact in order to exploit the natural connection between motion energy
- and change in position.
- In that case the interaction between local and global motion mechanisms
- will be key to understanding motion perception as a whole.
- Indeed there is evidence that a system responding to a consistent change
- in position of a stimulus interacts with the output of local motion detectors.
- In a field of dots undergoing random Brownian movement, a single dot that
- changes its position in a consistent direction is more easily detected
- than can be explained by local motion detectors situated along the object's
- trajectory and treated as independent samples 
-\backslash
-citep{Verghese:1999lq}.
- The enhancement in detectability seems to occur only after 100 ms of movement,
- possibly due to a process that responds to an initial cue from local motion
- detectors by reducing the number of detectors monitored to those in the
- vicinity of the initial motion signal, in particular those in the object's
- predicted path 
-\backslash
-citep{VerghesePreeti2002}.
- An interaction between local motion and position sensors thus appears necessary
- to account for performance at motion discrimination.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-MS: I expected to see a broader conclusion statement about synergy, cooperativit
-y, or interaction...
- without returning the focus to the specific case involved.
- If you want to limit, as in some cooperive interaction ...
- at play...
- even in simple detection
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
-
-\end_layout
-
-\begin_layout Standard
-One possible reason for having 
-\change_deleted 232785317 1349722477
-two different
-\change_inserted 232785317 1349722479
-multiple
-\change_unchanged
- motion estimation systems is that
-\change_deleted 232785317 1349722469
- 
-\change_unchanged
+One possible reason for having multiple motion estimation systems is that
  local motion signals are not always a reliable indication of the global
  motion.
  In a complicated visual world, motion can come from many sources, and accurate
@@ -419,16 +290,13 @@ multiple
  While many of the local signals will correctly signal the motion of the
  zebra, the motion of the grass creates a subset of local motion signals
  that are substantially incorrect.
+
+\change_deleted 232785317 1349734913
  
-\change_deleted 232785317 1349722517
-Not only will a
 \change_unchanged
  significant proportion of these individual receptive fields provide an
- incorrect signal 
-\change_inserted 232785317 1349734631
-, and 
-\change_unchanged
-a simple pooling of their signals over space might also be incorrect.
+ incorrect signal , and a simple pooling of their signals over space might
+ also be incorrect.
  To track the zebra requires integrating local motion signals over space
  and time in a way that is consistent with the global change in position
  of an object, while discarding local signals that are inconsistent with
@@ -607,15 +475,8 @@ reference "mov:demo-single"
 
 \end_inset
 
-, the 
-\change_deleted 232785317 1349734469
-apparent
-\change_inserted 232785317 1349734474
-appearance of the
-\change_deleted 232785317 1349734475
- direction of
-\change_unchanged
- motion of the elements is consistent with the motion of the envelope.
+, the appearance of the motion of the elements is consistent with the motion
+ of the envelope.
  The carrier motion causes a change in the perception of 
 \begin_inset Quotes eld
 \end_inset
@@ -625,11 +486,7 @@ smoothness
 \end_inset
 
  but does not strongly affect the apparent direction or even the apparent
- speed of the 
-\change_deleted 232785317 1349734705
-element 
-\change_unchanged
-motion.
+ speed of the motion.
  However, when multiple elements are placed in proximity, but not overlapping,
  as in 
 \begin_inset CommandInset ref
@@ -643,11 +500,7 @@ reference "mov:demo-multiple"
  When the five-element stimulus on the left is viewed centrally, the apparent
  direction of motion is consistent with the envelope.
  When the ring is viewed in the periphery, the apparent direction of motion
- matches 
-\change_inserted 232785317 1349734732
-that of 
-\change_unchanged
-the carrier.
+ matches that of the carrier.
  If the observer keeps attention on that stimulus while moving the eyes
  so as to move the stimulus from central to peripheral vision it is possible
  to make the apparent motion reverse.
@@ -670,178 +523,9 @@ In this paper we examine how first-order and higher order mechanisms interact
  in forming an overall perception of motion.
  In Experiment 1 we quantify how element spacing or 'crowding' affects the
  apparent direction of motion and present a simple mixture model that assumes
- that global and local motion signals are combined 
-\change_inserted 232785317 1349734830
-In Experiment 2 we vary the number of elemnents independently of the spacing
- of targets and uncover a separate effect due to the number of targets on
- the screen.
-\change_deleted 232785317 1349734515
-bla bla bla
-\change_unchanged
-
-\end_layout
-
-\begin_layout Subsubsection
-
-\change_deleted 232785317 1349734548
-Crowding, a mini-review 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\change_deleted -1683065902 1349381748
-(some of this should move from intro to discussion
-\change_inserted -1683065902 1349381750
-Move all this to discussion
-\change_unchanged
-.)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 232785317 1349734548
-Crowding is a phenomenon wherein identification or discrimination of an
- object presented in the visual periphery is impaired by the presence of
- nearby, but non-overlapping flanking objects.
- A finding characteristic of crowding is that critical spacing (usually
- a measure of the distance between target and flanker which achieves a particula
-r elevation of threshold for recognition) scales linearly with retinal eccentric
-ity 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Bouma:1970ng,Toet:1992db"
-
-\end_inset
-
-.
- Although most studies of crowding focus on its effect of impairing the
- recognition of shapes (e.g.
- letters) in parafoveal vision, it has become apparent that crowding is
- a more general phenomenon, extending to many different types of visual
- features (e.g.
- (
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "Berg:2007rc"
-
-\end_inset
-
-; for review, see 
-\begin_inset CommandInset citation
-LatexCommand citealp
-key "Levi:2008la"
-
-\end_inset
-
-.) It is thought that crowding is characteristic of some cortical mechanism
- that integrates signals from low-level feature detectors, a so-called ``integra
-tion field'' 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pelli:2004km"
-
-\end_inset
-
-.
- Because the scaling of critical distance with spacing mirrors the variation
- of cortical magnification with eccentricity, the integration field is thought
- to be a process that subsumes a constant distance on the cortical surface
- 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pelli:2008nx"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 232785317 1349734548
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-The next couple of paragraphs refer to a construction of my experiment I'm
- not doing any more...
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 232785317 1349734548
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Pelli:2004km"
-
-\end_inset
-
- proposed that the crucial diagnostic test for crowding as opposed to masking
- or other forms of spatial interference is that the critical spacing scales
- with eccentricity and is relatively unaffected by signal size.
- Accordingly, we set out to determine which target spacing and motion parameters
- are necessary to drive the reversal of apparent motion as various eccentricitie
-s.
- In 
-\backslash
-autoref{sec:constant} below, we determine the relationship between critical
- spacing and target spacing, which satisfies Bouma's law.
- In 
-\backslash
-autoref{sec:occlusion} we show that the critical spacing is unaffected by
- the presence of an occluder which covers 2/3 of the visible circle, meaning
- that it is the spacing which is relevant and not the number of visible
- targets.
- In 
-\backslash
-autoref{sec:grid} we show that the critical distance and scaling property
- is robust to the size of the stimuli.
- We also test its robustness to variations in temporal frequency, step size,
- and step interval.
- 
-\end_layout
-
-\begin_layout Plain Layout
-While most studies of crowding involve stationary stimuli, motion stimuli
- add a temporal component.
- In Experiments 1 through 3 we consistently find that for stimuli near the
- crowding distance, the trials for which the subject took longer in responding
- were more likely to correctly reflect the global direction of motion.
- In Experiment 4 we use an auditory cue to vary the subjects' response time
- to investigate this effect in more detail.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\change_deleted 232785317 1349734548
-Our results reinforce the idea that global motion processing is the result
- of an integration of the output of low-level feature detectors, and that
- in fact the process subserving detection of global motion might be identical
- to the processes underlying object recognition and target selection.
- We discuss the implications for possible mechanisms of higher order motion
- perception and speculate on their possible physiological implementations.
-\change_unchanged
-
+ that global and local motion signals are combined In Experiment 2 we vary
+ the number of elemnents independently of the spacing of targets and uncover
+ a separate effect due to the number of targets on the screen.
 \end_layout
 
 \begin_layout Standard
