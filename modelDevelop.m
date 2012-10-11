@@ -1,4 +1,4 @@
-% here is what we will do. Let's work on a subset of the data, to begin with.
+%here is what we will do. Let's work on a subset of the data, to begin with.
 
 %I'll work with unfolded data, here, since it allows me to separate an
 %absolute "bias" (ML ans SK show an abolute bias) from the nonmonotonic
@@ -25,7 +25,7 @@ plotModel(M);
 %be more clear what's going on if I plot residuals binned over dx,
 %conditional on spacing.
 resid_base = M.residuals({'spacing'}, 'dx', 25);
-facetPlot(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
+facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
 
 %Here the horizontal axis is dx (or "global speed") and the vertical
 %axis is spacing. Colors indicate spacing, with cool colors indicating
