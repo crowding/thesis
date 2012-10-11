@@ -1,3 +1,6 @@
 *.asv
 .*.asv
 *.fig
+fit_*.pdf
+*.list
+.Rhistory

@@ -1,4 +1,4 @@
-function makeDiagnostics(outfiles)
+function makeDiagnostics(fitfile, outfiles)
 
 % There are some aspects of the data that I think the model does not
 % capture well, and I want to show it.
@@ -11,57 +11,48 @@ function makeDiagnostics(outfiles)
 
 % these are the variables the model operates over.
 
-
 %now plot this data over these marginals
 
 vars = {'subject', 'content', 'spacing', 'dx', 'response', 'exp_type'};
 
-if ~exist('data', 'var') || isempty(data)
-    load('data.mat', 'data')
-    data = doRename(data);
-    data = data( strcmp(data.exp_type, 'spacing') ...
-                & strcmp(data.subject, 'pbm'), vars);
+if ~exist('fitfile', 'var') || isempty(fitfile)
+    fitfile = fullfile(fileparts(mfilename('fullpath')), 'fits.mat');
 end
 
-if ~exist('params', 'var') || isempty(params)
-    load('modelResults.mat', 'p')
-    params = p;
+if ~exist('outfile', 'var')
+    outfile = fullfile(fileparts(mfilename('fullpath')), 'diagnostics.list');
 end
 
-if ~exist('model', 'var') || isempty(model)
-    model = @MotionModel;
-end
+fh = fopen(outfile, 'w');
+onCleanup(@(x)close(fh));
 
-if ~isa(data, 'dataset')
-    data = dataset(data);
-end
+load(fitfile, 'models', 'modelNames');
 
-if ~exist('binsize', 'var')
-    binsize = 25;
-end
+model = models{1};
+modelName = modelNames{1};
 
-if ~exist('binvar', 'var')
-    binvar = 'dx';
-end
+split = {'subject', 'spacing', 'exp_type'};
+binsize = 25;
+binvar = 'dx';
 
-if ~exist('split', 'var') || split == 0
-    split = {'subject', 'content', 'spacing'};
-end
+resid = model.residuals(split, binvar, binsize);
+handles = plotResiduals(resid, 'subject', 'dx', 'pearson_resid', ...
+                        'exp_type', 'const_', 'spacing', 'n_obs');
 
-resid = residuals(data, model, params, split, binvar, binsize);
-handles = plotResiduals(resid, 'const_', 'dx', 'pearson_resid', ...
-                        'content', 'const_', 'spacing', 'n_obs');
+
 tile([],[],[],unique(handles.fig));
 
-%list the outputs produced
-if exist('outfile', 'var')
-    fh = open(outfile, 'w');
-    for i = unique(handles.fig)
-        outfile = fullfile(fileparts(outfile), sprintf('residuals_%d', i));
-        fprintf(fh, '%s\n', outfile);
-        print('-depsc', outfile);
-    end
+groupfun(handles, 'fig', @writeFigure);
+function writeFigure(handles)
+    fig = handles.fig(1);
+    sub = handles.subject{1};
+    set(fig, 'PaperOrientation', 'landscape', ...
+             'PaperPosition', [0.25 0.25 10.5 8] );
+    outfile = fullfile(fileparts(outfile), ...
+                       sprintf('residual_%s_%s.pdf', ...
+                               modelName, sub));
+    print(fig,'-dpdf', outfile);
+    fprintf(fh, '%s\n', outfile);
 end
 
 end
- 

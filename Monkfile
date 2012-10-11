@@ -58,17 +58,27 @@
 #appropriately. Furthermore multiple outputs inappropriately result in
 #multiple commands issued from Make. THis results in a bunch of
 #repeated commands...
---command ./runmatlab --once "\"addpath('modeling'); plotFits\""
+--command --once ./runmatlab --once "\"addpath('modeling'); plotFits\""
 --input --invisible modeling/plotFits.m
 --input --match 'modeling/fits\.mat'
---input 'modeling/data.mat'
 --output --listing --intermediate 'modeling/fit_plots.list'
 
 #bundle them all into a multipage PDF
 --command --once pdfjoin
 --once %--outfile
---once --output 'modeling/fit_plots.pdf'
---input --match 'modeling/fit_.*\.pdf$'
+--once --output 'modeling/fits_{0}.pdf'
+--input --match 'modeling/fit_(.*)_.*\.pdf$'
 --invisible --phony --once figures
 
 #make diagnostic figures?
+--command runmatlab "\"addpath('modeling'); makeDiagnostics\""
+--input --match 'modeling/fits\.mat'
+--output --listing 'modeling/diagnosticPlots.pdf'
+--invisible --phony --once figures
+
+#and bundle them
+--command --once pdfjoin
+--once %--outfile
+--once --output 'modeling/residuals_{0}_plots.pdf'
+--input --match 'modeling/residual_(.*)_.*\.pdf$'
+--invisible --phony --once figures

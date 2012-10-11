@@ -24,19 +24,15 @@ data = doRename(data);
 %Select the subset.
 data = join(data, subset, 'type', 'inner', 'MergeKeys', true);
 
-%Look up some initial parameters. Fit the model independently for each split.
-params = initialParams(data, splits);
+%models = {BoyntonModel()};
+models = {SlopeModel()};
+models = cellfun(@(x) x.fit(data), models, 'UniformOutput', 0);
+modelNames = {'SlopeModel'};
+%modelNames = {'BoyntonModel'};
 
-freeParams = {'sig0','sigk','siga','mua','mukc','muks'};
+%for backward compatibility right now.
+fits = models{1}.parameters;
 
-fits = groupfun(data, splits, @makeFit)
-function [f, err] = makeFit(chunk)
-    split = chunk(1,splits)
-    chunkParams = join(params, split, 'type', 'inner', 'MergeKeys', true);
-    [f, f.err] = fit(@fitMotionModel, chunkParams, freeParams, chunk);
-    f.n_obs = size(chunk, 1);
-end
-
-save(outfile, 'fits');
+save(outfile, 'models', 'modelNames');
 
 end
