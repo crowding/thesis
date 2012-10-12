@@ -35,10 +35,10 @@
 --input --match modeling/(.*_trials\.csv)
 
 #the model-fitting function
---command ./runmatlab "\"addpath('modeling'); MeilstrupBoyntonModel\""
---input --invisible modeling/MeilstrupBoyntonModel.m
---input --invisible --match "modeling/data\.mat"
---output --invisible modeling/modelResults.mat
+#--command ./runmatlab "\"addpath('modeling'); MeilstrupBoyntonModel\""
+#--input --invisible modeling/MeilstrupBoyntonModel.m
+#--input --invisible --match "modeling/data\.mat"
+#--output --invisible modeling/modelResults.mat
 
 #and let's start translating this to R also.
 --command --once Rscript --input modeling/MeilstrupBoyntonModel.R
@@ -71,7 +71,7 @@
 --invisible --phony --once figures
 
 #make diagnostic figures?
---command runmatlab "\"addpath('modeling'); makeDiagnostics\""
+--command ./runmatlab "\"addpath('modeling'); makeDiagnostics\""
 --input --match 'modeling/fits\.mat'
 --output --listing 'modeling/diagnosticPlots.pdf'
 --invisible --phony --once figures

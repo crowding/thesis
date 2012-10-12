@@ -2,6 +2,7 @@
 .*.asv
 *.fig
 fit_*.pdf
+residual_*.pdf
 *.list
 .Rhistory
 cache
