@@ -4,3 +4,4 @@
 fit_*.pdf
 *.list
 .Rhistory
+cache
