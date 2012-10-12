@@ -290,15 +290,13 @@ Our stimulus combines first-order (carrier) motion and higher-order (envelope)
 \end_layout
 
 \begin_layout Itemize
-Higher order motion is controlled by the displacement 
-\color red
-
-\begin_inset Formula $\Delta x$
-\end_inset
-
-
-\color inherit
- 
+The stimulus is built out of Gabor-like elements with an 
+\emph on
+envelope
+\emph default
+ and a 
+\emph on
+carrier
 \end_layout
 
 \begin_layout Column
@@ -334,18 +332,9 @@ Stimulus
 
 \begin_layout Standard
 \align center
-First order motion is controlled by the direction content parameter 
-\begin_inset Formula $C$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\align center
 \begin_inset Graphics
 	filename stimuli-direction-content.graffle
-	width 100text%
+	width 80text%
 
 \end_inset
 
@@ -374,10 +363,34 @@ textwidth
 \end_layout
 
 \begin_layout Itemize
+First order motion is controlled by the 
+\emph on
+direction
+\noun on
+ 
+\noun default
+content
+\emph default
+ parameter 
+\color red
+
+\begin_inset Formula $C$
+\end_inset
+
+
+\color inherit
+.
+\end_layout
+
+\begin_layout Itemize
 Higher order motion is controlled by the displacement 
+\color red
+
 \begin_inset Formula $\Delta x$
 \end_inset
 
+
+\color inherit
 .
 \end_layout
 
@@ -423,7 +436,7 @@ status open
 
 \begin_layout Plain Layout
 
-0.5
+0.4
 \backslash
 textwidth
 \end_layout
@@ -470,7 +483,7 @@ status open
 
 \begin_layout Plain Layout
 
-0.5
+0.6
 \backslash
 textwidth
 \end_layout
@@ -607,16 +620,41 @@ Staircase
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-<<preliminaries,cache=FALSE>>=
+<<preliminaries,cache=FALSE,echo=FALSE,results="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
 
-source("../library.R")
+suppressPackageStartupMessages({
+\end_layout
+
+\begin_layout Plain Layout
+
+library(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ggplot2)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ptools)
+\end_layout
+
+\begin_layout Plain Layout
+
+})
+\end_layout
+
+\begin_layout Plain Layout
+
+theme_set(theme_bw())
 \end_layout
 
 \begin_layout Plain Layout
@@ -624,15 +662,19 @@ source("../library.R")
 @
 \end_layout
 
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-<<loadData>>=
+<<loadData,echo=FALSE,results="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -645,9 +687,13 @@ load("../data.RData")
 @
 \end_layout
 
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
-For different values of 
+We measured psychometric functions for different values of 
 \begin_inset Formula $C$
 \end_inset
 
@@ -655,15 +701,162 @@ For different values of
 \begin_inset Formula $S$
 \end_inset
 
- we varied 
+.
+ For each psychometric function we varied 
 \begin_inset Formula $\Delta x$
 \end_inset
 
- according to an interleaved staircase procedure.
+ using interleaved staircases.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<staircase-example,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+staircase_example <-
+\end_layout
+
+\begin_layout Plain Layout
+
+  suppressMessages(match_df(data,
+\end_layout
+
+\begin_layout Plain Layout
+
+           data.frame(subject="pbm", exp_type="spacing",
+\end_layout
+
+\begin_layout Plain Layout
+
+                      folded_direction_content=0.15, target_number_all=12)))
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+(ggplot(staircase_example, aes(trial.order, folded_displacement,
+\end_layout
+
+\begin_layout Plain Layout
+
+                               shape=folded_response_with_carrier,
+\end_layout
+
+\begin_layout Plain Layout
+
+                               color=folded_response_with_carrier,
+\end_layout
+
+\begin_layout Plain Layout
+
+                               fill=folded_response_with_carrier))
+\end_layout
+
+\begin_layout Plain Layout
+
+ + geom_point()
+\end_layout
+
+\begin_layout Plain Layout
+
+ + labs(title="PBM, $C=0.15$, $
+\backslash
+
+\backslash
+mathrm{spacing}=3.5^
+\backslash
+
+\backslash
+circ$", 
+\end_layout
+
+\begin_layout Plain Layout
+
+        x="Trial no.", y="$
+\backslash
+
+\backslash
+Delta x$")
+\end_layout
+
+\begin_layout Plain Layout
+
+ + with_arg(name="Response", breaks=c(FALSE, TRUE), labels=c("CW", "CCW"),
+\end_layout
+
+\begin_layout Plain Layout
+
+            scale_shape_manual(values=c(24, 25)), scale_color_discrete(),
+\end_layout
+
+\begin_layout Plain Layout
+
+            scale_fill_discrete())
+\end_layout
+
+\begin_layout Plain Layout
+
+ + theme(legend.position="bottom")
+\end_layout
+
+\begin_layout Plain Layout
+
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout BeginFrame
 Example Data
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<example-data>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout BeginFrame
@@ -671,7 +864,11 @@ Problem
 \end_layout
 
 \begin_layout Standard
-We now have umpteen psychometrci functions over a bunch of parameters.
+We now have umpteen psychometric functions over a bunch of parameters.
+\end_layout
+
+\begin_layout Standard
+Some of them are noisy because:
 \end_layout
 
 \begin_layout EndFrame
