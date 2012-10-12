@@ -35,10 +35,10 @@
 --input --match modeling/(.*_trials\.csv)
 
 #the model-fitting function
---command ./runmatlab "\"cd('modeling'); MeilstrupBoyntonModel\""
---input --invisible --match "modeling/data\.mat"
---input --invisible modeling/MeilstrupBoyntonModel.m
---output --invisible modeling/modelResults.mat
+#--command ./runmatlab "\"addpath('modeling'); MeilstrupBoyntonModel\""
+#--input --invisible modeling/MeilstrupBoyntonModel.m
+#--input --invisible --match "modeling/data\.mat"
+#--output --invisible modeling/modelResults.mat
 
 #and let's start translating this to R also.
 --command --once Rscript --input modeling/MeilstrupBoyntonModel.R
