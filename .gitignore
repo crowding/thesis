@@ -1,3 +1,6 @@
 figure_1
 figure_2
 figure_3
+*.aux
+*.log
+*.out
