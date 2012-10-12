@@ -7,8 +7,10 @@ main <- function(outfile="data.RData",
                  filenames=dir(".", "*.series_trials.csv"), ...) {
   filenames <- c(filenames, ...)
   types <- sub('.*?([a-zA_Z]*)_series_trials.*', '\\1', filenames)
-  data <- adply(data.frame(f=I(filenames), t=types), 1,
-                with, cbind(read.csv(f), exp_type=t))
+  data <- mdply(data.frame(f=I(filenames), t=types),
+                function(f, t) cbind(read.csv(f), exp_type=t))
+  data$f <- NULL
+  data$t <- NULL
   save(data, file=outfile)
 }
 
