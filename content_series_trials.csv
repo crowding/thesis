@@ -1,4 +1,4 @@
-"eccentricity","folded_direction_content","abs_direction_content","folded_displacement","abs_displacement","target_spacing","target_number","subject","folded_response_with_carrier","abs_response_cw"
+"eccentricity","folded_direction_content","abs_direction_content","folded_displacement","abs_displacement","target_spacing","target_number_all","subject","folded_response_with_carrier","abs_response_cw"
 6.66666666666667,1,-1,0.15,-0.15,2.0943951023932,20,"jb",TRUE,FALSE
 6.66666666666667,0.4,-0.4,0.15,-0.15,8.37758040957278,5,"jb",TRUE,FALSE
 6.66666666666667,0.4,-0.4,-0.15,0.15,2.0943951023932,20,"jb",TRUE,FALSE
