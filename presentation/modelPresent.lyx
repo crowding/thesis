@@ -620,7 +620,33 @@ Staircase
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
+
+\begin_layout Plain Layout
+
+%externalize
+\end_layout
+
+\begin_layout Plain Layout
+
+<<externalize, cache=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+read_chunk("modelPresent.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -629,52 +655,12 @@ status open
 
 \begin_layout Plain Layout
 
+%these code chunks refer to R code kept in the .R file.
+\end_layout
+
+\begin_layout Plain Layout
+
 <<preliminaries,cache=FALSE,echo=FALSE,results="hide">>=
-\end_layout
-
-\begin_layout Plain Layout
-
-suppressPackageStartupMessages({
-\end_layout
-
-\begin_layout Plain Layout
-
-library(plyr)
-\end_layout
-
-\begin_layout Plain Layout
-
-library(ggplot2)
-\end_layout
-
-\begin_layout Plain Layout
-
-library(ptools)
-\end_layout
-
-\begin_layout Plain Layout
-
-library(psyphy)
-\end_layout
-
-\begin_layout Plain Layout
-
-library(scales)
-\end_layout
-
-\begin_layout Plain Layout
-
-})
-\end_layout
-
-\begin_layout Plain Layout
-
-theme_set(theme_bw())
-\end_layout
-
-\begin_layout Plain Layout
-
-match_df <- function(...) suppressMessages(plyr::match_df(...))
 \end_layout
 
 \begin_layout Plain Layout
@@ -690,7 +676,7 @@ match_df <- function(...) suppressMessages(plyr::match_df(...))
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -700,11 +686,6 @@ status open
 \begin_layout Plain Layout
 
 <<loadData,echo=FALSE,results="hide">>=
-\end_layout
-
-\begin_layout Plain Layout
-
-load("../data.RData")
 \end_layout
 
 \begin_layout Plain Layout
@@ -751,102 +732,6 @@ status collapsed
 
 \begin_layout Plain Layout
 
-staircase_example <-
-\end_layout
-
-\begin_layout Plain Layout
-
-  suppressMessages(match_df(data,
-\end_layout
-
-\begin_layout Plain Layout
-
-           data.frame(subject="pbm", exp_type="spacing",
-\end_layout
-
-\begin_layout Plain Layout
-
-                      folded_direction_content=0.15, target_number_all=12)))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-(ggplot(staircase_example, aes(trial.order, folded_displacement,
-\end_layout
-
-\begin_layout Plain Layout
-
-                               shape=folded_response_with_carrier,
-\end_layout
-
-\begin_layout Plain Layout
-
-                               color=folded_response_with_carrier,
-\end_layout
-
-\begin_layout Plain Layout
-
-                               fill=folded_response_with_carrier))
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_point()
-\end_layout
-
-\begin_layout Plain Layout
-
- + labs(title="PBM, $C=0.15$, $
-\backslash
-
-\backslash
-mathrm{spacing}=3.5^
-\backslash
-
-\backslash
-circ$", 
-\end_layout
-
-\begin_layout Plain Layout
-
-        x="Trial no.", y="$
-\backslash
-
-\backslash
-Delta x$")
-\end_layout
-
-\begin_layout Plain Layout
-
- + with_arg(name="Response", breaks=c(FALSE, TRUE), labels=c("CW", "CCW"),
-\end_layout
-
-\begin_layout Plain Layout
-
-            scale_shape_manual(values=c(24, 25)), scale_color_discrete(),
-\end_layout
-
-\begin_layout Plain Layout
-
-            scale_fill_discrete())
-\end_layout
-
-\begin_layout Plain Layout
-
- + theme(legend.position="bottom")
-\end_layout
-
-\begin_layout Plain Layout
-
- )
-\end_layout
-
-\begin_layout Plain Layout
-
 @
 \end_layout
 
@@ -865,11 +750,6 @@ Example Data
 
 \begin_layout Standard
 \align center
-Effect of direction content at narrow and wide spacings.
-\end_layout
-
-\begin_layout Standard
-\align center
 \begin_inset ERT
 status collapsed
 
@@ -881,64 +761,6 @@ status collapsed
 \begin_layout Plain Layout
 
 <<example-content,echo=FALSE,results="hide">>=
-\end_layout
-
-\begin_layout Plain Layout
-
-example_content <- match_df(data, data.frame(exp_type="content", subject="pbm"))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-example_content_rates <- ddply(example_content,
-\end_layout
-
-\begin_layout Plain Layout
-
-                .(abs_displacement, abs_direction_content, target_spacing),
-\end_layout
-
-\begin_layout Plain Layout
-
-                summarize, n = length(abs_response_cw), p = mean(abs_response_cw
-))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-example_content_fits <-
-\end_layout
-
-\begin_layout Plain Layout
-
-    glm(data=example_content,
-\end_layout
-
-\begin_layout Plain Layout
-
-        abs_response_cw ~ abs_displacement*target_spacing+abs_direction_content,
-\end_layout
-
-\begin_layout Plain Layout
-
-        family=binomial(link=logit.2asym(g=0.025, lam=0.025)))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 \end_layout
 
 \begin_layout Plain Layout
@@ -968,423 +790,27 @@ status collapsed
 
 \begin_layout Plain Layout
 
+@
 \end_layout
 
 \begin_layout Plain Layout
 
-add_arrows <- function(x) {
 \end_layout
 
-\begin_layout Plain Layout
-
-  x[1] <- paste(x[1], "$
-\backslash
-
-\backslash
-curvearrowleft$")
-\end_layout
-
-\begin_layout Plain Layout
-
-  x[length(x)] <- paste(x[length(x)], "$
-\backslash
-
-\backslash
-curvearrowright$")
-\end_layout
-
-\begin_layout Plain Layout
-
-  x 
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-replace_arrows <- function(x) {
-\end_layout
-
-\begin_layout Plain Layout
-
-  x[1] <- "$
-\backslash
-
-\backslash
-curvearrowleft$"
-\end_layout
-
-\begin_layout Plain Layout
-
-  x[length(x)] <- "$
-\backslash
-
-\backslash
-curvearrowright$"
-\end_layout
-
-\begin_layout Plain Layout
-
-  x
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-proportion_scale <-
-\end_layout
-
-\begin_layout Plain Layout
-
-  list(aes(y=p),
-\end_layout
-
-\begin_layout Plain Layout
-
-       scale_y_continuous(
-\end_layout
-
-\begin_layout Plain Layout
-
-         "Response", breaks=c(0, 0.5, 1),
-\end_layout
-
-\begin_layout Plain Layout
-
-         labels=replace_arrows
-\end_layout
-
-\begin_layout Plain Layout
-
-         ),
-\end_layout
-
-\begin_layout Plain Layout
-
-       theme(axis.text.y=element_text(angle=90)))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-facet_spacing_rows <-
-\end_layout
-
-\begin_layout Plain Layout
-
-  facet_grid(target_spacing ~ .,
-\end_layout
-
-\begin_layout Plain Layout
-
-               labeller=function(v, value) {
-\end_layout
-
-\begin_layout Plain Layout
-
-                 paste("$S = ", format(value, digits=3), "^
-\backslash
-
-\backslash
-circ$", sep="")
-\end_layout
-
-\begin_layout Plain Layout
-
-               }
-\end_layout
-
-\begin_layout Plain Layout
-
-             )
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-balloon <- list(geom_point(aes(size=n))
-\end_layout
-
-\begin_layout Plain Layout
-
-                , scale_size_area()
-\end_layout
-
-\begin_layout Plain Layout
-
-                )
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-displacement_scale <-
-\end_layout
-
-\begin_layout Plain Layout
-
-  list( aes(x=abs_displacement),
-\end_layout
-
-\begin_layout Plain Layout
-
-        scale_x_continuous("$
-\backslash
-
-\backslash
-Delta x$", labels=add_arrows))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-#have a custom stats function that shows the predictions with error bars.
-\end_layout
-
-\begin_layout Plain Layout
-
-add_predictions <- function(data, model) {
-\end_layout
-
-\begin_layout Plain Layout
-
-  chain(data,
-\end_layout
+\end_inset
 
-\begin_layout Plain Layout
-
-        subset(select=c("abs_direction_content", "target_spacing")),
-\end_layout
-
-\begin_layout Plain Layout
-
-        unique,
-\end_layout
-
-\begin_layout Plain Layout
-
-        merge(data.frame(abs_displacement=seq_range(
-\end_layout
-
-\begin_layout Plain Layout
-
-                           range(example_content$abs_displacement),
-\end_layout
-
-\begin_layout Plain Layout
-
-                           length=100)),
-\end_layout
-
-\begin_layout Plain Layout
-
-              all.x=TRUE, all.y=TRUE),
-\end_layout
-
-\begin_layout Plain Layout
-
-        cbind(.,
-\end_layout
-
-\begin_layout Plain Layout
-
-              predict(model, newdata=.,
-\end_layout
-
-\begin_layout Plain Layout
-
-                      type="response", se.fit=TRUE)[1:2] )
-\end_layout
-
-\begin_layout Plain Layout
-
-        ) -> predictions
-\end_layout
-
-\begin_layout Plain Layout
-
-  with_arg(data=predictions,
-\end_layout
-
-\begin_layout Plain Layout
-
-           geom_ribbon(color="transparent", alpha=0.2,
-\end_layout
-
-\begin_layout Plain Layout
-
-                       aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit,
-\end_layout
-
-\begin_layout Plain Layout
-
-                           fill=factor(abs_direction_content),
-\end_layout
-
-\begin_layout Plain Layout
-
-                           )),
-\end_layout
-
-\begin_layout Plain Layout
-
-           geom_line(aes(y=fit)))
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-#I want a discrete color scape derived from a 3-point gradient, so I wrote:
-\end_layout
 
-\begin_layout Plain Layout
-
-discretize <- function(pal) {
-\end_layout
-
-\begin_layout Plain Layout
-
-  function(n) {
-\end_layout
-
-\begin_layout Plain Layout
-
-    pal(seq(0,1,length=n))
-\end_layout
-
-\begin_layout Plain Layout
-
-  }
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-color_pal <- #function(n) rainbow(n, start=0, end=0.75)
-\end_layout
-
-\begin_layout Plain Layout
-
-  discretize(gradient_n_pal(
-\end_layout
-
-\begin_layout Plain Layout
-
-               colours=muted(c("blue", "cyan", "yellow", "red"), l=70, c=180)))
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-content_color_scale <-
-\end_layout
-
-\begin_layout Plain Layout
-
-  c(
-\end_layout
-
-\begin_layout Plain Layout
-
-    list(aes(color=factor(abs_direction_content),
-\end_layout
-
-\begin_layout Plain Layout
-
-             fill=factor(abs_direction_content))),
-\end_layout
-
-\begin_layout Plain Layout
-
-    with_arg(name="$C$",
-\end_layout
-
-\begin_layout Plain Layout
-
-             palette=color_pal,
-\end_layout
-
-\begin_layout Plain Layout
-
-             labels=add_arrows,
-\end_layout
-
-\begin_layout Plain Layout
-
-             discrete_scale("fill", "manual"),
-\end_layout
-
-\begin_layout Plain Layout
-
-             discrete_scale("colour", "manual")
-\end_layout
-
-\begin_layout Plain Layout
-
-             )
-\end_layout
+\begin_inset ERT
+status collapsed
 
 \begin_layout Plain Layout
 
-    )
+%example-content-plot
 \end_layout
 
 \begin_layout Plain Layout
 
+<<example-content-plot,echo=FALSE,messages="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1403,71 +829,16 @@ content_color_scale <-
 
 \begin_layout Standard
 \align center
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%example-content-plot
-\end_layout
-
-\begin_layout Plain Layout
-
-<<example-content-plot,echo=FALSE,messages="hide">>=
-\end_layout
-
-\begin_layout Plain Layout
-
-(ggplot(example_content_rates)
-\end_layout
-
-\begin_layout Plain Layout
-
- + displacement_scale
-\end_layout
-
-\begin_layout Plain Layout
-
- + proportion_scale
-\end_layout
-
-\begin_layout Plain Layout
-
- + balloon
-\end_layout
-
-\begin_layout Plain Layout
-
- + content_color_scale + facet_spacing_rows
-\end_layout
-
-\begin_layout Plain Layout
-
- + labs(title="Effect of direction content at narrow and wide spacing")
-\end_layout
-
-\begin_layout Plain Layout
-
- + add_predictions(example_content_rates, example_content_fits)
-\end_layout
-
-\begin_layout Plain Layout
-
- )
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
+Note 
+\begin_inset Quotes eld
 \end_inset
 
+misses
+\begin_inset Quotes erd
+\end_inset
 
+ in the orange/cyan lines at wide spacing.
+ What's happening?
 \end_layout
 
 \begin_layout BeginFrame
@@ -1475,7 +846,16 @@ Spacing
 \end_layout
 
 \begin_layout Standard
-Effect of spacing, holding direction content constant
+\align center
+In this experiment we hold 
+\begin_inset Formula $C$
+\end_inset
+
+ constant and look at the effects of 
+\begin_inset Formula $S$
+\end_inset
+
+ (spacing).
 \end_layout
 
 \begin_layout BeginFrame
@@ -1483,7 +863,16 @@ Qualitatively
 \end_layout
 
 \begin_layout Standard
-We now have umpteen psychometric functions over a bunch of parameters.
+We now have umpteen psychometric functions over a bunch of parameters (subject,
+ 
+\begin_inset Formula $C$
+\end_inset
+
+, 
+\begin_inset Formula $S$
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
