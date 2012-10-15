@@ -142,9 +142,25 @@ content_color_scale <-
  )
 
 ## @knitr example-spacing
+chain(data,
+      match_df(data.frame(exp_type="content", exp_type="spacing")),
+      count(c("subject", "folded_direction_content")),
+      arrange(desc(freq)),
+      head(10)
+      ) -> examples_spacing
 
+example_spacing <- match_df(data, examples[6,])
+
+#ugly to use here, but
+folding <- TRUE
+
+example_spacing_rates <- ddply(example_spacing,
+                .(folded_displacement, folded_direction_content, target_spacing),
+                summarize, n = length(folded_response_with_carrier), p = mean(folded_response_with_carrier))
+
+example_spacing_fits <-
+    glm(data=example_spacing,
+        folded_response_with_carrier ~ folded_displacement*target_spacing+folded_direction_content,
+        family=binomial(link=logit.2asym(g=0.025, lam=0.025)))
 
 ## @knitr example-spacing-plot
-
-
-

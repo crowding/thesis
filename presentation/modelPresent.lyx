@@ -858,6 +858,59 @@ In this experiment we hold
  (spacing).
 \end_layout
 
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%example-spacing
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-spacing>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-spacing-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-spacing-plot>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout BeginFrame
 Qualitatively
 \end_layout
