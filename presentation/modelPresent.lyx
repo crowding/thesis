@@ -221,7 +221,7 @@ cache=TRUE,fig.width=7,fig.height=4,dev="tikz",external=TRUE,tidy=FALSE,out.widt
 \backslash
 
 \backslash
-textwidth",messages="hide"
+textwidth",messages="hide",autodep=TRUE,external=TRUE
 \end_layout
 
 \end_inset
@@ -717,6 +717,11 @@ We measured psychometric functions for different values of
 
 \begin_layout Standard
 \align center
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset ERT
 status collapsed
 
@@ -736,6 +741,11 @@ status collapsed
 \end_layout
 
 \begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -841,13 +851,22 @@ misses
  What's happening?
 \end_layout
 
+\begin_layout Standard
+Narrower appears to decrease the slope; and narrower spacing increases the
+ effect of direction content (looking along the vertical line 
+\begin_inset Formula $\Delta x=0$
+\end_inset
+
+)
+\end_layout
+
 \begin_layout BeginFrame
 Spacing
 \end_layout
 
 \begin_layout Standard
 \align center
-In this experiment we hold 
+In these experiment we hold 
 \begin_inset Formula $C$
 \end_inset
 
@@ -856,59 +875,6 @@ In this experiment we hold
 \end_inset
 
  (spacing).
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%example-spacing
-\end_layout
-
-\begin_layout Plain Layout
-
-<<example-spacing>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-%example-spacing-plot
-\end_layout
-
-\begin_layout Plain Layout
-
-<<example-spacing-plot>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout BeginFrame
@@ -929,7 +895,225 @@ We now have umpteen psychometric functions over a bunch of parameters (subject,
 \end_layout
 
 \begin_layout Standard
-Some of them are noisy because:
+Some of them are well behaved.
+ Others are difficult to describe 
+\emph on
+as psychometric functions
+\emph default
+ because
+\end_layout
+
+\begin_layout Standard
+the function saturates (subject always picks clockwise)
+\end_layout
+
+\begin_layout Standard
+the function becomes flat/erratic; the subject does not know which way things
+ are going (losing information due to crowding etc.)
+\end_layout
+
+\begin_layout Standard
+But both of these cases are the actual phenomena that are interesting!
+\end_layout
+
+\begin_layout Standard
+[insert illustrations here]
+\end_layout
+
+\begin_layout BeginFrame
+Model (Overview)
+\end_layout
+
+\begin_layout Standard
+To gain leverage on the points where subjects' perceptions break down &
+ are unable to see components of the stimulus, I will develop a model that
+ builds on behavior they exhibit when they are able to see.
+\end_layout
+
+\begin_layout Standard
+Here is an overview of the model I will be developing.
+\end_layout
+
+\begin_layout Standard
+I hope to justify each piece of the model with data.
+\end_layout
+
+\begin_layout BeginFrame
+Starting out
+\end_layout
+
+\begin_layout Standard
+Here is PBM's data for the spacing experiment.
+ Each value of direction content was tested separately.
+ I've just fit a simple psychometric function to it.
+\end_layout
+
+\begin_layout BeginFrame
+Residuals
+\end_layout
+
+\begin_layout Standard
+To help see where our models are not fitting, we'll use residuals.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Pearson residual
+\emph default
+: Basically it counts the number of excess 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ the subject gave versus what the model predicted, normalized by the standard
+ error.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Deviance residual
+\emph default
+.
+ Counts 
+\begin_inset Quotes eld
+\end_inset
+
+excess of deficient likelihood
+\begin_inset Quotes erd
+\end_inset
+
+ of the data versus data that the model versus the model fit.
+\end_layout
+
+\begin_layout BeginFrame
+Slope
+\end_layout
+
+\begin_layout Standard
+The slope for PBM is clearly off, But we can look at that in terms of residuals.
+\end_layout
+
+\begin_layout Standard
+\align center
+[plot]
+\end_layout
+
+\begin_layout Standard
+Add a term for slope.
+ The slope is defined as
+\end_layout
+
+\begin_layout Standard
+\align center
+[equation]
+\end_layout
+
+\begin_layout Standard
+which looks like
+\end_layout
+
+\begin_layout Standard
+\align center
+[graph]
+\end_layout
+
+\begin_layout BeginFrame
+Fit
+\end_layout
+
+\begin_layout Standard
+This fit looks better.
+ Now it seems that the needs to be an effect of direction content.
+ 
+\end_layout
+
+\begin_layout BeginFrame
+Spacing
+\end_layout
+
+\begin_layout BeginFrame
+Adding spacing
+\end_layout
+
+\begin_layout Standard
+Adding the spacing didn't change at all! What's going on?
+\end_layout
+
+\begin_layout BeginFrame
+Trick question
+\end_layout
+
+\begin_layout Standard
+Which of these curves is a worse fit to the data?
+\end_layout
+
+\begin_layout BeginFrame
+Trick question
+\end_layout
+
+\begin_layout Standard
+How about if I adjust the x-scale?
+\end_layout
+
+\begin_layout Standard
+The max-likelihood fit only cares about vertical distance between model
+ and data -- the x-scale is irrelevant.
+ 
+\end_layout
+
+\begin_layout BeginFrame
+
+\end_layout
+
+\begin_layout Standard
+We can see what's going on by plotting residuals.
+ These are residuals against a model that has no effect of direction content,
+ plotted as a function of spacing, with colors corresponding to direction
+ content:
+\end_layout
+
+\begin_layout Standard
+[plot]
+\end_layout
+
+\begin_layout Standard
+Here's the same plot for all subjects.
+\end_layout
+
+\begin_layout Standard
+[plot]
+\end_layout
+
+\begin_layout BeginFrame
+Induced motion
+\end_layout
+
+\begin_layout Standard
+When spacing is large, adding first-order motion direction content actually
+ makes you go against the direction content, rather than for it.
+ This is similar to 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
+\end_inset
+
+ effects as well as analogous to the 
+\begin_inset Quotes eld
+\end_inset
+
+tilt illusion.
+\begin_inset Quotes erd
+\end_inset
+
+ We add a term to the model like so:
 \end_layout
 
 \begin_layout EndFrame
