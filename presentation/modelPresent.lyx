@@ -900,7 +900,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<example-spacing-plot,dev="cairo_pdf",echo=FALSE,results="hide">>=
+<<example-spacing-plot,echo=FALSE,results="hide">>=
 \end_layout
 
 \begin_layout Plain Layout

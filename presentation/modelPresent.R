@@ -69,15 +69,21 @@ example_content_fits <-
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 
 ## @knitr plotting-preliminaries
+
+curveleft = "$\\curvearrowleft$"
+curveright = "$\\curvearrowright$"
+circleleft = "$\\curvearrowleft$"
+circleright = "$\\curvearrowright$"
+
 add_arrows <- function(x) {
   first <- which(!is.na(x))[1]
   last <- length(x) + 1 - which(!is.na(rev(x)))[1]
   if (substr(x[[first]], 1, 1) == "-") {
-    x[first] <- paste(x[first], "$\\curvearrowleft$")
-    x[last] <- paste(x[last], "$\\curvearrowright$")
+    x[first] <- paste(x[first], curveleft)
+    x[last] <- paste(x[last], curveright)
   } else {
-    x[first] <- paste(x[first], "$\\curvearrowright$")
-    x[last] <- paste(x[last], "$\\circlearrowright$")
+    x[first] <- paste(x[first], curveright)
+    x[last] <- paste(x[last], circleleft)
   }
   x
 }
@@ -85,8 +91,8 @@ add_arrows <- function(x) {
 replace_arrows <- function(x) {
   first <- which(!is.na(x))[1]
   last <- length(x) + 1 - which(!is.na(rev(x)))[1]
-  x[first] <- "$\\curvearrowleft$"
-  x[last] <- "$\\curvearrowright$"
+  x[first] <- curveleft
+  x[last] <- curveright
   x
 }
 
@@ -207,8 +213,13 @@ example_spacing_fits <-
         response ~ displacement + I(content/spacing),
         family=binomial(link=logit.2asym(g=0.025, lam=0.025)))
 
-#spacing_shape_scale
-shape_sequence <- -rev(c(-16, -17, 0x2726L, 0x2605L, 0x2736L, 0x2737L, 0x2739L, 0x273AL))
+#spacing_shape_scale fuck it. there
+#was a nice sequence but I can't
+#make unicode work. It's LyX's
+#problem, or the yihui's LyX script.
+shape_sequence <- c(16, 17, 15, 18, 9, 8, 13, 1)
+
+#shape_sequence <- -rev(c(-16, -17, 0x2726L, 0x2605L, 0x2736L, 0x2737L, 0x2739L, 0x273AL))
 shape_chooser <- function(n) {
   shape_sequence[seq(floor(length(shape_sequence)-n)/2+1, length=n)]
 }
@@ -234,7 +245,7 @@ gg <- ggplotGrob(ggplot(rates(example_spacing))
  + balloon
 # + facet_spacing_rows
  )
-gg <- editGtable(gg, "panel", "geom_point.points", grep=TRUE, global=TRUE,
-                 gp=gpar(fontfamily="MS Gothic"))
+#gg <- editGtable(gg, "panel", "geom_point.points", grep=TRUE, global=TRUE,
+#                 gp=gpar(fontfamily="MS Gothic"))
 grid.draw(gg)
 
