@@ -112,6 +112,10 @@ classdef LikelihoodModel
         % the residuals of the sums, sort of group wise residuals.
 
         % make the predictions (the model is fit already)
+            if (nargin < 3)
+                binvar = split{1}
+                binsize = Inf;
+            end
             d = M.data;
             d.p_pred = M.fullPredict();
 

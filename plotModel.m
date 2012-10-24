@@ -3,6 +3,7 @@ function handles = plotModel(model, varargin)
 
 pars = inputParser();
 pars.addParamValue('modelName', '');
+pars.addParamValue('data', model.data);
 pars.addParamValue('split', {'subject', 'dx', 'content', 'spacing', 'exp_type'});
 pars.addParamValue('plotBy', {'fig', 'subject', ...
                     'x', 'dx', 'y', 'p', ...
@@ -13,10 +14,11 @@ pars.parse(varargin{:});
 split = pars.Results.split;
 plotBy = pars.Results.plotBy;
 modelName = pars.Results.modelName;
+data = pars.Results.data;
 
 %break down the trials in terms of number yes and number no per unique
 %condition
-rates = countdata(model.data, split);
+rates = countdata(data, split);
 
 %make a lattice plot for all the data.
 handles = facetScatter(rates, plotBy{:}, 'morePlotting',  @addPredictions);
@@ -27,7 +29,10 @@ function [handle] = addPredictions(handle, chunk)
     chunk.dx = [];
     chunk.n = [];
     chunk.p = [];
-    chunk = unique(chunk);
+    uniquevars = regexp(get(chunk, 'VarNames'), '.*[^_]$', 'match', 'once');
+    uniquevars = uniquevars(~cellfun(@isempty, uniquevars));
+    [ans, ci] = unique(chunk, uniquevars);
+    chunk = chunk(ci,:);
     chunk.line = (1:size(chunk, 1))';
 
     dx_eval = dataset(...
