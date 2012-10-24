@@ -6,6 +6,7 @@ library(ggplot2)
 library(ptools)
 library(psyphy)
 library(scales)
+library(grid)
 })
 theme_set(theme_bw())
 match_df <- function(...) suppressMessages(plyr::match_df(...))
@@ -198,39 +199,42 @@ chain(data,
 
 example_spacing <-
   chain(data,
-        do.rename(folding=FALSE),
-        match_df(data.frame(subject="pbm", exp_type="spacing")))
+        do.rename(folding=TRUE),
+        match_df(data.frame(subject="pbm", exp_type="spacing", content=0.15)))
 
 example_spacing_fits <-
     glm(data=example_spacing,
         response ~ displacement + I(content/spacing),
         family=binomial(link=logit.2asym(g=0.025, lam=0.025)))
 
-# @knitr example-spacing-plot
- (ggplot(rates(example_spacing))
+#spacing_shape_scale
+shape_sequence <- -rev(c(-16, -17, 0x2726L, 0x2605L, 0x2736L, 0x2737L, 0x2739L, 0x273AL))
+shape_chooser <- function(n) {
+  shape_sequence[seq(floor(length(shape_sequence)-n)/2+1, length=n)]
+}
+spacing_shape_scale <-
+  list(
+    aes(shape=factor(spacing)),
+    discrete_scale("shape", "manual", name="Spacing", palette=shape_chooser, labels=prettyprint)
+    )
+editGtable <- function(gt, idx, ...) {
+  if (is.character(idx))
+    idx <- which(gt$layout$name == idx)
+  gt$grobs[[idx]] <- editGrob(gt$grobs[[idx]], ...)
+  gt
+}
+
+## @knitr example-spacing-plot
+gg <- ggplotGrob(ggplot(rates(example_spacing))
  + displacement_scale
  + proportion_scale
- + content_color_scale
  + spacing_texture_scale
+ + spacing_shape_scale
  + add_predictions(example_spacing, example_spacing_fits)
  + balloon
- + facet_spacing_rows
+# + facet_spacing_rows
  )
-
-
-##Now let's plot all the data from one subject. A nice way to do thsi
-##is with spacing in rows.
-
-#we can also do .... plots where we interchange residuals for spacing?
-#for spacing plots...
-
-#Ah! Plot residuals on top of each psychometric function!!! That'd be
-#a nice summary of the data.
-
-#there should be a way to convert the residual "yes" values into an
-#errorbar value.
-
-# I think one focus should be to get
-# a model fit on every subject. Then
-# to look at number/density.
+gg <- editGtable(gg, "panel", "geom_point.points", grep=TRUE, global=TRUE,
+                 gp=gpar(fontfamily="MS Gothic"))
+grid.draw(gg)
 

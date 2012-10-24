@@ -620,7 +620,7 @@ Staircase
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -629,7 +629,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<externalize, cache=FALSE>>=
+<<externalize,cache=FALSE,echo=FALSE,result="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -717,13 +717,8 @@ We measured psychometric functions for different values of
 
 \begin_layout Standard
 \align center
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-\align center
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -749,11 +744,6 @@ status collapsed
 
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
 \begin_layout BeginFrame
 Example Data
 \end_layout
@@ -761,7 +751,7 @@ Example Data
 \begin_layout Standard
 \align center
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -811,7 +801,7 @@ status collapsed
 
 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -875,6 +865,56 @@ In these experiment we hold
 \end_inset
 
  (spacing).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-spacing
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-spacing,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-spacing-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-spacing-plot,dev="cairo_pdf",echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout BeginFrame
@@ -958,7 +998,7 @@ To help see where our models are not fitting, we'll use residuals.
 \end_layout
 
 \begin_layout Standard
-
+
 \emph on
 Pearson residual
 \emph default
