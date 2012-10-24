@@ -199,25 +199,15 @@ facetScatter(resid_spacing, ...
              'color', 'spacing', ...
              'size', 'n_obs', ...
              'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3))
-
-%I don't see much of a pattern left over either way.
-
-resid_dx = M.residuals({}, 'dx', 50);
-facetScatter(resid_dx, ...
-              'x', 'dx', 'y', 'pearson_resid', 'size', 'n_obs');
-%Not sure if there's anything there with that last one.
+%I don't see much of a pattern left over.
 
 %%
-%Now, that's just one subject, on one dataset. We'd like to see if
-%this works for the rest of the subjects.
-
-
-%%%%%%%%%% CONTINUE HERE
-
-%How about if we see how this works for the content-based
-%experiment. Note that the direction-content experiment only tests at
-%two spacings, so it is pointless to try fitting the critical spacing.
-%I will leave 'cs' fixed at the value we already have:
+%Now, that's just one subject, on one experiment. The next thing to
+%look for is whether this also works for the direction-content
+%experiment (where direction content is varied within session, rather
+%than between session. Note that the direction-content experiment only
+%tests at two spacings, so it is pointless to try fitting the critical
+%spacing.  I will leave 'cs' fixed at the value we already have:
 
 M_content = M;
 content_subset = data(strcmp(data.subject, 'pbm') ...
@@ -225,55 +215,63 @@ content_subset = data(strcmp(data.subject, 'pbm') ...
 M_content.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'}
 M_content = fit(M_content, content_subset);
 M_content.parameters
-%that's interesting, it came up with some different numbers. Much less
-%difference between summation and induced motion for one.
-
-%Here's the model fit for PBM, 'content' experiment.
+%That's interesting, it came up with some different numbers. Summation
+%and induced motion both much less strong, which may indicate some
+%kind of adaptation to the stronger direction contents used in this
+%experiment.
 plotModel(M_content);
-%that all looks fairly reasonable.
-
+%%
+%that looks reasonable, but the "large spacing" model fits
+%look off for some reason, low in some places and high in others.
 r = M_content.residuals({'content', 'spacing'}, 'dx', Inf);
-
 facetScatter(r, 'x', 'content', 'y', 'pearson_resid', ...
-             'color', 'spacing', 'size', 'n_obs');
+             'color', 'spacing', 'size', 'n_obs', ...
+             'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3));
 %That one starts to look like a linear dependence on direction content
-%isn't quite right. There's a sort of S-shaped pattern to thsi
+%isn't quite right. There's a sort of S-shaped pattern to this
 %graph. I could believe it's noise, until I see the same thing in
-%another subject, where I'll put an asterisk (*)
+%another subject, where I'll put an asterisk (*). (and 3/4 sigma is a
+%strong signal.)
 
-%How about fitting both experiment types?
-M_content = M;
-content_subset = data(strcmp(data.subject, 'pbm') ...
-                      & strcmp(data.exp_type, 'content'), :);
-
+%%
 %Now we should stop playing around with this particularly well behaved
 %subject and start looking at some others. Let's try JB since he's
-%such a treat
-
+%got a lot of data, and seems pretty different to me.
 subset = data(strcmp(data.subject, 'jb') ...
               & strcmp(data.exp_type, 'spacing'), :);
+Mjb = SlopeModel();
+Mjb.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_induced', 'beta_summation'};
+Mjb = Mjb.fit(subset);
 %Exceeding the maximum iterations is a bad sign and it looks like a bad fit.
-%Let's add parameters one at a dime and see what the data look like.
-M = SlopeModel;
-M.freeParams = {'mu_0', 'beta_0'}; M = M.fit(subset);
-plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
-                    'color', 'content', 'size', 'n'});
+%Let's see what the data look like.
+plotModel(Mjb, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                        'color', 'content', 'size', 'n'});
 
-%You'll need a very tall window for that.  And really, look at
-%that. Here, cool colors denote CCW direction contents, while warm
-%colors denote CW direction contents.  You see that the influence of
+%Here, cool colors denote CCW direction contents, while warm colors
+%denote CW direction contents.  You see that the influence of
 %direction content, again, reverses from close to wide spacing -- Same
 %thing as with PBM but here the slope change is not much, for some
-%reason. 
+%reason. THe "induced" and "summation" terms capture some of hte
+%switchover, but not all, and the slopes are too shallow as a result.
+%But it's not capturing the dependence on directio ncontent right, and
+%as a consequence it's constantly underestimating the slope of the
+%psychometric function. Why? Let's look at residuals as a function of
+%spacing and direction content.
+%%
+resid_jb = Mjb.residuals({'content', 'spacing'});
+facetScatter(resid_jb, ...
+             'x', 'content', 'y', 'pearson_resid', ...
+             'color', 'spacing', ...
+             'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3));
+%Hey, look, it's that same wiggle again. Especially at wide spacings.
 
-M.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'}; M = M.fit();
-plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
-                    'color', 'content', 'size', 'n'});
 
-%Hmm. adding direction content was not as nice as I hoped -- still underestimating the slope everywhere.
 M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'}; M = M.fit();
 plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
                     'color', 'content', 'size', 'n'});
+
+%%%%%%
+
 
 %So my puzzle for you is, what is making JB so sensitive at the small
 %spacings while so insensitive at the large spacings? I'll think this

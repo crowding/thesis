@@ -45,7 +45,6 @@ classdef SlopeModel < LikelihoodModel
                    + p.sbeta_induced.*scaled_content ...
                    + p.sbeta_summation.*summation.*scaled_content;
 
-
             prelink = bias + p.beta_0.*data.dx.*sens + p.beta_small.*data.dx.*(1-sens);
 
             logit = @(x)0.98./(1+exp(-x)) + 0.01;

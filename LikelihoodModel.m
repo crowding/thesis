@@ -113,7 +113,7 @@ classdef LikelihoodModel
 
         % make the predictions (the model is fit already)
             if (nargin < 3)
-                binvar = split{1}
+                binvar = split{1};
                 binsize = Inf;
             end
             d = M.data;
