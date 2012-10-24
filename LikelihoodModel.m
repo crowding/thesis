@@ -54,7 +54,7 @@ classdef LikelihoodModel
             params = groupfun(M.data, M.splits, @makeFit);
 
             function [f, err] = makeFit(chunk)
-                split = chunk(1,M.splits)
+                split = chunk(1,M.splits);
                 if isempty(split)
                     chunkParams = params;
                 else

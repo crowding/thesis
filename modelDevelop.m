@@ -5,12 +5,14 @@
 %effects of direction content (similar to those found in Murakami & Shomojo,
 %1993, Bex and Dakin 2010).
 
+%%
 load('data.mat');
 data = doRename(data, false); %no folding
 %start with my data, to begin with.
 subset = data(strcmp(data.subject, 'pbm') & ...
               strcmp(data.exp_type, 'spacing'), :);
 
+%%
 %To start off, we'll just fit a psychometric function: constant slope,
 %constant bias. If the subjects perceive the envelope motion
 %viridically this should work.
@@ -21,11 +23,13 @@ M = M.fit(subset);
 plotModel(M);
 %plot those fits
 
+%%
 %Now, it's clear that the slope is generally too shallow, but it might
 %be more clear what's going on if I plot residuals binned over dx,
 %conditional on spacing.
 resid_base = M.residuals({'spacing'}, 'dx', 25);
-facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
+facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', ...
+             'spacing', 'size', 'n_obs');
 
 %Here the horizontal axis is dx (or "global speed") and the vertical
 %axis is spacing. Colors indicate spacing, with cool colors indicating
@@ -41,44 +45,38 @@ facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', 'spacing', 's
 
 %Models of what are going on with crowding differ, but the general
 %descriptive consensus is that "threshold is constant above critical
-%spacing and increases when critical spacing decreases below critical.
+%spacing and threshold increases when critical spacing decreases below
+%critical.
 
+%%
 %So we want seneitivity to be asymptotic when spacing is large, and
-%close to zero when spacing is small. However, id would ot make sense
+%close to zero when spacing is small. However, it would not make sense
 %to have sensitivity ever go negative. So I'll use a sigmoid: The
 %seneitivity will be multiplied by 2 - 2/(1+exp(-cs/s)), where "s" is
 %the spacing and "cs" is a model parameter. This has the
 %attractive feature of only requiring one additional parameter. Here
 %"cs" can be interpreted as a "critical spacing" number; it
-%corresponds to the spacing at which threshold doubles (which is a
-%frequently used empirical measure of critical spacing in crowding
-%literature.) A CS of 0 eliminates dependency on spacing, which makes
-%the model nicely nestedm, and the model does reasonable thengs even
-%if you let CS go negative, which makes fminsearch happier.
+%corresponds to the spacing at which threshold multiplies by a
+%constant factor, versus the threshold for unflanked elements. (which
+%is a frequently used empirical measure of critical spacing in
+%crowding literature.) A CS of 0 eliminates dependency on spacing,
+%which makes the model nicely nested, and the model does reasonable
+%thengs even if you let CS go negative, which makes fminsearch
+%happier.
 
+%And the residuals look better:
+resid_slopechange = M.residuals({'spacing'}, 'dx', 25);
+facetScatter(resid_slopechange, ...
+             'x', 'dx', ...
+             'y', 'pearson_resid', ...
+             'color', 'spacing', ...
+             'size', 'n_obs' ...
+             );
+
+%% And the plot now can have a slope change:
 M.freeParams = {'beta_0', 'mu_0', 'cs'}
 M = M.fit();
 plotModel(M);
-%Nice, you see how the slope is allowed to change.
-
-resid_slopechange = M.residuals({'spacing'}, 'dx', 25);
-plotResiduals(resid_slopechange, 'const_', ...
-              'dx', 'pearson_resid', ...
-              'const_', 'const_', ...
-              'spacing', 'n_obs');
-
-%These residuals now look less patterned, as a function of spacing. So
-%the slope dependency looks like a win. But looking at the raw fits,
-%there is still something going on with direction content. Let's look at
-%the residuals conditioned on content and spacing.
-resid_content = M.residuals({'content', 'spacing'}, 'dx', 10000);
-plotResiduals(resid_content, 'const_', ...
-              'content', 'pearson_resid', ...
-              'const_', 'const_', ...
-              'spacing', 'n_obs');
-
-%The horizontal axis of this plot is direction content, while colors
-%indicate residuals against the model fit thus far.
 
 %Note that at this point the model does not care at all about
 %direction content; as far as the model is concerned there is none.
@@ -88,15 +86,38 @@ plotResiduals(resid_content, 'const_', ...
 %direction content is "ccw" and residual "cw" responses when direction
 %content is "cw."
 
+%%
+%Now what you see is that -- particularly for the cool colors (low
+%spacing)--the fits are off. That's reasonable as there is not yet any
+%dependence on of direction content in this model.
+
+% So let's add some dependence on direction content.
+
+%Here, I'll show residuals as a function of direction content.
+resid_content = M.residuals({'content', 'spacing'}, 'dx', 10000);
+
+facetScatter(resid_content, ...
+             'x', 'content', ...
+             'y', 'pearson_resid', ...
+             'color', 'spacing', ...
+             'size', 'n_obs', ...
+             'morePlotting', connectLines('content', 'spacing', ...
+                                          'LineWidth', 3));
+%The horizontal axis of this plot is direction content, while the
+%vertical indicates residuals against the model fit (for a model
+%without any dependence on direction content.) Colors indicates
+%spacing -- warm is wide and cool is narrow.
+
+%%
+
 %Here's another way of looking at this, this time putting spacing on
 %the x axis using colors for the direction content:
 plotResiduals(resid_content, 'const_', ...
               'spacing', 'pearson_resid', ...
               'const_', 'const_', ...
               'content', 'n_obs');
-
-%Pretty cute, huh? The influence of direction content plain just plain
-%_reverses_ at some spacing.
+%In bosth cases, we see curves crossing over each other.The influence
+%of direction content plain just plain _reverses_ at some spacing.
 
 %So we can see that the poorness of the model fit is a function of
 %spacing. What we don't intuitively expect, but is also made plain by

@@ -50,6 +50,9 @@ function handles = ...
         [rowVals, ~, figData.figRow_] = unique(figData.(rowVar));
         [colVals, ~, figData.figCol_] = unique(figData.(colVar));
         [colorVals, ~, figData.color_] = unique(figData.(colorVar));
+        figData.x_ = figData.(xVar);
+        figData.y_ = figData.(yVar);
+        figData.size_ = figData.(sizeVar);
         figData.nRows_ = zeros(size(figData, 1),1) + length(rowVals);
         figData.nCols_ = zeros(size(figData, 1),1) + length(colVals);
 
@@ -73,9 +76,9 @@ function handles = ...
         handles.ax = subplotix(chunk.nRows_(1), chunk.nCols_(1), ...
                                chunk.figRow_(1), chunk.figCol_(1));
         handles.handle = {...
-            gscatter(chunk.(xVar), chunk.(yVar), ...
+            gscatter(chunk.x_, chunk.y_, ...
                      1:size(chunk,1), chunk.color_, '.', ...
-                     sqrt(chunk.(sizeVar)) * 5, 0)};
+                     sqrt(chunk.size_) * 5, 0)};
         set(handles.ax, 'XLim', [chunk.xmin_(1) chunk.xmax_(1)], ...
                         'YLim', [chunk.ymin_(1) chunk.ymax_(1)]);
         %enable axes, legend, h/v based on which subplot.
@@ -127,7 +130,7 @@ function handles = ...
 
         %'other' is for other functions you may want to plot while in this axis.
         if exist('morePlotting', 'var') && ~isempty(morePlotting)
-            morePlotting(handles, chunk);
+            handles = morePlotting(handles, chunk);
         end
         %TODO; indicate what size means.
     end
