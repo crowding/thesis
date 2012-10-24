@@ -159,52 +159,11 @@ facetScatter(resid_spacing, ...
              'size', 'n_obs', ...
              'morePlotting', connectLines('spacing', 'content', 'LineWidth', 3))
 
-%Looks like we really can't ignore that.
-
-%%
-
-%Here's another way of looking at this, this
-%time putting spacing on the x axis using colors for the direction
-%content:
-resid_content = M.residuals({'content', 'spacing'}, 'dx', Inf);
-plotResiduals(resid_content, 'const_', ...
-              'spacing', 'pearson_resid', ...
-              'const_', 'const_', ...
-              'content', 'n_obs');
-%In bosth cases, we see curves crossing over each other.The influence
-%of direction content plain just plain _reverses_ at some spacing.
-
-%So we can see that the poorness of the model fit is a function of
-%spacing. What we don't intuitively expect, but is also made plain by
-%these residual plots, is that the effect actually REVERSES; at large
-%spacings, there there is a negative slope to the residuals. At large
-%spacings, more direction content makes you answer _against_ the
-%direction content! And this effect actually looks just as large as
-%the effect of direction content.
-
-
-%Then to get the overall response, the visual system multiplies these
-%two disagreeing distributions (or equivalently, adds the mean signals
-%in inverse proportion to their reliability.)
-
-%%
-
-% Now, that didn't do much at all. See why? It might be hard to see.
-
-% Trick question: which of these curves is a worse fit, the one on the
-% top or the one on the bottom?
-
-% The one one the bottom LOOKS like a
-% worse fit...  until you scale the x-axis according to the change in
-% slope.
-
-%Look back at the residual
-%plots: The dependency on direction content goes in both directions,
-%and the model fit tries to split the difference. This is not easy to
-%see when plotting curve fits directly (since the steep slope at large
-%spacing visually obscures residuals that are just as large is those
-%around shallow slopes) but plotting the residuals brings out the
-%problem.
+%Looks like we really can't ignore that. What we've been looking at,
+%in several different ways, at the fact that the effect of direction
+%content on decisions actually reverses as a fucntion of spacing. It's
+%not a small effect either; in the way that it exerts leverage on the
+%model, it's equally large as the local summation effect.
 
 %So I'm going to borrow a point from Murakami and Shimojo (1993),
 %Mareschal, Morgon and Solomon (1992) and note that repulsion at large
@@ -220,36 +179,40 @@ plotResiduals(resid_content, 'const_', ...
 %that. (Ponder: how does this square with the idea of critical
 %distance which I used for the envelope response?)
 
-%So there is just a new constant 'beta_summation' and the mean
-%response is going (you could take an alternate tact with cue
-%combination and say that the variance decreases with more summation,
-%but it turns out the same as far as prediction probabilities of
-%response.
+
+%%
+
+% So here I'll add another parameter, called "beta_induced". Again,
+% this was in slopeModel.m all along, but was previously set to 0.
 M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'};
 M = M.fit();
-M_content.parameters
 plotModel(M);
 
-%Ah, this starts looking pretty good. Let's see those residuals as a
-%function spacing, and of direction content:
-resid_with_switch = M.residuals({'content', 'spacing'}, 'dx', Inf);
+%This is starting to look good.
 
-plotResiduals(resid_with_switch, 'const_', ...
-              'spacing', 'pearson_resid', ...
-              'const_', 'const_', ...
-              'content', 'n_obs');
+%%
+%The residual is less suggestive too.
+resid_spacing = M.residuals({'spacing', 'content'}, 'dx', Inf);
+facetScatter(resid_spacing, ...
+             'x', 'content', ...
+             'y', 'pearson_resid', ...
+             'color', 'spacing', ...
+             'size', 'n_obs', ...
+             'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3))
 
-plotResiduals(resid_with_switch, 'const_', ...
-              'content', 'pearson_resid', ...
-              'const_', 'const_', ...
-              'spacing', 'n_obs');
-
-%I don't seem much of a pattern left over either way.
+%I don't see much of a pattern left over either way.
 
 resid_dx = M.residuals({}, 'dx', 50);
-facet_scatter(resid_with_switch, ...
+facetScatter(resid_dx, ...
               'x', 'dx', 'y', 'pearson_resid', 'size', 'n_obs');
 %Not sure if there's anything there with that last one.
+
+%%
+%Now, that's just one subject, on one dataset. We'd like to see if
+%this works for the rest of the subjects.
+
+
+%%%%%%%%%% CONTINUE HERE
 
 %How about if we see how this works for the content-based
 %experiment. Note that the direction-content experiment only tests at
