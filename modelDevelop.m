@@ -24,7 +24,7 @@ plotModel(M);
 %plot those fits
 
 %%
-%Now, it's clear that the slope is generally too shallow, 
+%Now, it's clear that the slope is generally too shallow,
 %be more clear what's going on if I plot residuals binned over dx,
 %conditional on spacing.
 resid_base = M.residuals({'spacing'}, 'dx', 25);
@@ -64,64 +64,67 @@ facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', ...
 %thengs even if you let CS go negative, which makes fminsearch
 %happier.
 
-%% And the plot now can have a slope change:
+%This is already in the model (SlopeModel.m) as 'cs' which was
+%previsouly set to 0. Adding it to the list of free parameters, the
+%model now fits with a change of slope.
 M.freeParams = {'beta_0', 'mu_0', 'cs'}
 M = M.fit();
 plotModel(M);
 
-
-
 %%
-%And the residuals look better:
+%And the residuals binned over displacement look less patterned
 resid_slopechange = M.residuals({'spacing'}, 'dx', 25);
-facetScatter(resid_slopechange, ...
-             'x', 'dx', ...
-             'y', 'pearson_resid', ...
-             'color', 'spacing', ...
-             'size', 'n_obs' ...
-             );
+facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', ...
+             'spacing', 'size', 'n_obs');
 
 %% after glancing at the residuals, look at the curve fits again.
-plotModel(M)
+plotModel(M);
 %%
 %Note that at this point the model does not care at all about
 %direction content We expect that as small spacings, the responses
-%will be determined by direction content. Indeed, looking at the small spacings, we see that
+%will be determined by direction content. Indeed, looking at the small
+%spacings, we see that the model is fitting well below the data for
+%positive direction content, and above the data for negative.
 
-resid_content = M.residuals({'content', 'spacing'}, 'dx', 100000);
-facetScatter(resid_content, ...
-             'x', 'content', ...
-             'y', 'pearson_resid', ...
-             'color', 'spacing', ...
-             'size', 'n_obs', ...
-             'morePlotting', connectLines('content', 'spacing', ...
-                                          'LineWidth', 3));
+resid_content = M.residuals({'content', 'spacing'});
+%since I'll be plotting variations on this particular residual plot,
+%i'll save a shortcut for these arguments.
+content_vs_residual = { ...
+    'x', 'content', 'y', 'pearson_resid', ...
+    'color', 'spacing', 'size', 'n_obs', ...
+    'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3)};
+
+facetScatter(resid_content, content_vs_residual{:});
 %The horizontal axis of this plot is direction content, while the
 %vertical indicates residuals against the model fit (for a model
 %without any dependence on direction content.) Colors indicates
 %spacing -- warm is wide and cool is narrow.
 
 %So, yes, at narrow spacings (blue lines) there is positive dependence
-%on direction content.  
+%on direction content, as we expected. What's perhaps unexpected is
+%the opposite pattern ad wide spacings, which appears to be just as
+%strong (trick question: why doesn't it look just as strong in the
+%graph?)
 %%
 
-%Before we add to the model There's another component to look at,
-%whcih is how the direction content interacts with spacing. Here is a
-%plot of the same where the x=axis is spacing:
-facetScatter(resid_content, ...
-             'x', 'spacing', ...
-             'y', 'pearson_resid', ...
-             'color', 'content', ...
-             'size', 'n_obs', ...
-             'morePlotting', connectLines('spacing', 'content', ...
-                                          'LineWidth', 3))
+%So before we add direction content to the model there's another thing to
+%look at whcih is how the direction content interacts with
+%spacing. Here is a plot of the same where the x=axis is spacing:
+spacing_vs_residual = { ...
+    'x', 'spacing', 'y', 'pearson_resid', ...
+    'color', 'content', 'size', 'n_obs', ...
+    'morePlotting', connectLines('spacing', 'content', 'LineWidth', 3)};
+facetScatter(resid_content, spacing_vs_residual{:});
 
 %So, yes, there is a strong effect of direction content (color) ad the
-%narrow (left) end of the scale.
+%narrow (left) end of the scale. To me these curves look like
+%1/spacing, at the left end of the scale, which makes sense to me, and
+%that's what I code in the model. (Ponder: how does this square with
+%the idea of critical distance which I used for the envelope
+%response?)
 
 %%
-% So let's add some dependence on direction content.
-% Let's think about the problem in cue combination terms. Suppose
+% One way to think about the model is in cue combination terms. Suppose
 % that both envelope and carrier motion systems give you a noisy
 % measurement on a common variable velocity, Suppose the
 % envelope-motion-detection is viridical but its precision is limited
@@ -135,55 +138,43 @@ facetScatter(resid_content, ...
 % term for direction content; it determines some of the response at wide
 % spacing, and when envelope response is attenuated at close spacings,
 % it determines more of the response. The new constant is called
-% 'beta_content' in the model. Let's try, and see what happens:
-
-%So what I'll do is add a term that looks like beta_summating *
-%content / spacing.  This is calculated over in SlopeModel.m; I'm just
-%telling the model to start fitting that parameter where it was
-%previously fixed at 0.
+% 'beta_summation' in SlopeModel.m and looks like (beta_summation *
+% content / spacing). Adding it to the model,
 
 M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation'};
 M = M.fit();
 plotModel(M);
 
+% But now you can see that the behavior at wide spacings (warm colors)
+% isn't fitting. To me it looks like for positive direction content
+% (top row), the data for side spacing (reddish) is above the fit, and
+% vice versa at for counterclockwise direction content. So at the wide
+% end of the scale the effect of direction content is reversed. (we
+% already saw this in the residual plots.)
+
 %%
-%But now you can see that the behavior at wide spacings (warm colors)
-%isn't fitting. At wide spacings, the subject is responding to
-%clockwise motion.... in the opposite direction. Plotting residuals as
-%a function of spacing: for different direction contents:
-resid_spacing = M.residuals({'spacing', 'content'}, 'dx', Inf);
-facetScatter(resid_spacing, ...
-             'x', 'spacing', ...
-             'y', 'pearson_resid', ...
-             'color', 'content', ...
-             'size', 'n_obs', ...
-             'morePlotting', connectLines('spacing', 'content', 'LineWidth', 3))
+%Plotting residuals as a function of spacing: for different direction
+%contents:
+resid_spacing = M.residuals({'spacing', 'content'});
+facetScatter(resid_spacing, spacing_vs_residual{:})
 
 %Looks like we really can't ignore that. What we've been looking at,
 %in several different ways, at the fact that the effect of direction
-%content on decisions actually reverses as a fucntion of spacing. It's
+%content on decisions actually reverses as a function of spacing. It's
 %not a small effect either; in the way that it exerts leverage on the
-%model, it's equally large as the local summation effect.
+%model, it's equally large as the local summation effect that we're
+%more interested in. So to obtain a better fit for the parameter we
+%are interested in, we're going to have to add this large-spacing
+%effect to the model.
 
 %So I'm going to borrow a point from Murakami and Shimojo (1993),
 %Mareschal, Morgon and Solomon (1992) and note that repulsion at large
-%distances becomes assimilation at small distances. Also, there is in
-%the crowding literature an idea of "oblibatory summation;" that is
-%you are obligated to sum up the signals within the criical distance
-%of your object no matter if they don't come from your object. So
-%"beta_induced" controls the repulsion (or "induced motion") portion
-%of the response and I need another one to dominate at close
-%range. The residual plot looks suggestively like an inverse function
-%of spacing, which is consonant with the idea of summing up however
-%many targets fall near the critical distance, so I'll use
-%that. (Ponder: how does this square with the idea of critical
-%distance which I used for the envelope response?)
-
+%distances becomes assimilation at small distances (induced motion
+%becomes assimilation; tilt illusion becomes crowding, etc.)
 
 %%
-
 % So here I'll add another parameter, called "beta_induced". Again,
-% this was in slopeModel.m all along, but was previously set to 0.
+% this was in SlopeModel.m all along, but was previously set to 0.
 M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'};
 M = M.fit();
 plotModel(M);
@@ -192,13 +183,8 @@ plotModel(M);
 
 %%
 %The residual is less suggestive too.
-resid_spacing = M.residuals({'spacing', 'content'}, 'dx', Inf);
-facetScatter(resid_spacing, ...
-             'x', 'content', ...
-             'y', 'pearson_resid', ...
-             'color', 'spacing', ...
-             'size', 'n_obs', ...
-             'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3))
+resid_spacing = M.residuals({'spacing', 'content'}, {'dx', Inf});
+facetScatter(resid_spacing, content_vs_residual{:});
 %I don't see much of a pattern left over.
 
 %%
@@ -221,77 +207,79 @@ M_content.parameters
 %experiment.
 plotModel(M_content);
 %%
-%that looks reasonable, but the "large spacing" model fits
-%look off for some reason, low in some places and high in others.
-r = M_content.residuals({'content', 'spacing'}, 'dx', Inf);
-facetScatter(r, 'x', 'content', 'y', 'pearson_resid', ...
-             'color', 'spacing', 'size', 'n_obs', ...
-             'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3));
+%that looks reasonable, but the "large spacing" model fits look off
+%for some reason, low in some places and high in others. Look, in
+%particular, at the second, third, second-from-bottom and
+%third-from-bottom plots -- the purple curve looks off. This doesn't
+%harm my fit so much but other subjects like JB are more pronounced here.
+resid_content = M_content.residuals({'content', 'spacing'}, 'dx', Inf);
+facetScatter(resid_content, content_vs_residual{:});
 %That one starts to look like a linear dependence on direction content
 %isn't quite right. There's a sort of S-shaped pattern to this
 %graph. I could believe it's noise, until I see the same thing in
-%another subject, where I'll put an asterisk (*). (and 3/4 sigma is a
-%strong signal.)
+%another subject, which I will.
 
 %%
 %Now we should stop playing around with this particularly well behaved
 %subject and start looking at some others. Let's try JB since he's
-%got a lot of data, and seems pretty different to me.
+%got a lot of data, and seems markedly different.
 subset = data(strcmp(data.subject, 'jb') ...
               & strcmp(data.exp_type, 'spacing'), :);
 Mjb = SlopeModel();
 Mjb.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_induced', 'beta_summation'};
 Mjb = Mjb.fit(subset);
-%Exceeding the maximum iterations is a bad sign and it looks like a bad fit.
-%Let's see what the data look like.
-plotModel(Mjb, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
-                        'color', 'content', 'size', 'n'});
+%Exceeding the maximum iterations is a bad sign and it looks like not
+%a great fit.
+plotModel(Mjb);
+%%
+%Let's interchenge the colors and row-facets; so the next plot will
+%group subplots by spacing and color by direction content.
+facet_row_spacing = {'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                                'color', 'content', 'size', 'n'}};
+plotModel(Mjb, facet_row_spacing{:});
 
 %Here, cool colors denote CCW direction contents, while warm colors
 %denote CW direction contents.  You see that the influence of
-%direction content, again, reverses from close to wide spacing -- Same
-%thing as with PBM but here the slope change is not much, for some
-%reason. THe "induced" and "summation" terms capture some of hte
-%switchover, but not all, and the slopes are too shallow as a result.
-%But it's not capturing the dependence on directio ncontent right, and
-%as a consequence it's constantly underestimating the slope of the
-%psychometric function. Why? Let's look at residuals as a function of
-%spacing and direction content.
+%direction content, again, completely reverses from close to wide
+%spacing as we saw in PBM, but stronger. The "induced" and "summation"
+%terms capture some of the switchover, but not all, and the slopes are
+%too shallow as a result.
 %%
+% So what's not being captured? Let's look at residuals as a function
+% of spacing and direction content.
+
 resid_jb = Mjb.residuals({'content', 'spacing'});
-facetScatter(resid_jb, ...
-             'x', 'content', 'y', 'pearson_resid', ...
-             'color', 'spacing', ...
-             'morePlotting', connectLines('content', 'spacing', 'LineWidth', 3));
-%Hey, look, it's that same wiggle again. Especially at wide spacings.
+facetScatter(resid_jb, content_vs_residual{:});
+% Hey, look, it's that same wiggle again. Especially at wide spacings.
+% So, at wide spacings, the "beta_summation" is not capturing it. It
+% does look like hte wiggle disappears at narrow spacings, though --
+% so may be the wiggle is tied in to (this would be consistent with
+% previous literature on induced motion and the tilt illusion.
 
+% So the "wiggle" is evident in at least two subjects. As we'll come
+% back to, it's actually present in all subjects.
 
-M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'}; M = M.fit();
+%%
+%Let's make the residual plots a little easier to interpret: If we
+%take the current model fit, but force beta_summation to zero without
+%changing any other coefficients, then the residuals should show how
+%the induced motion parameter "should" be shaped.
+
+Mjb_no_I = Mjb;
+Mjb_no_I.parameters.beta_induced = 0;
+plotModel(Mjb_no_I, facet_row_spacing{:})
+resid_jb_no_I = Mjb_no_I.residuals({'content', 'spacing'});
+facetScatter(resid_jb_no_I, content_vs_residual{:})
+
+%%
+
+M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'}; 
+M = M.fit();
 plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
                     'color', 'content', 'size', 'n'});
+
 
 %%%%%%
-
-
-%So my puzzle for you is, what is making JB so sensitive at the small
-%spacings while so insensitive at the large spacings? I'll think this
-%over but in the meantime add an extra parameter ('beta_small') to
-%reflect this kind of anomalous sensitivity to envelope motion when
-%you should be crowded.
-M.parameters.beta_small = 0;
-M.parameters.cs = 4;
-M.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced', 'beta_small'}; M = M.fit();
-plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
-                    'color', 'content', 'size', 'n'});
-%Interestingly, that parameter didn't work. Ah, I see a potential
-%problem. Look what's happening at spacing = 10.5: There's a lot of
-%direction contents being tested, but they all collapse onto these
-%'leftward' or 'rightward' functions. So what's the deal there? The
-%magnitude of induced motion isn't really sensitive to content?
-
-%So, what the heck is going on there? Notice that the response
-%actually seems nonmonotonic, with the blues/reds actually being less
-%important than the grays.
 
 %Does that happen for the content experiment as well?
 subset = data(strcmp(data.subject, 'jb') ...
