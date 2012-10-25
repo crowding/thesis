@@ -12,7 +12,12 @@ classdef LikelihoodModel
     end
 
     methods
-        function M = LikelihoodModel()
+        function M = LikelihoodModel(varargin)
+            [names{1:nargin/2}] = varargin{1:2:end};
+            [values{1:nargin/2}] = varargin{2:2:end};
+            for i = 1:numel(names)
+                M.(names{i}) = values{i};
+            end
         end
 
         function params = initialParams(M, data)

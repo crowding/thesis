@@ -8,20 +8,17 @@
 %%
 load('data.mat');
 data = doRename(data, false); %no folding
-%start with my data, to begin with.
-subset = data(strcmp(data.subject, 'pbm') & ...
-              strcmp(data.exp_type, 'spacing'), :);
+extract_experiment = @(subj, exp) data(strcmp(data.subject, subj) & ...
+                                       strcmp(data.exp_type, exp), :);
 
 %%
 %To start off, we'll just fit a single psychometric function: constant
 %slope, constant bias. If the subjects perceive the envelope motion
 %viridically this should work.
-M = SlopeModel();
-M.splits = {};
-M.freeParams = {'beta_0', 'mu_0'};
-M = M.fit(subset);
+%Start with my data, to begin with.
+M = SlopeModel('freeParams', {'beta_0', 'mu_0'});
+M = M.fit(extract_experiment('pbm', 'spacing'));
 plotModel(M);
-%plot those fits
 
 %%
 %Now, it's clear that the slope is generally too shallow,
@@ -223,11 +220,9 @@ facetScatter(resid_content, content_vs_residual{:});
 %Now we should stop playing around with this particularly well behaved
 %subject and start looking at some others. Let's try JB since he's
 %got a lot of data, and seems markedly different.
-subset = data(strcmp(data.subject, 'jb') ...
-              & strcmp(data.exp_type, 'spacing'), :);
-Mjb = SlopeModel();
-Mjb.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_induced', 'beta_summation'};
-Mjb = Mjb.fit(subset);
+Mjb = SlopeModel('freeParams', ...
+                 {'mu_0', 'beta_0', 'cs', 'beta_induced', 'beta_summation'});
+Mjb = Mjb.fit(extract_experiment('jb', 'spacing'));
 %Exceeding the maximum iterations is a bad sign and it looks like not
 %a great fit.
 plotModel(Mjb);
@@ -262,66 +257,66 @@ facetScatter(resid_jb, content_vs_residual{:});
 %%
 %I poked around and decided that replacing the linear dependence a
 %logistic to the third derivative of a logistic should be able to fit
-%the wiggles. This is envocec in two parameters, 'saturating_induced',
+%the wiggles. This is implemented in two parameters, 'saturating_induced',
 %and 'wiggle_induced', which replace 'beta_induced' in the code. I
 %select the arbitrarily.
-
-Mjb.parameters.beta_induced = 0;
+Mjb = SlopeModel();
 Mjb.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', ...
-                  'saturating_induced', 'wiggle_induced', 'induced_scale'};
-Mjb = Mjb.fit();
-
-%Look at that, no maximum iterations problem.
+                  'saturating_induced', 'wiggle_induced'};
+Mjb = Mjb.fit(subset);
 plotModel(Mjb, 'plotBy', facet_row_spacing);
-%I think that's closer. But still JB shows weird effects of oddly
-%too-steep slopes at small direction contents (that may be aliasing?)
-%%
-%Wiggle-shaped residuals no longer wiggle?
-% Oh they still wiggle? Even worse?
-
-%% Let's double check that with the content experiment. As before,
-
-
-
-%Does that happen for the content experiment as well?
-subset = data(strcmp(data.subject, 'jb') ...
-              & strcmp(data.exp_type, 'content'), :);
-Mjb_c = SlopeModel();
-Mjb_c.initialParamsDefaults.cs = 4;
-Mjb_c.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'};
-Mjb_c = Mjb_c.fit(subset);
-resids = Mjb_c.residuals({'content', 'spacing'});
-facetScatter(resids, content_vs_residual{:});
-
-plotModel(Mjb_c, 'plotBy', facet_row_spacing)
+%I think that successfully captured some wiggle. Slopes are still not
+%quite steep enough though.
 
 %%
-%Let's look at the residuals against content here.
-Rjb_c = Mjb_c.residuals({'content', 'spacing'}, 'dx', Inf);
-facetScatter(Rjb_c, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
-%Wow, there's that S-shaped thing again (*). and it looks too similar at
-%both spacings to be a coincidence.  Comparing the residuals to the
-%earlier fit plot, it appears to be saying that middling direction
-%contents cause more shift than the model really tolerates -- it's not
-%linear in direction content. So the fit is not reacting strongly
-%enough to middling direction contents.
+resids = Mjb.residuals({'content', 'spacing'});
+facetScatter(resids, content_vs_residual{:})
+%I'm still not totally satisfied with that, but it looks better than
+%before. I wonder if there needs to be some nonlinearity in the
+%summation, or a component that scales with the number of elements on
+%screen.
 
-%So I've put a compressive transform on direction content. Does that
-%help us with the modeling? Looks like answer is YES.
+%%
+%Now, can we fit both experiment types with the same parameters?
+extract_subject = @(subj) data( strcmp(data.subject, subj) ...
+                              & ( strcmp(data.exp_type, 'spacing')  ...
+                                | strcmp(data.exp_type, 'content') ) ...
+                                , :);
+M = SlopeModel('splits', {'subject'}, ...
+               'freeParams', {'mu_0', 'beta_0', 'cs', 'beta_summation', ...
+                              'saturating_induced', 'wiggle_induced'}, ...
+               'data', extract_subject('pbm'));
+M = M.fit();
+plotModel(M, 'plotBy', {facet_row_spacing{:}, 'col', 'exp_type'});
+%Heyyyyyy that's actually pretty okay looking. Does it work for other subjects?
 
-M.parameters.beta_summation = 0;
-M.parameters.beta_induced = 0;
-M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_small', 'sbeta_summation', 'sbeta_induced'}; M = M.fit();
-plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', 'color', 'content'});
+%%
+%So let's generate figures for everyone. It's the full model, and I'm
+%not differentiating between content and spacing experiments. The
+%"wiggle" parameter seems to adequately explain the difference between
+%content and spacing experiments.
+fitSubject = ...
+    (@(subj) fit(SlopeModel('splits', {'subject'}, ...
+                            'freeParams', ...
+                            {'mu_0', 'beta_0', 'cs', 'beta_summation', ...
+                             'saturating_induced', 'wiggle_induced'}, ...
+                            'data', extract_subject(subj))));
 
-%So we've learned to put a compressive transform on direction content. 
-%And it looks like beta_small might not be needed after all.
-%(Brainstorm: depending on the interaction between dx and motion
-%energy, and people's differing amounts of summation/induced motion
-%tradeoff, that may explain why beta_small looks needed sometimes.
+plotFit = (@(model, varargin) ...
+           plotModel(model, 'plotBy', ...
+                     {facet_row_spacing{:}, 'col', 'exp_type', varargin{:}}));
 
-%Let's look at a bunch of residuals here, binned over dx, colored by spacing.
-R_jb = M.residuals({'content', 'spacing'}, 'dx', Inf);
-facetScatter(R_jb, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing');
-
-%Hmm. looks like direction content response may actually be nonmonotonic...
+%so far we're only not making sense of ML and TL (and I'm not sure
+%they aren't random button pushers.) Some of the subjects are not
+%fitting with as high of a slope as the data suggests; motion-energy
+%effects?
+Mpbm = fitSubject('pbm'); plotFit(Mpbm, 'newFigures', true);
+Mml = fitSubject('ml'); plotFit(Mml, 'newFigures', true);
+Mnj = fitSubject('nj'); plotFit(Mnj, 'newFigures', true);
+Mtl = fitSubject('tl'); plotFit(Mtl, 'newFigures', true);
+Mjb = fitSubject('jb'); plotFit(Mjb, 'newFigures', true);
+Mns = fitSubject('ns'); plotFit(Mns, 'newFigures', true);
+Mmc = fitSubject('mc'); plotFit(Mmc, 'newFigures', true);
+Mje = fitSubject('je'); plotFit(Mje, 'newFigures', true);
+Mcj = fitSubject('cj'); plotFit(Mcj, 'newFigures', true);
+Mas = fitSubject('as'); plotFit(Mas, 'newFigures', true);

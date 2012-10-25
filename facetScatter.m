@@ -24,6 +24,7 @@ function handles = ...
     pars.addParamValue('color', 'const_');
     pars.addParamValue('size', 'const_');
     pars.addParamValue('morePlotting', []);
+    pars.addParamValue('newFigures', false);
     pars.parse(varargin{:});
 
     figVar = pars.Results.fig;
@@ -34,13 +35,19 @@ function handles = ...
     colorVar = pars.Results.color;
     sizeVar = pars.Results.size;
     morePlotting = pars.Results.morePlotting;
+    newFigures = pars.Results.newFigures;
 
     data.const_ = ones(size(data, 1),1);
 
     %need to set the xlim globally.
 
     [~, figno, figix] = unique(data.(figVar), 'first');
-    fighandles = arrayfun(@figure, (1:numel(figno))');
+    if newFigures
+        fignumbers = max([1 get(0, 'Children')]) + (1:numel(figno));
+    else
+        fignumbers = 1:numel(figno);
+    end
+    fighandles = arrayfun(@figure, fignumbers(:));
     data.fighandle_ = fighandles(figix);
 
     %I want the rows and columns to be assigned per figure. xlim and ylim
