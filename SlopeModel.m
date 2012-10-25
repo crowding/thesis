@@ -1,6 +1,4 @@
 classdef SlopeModel < LikelihoodModel
-% this is PBM's first attempt at a model.
-
     methods
         function SM = SlopeModel()
             SM.initialParamsDefaults = dataset(struct(...
@@ -10,12 +8,12 @@ classdef SlopeModel < LikelihoodModel
                 'cs', 0, ...
                 'beta_summation', 0, ...  %or BOTH these parameters
                 'beta_induced', 0, ...    %(not all three, not another combo)
-                'sbeta_summation', 0, ...
-                'sbeta_induced', 0, ...
-                'content_compression', 5 ...
+                'saturating_induced', 0, ...
+                'wiggle_induced', 0, ...
+                'induced_scale', 6 ...
                 ));
 
-            SM.freeParams = {'mu_0', 'beta_0', 'cs', 'sbeta_summation', 'sbeta_induced'};
+            SM.freeParams = {'mu_0', 'beta_0', 'cs', 'saturating_induced', 'wiggle_induced'};
         end
 
         function prob = predict(SM, p, data)
@@ -37,13 +35,20 @@ classdef SlopeModel < LikelihoodModel
             %alternately there is the degree of "summation"
             summation = 1./data.spacing;
 
-            scaled_content = tanh(data.content .* p.content_compression);
+            %the "induced motion* comes in two types, which I'll fit with a
+            %logistic plus the third derivative of a logistic (no real
+            %justification here other than hte combination looks loke
+            %the data.) The scale parameter of the logit is chosen
+            %arbitrarily, not fit.
+            logit = @(x) 1./(exp(x)+1);
+            logit3 = @(x) exp(x)*(exp(x)-1)./(exp(x)+1).^3;
+            induced = (p.saturating_induced .* logit(p.induced_scale.*data.content) ...
+                       + p.wiggle_induced .* logit(p.induced_scale.*data.content));
 
             bias = p.mu_0 ...
                    + p.beta_induced.*data.content ...
                    + p.beta_summation.*summation.*data.content ...
-                   + p.sbeta_induced.*scaled_content ...
-                   + p.sbeta_summation.*summation.*scaled_content;
+                   + induced;
 
             prelink = bias + p.beta_0.*data.dx.*sens + p.beta_small.*data.dx.*(1-sens);
 

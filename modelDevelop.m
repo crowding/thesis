@@ -74,7 +74,7 @@ plotModel(M);
 %%
 %And the residuals binned over displacement look less patterned
 resid_slopechange = M.residuals({'spacing'}, 'dx', 25);
-facetScatter(resid_base, 'x', 'dx', 'y', 'pearson_resid', 'color', ...
+facetScatter(resid_slopechange, 'x', 'dx', 'y', 'pearson_resid', 'color', ...
              'spacing', 'size', 'n_obs');
 
 %% after glancing at the residuals, look at the curve fits again.
@@ -183,7 +183,7 @@ plotModel(M);
 
 %%
 %The residual is less suggestive too.
-resid_spacing = M.residuals({'spacing', 'content'}, {'dx', Inf});
+resid_spacing = M.residuals({'spacing', 'content'});
 facetScatter(resid_spacing, content_vs_residual{:});
 %I don't see much of a pattern left over.
 
@@ -232,11 +232,11 @@ Mjb = Mjb.fit(subset);
 %a great fit.
 plotModel(Mjb);
 %%
-%Let's interchenge the colors and row-facets; so the next plot will
+%Let's interchange the colors and row-facets; so the next plot will
 %group subplots by spacing and color by direction content.
-facet_row_spacing = {'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
-                                'color', 'content', 'size', 'n'}};
-plotModel(Mjb, facet_row_spacing{:});
+facet_row_spacing = {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                    'color', 'content', 'size', 'n'};
+plotModel(Mjb, 'plotBy', facet_row_spacing);
 
 %Here, cool colors denote CCW direction contents, while warm colors
 %denote CW direction contents.  You see that the influence of
@@ -260,26 +260,28 @@ facetScatter(resid_jb, content_vs_residual{:});
 % back to, it's actually present in all subjects.
 
 %%
-%Let's make the residual plots a little easier to interpret: If we
-%take the current model fit, but force beta_summation to zero without
-%changing any other coefficients, then the residuals should show how
-%the induced motion parameter "should" be shaped.
+%I poked around and decided that replacing the linear dependence a
+%logistic to the third derivative of a logistic should be able to fit
+%the wiggles. This is envocec in two parameters, 'saturating_induced',
+%and 'wiggle_induced', which replace 'beta_induced' in the code. I
+%select the arbitrarily.
 
-Mjb_no_I = Mjb;
-Mjb_no_I.parameters.beta_induced = 0;
-plotModel(Mjb_no_I, facet_row_spacing{:})
-resid_jb_no_I = Mjb_no_I.residuals({'content', 'spacing'});
-facetScatter(resid_jb_no_I, content_vs_residual{:})
+Mjb.parameters.beta_induced = 0;
+Mjb.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', ...
+                  'saturating_induced', 'wiggle_induced', 'induced_scale'};
+Mjb = Mjb.fit();
 
+%Look at that, no maximum iterations problem.
+plotModel(Mjb, 'plotBy', facet_row_spacing);
+%I think that's closer. But still JB shows weird effects of oddly
+%too-steep slopes at small direction contents (that may be aliasing?)
 %%
+%Wiggle-shaped residuals no longer wiggle?
+% Oh they still wiggle? Even worse?
 
-M.freeParams = {'mu_0', 'beta_0', 'cs', 'beta_summation', 'beta_induced'}; 
-M = M.fit();
-plotModel(M, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', ...
-                    'color', 'content', 'size', 'n'});
+%% Let's double check that with the content experiment. As before,
 
 
-%%%%%%
 
 %Does that happen for the content experiment as well?
 subset = data(strcmp(data.subject, 'jb') ...
@@ -288,6 +290,12 @@ Mjb_c = SlopeModel();
 Mjb_c.initialParamsDefaults.cs = 4;
 Mjb_c.freeParams = {'mu_0', 'beta_0', 'beta_summation', 'beta_induced'};
 Mjb_c = Mjb_c.fit(subset);
+resids = Mjb_c.residuals({'content', 'spacing'});
+facetScatter(resids, content_vs_residual{:});
+
+plotModel(Mjb_c, 'plotBy', facet_row_spacing)
+
+%%
 %Let's look at the residuals against content here.
 Rjb_c = Mjb_c.residuals({'content', 'spacing'}, 'dx', Inf);
 facetScatter(Rjb_c, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
@@ -297,14 +305,6 @@ facetScatter(Rjb_c, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing', 's
 %contents cause more shift than the model really tolerates -- it's not
 %linear in direction content. So the fit is not reacting strongly
 %enough to middling direction contents.
-
-%Let's try again with log scaling the direction content.
-Mjb_c.parameters.beta_summation = 0;
-Mjb_c.parameters.beta_induced = 0;
-Mjb_c.freeParams = {'mu_0', 'beta_0', 'sbeta_summation', 'sbeta_induced', 'beta_small'}; Mjb_c = Mjb_c.fit();
-Rjb_c = Mjb_c.residuals({'content', 'spacing'}, 'dx', Inf);
-facetScatter(Rjb_c, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing', 'size', 'n_obs');
-plotModel(Mjb_c, 'plotBy', {'x', 'dx', 'y', 'p', 'row', 'spacing', 'color', 'content'});
 
 %So I've put a compressive transform on direction content. Does that
 %help us with the modeling? Looks like answer is YES.
@@ -325,7 +325,3 @@ R_jb = M.residuals({'content', 'spacing'}, 'dx', Inf);
 facetScatter(R_jb, 'x', 'content', 'y', 'pearson_resid', 'color', 'spacing');
 
 %Hmm. looks like direction content response may actually be nonmonotonic...
-
-%Before messing any more with the compressive term, it would be
-%instructive to look at actual motion energy.
-
