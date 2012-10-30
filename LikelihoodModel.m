@@ -59,7 +59,7 @@ classdef LikelihoodModel
             params = groupfun(M.data, M.splits, @makeFit);
 
             function [f, err] = makeFit(chunk)
-                split = chunk(1,M.splits);
+                split = chunk(1,M.splits)
                 if isempty(split)
                     chunkParams = params;
                 else
@@ -105,11 +105,11 @@ classdef LikelihoodModel
         end
 
         function r = residuals(M, split, binvar, binsize)
-        %function r = residuals(model, splitvars, binvar, binsize)
-        % Having already fit a model, compute the resudials, marginalizing
-        % over some variables and binning over another. Right now I compute
-        % Pearson residuals, should add deviance values also.
-
+        %function r = residuals(model, splitvars, binvar, binsize) Having
+        % already fit a model, compute the resudials, marginalizing
+        % over some variables and optionally binning over a continuous
+        % variable. Right now I compute Pearson residuals, should add
+        % deviance values also.
 
         % The residual is the number of subject responses, minus the number of
         % target responses.  For a binomial response variable that's almost
@@ -127,16 +127,6 @@ classdef LikelihoodModel
             %per point residuals and variance of the predicted mean
             d.resid = logical(d.response) - d.p_pred;
             d.pred_var = (d.p_pred).*(1-d.p_pred);
-
-            %Most logistic regression examples use toy problems where
-            %"the mean of observations at some x value" makes sense.
-            %Gelman and Hill(2007) is a great book because it uses
-            %real data instead, like binary observations where the
-            %abscissa is not binned (the water well dataset.) They
-            %suggest the expedient of binning data across a
-            %variable. There is also a library written in R to do this
-            %sort of thing for you, and all this code here is for if
-            %you don't use R.
 
             %this bin-splitter function is pretty damn slow. Hmm.
             d = groupfun(d, split, @bin);

@@ -11,16 +11,20 @@ function f = plotFits(fitfile, outfile)
     load(fitfile, 'models', 'modelNames');
     modelNames = modelNames(:);
 
-    split = {'subject', 'dx', 'content', 'spacing', 'exp_type'};
-
     fh = fopen(outfile, 'w');
     C = onCleanup(@() fclose(fh));
 
-    handles = cellfun(@(x,y)plotModel(x,y,split), ...
+    %plot all models, one window per subject
+    handles = cellfun(@(x,y)plotModel(x,'plotBy', ...
+                                      {'fig', 'subject', 'title', y, 'col', 'exp_type', ...
+                                       'x', 'dx', 'y', 'p', 'row', 'spacing', ...
+                                       'color', 'content', 'size', 'n'}), ...
                       models, modelNames, 'UniformOutput', 0);
 
+    tile(1,1);
+
     for i = 1:numel(modelNames)
-        ln = size(handles{1},1)
+        ln = size(handles{1},1);
         handles{i}.modelName = modelNames(zeros(ln,1) + i);
     end
 

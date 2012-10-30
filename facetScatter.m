@@ -23,6 +23,7 @@ function handles = ...
     pars.addParamValue('col', 'const_');
     pars.addParamValue('color', 'const_');
     pars.addParamValue('size', 'const_');
+    pars.addParamValue('title', 'insert title here')
     pars.addParamValue('morePlotting', []);
     pars.addParamValue('newFigures', false);
     pars.parse(varargin{:});
@@ -34,6 +35,7 @@ function handles = ...
     colVar = pars.Results.col;
     colorVar = pars.Results.color;
     sizeVar = pars.Results.size;
+    titleLabel = pars.Results.title;
     morePlotting = pars.Results.morePlotting;
     newFigures = pars.Results.newFigures;
 
@@ -47,7 +49,11 @@ function handles = ...
     else
         fignumbers = 1:numel(figno);
     end
-    fighandles = arrayfun(@figure, fignumbers(:));
+    fighandles = arrayfun(@openFigure, fignumbers(:));
+    function no = openFigure(no)
+        figure(no);
+        clf;
+    end
     data.fighandle_ = fighandles(figix);
 
     %I want the rows and columns to be assigned per figure. xlim and ylim
@@ -76,6 +82,19 @@ function handles = ...
         figData.ymax_ = zeros(size(figData, 1),1) + max(figData.(yVar));
     end
 
+    %compute lowest-most and leftest-most graphs
+    lowlefts = unique(data(:,{'fighandle_' 'figRow_' 'figCol_'}));
+    %lowlefts = groupfun(lowlefts, {'fighandle_', 'figCol_'}, @addLowest);
+    %lowlefts = groupfun(lowlefts, {'fighandle_', 'figRow_'}, @addLeftest);
+    lowlefts = groupfun(lowlefts, {'fighandle_'}, @addLowest);
+    lowlefts = groupfun(lowlefts, {'fighandle_'}, @addLeftest);
+    function chunk = addLowest(chunk)
+        chunk.lowest = (chunk.figRow_ == max(chunk.figRow_));
+    end
+    function chunk = addLeftest(chunk)
+        chunk.leftest = (chunk.figCol_ == min(chunk.figCol_));
+    end
+
     handles = groupfun(data, {figVar rowVar colVar}, @subplot);
     function handles = subplot(chunk)
         handles.fig = chunk.fighandle_(1);
@@ -89,56 +108,101 @@ function handles = ...
         set(handles.ax, 'XLim', [chunk.xmin_(1) chunk.xmax_(1)], ...
                         'YLim', [chunk.ymin_(1) chunk.ymax_(1)]);
         %enable axes, legend, h/v based on which subplot.
-        if chunk.figRow_(1) == chunk.nRows_(1);
-            xl = xVar;
-            if ~strcmp(colVar, 'const_')
-                val = chunk.(colVar)(1);
-                if iscell(val)
-                    val = val{1};
-                end
-                xl = sprintf('%s\n(%s = %s)', ...
-                             xl, colVar, num2str(val,3));
+        lowleft = join(chunk(1, {'fighandle_' 'figRow_' 'figCol_'}), ...
+                       lowlefts, 'Type', 'Inner', 'MergeKeys', true);
+
+        annotation = '';
+        xl = xVar;
+        if ~strcmp(colVar, 'const_')
+            val = chunk.(colVar)(1);
+            if iscell(val)
+                val = val{1};
             end
+            %                xl = sprintf('%s\n(%s = %s)', ...
+            %             xl, colVar, num2str(val,3));
+            annotation = sprintf('%s = %s\n%s', ...
+                                 colVar, num2str(val,3), annotation);
+        end
+
+        yl = yVar;
+        if ~strcmp(rowVar, 'const_')
+            val = chunk.(rowVar)(1);
+            if iscell(val)
+                val = val{1};
+            end
+            %yl = sprintf('%s\n(%s = %s)', ...
+            %             yl, rowVar, num2str(val,3));
+            annotation = sprintf('%s = %s\n%s', ...
+                                 rowVar, num2str(val,3), annotation);
+        end
+
+        if lowleft.lowest
             xlabel(handles.ax, xl);
         else
             set(handles.ax, 'XTickLabel', []);
         end
 
-        if chunk.figCol_(1) == 1
-            yl = yVar;
-            if ~strcmp(rowVar, 'const_')
-                val = chunk.(rowVar)(1);
-                if iscell(val)
-                    val = val{1};
-                end
-                yl = sprintf('%s\n(%s = %s)', ...
-                             yl, rowVar, num2str(val,3));
-            end
+        if lowleft.leftest
             ylabel(handles.ax, yl);
         else
             set(handles.ax, 'YTickLabel', []);
         end
 
-        if chunk.figRow_(1) == 1
-            tit = 'insert title here';
-            if ~strcmp(figVar, 'const_')
-                val = chunk.(figVar)(1);
-                if iscell(val)
-                    val = val{1};
-                end
-                tit = sprintf('%s\n%s = %s', tit, figVar, num2str(val,3));
-            end
-            if ~strcmp(colorVar, 'const_')
-                %in lieu of placing a legend just yet
-                tit = sprintf('%s\n(colors indicate %s)', tit, colorVar);
-            end
-            title(handles.ax, tit);
-        end
-
+        text(chunk.xmin_(1), chunk.ymax_(1), annotation, ...
+             'VerticalAlignment', 'top', 'HorizontalAlignment', 'left', ...
+             'interpreter', 'none');
         %'other' is for other functions you may want to plot while in this axis.
         if exist('morePlotting', 'var') && ~isempty(morePlotting)
             handles = morePlotting(handles, chunk);
         end
-        %TODO; indicate what size means.
+    end
+
+    % create a central plot title
+    groupfun(handles, {'fig'}, @addTitle);
+    function addTitle(chunk)
+        f = chunk.fig(1);
+
+        if isa(titleLabel, 'function_handle')
+            tit = titleLabel(handles, chunk);
+        else
+            tit = titleLabel;
+        end
+        if ~strcmp(figVar, 'const_')
+            d = join(data(:,{'fighandle_', figVar}), dataset({f, 'fighandle_'}), ...
+                     'Type', 'inner', 'mergeKeys', true);
+            val = d.(figVar)(1);
+            if iscell(val)
+                val = val{1};
+            end
+            tit = sprintf('%s\n%s = %s', tit, figVar, num2str(val,3));
+        end
+        set(0, 'CurrentFigure', f);
+        set(f,'NextPlot','add');
+        ax = axes();
+        h = title(tit);
+        set(gca,'Visible','off');
+        set(h,'Visible','on');
+
+        %now while we're at it we'll make a global legend.
+        colorset = unique(join(data(:, {'fighandle_', 'color_', colorVar}), ...
+                        dataset({f, 'fighandle_'}), ...
+                        'Type', 'inner', 'mergeKeys', true));
+
+        %How to make a global legend? Plot invisible lines using the needed
+        %colors into the invisible axes we just made.
+        hold(ax, 'on');
+        labels = maybe_num2str(colorset.(colorVar));
+        for i = 1:size(colorset, 1)
+            handle(i) = plot(ax, [1 2], [1 2], '.-', ...
+                             'Color', colorset{i, 'color_'}, ...
+                             'DisplayName', labels{i});
+            set(handle(i), 'Visible', 'off');
+        end
+        l = legend(ax, 'Location', 'West');
+        pos = get(l, 'Position');
+        pos(1) = [0.05];
+        set(l, 'Position', pos);
+        set(get(l, 'Title'), 'string', colorVar);
+        han = struct('fig', f, 'ax', ax, 'handle', handle, 'type', {'title'});
     end
 end

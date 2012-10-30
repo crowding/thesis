@@ -9,8 +9,8 @@ if ~exist('outfile', 'var')
 end
 
 if ~exist('splits', 'var')
-    %By default do independent fits for each subject and experiment type.
-    splits = {'subject', 'exp_type'};
+    %By default do independent fits for each subject.
+    splits = {'subject'};
 end
 
 if ~exist('subset', 'var')
@@ -18,21 +18,32 @@ if ~exist('subset', 'var')
     subset = dataset({{'content';'spacing'},'exp_type'});
 end
 
+trial_threshold = 2000;
+%Only bother with subjects that have this many trials.
+
+%model fits are without folding.
 load(infile, 'data');
-data = doRename(data);
+data = doRename(data, false);
 
 %Select the subset.
 data = join(data, subset, 'type', 'inner', 'MergeKeys', true);
 
-%models = {BoyntonModel()};
-models = {SlopeModel()};
-models = cellfun(@(x) x.fit(data), models, 'UniformOutput', 0);
-modelNames = {'SlopeModel'};
-%modelNames = {'BoyntonModel'};
+%Filter on trial count.
+trial_counts = grpstats(data, 'subject', @numel, 'DataVars', 'response');
+good_subjects = trial_counts.subject(trial_counts.GroupCount > trial_threshold);
+data=data(ismember(data.subject, good_subjects),:);
 
-%for backward compatibility right now.
+models = {SlopeModel('splits', splits, ...
+                     'freeParams', {'mu_0', 'beta_0', 'cs', 'beta_summation', ...
+                                    'saturating_induced', 'wiggle_induced'}, ...
+                     'data', data)};
+
+models = cellfun(@(x) x.fit(), models, 'UniformOutput', 0);
+modelNames = {'SlopeModel'};
+
+%A separate variable with the parameters.
 fits = models{1}.parameters;
 
-save(outfile, 'models', 'modelNames');
+save(outfile, 'models', 'modelNames', 'fits');
 
 end
