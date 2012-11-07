@@ -64,19 +64,7 @@ displacementTerm = function(spacing, displacement) {
 }
 class(displacementTerm) <- "nonlin"
 
-#more simply, the first-order motion summation term
-summationTerm = function(spacing, content) {
-  list(  variables = list(substitute(spacing), substitute(content))
-       , predictors = list(beta_s)
-       , term = function(predLabels, varLabels) {
-         paste( "(", predLabels[1], ")",
-               "* ( (", varLabels[2], ") / (", varLabels[1], ") )" )
-       }
-       )
-}
-class(summationTerm) <- "nonlin"
-
-makePredictions <-
+bmakePredictions <-
   function(model, data=model$data,
            splitting_vars=c("subject", "content", "exp_type", "spacing"),
            ordinate = "displacement"
@@ -133,10 +121,15 @@ main <- function(
   rates = rates(data)
 
   #replicate the first slope change model...
-  model <- gnm(  response ~ displacementTerm(spacing, displacement)
+  model <- gnm(  (  response
+                  ~ displacementTerm(spacing, displacement)
+                  + content
+                  + I(1/spacing):content
+                  )
                , family=binomial(link=logit.2asym(g=0.025, lam=0.025))
-               , data=subset(data, subject=="pbm" & exp_type=="spacing")
+               , data=subset(data, subject=="pbm")
                )
+
   plot_page(model, subject="pbm")
 
   ## %the "induced motion* comes in two types, which I'll fit with a
