@@ -44,6 +44,12 @@
 --command --once Rscript --input modeling/MeilstrupBoyntonModel.R
 --input --match 'modeling/data\.Rd'
 --output --once modeling/result.Rd
+--output --invisible modeling/modelResults.mat
+
+#and let's start translating this to R also.
+--command --once Rscript --input modeling/MeilstrupBoyntonModel.R
+--input --match 'modeling/data\.Rd'
+--output --once modeling/result.Rd
 
 #fit all the models
 --command ./runmatlab --once "\"addpath('modeling'); fitAll\""
