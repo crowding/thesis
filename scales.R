@@ -1,15 +1,15 @@
 library(scales)
 
 if (use_unicode) {
-  curveleft = "$\\curvearrowleft$"
-  curveright = "$\\curvearrowright$"
-  circleleft = "$\\curvearrowleft$"
-  circleright = "$\\curvearrowright$"
-} else {
   curveleft = "\u21BA"
   curveright = "\u21BB"
   circleleft = "\u21BA" #"0x27F2L"
   circleright = "\u21BB" #"0x27F3L"
+} else {
+  curveleft = "$\\curvearrowleft$"
+  curveright = "$\\curvearrowright$"
+  circleleft = "$\\curvearrowleft$"
+  circleright = "$\\curvearrowright$"
 }
 
 add_arrows <- function(x) {
@@ -45,11 +45,13 @@ facet_spacing_experiment <-
   facet_grid(spacing ~ exp_type,
                labeller=function(v, value) {
                  switch(  v
-                        , spacing = paste("$"[!use_unicode],
+                        , spacing = paste(
+                            "$"[!use_unicode],
                             "S = ",
                             format(value, digits=3),
                             if(use_unicode) "\u0080" else "^\\circ",
-                            "$"[!use_unicode], sep=""),
+                            "$"[!use_unicode], sep=""
+                            )
                         , exp_type = paste(as.character(value), "experiment"))
                }
              )
@@ -110,7 +112,7 @@ content_color_scale <-
   c(
     list(aes(color=factor(content),
              fill=factor(content))),
-    with_arg(name=if (use_unicode) "$C$" else "C",
+    with_arg(name=if (use_unicode) "C" else "$C$",
              palette=color_pal,
              labels=add_arrows,
              discrete_scale("fill", "manual"),

@@ -4,9 +4,10 @@ library(ggplot2)
 library(ptools)
 library(psyphy)
 library(gnm)
+library(grid)
 })
 theme_set(theme_bw())
-use_unicode=FALSE
+use_unicode=TRUE
 source("scales.R")
 
 match_df <- function(...) suppressMessages(plyr::match_df(...))
@@ -30,16 +31,18 @@ do.rename <- function(data, folding=TRUE) {
 
 rates <- mkchain(ddply(c("displacement", "content",
                          "spacing", "subject", "exp_type"),
-                       summarize, n = length(response), p = mean(response)),
+                       summarize,
+                       n = length(response), p = mean(response),
+                       n_cw = sum(response), n_ccw = sum(!response)),
                  arrange(desc(n)))
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 
 `%++%` <- function(x, y) paste(x, y, sep="")
 
-#Our real model has nonlinear terms in the spacing-dependent
-#sensitivities to displacement and to direction content.
-#This devfines the response to displacement.
+#Our model has one term nonlinear in the spacing-dependent
+#sensitivity to displacement and to direction content.
+#This defines the response to displacement.
 displacementTerm = function(spacing, displacement) {
   #for an intro to "gnm" custom terms see:
   #http://statmath.wu.ac.at/research/friday/resources_WS0708_SS08/gnmTalk.pdf
@@ -64,7 +67,7 @@ displacementTerm = function(spacing, displacement) {
 }
 class(displacementTerm) <- "nonlin"
 
-bmakePredictions <-
+makePredictions <-
   function(model, data=model$data,
            splitting_vars=c("subject", "content", "exp_type", "spacing"),
            ordinate = "displacement"
@@ -89,12 +92,13 @@ plotPredictions <- function(...) {
 
 #then there are the two components to the "wobble", with a fixed scale
 #(for now); they are the
-wobble1 <- function(x) 1./(exp(x)+1)
-wobble3 <- function(x) exp(x)*(exp(x)-1)/(exp(x)+1)^3
+wobble1 <- function(dx) {x <- dx / wobbleScale; 1./(exp(x)+1) }
+wobble3 <- function(dx) {x <- dx / wobbleScale; exp(x)*(exp(x)-1)/(exp(x)+1)^3 }
 wobbleScale <- 0.3
 
-plot_page <- function(model, subject) {
-  rates <- match_df(rates, data.frame(subject=subject), on="subject")
+plot_fit <- function(model, subject=model$data$subject[1]) {
+  rates <- match_df(model$data,
+                    data.frame(subject=subject), on="subject")
   print((ggplot(rates)
          + displacement_scale
          + proportion_scale
@@ -106,12 +110,19 @@ plot_page <- function(model, subject) {
          ))
 }
 
+plot_contours <- function(model, subject) {
+  #make contour plots of the model prediction as a function of delta-x
+  #and spacing for a fixed (20%) direction content.
+}
+
 main <- function(
           infile = "data.RData"
+          outfile = "slopeModel.RData"
           ) {
 
   load(infile, e <- new.env())
 
+  #use only subjects whose calculations exceed 2...
   chain(e$data
         , do.rename(folding=FALSE)
         , subset(exp_type %in% c("spacing", "content"))
@@ -120,38 +131,40 @@ main <- function(
 
   rates = rates(data)
 
-  #replicate the first slope change model...
-  model <- gnm(  (  response
-                  ~ displacementTerm(spacing, displacement)
-                  + content
-                  + I(1/spacing):content
-                  )
-               , family=binomial(link=logit.2asym(g=0.025, lam=0.025))
-               , data=subset(data, subject=="pbm")
-               )
+  #fit models to each subject.
+  models <- dlply(rates, "subject", function(chunk) {
+    cat("fitting subject " %++% chunk$subject[1] %++% "\n")
+    gnm(  (  cbind(n_cw, n_ccw)
+           ~ displacementTerm(spacing, displacement)
+           + I(wobble1(content))
+           + I(wobble3(content))
+           + I(1/spacing):content
+           )
+        , family=binomial(link=logit.2asym(g=0.025, lam=0.025))
+        , data=chunk
+        )
+  })
 
-  plot_page(model, subject="pbm")
+  save(models, file="slopeModel.RData")
 
-  ## %the "induced motion* comes in two types, which I'll fit with a
-  ## %logistic plus the third derivative of a logistic (no real
-  ## %justification here other than hte combination looks loke
-  ## %the data.) The scale parameter of the logit is chosen
-  ## %arbitrarily, not fit.
-  ## logit = @(x) 1./(exp(x)+1);
-  ## logit3 = @(x) exp(x)*(exp(x)-1)./(exp(x)+1).^3;
-  ## induced = (p.saturating_induced .* logit(p.induced_scale.*data.content) ...
-  ##            + p.wiggle_induced .* logit(p.induced_scale.*data.content));
+  #plot the models
+  cairo_pdf("slopeModel.pdf", onefile=TRUE)
+  mapply(models, names(models), FUN=function(model, name) {
+    cat("plotting subject " %++% name %++% "\n")
+    plot_fit(model)
+    grid.newpage()
+  })
+  dev.off()
 
-  ## bias = p.mu_0 ...
-  ##        + p.beta_induced.*data.content ...
-  ##        + p.beta_summation.*summation.*data.content ...
-  ##        + induced;
+  plot_fit(model, subject=subject)
+  grid.newpage()
+  plot_contours(model)
+  dev.off()
+  model
+  #make some contour plots
 
-  ## prelink = bias + p.beta_0.*data.dx.*sens + p.beta_small.*data.dx.*(1-sens);
+  #draw some random simulations of coefficients.
+  #plot where the coefficients of the models are (with confidence ellipses?)
 
-  ## logit = @(x)0.98./(1+exp(-x)) + 0.01;
-  ## prob = logit(prelink);
-  #plot the data similarly to how I've been plotting it all along.
-
-  l_ply(unique(data$subject), plot_page)
+  #compare that with the cieff
 }
