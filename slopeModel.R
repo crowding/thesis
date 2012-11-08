@@ -247,6 +247,26 @@ plot_contours <- function(model) {
    + geom_vline(x=0, color="gray50", linetype="11", size=0.2)
    )
 
+  content_sampling <-
+    expand.grid(
+      spacing = c(2, 3, 5, 10, 20),
+      content = seq(-1, 1, length=100),
+      displacement = 0)
+  pred = predict(model, newdata=content_sampling, type="response", se.fit=TRUE)
+  content_sampling <- cbind(content_sampling, pred)
+
+  print(ggplot(content_sampling)
+        + aes(x=content)
+        + proportion_scale
+        + spacing_texture_scale
+        + ribbon
+        + scale_x_continuous(name="Direction content",labels=add_arrows, expand=c(0,0))
+        + annotate("text", label=toupper(model$data$subject[[1]]),
+                   x=max(model$data$content),
+                   y=0,
+                   hjust=1.2, vjust=-0.5)
+        )
+
 }
 
 plot_curves <- function(models) {
@@ -256,7 +276,6 @@ plot_curves <- function(models) {
   #the effect of direction content at wide spacing (set dx = 0, spacing = 10)
 
   #plot uncertainty as a function of spacing for all subjects.
-  
-  #show drop in slope (for one subject)
-  
+  #just going to...
+
 }
