@@ -29,12 +29,16 @@ do.rename <- function(data, folding=TRUE) {
   rename(data, replacements)
 }
 
-rates <- mkchain(ddply(c("displacement", "content",
-                         "spacing", "subject", "exp_type"),
-                       summarize,
-                       n = length(response), p = mean(response),
-                       n_cw = sum(response), n_ccw = sum(!response)),
-                 arrange(desc(n)))
+mkrates <- function(data,
+                    splits=c("displacement", "content",
+                      "spacing", "subject", "exp_type")) {
+  chain(data,
+        ddply(splits,
+              summarize,
+              n = length(response), p = mean(response),
+              n_cw = sum(response), n_ccw = sum(!response)),
+        arrange(desc(n)))
+}
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 
@@ -110,15 +114,7 @@ plot_fit <- function(model, subject=model$data$subject[1]) {
          ))
 }
 
-plot_contours <- function(model, subject) {
-  #make contour plots of the model prediction as a function of delta-x
-  #and spacing for a fixed (20%) direction content.
-}
-
-main <- function(
-          infile = "data.RData"
-          outfile = "slopeModel.RData"
-          ) {
+main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
 
   load(infile, e <- new.env())
 
@@ -129,7 +125,7 @@ main <- function(
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
         ) -> data
 
-  rates = rates(data)
+  rates = mkrates(data)
 
   #fit models to each subject.
   models <- dlply(rates, "subject", function(chunk) {
@@ -156,15 +152,78 @@ main <- function(
   })
   dev.off()
 
-  plot_fit(model, subject=subject)
+  #how about some contour plots.
   grid.newpage()
   plot_contours(model)
   dev.off()
   model
   #make some contour plots
 
-  #draw some random simulations of coefficients.
-  #plot where the coefficients of the models are (with confidence ellipses?)
+  #draw some random simulations of coefficients.  plot where the
+  #coefficients of the models are (with confidence ellipses?)
 
-  #compare that with the cieff
+  #compare that with the coefficients gleaned empirically from
+  #number/density data.
+
+  #make the point that there is no pooling, comparing slopes of 2, 4,
+  #and 6 elements on screen. Somehow also average the data across
+  #subjects, too?
+
+  
+}
+
+
+plot_contours <- function(model) {
+  #make a contour plot with displacement on the x-axis and spacing on
+  #the y-axis.
+
+  displacement_sampling <- expand.grid(
+                spacing=seq_range(pmin(range(model$data$spacing), 10), length=100),
+                displacement = seq_range(range(model$data$displacement), length=100),
+                content = 0.1
+                )
+  displacement_sampling$pred <-
+    predict(model, newdata=displacement_sampling, type="response")
+
+  (ggplot(displacement_sampling)
+   + aes(x = displacement, y = spacing, z=pred)
+   + geom_vline(x=0, color="gray50", linetype="11", size=0.2)
+   + decision_contour
+   + displacement_scale_nopadding + y_nopadding
+   + no_grid
+   + annotate("text", label=toupper(model$data$subject[[1]]),
+              x=max(displacement_sampling$displacement),
+              y=min(displacement_sampling$spacing),
+              hjust=1.2, vjust=-0.5)
+   )
+
+  #now to show the (trickier) relation of direction content to spacing
+  content_sampling <-
+    expand.grid(
+      spacing      = seq_range(pmin(range(model$data$spacing), 10), length=100),
+      content      = seq_range(range(model$data$content), length=100),
+      displacement = 0,
+      subject = model$data$subject[[1]]
+      )
+  content_sampling$pred <-
+    predict(model, newdata=content_sampling, type="response")
+
+  (ggplot(content_sampling)
+   + aes(x = content, y = spacing, z = pred)
+   + geom_contour(size=0.2, color="gray70", breaks=seq(0,1,0.02))
+   + decision_contour
+   + y_nopadding
+   + scale_x_continuous(name="Direction content",labels=add_arrows, expand=c(0,0))
+   + no_grid
+   + annotate("text", label=toupper(model$data$subject[[1]]),
+              x=max(content_sampling$content), y=min(content_sampling$spacing),
+              hjust=1.2, vjust=-0.5)
+   )
+
+  #might be interesting to plot deviance over these coordinates. color
+  #coded deviance plot?
+}
+
+plot_curves <- function(model) {
+  #plot interesting curves from the model...
 }

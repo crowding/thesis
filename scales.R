@@ -69,6 +69,29 @@ balloon <- list(geom_point(aes(size=n))
                 , scale_size_area()
                 )
 
+decision_color_scale <-
+  continuous_scale(name="Responses CW", "colour", "color_m",
+                   gradient_n_pal(colours = (
+                                    c(muted(c("cyan", "blue"),
+                                            l=70, c=180),
+                                      "black",
+                                      muted(c("red", "yellow"),
+                                            l=70, c=180))),
+                                  values = c(0, 0.4, 0.5, 0.6, 1)),
+                   guide="legend", breaks=seq(0,1,0.1), labels=add_arrows)
+
+decision_contour <-
+  list(
+    geom_contour(aes(color=..level..), breaks = seq(0,1,length=11)),
+    decision_color_scale
+    )
+
+no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
+no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+displacement_scale_nopadding <- displacement_scale
+displacement_scale_nopadding[[2]]$expand <- c(0,0)
+y_nopadding <- scale_y_continuous(expand = c(0,0))
+
 displacement_scale <-
   list( aes(x=displacement),
        scale_x_continuous(if (use_unicode) "\u0394x" else "$\\Delta x$"
