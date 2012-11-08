@@ -5,10 +5,14 @@ library(ptools)
 library(psyphy)
 library(gnm)
 library(grid)
+library(extrafont)
 })
 theme_set(theme_bw())
 use_unicode=TRUE
 source("scales.R")
+loadfonts()
+quartz.options(family="MS Gothic")
+pdf.options(family="MS Gothic")
 
 match_df <- function(...) suppressMessages(plyr::match_df(...))
 
@@ -144,19 +148,20 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
   save(models, file="slopeModel.RData")
 
   #plot the models
-  cairo_pdf("slopeModel.pdf", onefile=TRUE)
+  cairo_pdf("slopeModel.pdf", onefile=TRUE, family="MS Gothic")
   mapply(models, names(models), FUN=function(model, name) {
     cat("plotting subject " %++% name %++% "\n")
     plot_fit(model)
-    grid.newpage()
   })
   dev.off()
 
   #how about some contour plots.
-  grid.newpage()
-  plot_contours(model)
+  cairo_pdf("contours.pdf", onefile=TRUE, family="MS Gothic")
+  mapply(models, names(models), FUN=function(model, name) {
+    plot_contours(model)
+  })
   dev.off()
-  model
+
   #make some contour plots
 
   #draw some random simulations of coefficients.  plot where the
@@ -168,10 +173,7 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
   #make the point that there is no pooling, comparing slopes of 2, 4,
   #and 6 elements on screen. Somehow also average the data across
   #subjects, too?
-
-  
 }
-
 
 plot_contours <- function(model) {
   #make a contour plot with displacement on the x-axis and spacing on
@@ -185,7 +187,7 @@ plot_contours <- function(model) {
   displacement_sampling$pred <-
     predict(model, newdata=displacement_sampling, type="response")
 
-  (ggplot(displacement_sampling)
+  print(ggplot(displacement_sampling)
    + aes(x = displacement, y = spacing, z=pred)
    + geom_vline(x=0, color="gray50", linetype="11", size=0.2)
    + decision_contour
@@ -208,7 +210,7 @@ plot_contours <- function(model) {
   content_sampling$pred <-
     predict(model, newdata=content_sampling, type="response")
 
-  (ggplot(content_sampling)
+  print(ggplot(content_sampling)
    + aes(x = content, y = spacing, z = pred)
    + geom_contour(size=0.2, color="gray70", breaks=seq(0,1,0.02))
    + decision_contour
@@ -222,8 +224,39 @@ plot_contours <- function(model) {
 
   #might be interesting to plot deviance over these coordinates. color
   #coded deviance plot?
+
+  #uncertainty inside/outside
+  uncertainty_sampling <- expand.grid(
+        spacing = c(2, 3, 5, 10, 20),
+        displacement = seq_range(range(model$data$displacement), length=100),
+        content = 0.1
+  )
+  pred = predict(model, newdata=uncertainty_sampling, type="response", se.fit=TRUE)
+  uncertainty_sampling <- cbind(uncertainty_sampling, pred)
+
+  print(ggplot(uncertainty_sampling)
+   + displacement_scale
+   + spacing_texture_scale
+   + ribbon
+   + proportion_scale
+   + annotate("text", label=toupper(model$data$subject[[1]]),
+              x=max(uncertainty_sampling$displacement),
+              y=0,
+              hjust=1.2, vjust=-0.5)
+   + no_grid
+   + geom_vline(x=0, color="gray50", linetype="11", size=0.2)
+   )
+
 }
 
-plot_curves <- function(model) {
-  #plot interesting curves from the model...
+plot_curves <- function(models) {
+  #plot interesting curves from each model (one per subject.)
+
+  allData <- ldply(models, `[[`, "data")
+  #the effect of direction content at wide spacing (set dx = 0, spacing = 10)
+
+  #plot uncertainty as a function of spacing for all subjects.
+  
+  #show drop in slope (for one subject)
+  
 }

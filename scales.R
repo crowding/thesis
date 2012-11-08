@@ -19,7 +19,7 @@ add_arrows <- function(x) {
     x[first] <- paste(x[first], curveleft)
     x[last] <- paste(x[last], curveright)
   } else {
-    x[first] <- paste(x[first], curveright)
+    x[first] <- paste(x[first], curveleft)
     x[last] <- paste(x[last], circleleft)
   }
   x
@@ -88,14 +88,14 @@ decision_contour <-
 
 no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
 no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
-displacement_scale_nopadding <- displacement_scale
-displacement_scale_nopadding[[2]]$expand <- c(0,0)
-y_nopadding <- scale_y_continuous(expand = c(0,0))
 
 displacement_scale <-
   list( aes(x=displacement),
        scale_x_continuous(if (use_unicode) "\u0394x" else "$\\Delta x$"
                           , labels=add_arrows))
+displacement_scale_nopadding <- displacement_scale
+displacement_scale_nopadding[[2]]$expand <- c(0,0)
+y_nopadding <- scale_y_continuous(expand = c(0,0))
 
 comp <- function(a, b) function(...) b(a(...))
 
@@ -142,6 +142,12 @@ content_color_scale <-
              discrete_scale("colour", "manual")
              )
     )
+
+ribbon <- list(
+            geom_ribbon(color="transparent", alpha=0.2,
+                        aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+            geom_line(aes(y=fit)))
+
 
 #have a custom stats function that shows the predictions with error bars.
 add_predictions <- function(data, model) {
