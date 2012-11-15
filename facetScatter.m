@@ -45,7 +45,7 @@ function handles = ...
 
     [~, figno, figix] = unique(data.(figVar), 'first');
     if newFigures
-        fignumbers = max([1 get(0, 'Children')]) + (1:numel(figno));
+        fignumbers = max([1; get(0, 'Children')]) + (1:numel(figno));
     else
         fignumbers = 1:numel(figno);
     end
