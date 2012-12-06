@@ -300,7 +300,8 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   #another way to get at this is to run a prediction.
   bias_all_data <-
     expand.grid(spacing=seq(0, 10, len=200), content=0.2, displacement=0)
-  bias_all_data <- cbind(bias.data, p=predict(m, bias_all_data, type="response"))
+  bias_all_data <- cbind(bias_all_data, p=predict(m, bias_all_data, type="response")
+                         )
   bias_all_plot <- (
     ggplot(bias_all_data)
     + proportion_scale
