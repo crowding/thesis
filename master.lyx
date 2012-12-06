@@ -97,6 +97,16 @@ filename "methods.lyx"
 \begin_layout Standard
 \begin_inset CommandInset include
 LatexCommand include
+filename "modeling.lyx"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand include
 filename "results.lyx"
 
 \end_inset
@@ -128,16 +138,6 @@ filename "figure_captions.lyx"
 \begin_inset CommandInset include
 LatexCommand include
 filename "discussion.lyx"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand include
-filename "modeling.lyx"
 
 \end_inset
 

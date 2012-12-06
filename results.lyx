@@ -4,6 +4,9 @@
 \begin_header
 \textclass article
 \use_default_options true
+\begin_modules
+knitr
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -20,11 +23,12 @@
 \font_tt_scale 100
 
 \graphics default
-\default_output_format default
+\default_output_format pdf4
 \output_sync 0
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -32,7 +36,7 @@
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -59,11 +63,888 @@
 
 \begin_body
 
-\begin_layout Section
+\begin_layout Subsection
 Experiment 1
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:results-basic"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status collapsed
+
+\begin_layout Plain Layout
+
+cache=TRUE,encoding="UTF-8",fig.width=7,fig.height=4,dev="cairo_pdf",dev.args=list(
+pointsize=10, family="MS Gothic"),tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<<wat>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+options("encoding")
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options("encoding")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-externalize
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-externalize,cache=FALSE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+read_chunk("results.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-libraries
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-libraries,cache=FALSE,echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-loadData
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-loadData,cache=TRUE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Model-based results and/or discussion
+\end_layout
+
+\begin_layout Subsection
+Lack of pooling across large distances
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Still under construction -- please skip to section 1.4
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We motivated the description of our model by considering that the observer
+ attends a single element of the display; other elements were taken to be
+ ignored as best the observer is able, though they reveal their influence
+ via crowding or induced motion depending on distance.
+ However, in our task the stimulus is composed of identical, identically
+ moving elements.
+ Therefore in principle, it is not necessary that a subject isolate any
+ particular element to arrive at a veridical perception of envelope motion;
+ any element will do the same job.
+ This raises the possibility that an observer might pool multiple envelope
+ position signals in order to improve sensitivity to envelope displacement.
+ If that is the case than the sensitivity to displacement (i.e.
+ the slope of the psychometric function of displacement) should increase
+ with the number of elements on the display, as long as targets remain widely
+ separated enough to avoid crowding.
+\end_layout
+
+\begin_layout Standard
+To assess the presence or absence of pooling at large distances we compared
+ subjects' sensitivities to envelope displacement as element number varied,
+ for the subset of data where there were 6 or fewer elements on the display.
+ We measured sensitivity by fitting a logistic regression model, 
+\begin_inset Formula 
+\[
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}(\beta_{n}\Delta_{x}+k_{C,n})
+\]
+
+\end_inset
+
+where the slope of the psychometric function is modeled by 
+\begin_inset Formula $\beta_{n}$
+\end_inset
+
+ and a separate intercept is used for each value of direction content and.
+ We then asked whether a single coefficient 
+\begin_inset Formula $\beta$
+\end_inset
+
+ was sufficient, or whether the model fit was improved by letting separate
+ values of 
+\begin_inset Formula $\beta_{n}$
+\end_inset
+
+ apply to each number of displayed elements.
+\end_layout
+
+\begin_layout Standard
+Values of 
+\begin_inset Formula $\beta$
+\end_inset
+
+ obtained by this procedure are plotted ...., using one symbol for each subject.
+ We do not find that the number of visible elements significantly affects
+ the 
+\end_layout
+
+\begin_layout Standard
+To further check whether there was any sign of pooling, we performed a one-way
+ ANOVA on the fitted values of 
+\begin_inset Formula $\beta_{n}$
+\end_inset
+
+ where.
+ For __ subject did was any significant effect of element number; we interpret
+ this as indicating there is not a significant amount of envelope position
+ signals between elements.
+\end_layout
+
+\begin_layout Subsection
+With shorter distances between elements, sensitivity to envelope motion
+ declines.
+\end_layout
+
+\begin_layout Subsection
+At shorter distances, carrier motion summates, causing an increase in sensitivit
+y to carrier motion.
+\end_layout
+
+\begin_layout Standard
+One feature of our model, as illustrated in figure is that .
+ We again motivate this model feature by allowing the model
+\end_layout
+
+\begin_layout Subsection
+At longer distances, carrier motion repels direction judgments
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-repulsion"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide true
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-jb-example
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-jb-example,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.height=5
+>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-jb-example"
+
+\end_inset
+
+As element spacing changes, assimilation becomes repulsion.
+ Here example data from observer JB is shown.
+ JB was tested with a variety of carrier direction contents and spacings
+ (one magnitude of direction content per session).
+ Here, each subplot contains data from a single spacing, and the direction
+ content is indicated by the color (with warm colors indicating clockwise
+ carrier motion and cool colors indicating counterclockwise.) In each subplot
+ the vertical axis measures the proportion of responses 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to a given stimulus, while the size of each point indicates the number
+ of trials collected for that stimulus.
+ Curved lines show model fits to this data.
+ Notably, observe that the effect of direction content reverses as spacing
+ changes; as small spacings JB is biased to respond in the direction of
+ carrier motion (in the graph, warm colors are displaced to the right of
+ cool,) while at large spacings the opposite bias occurs.
+ Other subjects also show spacing dependent reversals, as discussed in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-repulsion"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An interesting feature of our model is the component 
+\begin_inset Formula $M_{I}$
+\end_inset
+
+ which we describe as due to a very long range or global average of motion
+ energy.
+ This is the component that describes the extent to which carrier motion
+ biases observers' judgements when elements are widely spaced.
+ An example is shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-jb-example"
+
+\end_inset
+
+.
+ At narrow spacings (the upper subplots of the graph) we see that the effect
+ of changing local direction content is to bias subjects toward perceiving
+ the motion in the same direction as the added direction content.
+ So, clockwise direction contents, indicated in the figure by warmer colors,
+ cause a leftward shift in the psychometric functions, and vice versa.
+ However, at wider spacings, shown in the lower subplots, this effect reverses.
+ Thus assimilation of first-order motion under crowded conditions is a summation
+, but when elements are widely spaced apart, there is a repulsion.
+ (We discuss the extent to which this effect applies to all subjects in
+ the next section.) We feel this is similar to some phenomena that have been
+ called 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Reinhardt-Rutland:1988aa"
+
+\end_inset
+
+, in which a distant or full-field motion biases the perceived motion of
+ an individual target.
+ While our particular stimulus, with identical targets, does not inherently
+ distinguish the 
+\begin_inset Quotes eld
+\end_inset
+
+inducer
+\begin_inset Quotes erd
+\end_inset
+
+ from the 
+\begin_inset Quotes eld
+\end_inset
+
+induced,
+\begin_inset Quotes erd
+\end_inset
+
+ we can apply our previous insight about the lack of pooling of position
+ information; if the task is performed by attending or tracking single elements,
+ then any attended or tracked elements may be subject to motion induced
+ by the remainder of the display.
+\end_layout
+
+\begin_layout Subsection
+The induced motion effect is nonlinear in carrier direction content and
+ insensitive to element number
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-induced-modeling"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-induced-modeling
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-induced-modeling,results="hide",echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+There are two characteristics of this induced motion that deserve comment.
+ The first is that the degree of repulsion appears to be a nonlinear function
+ of direction content.
+ Another is that the strength of repulsion seems to be determined by the
+ average direction content of the elements, rather than a sum over the motion
+ energy content of all elements -- in other words changing the number of
+ elements does not appear to change the magnitude of the repulsion.
+ Both these features were captured in described in Section 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:model"
+
+\end_inset
+
+ using the function 
+\begin_inset Formula $M_{I}(C)$
+\end_inset
+
+; here we elaborate and discuss the support for those characteristics.
+\end_layout
+
+\begin_layout Standard
+We first address the nonlinearity of the induced motion as a function of
+ direction content.
+ In the example data for subject JB, shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-jb-example"
+
+\end_inset
+
+, this nonlinearity is visible at high spacings (e.g.
+ the second-to-bottom subplot of the figure) as a 
+\begin_inset Quotes eld
+\end_inset
+
+clustering
+\begin_inset Quotes erd
+\end_inset
+
+ of data into basically two groups of clockwise and counterclockwise direction
+ content, despite a fivefold range of the actual magnitudes of the direction
+ contents tested.
+ Moreover, for these two in some cases a stronger direction content actually
+ seems to lead to weaker bias than a moderate direction content, as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+ANOTHER WAY OF THINKING ABOUT THIS is that the LOCAL direction content always
+ has an influence! That is to say there is always *one* element in the summation
+ field; 1/spacing is not the greatest alternative.
+ The problem with that is that it still only explains the data if there
+ is still at least a saturating nonlinearity in the global induced motion.
+ (otherwise still no wobbles)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-induced-stats
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-induced-stats,results="hide",echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+We illustrate the presence of this nonlinearity by comparing three nested
+ models.
+ In the null case, we consider the model without any contribution of induced
+ motion, that is, 
+\begin_inset Formula $M_{I}=0$
+\end_inset
+
+.
+ but otherwise identical to the full model described above in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+.
+ The second model we consider is one in which the strength of induced motion
+ is linearly related to the direction content of the stimulus; 
+\begin_inset Formula $M_{I}=\beta_{I}C$
+\end_inset
+
+.
+ For this model, we found that 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(pvals(linear.model.test) < p.level)}
+\end_layout
+
+\end_inset
+
+ out of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{length(linear.model.test)}
+\end_layout
+
+\end_inset
+
+ subjects showed a significant (
+\begin_inset Formula $p<\Sexpr{latex.format(p.level)}$
+\end_inset
+
+ ; likelihood ratio test using a 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ distribution with 1 degree of freedom) improvement to the model fit by
+ adding the linear parameter.
+ However, we additionally suspected that the induced motion effect was nonlinear
+ly related to the direction content of the stimulus, as 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Murakami:1993vn"
+
+\end_inset
+
+ had observed that the strength of induced motion was non-monotonically
+ related to the contrast of the inducer for some subjects.
+ Therefore we also considered a model in which there was a second-order,
+ odd-symmetric component to the induced motion signal; 
+\begin_inset Formula $M_{I}=\beta_{I_{a}}C+\beta_{I_{b}}C\left|C\right|$
+\end_inset
+
+.
+ As compared to the linear model, we found that for all 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(pvals(second.model.test) < p.level)}
+\end_layout
+
+\end_inset
+
+ subjects, the fit was significantly improved by adding the second-order
+ component, the largest 
+\begin_inset Formula $p$
+\end_inset
+
+-value being 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{pretty.pval(pvals(second.model.test[weakest.second.test]), alpha=0)}
+\end_layout
+
+\end_inset
+
+ for subject 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{toupper(names(weakest.second.test))}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-induced-additionally
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-induced-additionally>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+Additionally, while the signs of 
+\begin_inset Formula $\beta_{I}$
+\end_inset
+
+ in the linear model are mixed, in the second-order model, every subject
+ with the exception of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{toupper(carissas.wierd)}
+\end_layout
+
+\end_inset
+
+ has a negative value of 
+\begin_inset Formula $\beta_{I_{a}}$
+\end_inset
+
+ and a positive value of 
+\begin_inset Formula $\beta_{I_{c}}$
+\end_inset
+
+, indicating that small imbalances of motion energy at wide target spacings
+ usually lead to repulsion, but that the repulsion is proportionately weaker,
+ or even reverses, with stronger direction content.
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-model-plot"
+
+\end_inset
+
+ illustrates the difference between linear and second-order models.
+ There we show model projections for stimuli with no envelope displacement,
+ at a fixed value of 
+\begin_inset Formula $10^{\circ}$
+\end_inset
+
+ element spacing, for varying values of direction content.
+ We show fitted curves for the linear and second-order models, as well as
+ data points corresponding to a complete model (in which the induced motion
+ is allowed to take on a different strength for each value of 
+\begin_inset Formula $C$
+\end_inset
+
+ tested.) As mentioned above, for all subjects except 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{toupper(carissas.wierd)}
+\end_layout
+
+\end_inset
+
+, the slope of the linear component is is negative, indicating a repulsive
+ induced motion effect; for the same subjects the coefficient of the second-orde
+r component is positive, indicating that the repulsion proportionately weakens,
+ or in some cases reverses, when direction content approaches 
+\begin_inset Formula $\left|C\right|=1.0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+[we do not have much of a speculation about what exactly the induced motion
+ effect arises from; characterizing it as a divisive normalization of the
+ motion signal seems promising.]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%results-induced-model-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-induced-model-plot,echo=FALSE,cache=TRUE,results="hide",warning=FALSE,
+ width=7, height=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-induced-model-plot"
+
+\end_inset
+
+Effects of induced motion at wide spacing.
+ Here we show, for each subject, modeled biases at a nominal 
+\begin_inset Formula $10^{\circ}$
+\end_inset
+
+ spacing with varying levels of direction content.
+ Predictions from two models are shown one where response bias is linearly
+ related to direction content, and one where a second-order, odd-symmetric
+ component is added.
+ For comparison, points with error bars show a full model, where bias is
+ allowed to take on a separate value for each direction content tested.
+ The second order model obtains a better fit (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+.) Under this model, all but one subject shows a negative slope of the curve
+ where direction content crosses zero, indicating a repulsive effect for
+ weak direction content, while the second order coefficient weakens or reverses
+ this effect for stronger direction contents.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The other salient feature of induced motion is that it does not appear to
+ depend on the number of elements, even at wide spacings.
+ To show this, we consider the subset of data with spacings greater than
+ 6 degrees 
+\end_layout
+
+\begin_layout Section
+Experiment 2 number versus density.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/peter/bibdesk/bibliography"
+options "apalike"
 
 \end_inset
 
