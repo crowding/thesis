@@ -10,9 +10,9 @@ library(extrafont)
 theme_set(theme_bw())
 use_unicode=TRUE
 source("scales.R")
-loadfonts()
-quartz.options(family="MS Gothic")
-pdf.options(family="MS Gothic")
+#suppressMessages(loadfonts())
+#quartz.options(family="MS Gothic")
+#pdf.options(family="MS Gothic")
 
 match_df <- function(...) suppressMessages(plyr::match_df(...))
 
@@ -122,7 +122,7 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
 
   load(infile, e <- new.env())
 
-  #use only subjects whose calculations exceed 2...
+  #use only subjects whose number of trials exceed 2000
   chain(e$data
         , do.rename(folding=FALSE)
         , subset(exp_type %in% c("spacing", "content"))
@@ -173,6 +173,8 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
   #make the point that there is no pooling, comparing slopes of 2, 4,
   #and 6 elements on screen. Somehow also average the data across
   #subjects, too?
+
+  plot_curves(models)
 }
 
 plot_contours <- function(model) {
@@ -256,11 +258,10 @@ plot_contours <- function(model) {
   content_sampling <- cbind(content_sampling, pred)
 
   print(ggplot(content_sampling)
-        + aes(x=content)
+        + content_x_scale
         + proportion_scale
         + spacing_texture_scale
         + ribbon
-        + scale_x_continuous(name="Direction content",labels=add_arrows, expand=c(0,0))
         + annotate("text", label=toupper(model$data$subject[[1]]),
                    x=max(model$data$content),
                    y=0,
@@ -269,13 +270,114 @@ plot_contours <- function(model) {
 
 }
 
-plot_curves <- function(models) {
+plot_curves <- function(models, prefix="../writing/inset_") {
   #plot interesting curves from each model (one per subject.)
+  #plot curves in a way that is informative when included in a figure file.
 
   allData <- ldply(models, `[[`, "data")
+
+  m <- models$pbm
+
+  # first we show the decay of spacing with sensitivity. We mark it
+  # with the critical spacing.
+  # another way to get at this is to run a prediction.
+  sensitivity_data <-
+    expand.grid(spacing=seq(0, 10, len=200), content=0)
+
+  sensitivity_data <- cbind(sensitivity_data,
+                                s=(predict(m,  data.frame(sensitivity_data, displacement=0.5) )
+                                   -predict(m, data.frame(sensitivity_data, displacement=-0.5))))
+  sensitivity_plot <- (
+    ggplot(sensitivity_data)
+    + aes(x=spacing, y=s)
+    + geom_line()
+    + scale_x_continuous(limits=c(0, 10),
+                         breaks = c(0, m$coefficients["cs"], 10),
+                         labels = c(0, "cs", 10))
+    + scale_y_continuous("sensitivity", limits= c(0, m$coefficients["beta_dx"]),
+                         breaks = c(0, m$coefficients["beta_dx"]),
+                         labels = c("0", "\u03B2\u2080")
+                         )
+    )
+  cairo_pdf(file=paste(prefix, "sensitivity.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  print(sensitivity_plot)
+  dev.off()
+
+  #another way to get at this is to run a prediction.
+  bias_all_data <-
+    expand.grid(spacing=seq(0, 10, len=200), content=0.2, displacement=0)
+  bias_all_data <- cbind(bias.data, p=predict(m, bias_all_data, type="response"))
+  bias_all_plot <- (
+    ggplot(bias_all_data)
+    + proportion_scale
+    + aes(x=spacing)
+    + geom_line()
+    + geom_ribbon(aes(ymin=pmin(0.5, p), ymax=p), color=NA, fill="green", alpha=0.5)
+    + geom_ribbon(aes(ymin=p, ymax=pmax(0.5,p)), color=NA, fill="red", alpha=0.5)
+    )
+  cairo_pdf(file=paste(prefix, "all_bias.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  print(bias_all_plot)
+  dev.off()
+
+  #another way to look at it is to plot the bias (instead of the scaled plot)
+  bias_all_data$bias <- predict(m, bias_all_data)
+  bias_all_plot2 <- (
+    ggplot(bias_all_data)
+    + aes(y = bias)
+    + scale_y_continuous("Bias", labels=replace_arrows)
+    + aes(x=spacing)
+    + geom_line()
+    + geom_ribbon(aes(ymin=pmin(0, bias), ymax=bias), color=NA, fill="green", alpha=0.5)
+    + geom_ribbon(aes(ymin=bias, ymax=pmax(0,bias)), color=NA, fill="red", alpha=0.5)
+    + coord_cartesian(ylim=c(-5,20))
+    )
+  print(bias_all_plot2)
+
+  #and for my last trick some plot of the distant bias
+  wide_content_data <-
+    expand.grid( content = seq(-1, 1, len=200), spacing=10, displacement=0)
+  wide_content_data <- cbind(wide_content_data,
+                             bias=predict(m, wide_content_data)
+                                - predict(m, mutate(wide_content_data, content=-content)))
+  wide_content_plot <- (
+    ggplot(wide_content_data)
+    + geom_line()
+    + aes(y = bias)
+    + scale_y_continuous("Bias", labels=replace_arrows)
+    + aes(x=content)
+    + scale_x_continuous(name="Direction content (at 10 degrees spacing)",labels=add_arrows, expand=c(0,0))
+    + geom_ribbon(aes(
+                    ymin=ifelse(content>0, pmin(0, bias), 0),
+                    ymax=ifelse(content>0, 0,             pmax(0, bias))),
+                  color=NA, fill="red", alpha=0.5)
+    + geom_ribbon(aes(
+                    ymin=ifelse(content>0, pmax(0, bias), 0),
+                    ymax=ifelse(content>0, 0,             pmin(0, bias))),
+                  color=NA, fill="green", alpha=0.5)
+    )
+  cairo_pdf(file=paste(prefix, "wide_content.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  print(wide_content_plot)
+  dev.off()
+
   #the effect of direction content at wide spacing (set dx = 0, spacing = 10)
 
-  #plot uncertainty as a function of spacing for all subjects.
+  #plot sensitivity as a function of spacing for all subjects.
   #just going to...
 
+}
+
+as.names <- function(names, value=missing.value()) {
+  x <- replicate(length(names), value)
+  names(x) <- names
+  x
+}
+
+extract.nonlin.function <- function(nonlin.term) {
+  eval(template(function( .a=...(nonlin.term$predictors),
+                          .b=...(as.names(nonlin.term$variables)))
+    {
+       .(parse(text=nonlin.term$term(names(nonlin.term$predictors),
+                        nonlin.term$variables ))[[1]])
+    }
+    ), parent.frame())
 }

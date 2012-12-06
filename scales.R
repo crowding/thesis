@@ -12,15 +12,28 @@ if (use_unicode) {
   circleright = "$\\curvearrowright$"
 }
 
-add_arrows <- function(x) {
+add_arrows <- function(x, sep=" ") {
   first <- which(!is.na(x))[1]
   last <- length(x) + 1 - which(!is.na(rev(x)))[1]
   if (substr(x[[first]], 1, 1) == "-") {
-    x[first] <- paste(x[first], curveleft)
-    x[last] <- paste(x[last], curveright)
+    x[first] <- paste(curveleft, x[first])
+    x[last] <- paste(curveright, x[last])
   } else {
-    x[first] <- paste(x[first], curveleft)
-    x[last] <- paste(x[last], circleleft)
+    x[first] <- paste(curveleft, x[first])
+    x[last] <- paste(curveright, x[last])
+  }
+  x
+}
+
+add_arrows_newline <- function(x) {
+  first <- which(!is.na(x))[1]
+  last <- length(x) + 1 - which(!is.na(rev(x)))[1]
+  if (substr(x[[first]], 1, 1) == "-") {
+    x[first] <- paste(x[first], curveleft, sep="\n")
+    x[last] <- paste(x[last], curveright, sep="\n")
+  } else {
+    x[first] <- paste(x[first], curveleft, sep="\n")
+    x[last] <- paste(x[last], curveright, sep="\n")
   }
   x
 }
@@ -39,6 +52,7 @@ proportion_scale <-
          "Response", breaks=c(0, 0.5, 1),
          labels=replace_arrows
          ),
+       coord_cartesian(ylim=c(0,1)),
        theme(axis.text.y=element_text(angle=90)))
 
 facet_spacing_experiment <-
@@ -48,7 +62,7 @@ facet_spacing_experiment <-
                         , spacing = paste(
                             "$"[!use_unicode],
                             "S = ",
-                            format(value, digits=3),
+                            format(value, digits=2),
                             if(use_unicode) "\u0080" else "^\\circ",
                             "$"[!use_unicode], sep=""
                             )
@@ -59,9 +73,12 @@ facet_spacing_experiment <-
 facet_spacing_rows <-
   facet_grid(spacing ~ .,
                labeller=function(v, value) {
-                 browser()
-                 paste("$S = ", format(value, digits=3),
-                       if(use_unicode) "\u0080" else "^\\circ$", sep="")
+                 paste(
+                   "$"[!use_unicode],
+                   format(value, digits=2),
+                   if(use_unicode) "\u0080" else "^\\circ",
+                   "$"[!use_unicode], sep=""
+                   )
                }
              )
 
@@ -81,7 +98,7 @@ decision_color_scale <-
                    guide="legend", breaks=seq(0,1,0.1), labels=add_arrows)
 
 decision_contour <-
-  list(
+  list( 
     geom_contour(aes(color=..level..), breaks = seq(0,1,length=11)),
     decision_color_scale
     )
@@ -92,7 +109,7 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 displacement_scale <-
   list( aes(x=displacement),
        scale_x_continuous(if (use_unicode) "\u0394x" else "$\\Delta x$"
-                          , labels=add_arrows))
+                          , labels=add_arrows_newline))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)
 y_nopadding <- scale_y_continuous(expand = c(0,0))
@@ -142,6 +159,11 @@ content_color_scale <-
              discrete_scale("colour", "manual")
              )
     )
+
+content_x_scale <-
+  list(aes(x=content),
+       scale_x_continuous(name="Direction content",labels=add_arrows, expand=c(0,0))
+       )
 
 ribbon <- list(
             geom_ribbon(color="transparent", alpha=0.2,
