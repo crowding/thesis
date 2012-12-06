@@ -98,12 +98,6 @@ plotPredictions <- function(...) {
            geom_line(aes(y=fit)))
 }
 
-#then there are the two components to the "wobble", with a fixed scale
-#(for now); they are the
-wobble1 <- function(dx) {x <- dx / wobbleScale; 1./(exp(x)+1) }
-wobble3 <- function(dx) {x <- dx / wobbleScale; exp(x)*(exp(x)-1)/(exp(x)+1)^3 }
-wobbleScale <- 0.3
-
 plot_fit <- function(model, subject=model$data$subject[1]) {
   rates <- match_df(model$data,
                     data.frame(subject=subject), on="subject")
@@ -136,8 +130,8 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
     cat("fitting subject " %++% chunk$subject[1] %++% "\n")
     gnm(  (  cbind(n_cw, n_ccw)
            ~ displacementTerm(spacing, displacement)
-           + I(wobble1(content))
-           + I(wobble3(content))
+           + content
+           + I(content*abs(content))
            + I(1/spacing):content
            )
         , family=binomial(link=logit.2asym(g=0.025, lam=0.025))
