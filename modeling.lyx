@@ -67,6 +67,13 @@ knitr
 
 \begin_layout Section
 Model details and motivation
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:model"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -91,6 +98,11 @@ library(ggplot2)
 \begin_layout Plain Layout
 
 library(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ptools)
 \end_layout
 
 \begin_layout Plain Layout
@@ -123,17 +135,17 @@ reference "fig:model"
 \end_inset
 
  is a sum of first order motion energy inside a relatively restricted region
- (shown by the smaller dashed circle), 
+ (shown by the smaller, green dashed circle), 
 \begin_inset Formula $\bar{\Delta_{x}}$
 \end_inset
 
  is an estimate of the change of position of a tracked target, within the
- same restricted region
+ same restricted region (indicated by a black line,) 
 \begin_inset Formula $M_{I}$
 \end_inset
 
  is a repulsion due to first order motion signals integrated across a wider
- region of space (shown by the larger dashed-dotted circle).
+ region of space (shown by the larger, red dashed circle).
 \end_layout
 
 \begin_layout Standard
@@ -148,8 +160,10 @@ For
 
 .
  However, as spacing decreases and there are more elements within the summation
- region, we expect signals from to sum, so that the local motion signal
- is proportional this carrier motion signal to become stronger, as follows.
+ region, we expect signals from multiple elements to sum, so that the local
+ motion signal is proportionate to the direction content of individual elements
+ and inversely proportional to the spacing (since the number of elements
+ near the integration field is inversely proportional to the spacing.) .
 \end_layout
 
 \begin_layout Standard
@@ -172,10 +186,8 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename model-sketch.jpg
-	display false
-	width 4in
-	rotateAngle 270
+	filename model.pdf
+	width 6in
 
 \end_inset
 
@@ -201,19 +213,12 @@ name "fig:model-visual-schematic"
 \end_inset
 
  A typical motion stimulus is shown.
- The dotted circle indicates a local summation region 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-(critical distance; uncrowded window, window of spatial attention, cortical
- neighborhood, what do we want to call this?)
-\end_layout
-
-\end_inset
-
-.
- (C)
+ The motion stimulus contains three sources of information: the positional
+ displacement of an individual, attended element, a summation of first order
+ motion energy within a local region, illustrated by the green dashed circle,
+ and a summation of motion energy over most or all of the visual field,
+ illustrated by the red dashed line.
+ (B)
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-uncertainty"
@@ -238,12 +243,12 @@ crowding
 \begin_inset Formula $S$
 \end_inset
 
- EQ here.
+ .
  The form of 
 \begin_inset Formula $\beta(S)$
 \end_inset
 
- is an sigmoid, as plotted, in Panel XX.
+ is a sigmoid, as in (B).
  Its parameters are 
 \begin_inset Formula $\beta_{0}$
 \end_inset
@@ -254,46 +259,33 @@ crowding
 
 , which is the distance at which discrimination thresholds for envelope
  motion double.
- (B)
+ (C)
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-summation"
 
 \end_inset
 
- The carrier motion estimate is a simple summation of the local motion energy
- within the summation region.
- This signal is inversely proportional to the element spacing 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-(and proportional to the direction content?)
-\end_layout
-
-\end_inset
-
-.
- (D)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-induced"
-
-\end_inset
-
- Motion repulsion is assumed to be proportional to the global integration
- of carrier motion outside the region of interest.
- The strength of this signal is an odd-symmetric function of direction content.
- (E)
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:model-decision"
-
-\end_inset
-
- The decision rule is modeled as a single logistic cumulative distribution
- function combining these three estimates of motion.
- 
+ Observers attempt to determine the direction of envelope motion but their
+ perceptions are biased by the first-order motion content of the stimulus.
+ This has two components, a local summation, and a background average.
+ The local component is a summation of all motion energy within a local
+ region of fixed size around the attended object, as illustrated by the
+ green dashed circle.
+ As the spacing between targets decreases, more targets are brought into
+ the summation region, causing the bias to move toward the direction of
+ the carrier motion (shaded green region of panel C).
+ The second contribution of carrier motion is to an average over much of
+ the visual field.
+ When local summation is weak (target spacing is wide) we find that subjects
+ are biased against the carrier motion.
+ Therefore there is a change between summation and repulsion as a function
+ of spacing (green and red shaded region of the graph in panel C.) The strength
+ of repulsion is a function of the average motion energy content of elements
+ in the scene.
+ Observers' responses are modeled as a thresholded sum of the noisy position-dis
+placement measurement and the biases due to short-range and long range motion
+ energy.
 \end_layout
 
 \end_inset
@@ -310,19 +302,19 @@ name "fig:model-decision"
 For dX, we assume that envelope motion is computed by taking two successive
  noisy estimates of the position of a given element.
  The strength of the envelope motion estimate therefore has uncertainty
- directly proportional to the uncertainty,
-\change_deleted 232785317 1349734920
+\change_deleted 232785317 1354803234
  
 \change_unchanged
- of the successive position estimates.
+ proportional to the uncertainty of the successive position estimates.
  The sensitivity to displacements, 
 \begin_inset Formula $\beta_{\Delta_{x}}$
 \end_inset
 
  will be inversely proportional to this uncertainty.
  We assume that as flanking elements come closer to the tracked element,
- they will interfere with the visual system can select a single tracked
- element, so the sensitivity to changes in position will collapse.
+ the the visual sistem will be less able to isolate a single element to
+ determine its position,, so the sensitivity to changes in position will
+ collapse.
  We model this by making 
 \begin_inset Formula $\beta_{\Delta_{x}}(S)$
 \end_inset
@@ -403,8 +395,9 @@ reference "fig:model-uncertainty"
 \end_inset
 
  has a natural interpretation as the spacing at which the threshold for
- discriminating a feature (in this case envelope motion) doubles, which
- is often used as an empirical definition of the 
+ discriminating a feature (in this case envelope motion) increases by a
+ constant factor, which is often used as an empirical definition of the
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -414,9 +407,12 @@ critical distance
 
  in crowding.
  As can be seen from this function, our model assumes that sensitivity to
- envelope motion approaches an asymptote above Sc, and therefore does not
- change as a function of the number of targets, once the targets are sufficientl
-y far apart.
+ envelope motion approaches an asymptote above 
+\begin_inset Formula $S_{C}$
+\end_inset
+
+, and therefore does not change as a function of the number of targets,
+ once the targets are sufficiently far apart.
  
 \end_layout
 
@@ -445,12 +441,12 @@ In other words, decreasing the spacing between elements has opposite effects
  on the strengths of the carrier and the envelope motion.
  For the carrier motion estimate, cramming more elements into the summation
  region increases the strength of the carrier motion signal, which is a
- simple summation of local motion within that region.
+ simple summation of motion energy within that region.
  For the envelope motion estimate, cramming more elements into the summation
  region makes it difficult to estimate the position of any individual element,
  and thereby weakens the signal.
  Thus, decreasing the spacing results in carrier motion having a stronger
- influence on the final percept.
+ influence on the final percept, and envelope motion having a weaker influence.
 \end_layout
 
 \begin_layout Standard
@@ -469,118 +465,46 @@ induced motion
 \end_inset
 
  effect, whereby the perceived direction of motion of an attended target
- is also influenced by the 
-\change_inserted 232785317 1352974077
-first-order 
-\change_unchanged
-motion of the full display.
+ is also influenced by the motion-energy of the full display.
  The influence of this process is generally repulsive; carrier motion outside
- the integration field biases observers towards perceiving the
-\change_inserted 232785317 1352970595
- individual elements as moving in the opposite direction
-\change_unchanged
-.
+ the integration field biases observers towards perceiving the individual
+ elements as moving in the opposite direction.
  We modeled this using a function defined as: 
 \begin_inset Formula 
 \[
-M_{I}=\left(\beta_{Ia}f_{a}(C)+\beta_{Ib}f_{b}(C)\right),
+M_{I}=\left(\beta_{I_{b}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 \]
 
 \end_inset
 
-
-\change_inserted 232785317 1352974040
-where 
-\begin_inset Formula $f_{Ia}$
+that is, a linear component controlled by the coefficient 
+\begin_inset Formula $\beta_{I_{a}}$
 \end_inset
 
- and 
-\begin_inset Formula $f_{I(b)}$
-\end_inset
-
-are two odd-symmetric functions of direction content.
- This was necessary to account for the nonmonotonic effect of direction
- content on subjects' responses.
+ and a second-order, odd-symmetric component controlled by the coefficient
  
-\begin_inset Note Note
-status open
+\begin_inset Formula $\beta_{I_{b}}$
+\end_inset
 
-\begin_layout Plain Layout
+.
+ This second component was necessary to account for the nonmonotonic effect
+ of direction content on subjects' responses (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-induced-modeling"
 
-\change_inserted 232785317 1352969939
-which see Discussion.
-\change_unchanged
+\end_inset
 
+.)
 \end_layout
 
-\end_inset
-
-
+\begin_layout Standard
 \begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
-
-\change_inserted 232785317 1352974040
-I can show this nonmonotonicity as follows.
- Once I have the model fit I set the parameters corresponding to 
-\begin_inset Quotes eld
-\end_inset
-
-induced motion
-\begin_inset Quotes erd
-\end_inset
-
- to zero, leaving other coefficients the same.
- Then plot residuals binned over.
- This results consistently replicate this odd-symmetric curve across subjects.
- It's easy to turn off the induced-motion component and show how everyone's
- residuals.
- follow this S-shaped curve.
- This is more of a 
-\begin_inset Quotes eld
-\end_inset
-
-model justification
-\begin_inset Quotes erd
-\end_inset
-
- than a 
-\begin_inset Quotes eld
-\end_inset
-
-model description
-\begin_inset Quotes erd
-\end_inset
-
- issue though.
-\end_layout
-
-\end_inset
-
-
-\change_unchanged
- 
-\change_inserted 232785317 1352971202
-The functions we used were a sigmoid and its second derivative,
-\begin_inset Formula 
-\[
-f_{Ia}(C)=\frac{1}{e^{\nicefrac{x}{0.3}}+1},\qquad f_{Ib}(C)=\frac{e^{\nicefrac{x}{0.3}}\left(e^{\nicefrac{x}{0.3}}-1\right)}{\left(e^{\nicefrac{x}{0.3}}+1\right)^{3}}
-\]
-
-\end_inset
-
-
-\change_unchanged
- 
-\change_inserted 232785317 1352973765
-When a full circle of elements is shown, as in
-\change_unchanged
- 
-\change_inserted 232785317 1352973970
-the case 
-\change_unchanged
-of 
+wait until i've worked Wout number/density to speak more on n versus spacing...
+ When a full circle of elements is shown, as in the case of 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:results-basic"
@@ -625,13 +549,14 @@ number/density experiment)
  we vary these quantities independently.
 \end_layout
 
-\begin_layout Standard
+\end_inset
 
-\change_inserted 232785317 1352973991
+
+\end_layout
+
+\begin_layout Standard
 These three components contribute to the modeled subjects' responses according
- to a probabilistic rule
-\change_unchanged
-; 
+ to a probabilistic rule; 
 \end_layout
 
 \begin_layout Standard
@@ -663,15 +588,11 @@ where
 \begin_inset Formula $\beta_{Ia}$
 \end_inset
 
-
-\change_inserted 232785317 1352973871
 , and 
 \begin_inset Formula $\beta_{Ib}$
 \end_inset
 
 .
-
-\change_unchanged
  We only use 
 \begin_inset Formula $k$
 \end_inset

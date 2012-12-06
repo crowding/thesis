@@ -2,7 +2,7 @@
 \lyxformat 413
 \begin_document
 \begin_header
-\textclass literate-article
+\textclass article
 \begin_preamble
 \usepackage{ae}
 
@@ -26,7 +26,7 @@
 \options jou
 \use_default_options false
 \begin_modules
-pgfsweave
+sweave
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -89,7 +89,6 @@ pgfsweave
 status collapsed
 
 \begin_layout Plain Layout
-
 prefix.string=Rfigs/,echo=F,results=hide,cache=T,external=T
 \end_layout
 

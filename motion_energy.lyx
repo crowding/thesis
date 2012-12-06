@@ -5,7 +5,7 @@
 \textclass article
 \use_default_options true
 \begin_modules
-pgfsweave
+knitr
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -68,66 +68,73 @@ Motion Energy analysis
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex Sweave Options
-status open
-
-\begin_layout Plain Layout
-
-prefix.string=Rfig,echo=F,results=hide,cache=T
-\end_layout
-
+We model observers' responses to stimuli as being in response to their motion-en
+ergy content.
+ This is mainly controlled by the 
+\begin_inset Quotes eld
 \end_inset
 
+direction content
+\begin_inset Quotes erd
+\end_inset
 
+ parameter as described above.
+ However, constructive/destructive interference between successive pulses
+ of the motion stimulus, depending on spatial displacement, may result in
+ the motion energy changing slightly (see figure A).
+ For this reason we avoided using direction contents of zero (pure counterphase)
+, as subjects' responses in that condition would be determined by this interfere
+nce-based motion energy response, rather than the direction content (see
+ figure B).
+ As an adjunct to our main analysis we calculated the motion energy of each
+ distinct stimulus used in our experiment.
 \end_layout
 
 \begin_layout Standard
 For each unique configuration of the stimulus that was tested, up to a rotation,
- we calculated the luminance values along the circle transecting the element
- centers, sampled at the monitor frame rate.
- To this data we applied a motion-energy model similar to 
+ we reconstructed the luminance values along the circle transecting the
+ element centers, sampling a time series at the frame rate of the monitor
+ used in the experiment.
+ To this reconstructed stimulus data we applied a motion-energy model similar
+ to 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Adelson:1985ea"
 
 \end_inset
 
-, using space-time separable anaysis filters.
- The spatial analysis filters were intended to approximate the bandpass
- properties of direction selective channels in human vision; to that extent
- we used a set of Cauchy filters 
+, defining the motion energy as the squared output of a set of linear analysis
+ filters.
+ We used odd- and even-symmetric spatial filters, and causal temporal filters
+ withan approximate quadrature relationship.
+ Specifically, the spatial analysis filters used were Cauchy filters 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Klein:1985rz"
 
 \end_inset
 
-
-\backslash
-cite{Klein:1985rz} with the center frequencies matched to those of the stimuli.
- The spatial bandwidth of the filters was dependent on the center frequency
- and the eccentricity, consistent with the bandpass properties inferred
- from human psychophysics; in particular, at a given eccentricity, the bandwidth
-s of the filters decrease somewhat with increasing spatial frequency 
+ with the center frequencies matched to those of the stimuli.
+ Previous evidence from human psychophysics suggests that the spatial bandwidth
+ of channels in early vision changes as a function of both eccentricity
+ and spatial frequency; in particular, in particular, at a given eccentricity,
+ the bandwidths of the filters decrease somewhat with increasing spatial
+ frequency 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Anderson:1987oq,Banks:1991kl,Anderson:1991hc"
 
 \end_inset
 
-.
- We interpolated the measurements of 
+; we interpolated the measurements of 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Banks:1991kl"
 
 \end_inset
 
-.
- The bandwidths chosen for the analysis filters were thus a function of
- both eccentricity and center spatial frequency; we selected the spatial
- extent of each anaysis filter by interpolating the measurements of .
- The parameters used at each eccentricity are given in 
+ to select the bandwidth parameters of our filters.
+ The values we selected are shown in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "tab:Bandwidth"
@@ -135,24 +142,48 @@ reference "tab:Bandwidth"
 \end_inset
 
 .
- On the other hand, the temporal component of each filter was identical
- at all cases, because temporal frequency sensitivity does not appear to
- vary with spatial frequency or eccentricity 
+ We calculated the response in several overlapping spatial frequency bands
+ and summed the response according to a typical contrast sensitivity function
+ for human observers () For each stimulus this analysis produced two numbers,
+ a 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ motion energy and a 
+\begin_inset Quotes eld
+\end_inset
+
+counterclockwise
+\begin_inset Quotes erd
+\end_inset
+
+ motion energy.
+ further weighted the outputs of these filters according to the human contrast
+ sensitivity function () On the other hand, human psychophysical evidence
+ suggests that temporal frequency response does not appreciably change as
+ a function of either eccentricity or spatial frequency 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Virsu:1982fv,Wright:1983dz"
 
 \end_inset
 
-.
- The temporal component of each filter was the same as used in 
+; therefore we used the same temporal filters to analyze all stimuli.
+ The output of our analyses were two numbers frequency response of analysis
+ filters was left constant.
+ We used the same filters as 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Kiani:2008uq"
 
 \end_inset
 
- which approximates 
+ which are intended to approximate the temporal frequency response of MT
+ cells 
 \begin_inset Note Greyedout
 status open
 
@@ -162,8 +193,7 @@ something or other (movshon)
 
 \end_inset
 
-.
- 
+
 \end_layout
 
 \begin_layout Standard
@@ -349,8 +379,8 @@ name "tab:Bandwidth"
 
 \end_inset
 
-Bandwidth settings used in motion energy analysis These values were chosen
- by interpolatine measurements performed by .
+Bandwidth settings used in motion energy analysis.
+ These values were chosen by interpolatine measurements performed by .
 \end_layout
 
 \end_inset
