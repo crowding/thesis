@@ -26,7 +26,7 @@
 \options jou
 \use_default_options false
 \begin_modules
-sweave
+knitr
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -86,10 +86,17 @@ sweave
 
 \begin_layout Standard
 \begin_inset Flex Sweave Options
-status collapsed
+status open
 
 \begin_layout Plain Layout
-prefix.string=Rfigs/,echo=F,results=hide,cache=T,external=T
+
+prefix.string=Rfigs/,echo=F,results="hide",cache=TRUE,external=TRUEcache=TRUE,enc
+oding="UTF-8",fig.width=7,fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10,
+ family="MS Gothic"),tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
 \end_layout
 
 \end_inset
@@ -99,71 +106,25 @@ prefix.string=Rfigs/,echo=F,results=hide,cache=T,external=T
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-%setup
+%density-setup
 \end_layout
 
 \begin_layout Plain Layout
 
-<<setup,cache=F>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-setCacheDir("cache")
-\end_layout
-
-\begin_layout Plain Layout
-
-options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
-\end_layout
-
-\begin_layout Plain Layout
-
-require(ggplot2)
-\end_layout
-
-\begin_layout Plain Layout
-
-require(plyr)
-\end_layout
-
-\begin_layout Plain Layout
-
-theme_set(theme_bw())
-\end_layout
-
-\begin_layout Plain Layout
-
-theme_update(panel.grid.major = theme_blank(),
-\end_layout
-
-\begin_layout Plain Layout
-
-             panel.grid.minor = theme_blank())
-\end_layout
-
-\begin_layout Plain Layout
-
-source("common.manipulations.R")
-\end_layout
-
-\begin_layout Plain Layout
-
-source("latexing.R")
-\end_layout
-
-\begin_layout Plain Layout
-
-source("programming.R")
+<<density-setup,cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
 @
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -488,10 +449,10 @@ print(summary(with(segment.trials, interaction(subject,trial.extra.side))))
 \end_layout
 
 \begin_layout Standard
-In 
+In section 
 \begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:reversal"
+LatexCommand nameref
+reference "sec:results-basic"
 
 \end_inset
 
@@ -500,6 +461,10 @@ we saw that the perceived direction of motion appears to be dominated by
  critical distance, and by envelope motion when spacing is larger than that
  critical distance.
  
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:eccentricity"
@@ -508,11 +473,24 @@ reference "sec:eccentricity"
 
 showed that this critical distance scaled in a roughly linear fashion with
  the stimulus eccentricity.
- However, because the stimulus consists of a number of elements spaced evenly
- around a circle, a linear dependence of critical distance on eccentricity
- would lead to critical stimuli containing approximately the same number
- of elements at all eccentricities tested.
- We illustrate this confoundment in 
+\end_layout
+
+\end_inset
+
+ However, because the stimulus consists of a varying number of elements
+ spaced evenly around a circle, the stimuli used in the previous experiment
+ confound element spacing with element number.
+ So it is possible that the apparent dependences on element spacing in the
+ previous experiences are more directly effects of element number.
+ Therefore 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We illustrate this confoundment in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:number-of-elements"
@@ -525,7 +503,17 @@ reference "fig:number-of-elements"
  
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
+There are a few overlapping reasons why we would wish to experimentally
+ distinguish element spacing from element number.
+\end_layout
+
+\begin_layout Enumerate
 Studies of the 
 \begin_inset Quotes eld
 \end_inset
@@ -541,9 +529,9 @@ key "Pylyshyn:1988fk"
 
 \end_inset
 
- have shown that when attentively tracking a subset of objects moving among
- distractors, there appears to be a limit to the number of objects whose
- changes in position can be tracked for later identification.
+ have shown that when observers attentively track a subset of objects moving
+ among distractors, there appears to be a limit to the number of objects
+ whose changes in position can be tracked for later identification.
  Adding more elements to our display might then interfere with the ability
  to individuate and track each element, leading to the inability to correctly
  discern their change in position over time.
@@ -560,16 +548,16 @@ key "Yantis:1992fk"
 .
 \end_layout
 
-\begin_layout Standard
-For similar reasons, element spacing in 
+\begin_layout Enumerate
+For similar reasons, element spacing in section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:eccentricity"
+reference "sec:results-basic"
 
 \end_inset
 
- is confounded with the aggregate amount of motion energy; reducing spacing
- requires adding more elements, which contributes more motion energy.
+ is also confounded with the aggregate amount of motion energy; reducing
+ spacing requires adding more elements, which contributes more motion energy.
  Some motion mechanisms may sum up short-range motion information over large
  regions of the visual field; for example, global optic flow patterns such
  as rotations produce aftereffects in quadrants of the visual field that
@@ -583,11 +571,12 @@ key "Snowden:1997vn"
 , suggesting a mechanism tuned to optic flow that integrates large areas
  of the visual field.
  Since the patterns of carrier and envelope motion in our stimulus are (consider
-ed separately) consistent with a global rotation, optic flow detectors may
- be involved.
- If these detectors are more sensitive to short-range than long-range 
+ed separately) consistent with a global rotation, channels sensitive to
+ global rotations are likely to contribute to the appearance of our stimuli.
+ If these detectors are more sensitive to first-order than than higher order
+ motion, 
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 ugh, here's one place where the short-range / long-range distinction is
@@ -636,12 +625,22 @@ key "Bertone:2003zr"
  component of the stimulus.
 \end_layout
 
+\begin_layout Enumerate
+A third reason concerns the induced motion effect we observed at larger
+ element spacings.
+ 
+\end_layout
+
 \begin_layout Standard
 Therefore we wished to know whether the apparent reversal of the stimulus
  as a function of element spacing could be explained as an effect of the
  number of elements instead.
  Our approach was to show elements covering only a portion of the annulus,
  so that fewer elements were displayed at the same density.
+\end_layout
+
+\begin_layout Standard
+The configuration of the stimulus was 
 \end_layout
 
 \begin_layout Standard
@@ -680,20 +679,6 @@ I'm thinking that this turns out to be a bust, because we aren't measuring
 
 \begin_layout Subsection
 Methods
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-There's some weirdness with pgfSweave about importing the figure at the
- same width it was rendered at.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -779,6 +764,10 @@ print(segment.conditions)
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 

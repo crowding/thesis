@@ -570,8 +570,6 @@ clustering
  of data into basically two groups of clockwise and counterclockwise direction
  content, despite a fivefold range of the actual magnitudes of the direction
  contents tested.
- Moreover, for these two in some cases a stronger direction content actually
- seems to lead to weaker bias than a moderate direction content, as
 \end_layout
 
 \begin_layout Standard
@@ -624,8 +622,7 @@ We illustrate the presence of this nonlinearity by comparing three nested
 \begin_inset Formula $M_{I}=0$
 \end_inset
 
-.
- but otherwise identical to the full model described above in 
+, but otherwise identical to the full model described above in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sec:model"
@@ -861,7 +858,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -933,11 +930,15 @@ reference "sub:results-induced-modeling"
 The other salient feature of induced motion is that it does not appear to
  depend on the number of elements, even at wide spacings.
  To show this, we consider the subset of data with spacings greater than
- 6 degrees 
+ 6 degrees...
 \end_layout
 
 \begin_layout Section
 Experiment 2 number versus density.
+\end_layout
+
+\begin_layout Standard
+Our model distinguishes between two spacing-dependent 
 \end_layout
 
 \begin_layout Standard

@@ -164,8 +164,12 @@ null.summation.models <- buildModel(second.models,
 
 linear.summation.models <- buildModel(null.summation.models, . ~ . - I(1/spacing):content)
 
+## @knitr results-induced-element-number
+
 ##the next thing is to justify the 1/x dependence on spacing?
-                                      
+null.summation.models <- buildModel(models, .~. - content:I(1/spacing))
+
+free.summation.models <- buildModel(null.summation.models, .~. + content:I(factor(spacing)))
 
 ##
 #library(gridExtra)
