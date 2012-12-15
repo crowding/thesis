@@ -162,7 +162,7 @@ content_color_scale <-
 
 content_x_scale <-
   list(aes(x=content),
-       scale_x_continuous(name="Direction content",labels=add_arrows, expand=c(0,0))
+       scale_x_continuous(name="Direction content",labels=add_arrows_newline, expand=c(0,0))
        )
 
 ribbon <- list(
