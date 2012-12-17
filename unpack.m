@@ -20,7 +20,7 @@ function d = load_data_set(filename)
     d.abs_response_cw = ~d.abs_response_cw;
 end
 
-data = dsvertcat(1, data{:});
+data = dsvertcat(data{:});
 
 save(fullfile(fileparts(mfilename('fullpath')), 'data.mat'), 'data')
 
