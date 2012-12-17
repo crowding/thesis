@@ -87,3 +87,7 @@
 --once --output 'modeling/residuals_{0}_plots.pdf'
 --input --match 'modeling/residual_(.*)_.*\.pdf$'
 --invisible --phony --once figures
+
+--command --once echo --once "making modeling"
+--input --match modeling/.*
+--output --once --invisible --phony modeling
