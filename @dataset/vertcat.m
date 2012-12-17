@@ -12,7 +12,7 @@ function a = vertcat(varargin)
 %
 %   See also DATASET/CAT, DATASET/HORZCAT.
 
-%   Copyright 2006-2009 The MathWorks, Inc. 
+%   Copyright 2006-2009 The MathWorks, Inc.
 %   $Revision: 1.1.6.5 $  $Date: 2009/10/10 20:11:01 $
 
 b = varargin{1};
@@ -32,7 +32,7 @@ for i = 2:nargin
         error('stats:dataset:vertcat:InvalidInput', ...
               'All input arguments must be datasets.');
     end
-    
+
     % some special cases to mimic built-in behavior
     if a.nvars==0 && a.nobs==0
         a = b;
@@ -45,13 +45,13 @@ for i = 2:nargin
         error('stats:dataset:vertcat:SizeMismatch', ...
               'All datasets in the bracketed expression must have the same number of variables.');
     end
-    
+
     [b_varnames,b_varord] = sort(b.varnames);
     if ~all(strcmp(a_varnames,b_varnames))
         error('stats:dataset:vertcat:UnequalVarNames', ...
               'All datasets in the bracketed expression must have the same variable names.');
     end
-    
+
     if ~isempty(a.obsnames) && ~isempty(b.obsnames)
         if checkduplicatenames(b.obsnames,a.obsnames)
             error('stats:dataset:vertcat:DuplicateObsnames', ...
@@ -71,10 +71,18 @@ for i = 2:nargin
     for i = 1:a.nvars
         % Prevent concatenation of a cell variable with a non-cell variable, which
         % would add only a single cell to the former, containing the latter.
-        if iscell(a.data{i}) && ~iscell(b.data{b_reord(i)})
-            error('stats:dataset:vertcat:VertcatCellAndNonCell', ...
-                  ['Cannot concatenate the dataset variable ''%s'' because it is a cell in ' ...
-                   'one dataset array and a non-cell in another.'],a.varnames{i});
+
+        % christ on a cracker, Mathworks, you have to check this in both directions.
+        % if iscell(a.data{i}) && ~iscell(b.data{b_reord(i)})
+        if xor( iscell(a.data{i}), iscell(b.data{b_reord(i)}) )
+            %don't complain, just make it compatible.
+            if ~iscell(a.data{i})
+                a.data{i} = num2cell(a.data{i})
+            end
+            if ~iscell(b.data{i})
+                b.data{i} = num2cell(b.data{i})
+            end
+        else
         end
         try
             a.data{i} = vertcat(a.data{i}, b.data{b_reord(i)});
@@ -90,4 +98,3 @@ for i = 2:nargin
         end
     end
 end
-
