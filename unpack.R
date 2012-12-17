@@ -1,5 +1,7 @@
 #!/bin/Rscript
 source("modeling/library.R")
+library(ptools)
+library(plyr)
 
 # unpack the CSV files into an R data file, with a column "exp_type"
 # for the experiment type
