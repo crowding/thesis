@@ -26,6 +26,7 @@ monk.makefile
 last.dump.rda
 .Rhistory
 scripts.txt
+figure
 tikzdict*
 dependencies
 .Rdata

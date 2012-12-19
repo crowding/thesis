@@ -1,4 +1,4 @@
-
+ 
 ## @knitr density-setup
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
 library(Cairo)
@@ -10,6 +10,9 @@ theme_set(theme_bw(12, "Apple Symbols"))
 theme_update(panel.grid.major = element_blank(),
              panel.grid.minor = element_blank())
 source("latexing.R")
+use_unicode <- TRUE
+source("scales.R")
+source("library.R")
 CairoFonts(regular="Apple Symbols:style=Regular", bold="Geneva:style=Bold",
            italic="Geneva:style=Italic", bolditalic="Geneva:style=BoldItalic")
 
@@ -19,24 +22,69 @@ load("../modeling/slopeModel.RData")
 segment <- subset(data, exp_type=="numdensity" & subject %in% names(models))
 
 #this just illustrates the combinations of number and density.
-combinations <- count(segment)
+configurations <- count(segment, c("target_spacing", "target_number_shown"))
+personalizations <- count(segment, c("subject", "folded_displacement", "folded_direction_content"))
 
-stimuli <- subset(count(segment,c("target_spacing", "target_number_shown")),
-                  !is.na(target_number_shown))
-configurations <- count(segment,
-                        .(folded_displacement, folded_direction_content,
-                          target_number_shown, target_number_all))
+## Sanity check: for each personalization, check that all configurations are represented.
+unmatching <-
+  ddply(personalizations, .(subject, folded_displacement, folded_direction_content)
+        , mkchain(  match_df(segment, .,
+                             c("folded_displacement", "folded_direction_content"))
+                  , count(c("target_spacing", "target_number_shown"))
+                  , merge(configurations, all=TRUE,
+                          by=c("target_spacing", "target_number_shown"))
+                  , subset(is.na(freq.x) | is.na(freq.y))
+                  ))
+if (!empty(unmatching)) stop("unmatching data")
 
+(ggplot(configurations)
+ + aes(x=target_spacing, y=target_number_shown)
+ + geom_point()
+ + scale_x_continuous(breaks=unique(configurations$target_spacing),
+                      labels=function(x)format(x, digits=2))
+ + labs(x="Target spacing (degrees)", y="Number of targets", title="Stimulus configurations")
+ )
 
-## plot data with a model and a vertical line illustrating the similar
+##TODO: pick four of these to demo. What is already demoed?
+
+## @knitr illustrated-customizations
+
+## plot data from a model  and a vertical line illustrating the similar
 ## direction-content and displacement.
-groups <- count(data, c("subject", "folded_displacement", "folded_direction_content")), 
+#to take "unfolded" data from a model and make it fold
 
+alply(personalizations, 1,
+      splat(function(subject, freq, ...) {
+            #okay one problem is that the models are phrased in terms of
+            #the abs displacement whereas I want to plot the folded
+            #displacement (as that is more relevant to the fix that, I
+            #force the bias term to zero?
+        matchby <- data.frame(subject, ...)
+        chain(  data
+              , match_df(matchby, on=names(matchby) %-% "folded_displacement")
+              , subset(exp_type %in% c("spacing", "content"))
+              , do.rename(folding=TRUE)
+              , mkrates
+              ) -> rawdata
+        (ggplot(rawdata)
+         + proportion_scale + displacement_scale
+         + balloon + spacing_color_scale + spacing_texture_scale
+         + labs(y="Response proportion",
+                title=paste(
+                  "Subject ", toupper(subject),
+                  ", direction content ",
+                  format(matchby$folded_direction_content, digits=3))
+                )
+         + add_predictions(rawdata, models[[subject]])
+         )
+      })) -> customization.plots
+
+##------------------------------------------------------------
 
 prefixing.assign('segment.', within(list(),{
   load("Segment.Rdata")
   common.manipulations(environment())
-  mutate(trials,
+  mutate(  trials
          , flanker.span=abs(sapply(trial.extra.flankerAngle,
                                  splat(`-`)))
          ##unfortunately I screwed up the definition of
@@ -153,5 +201,4 @@ vp <- viewport(x=0,y=1, height=0.5, width=1, just=c("left", "top"))
 print(segment.by.spacing, vp=vp)
 vp <- viewport(x=0, y=0, height=0.5, just=c("left", "bottom"))
 print(segment.by.elements, vp=vp) 
-
 
