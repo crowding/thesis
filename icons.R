@@ -35,21 +35,47 @@ geom_numdensity <- function(mapping=NULL, data=NULL,
 GeomNumdensity <- proto(Geom, {
   objname <- "numdensity"
   default_stat <- function(.) StatIdentity
-  default_aes <- function(.) aes(  colour = "black", size=5, weight=0.5, linetype=1
-                                 , tick_in=1, tick_out = 3, alpha = NA, shape=16, fill=NA)
-  required_aes <- c("x", "y", "spacing", "number", "center")
+  default_aes <- function(.) aes(  colour = "black", size=4, weight=0.5, linetype=1
+                                 , tick_in=1, tick_out = 2, alpha = NA, shape=16, fill=NA
+                                 , center = pi/2)
+  required_aes <- c("x", "y", "spacing", "number")
 
-  make_tickmarks <- function(munched) {
-      adply(  munched, 1, function(row) {
-        angles <- with(row, seq(  center - spacing/2 * (number - 1)
-                                , by=spacing, length=number))
-        with(row, data.frame(
-                    begin.x = size/2 * cos(angles) * (size - tick_in/2) / size
-                    , begin.y = size/2 * sin(angles) * (size - tick_in/2) / size
-                    , end.x = size/2 * cos(angles) * (size + tick_out/2) / size
-                    , end.y = size/2 * sin(angles) * (size + tick_out/2) / size
-                    ))
-      })
+  circles_and_ticks <- function(munched) {
+    # legend defaults; use of "with" below will fall back on these for legends.
+    x <- 0.5; y <- 0.5; spacing <- 2*pi/9; number <- 3;
+    tickmarked <- adply(  munched, 1, function(row) {
+      angles <- with(row, seq(  center - spacing/2 * (number - 1)
+                              , by=spacing, length=number))
+      with(row, data.frame(
+                  begin.x = size/2 * cos(angles) * (size - tick_in) / size
+                  , begin.y = size/2 * sin(angles) * (size - tick_in) / size
+                  , end.x = size/2 * cos(angles) * (size + tick_out) / size
+                  , end.y = size/2 * sin(angles) * (size + tick_out) / size
+                  ))
+    })
+    gList(
+      with(munched,
+           circleGrob(
+             x = unit(x, "native"), y = unit(y, "native")
+             , r = unit(size/2, "mm")
+             , gp = gpar(
+                 col = colour
+                 , fill = NA ###alpha(munched$fill, munched$alpha)
+                 , lwd = weight * .pt
+                 , lty = linetype
+                 )))
+      , with(tickmarked,
+             segmentsGrob(
+               x0 = unit(x, "native") + unit(begin.x, "mm")
+               , y0 = unit(y, "native") + unit(begin.y, "mm")
+               , x1 = unit(x, "native") + unit(end.x, "mm")
+               , y1 = unit(y, "native") + unit(end.y, "mm")
+               , gp = gpar(
+                   col = colour
+                   , lwd = weight * .pt
+                   , lty = 1
+                   , lineend = "square"
+                   ))))
   }
 
   draw <- function(., data, scales, coordinates, ...) {
@@ -58,64 +84,28 @@ GeomNumdensity <- proto(Geom, {
     ## draw the major glyphs out of minor glyphs.  the minor glyphs are
     ## IRL scaled, not data scaled, so there are separate 'offset.x'
     ## and 'offset.y (which have units of mm.)
-    tickmarked <- make_tickmarks(munched)
-
     ## Otherwise, what defaults do we use though?
 
-    (ggname)(.$my_name(), gTree(.$my_name(), children = gList(
-        circleGrob(
-          x = unit(munched$x, "native"), y = unit(munched$y, "native")
-          , r = unit(munched$size/2, "mm")
-          , gp = gpar(
-              col = munched$colour
-              , fill = NA ###alpha(munched$fill, munched$alpha)
-              , lwd = munched$weight * .pt
-              , lty = munched$linetype
-              ))
-      , segmentsGrob(
-           x0 = unit(tickmarked$x, "native") + unit(tickmarked$begin.x, "mm")
-           , y0 = unit(tickmarked$y, "native") + unit(tickmarked$begin.y, "mm")
-           , x1 = unit(tickmarked$x, "native") + unit(tickmarked$end.x, "mm")
-           , y1 = unit(tickmarked$y, "native") + unit(tickmarked$end.y, "mm")
-           , gp = gpar(
-               col = tickmarked$colour
-               , lwd = tickmarked$weight * .pt
-               , lty = 1
-               , lineend = "square"
-               )))))
+    (ggname)(.$my_name(), gTree(.$my_name(),
+                                children = circles_and_ticks(munched)))
    }
 
   #We use geom_point's guide for now, but we will need a custom guide...
-  guide_geom <- function(.) "point"
+  guide_geom <- function(.) "numdensity"
 
   draw_legend <- function(., data, ...) {
     #draw the legend symbol...
-
     #here we have the legen
-    data <- aesdefaults(data, .$default_aes(), fill=alpha(fill, alpha), lwd=size * (pt))
-    tickmarked <- make_tickmarks(data)
+    data <- aesdefaults(data, .$default_aes(), list(...))
 
-    #we draw one thing, with the data.
+    #Each time, we are drawing one "thing"
     gTree(  gp = gpar(
-              col = expanded$colour
-              , lwd = data$weight * pt
-              , fill = alpha(munched$fill, munched$alpha)
+              col = data$colour
+              , lwd = data$weight * .pt
+              , fill = alpha(data$fill, data$alpha)
               , lty = 1
               , lineend = "square")
-          , children=gList(
-              circleGrob(0.5, 0.5)
-              , segmentsGrob(
-                  x0 = unit(tickmarked$x, "native") + unit(tickmarked$begin.x, "mm")
-                  , y0 = unit(tickmarked$y, "native") + unit(tickmarked$begin.y, "mm")
-                  , x1 = unit(tickmarked$x, "native") + unit(tickmarked$end.x, "mm")
-                  , y1 = unit(tickmarked$y, "native") + unit(tickmarked$end.y, "mm")
-                  , gp = gpar(
-                      col = tickmarked$colour
-                      , lwd = tickmarked$weight * .pt
-                      , lty = 1
-                      , lineend = "square"
-                      ))
-              )
+          , children=circles_and_ticks(data)
           )
   }})
 
