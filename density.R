@@ -22,20 +22,18 @@ load("../modeling/slopeModel.RData")
 segment <- subset(data, exp_type=="numdensity" & subject %in% names(models))
 
 #this just illustrates the combinations of number and density.
-configurations <- count(segment, c("target_spacing", "target_number_shown"))
-personalizations <- count(segment, c("subject", "folded_displacement", "folded_direction_content"))
+configurations <- unique(segment[c("target_spacing", "target_number_shown")])
+personalizations <- unique(segment[c("subject", "folded_displacement", "folded_direction_content")])
 
 ## Sanity check: for each personalization, check that all configurations are represented.
 unmatching <-
   ddply(personalizations, .(subject, folded_displacement, folded_direction_content)
-        , mkchain(  match_df(segment, .,
-                             c("folded_displacement", "folded_direction_content"))
-                  , count(c("target_spacing", "target_number_shown"))
-                  , merge(configurations, all=TRUE,
-                          by=c("target_spacing", "target_number_shown"))
-                  , subset(is.na(freq.x) | is.na(freq.y))
+        , mkchain(  match_df(segment, ., names(.))
+                  , unique(.[c("target_spacing", "target_number_shown")])
+                  , merge(cbind(., .a=1), cbind(configurations, .a=1), by=names(.))
+                  , subset(is.na(.a.x) | is.na(.a.y))
                   ))
-if (!empty(unmatching)) stop("unmatching data")
+ if (!empty(unmatching)) stop("unmatching data")
 
 (ggplot(configurations)
  + aes(x=target_spacing, y=target_number_shown)
@@ -47,26 +45,125 @@ if (!empty(unmatching)) stop("unmatching data")
 
 ##TODO: pick four of these to demo. What is already demoed?
 
+## @knitr spacing-data-plots
+
+##For each personalization, collect the "segment" data to compare it against.
+alply(personalizations, 1,
+      mkchain(  match_df(segment, ., on=names(.))
+              , do.rename(folding=TRUE)
+              , mkrates(splits=c("spacing", "content", "target_number_shown"))) 
+      ) -> personalization.segment.data
+
+chain(  personalizations
+      , match_df(segment, ., on=names(.))
+      , do.rename(folding=TRUE)
+      , mkrates(splits=c("subject", "spacing", "content", "target_number_shown"))
+      ) -> segment.data
+
+## and let's plot them with texture and color scales... here express a
+## texture and color scale....  how about building miniature
+## representations of the stimuli out of dots? That might actually be
+## better than using Unicode.
+
+black_circled_number_unicode <- 0x278a:0x2793
+white_circled_number_unicode <- 0x2780:0x2789
+
+
+number_symbol_scale <-
+  list(aes(shape=factor(target_number_shown, levels=target_number_shown, ordered=TRUE, )))
+
+#add some binomial confidence intervals.
+library(binom)
+segment.data <- cbind(segment.data,
+                      with(segment.data, binom.confint(n_cw, n, method="wilson") ))
+## mutate(  segment_data,
+##        , pmin=qbinom(0.05, n, p)/n
+##        , pmax=qbinom(0.095, n, p)/n) -> segment.data
+
+##before any more malarkey, let's make the basic graph I've been showing people all along.
+
+number_color_scale <-
+  c(  list(aes(  color=factor(target_number_shown)
+               , fill=factor(target_number_shown)))
+       , with_arg(name="Element\nnumber",
+             palette=color_pal,
+             labels=prettyprint,
+             discrete_scale("fill", "manual"),
+             discrete_scale("colour", "manual")
+             ))
+##
+Map(alply(personalizations, 1, identity), personalization.segment.data,
+    f=function(row, data){
+      chain(data,
+            with(binom.confint(n_cw, n, method="wilson", conf.level=0.75)),
+            cbind(data,.)) -> data
+      (  ggplot(data)
+       + aes(x=spacing)
+       + aes(y=p, ymin=lower, ymax=upper)
+       + geom_errorbar()
+       + geom_point()
+ #      + spacing_texture_scale
+       + proportion_scale
+       + number_color_scale
+       + geom_line(aes(group=spacing))
+       ## + facet_wrap( ~ subject)
+       + annotate(  "text", x=0, y=0
+                  , label=sprintf("%s, dx=%03f", toupper(row$subject),
+                      row$folded_direction_content)
+                  )
+       )}
+    #make a gtable plotting it both ways...
+    ) -> segment.raw.plots
+segment.raw.plots[[2]]
+
 ## @knitr illustrated-customizations
 
-## plot data from a model  and a vertical line illustrating the similar
-## direction-content and displacement.
+## For this figure we describe a "configuration" from an
+## experiment. First we have a spacing-series for a subject, showing a
+## particular direction content, with a vertical intercept-line
+## showing the particular value of direction content the cirrent data was collected under.
+
 #to take "unfolded" data from a model and make it fold
 
+##for each personalization, collect the "spacing" data
 alply(personalizations, 1,
       splat(function(subject, freq, ...) {
             #okay one problem is that the models are phrased in terms of
             #the abs displacement whereas I want to plot the folded
             #displacement (as that is more relevant to the fix that, I
-            #force the bias term to zero?
+            #force the bias term to zero?)
         matchby <- data.frame(subject, ...)
         chain(  data
               , match_df(matchby, on=names(matchby) %-% "folded_displacement")
               , subset(exp_type %in% c("spacing", "content"))
               , do.rename(folding=TRUE)
               , mkrates
-              ) -> rawdata
-        (ggplot(rawdata)
+              )
+      })) -> personalization.spacing.data
+
+personalization.sampling <-
+  seq %call% c(range(data$folded_displacement), len=100)
+
+
+#Here's the question: my prediction lines are supposed to match the
+#data, or the test data??? They are not necessarily equal.
+Map %call% c(  personalizations
+             , spacing.data=personalization.spacing.data
+             , segment.data=personalization.segment.data
+             , FUN = function(subject, spacing.data, folded_direction_content, ...) {
+               model <- models[[subject]]
+               predictions.matching.spacing.data <-
+                 expand.grid(displacement=personalization.sampling
+                             , spacing = unique(rawdata$spacing)
+                             , content=folded_direction_content)
+                predictions.matching.collected.data <-
+                 expand.grid(displacement=personalization.sampling)
+
+
+             })
+
+
+(ggplot(rawdata)
          + proportion_scale + displacement_scale
          + balloon + spacing_color_scale + spacing_texture_scale
          + labs(y="Response proportion",
@@ -75,9 +172,8 @@ alply(personalizations, 1,
                   ", direction content ",
                   format(matchby$folded_direction_content, digits=3))
                 )
-         + add_predictions(rawdata, models[[subject]])
+          + add_predictions(rawdata, models[[subject]])
          )
-      })) -> customization.plots
 
 ##------------------------------------------------------------
 
