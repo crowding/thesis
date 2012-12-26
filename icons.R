@@ -42,10 +42,10 @@ GeomNumdensity <- proto(Geom, {
 
   circles_and_ticks <- function(munched) {
     # legend defaults; use of "with" below will fall back on these for legends.
-    x <- 0.5; y <- 0.5; spacing <- 2*pi/9; number <- 3;
+    x <- 0.5; y <- 0.5; spacing <- pi/9; number <- 3;
     tickmarked <- adply(  munched, 1, function(row) {
-      angles <- with(row, seq(  center - spacing/2 * (number - 1)
-                              , by=spacing, length=number))
+      angles <- with(row, seq(  center - spacing/2 * (as.numeric(number) - 1)
+                              , by=spacing, length=as.numeric(number)))
       with(row, data.frame(
                   begin.x = size/2 * cos(angles) * (size - tick_in) / size
                   , begin.y = size/2 * sin(angles) * (size - tick_in) / size
@@ -60,7 +60,7 @@ GeomNumdensity <- proto(Geom, {
              , r = unit(size/2, "mm")
              , gp = gpar(
                  col = colour
-                 , fill = NA ###alpha(munched$fill, munched$alpha)
+                 , fill = alpha(munched$fill, munched$alpha)
                  , lwd = weight * .pt
                  , lty = linetype
                  )))
@@ -97,6 +97,7 @@ GeomNumdensity <- proto(Geom, {
     #draw the legend symbol...
     #here we have the legen
     data <- aesdefaults(data, .$default_aes(), list(...))
+    print(data)
 
     #Each time, we are drawing one "thing"
     gTree(  gp = gpar(
@@ -108,6 +109,8 @@ GeomNumdensity <- proto(Geom, {
           , children=circles_and_ticks(data)
           )
   }})
+
+
 
 custom_geom_demo <- function() {
   #here's an example that uses these.
@@ -138,10 +141,10 @@ custom_geom_demo <- function() {
 
   number_color_scale <-
     c(  list(aes(  color=factor(target_number_shown)) )
-      , with_arg(name="Element\nnumber",
-                 palette=color_pal,
-                 labels=prettyprint,
-                 discrete_scale("colour", "manual")
+      , with_arg(  name="Element\nnumber"
+                 , palette=color_pal
+                 , labels=prettyprint
+                 , discrete_scale("colour", "manual")
                  ))
   ##
   Map(alply(personalizations, 1, identity), personalization.segment.data,
@@ -149,23 +152,29 @@ custom_geom_demo <- function() {
         chain(data,
               with(binom.confint(n_cw, n, method="wilson", conf.level=0.75)),
               cbind(data,.)) -> data
+        rad <- 20/3
         (  ggplot(data)
          + aes(x=spacing)
          + aes(y=p, ymin=lower, ymax=upper)
-         + aes(spacing=spacing/20*3, center=pi/2, number=target_number_shown, )
-         + identity_scale(continuous_scale(c("spacing", "number"),
-                                           "identity", identity_pal()))
+         + aes(spacing=spacing, number=factor(target_number_shown))
+         + continuous_scale("spacing", "spacing", identity,
+                            , rescaler=function(x, from) {
+                              rescale(x , from = from , to = from/rad)
+                            }
+                            , name="Spacing")
+         + identity_scale(discrete_scale("number", "identity",
+                                         identity_pal(), name="Element\nnumber"))
          #       + geom_errorbar()
          + geom_numdensity()
          #      + spacing_texture_scale
          + proportion_scale
          + number_color_scale
-         + geom_line(aes(group=target_number_shown))
+         + geom_line(aes(group=target_number_shown), show_guide=FALSE)
          ## + facet_wrap( ~ subject)
          + annotate(  "text", x=mean(range(data$spacing)), y=0
-                    , label=sprintf("%s, dx=%03f", toupper(row$subject),
-                        row$folded_direction_content)
-                    , vjust=0, lineheight=6
+                    , label=sprintf("%s, dx=%03f", toupper(row$subject)
+                        , row$folded_direction_content)
+                    , vjust=-0.5, size=6
                     )
          )}
       #make a gtable plotting it both ways...
