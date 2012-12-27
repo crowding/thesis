@@ -173,6 +173,7 @@ renderable_split <- function(label, family=NULL, face=NULL, size=NULL,
             data.frame(labels=substr(label, starts, ends),
                  family=family[[1]], face=face[[1]], size=size[[1]])
           } else {
+            browser()
             renderable_split(substr(label, starts, ends),
                              family=pbutfirst(family),
                              face=pbutfirst(face),
@@ -239,7 +240,7 @@ element_grob.element_text_with_symbols <-
                  family = family, face = face, colour = colour, size = size,
                  hjust = hjust, vjust = vjust, angle = angle,
                  lineheight = lineheight, fontcheck = fontcheck, #?!
-                 stack=stack, default.units = default.units, ...)
+                 stack = stack, default.units = default.units, ...)
     listy <- vapply(args, is.recursive, TRUE)
     nully <- vapply(args, is.null, TRUE)
     args[listy | nully] <- lapply(args[listy | nully], list)
@@ -258,7 +259,7 @@ element_grob.element_text_with_symbols <-
       )
   } else {
     stringsplits = renderable_split(label, family, face, size, fontcheck)
-    stack <- fontcheck %||% element$stack
+    stack <- stack %||% element$stack
     offset.x = 0
     offset.y = 0
 
@@ -266,11 +267,22 @@ element_grob.element_text_with_symbols <-
     #The gp settings can override element_gp
 
     if (dim(stringsplits)[1] > 1) {
-      #need to stack up those labels, horizontally or vertically
-      browser()
+      children <-
+        mlply(stringsplits[c("labels", "family", "face", "size")],
+              function(labels, family, face, size, ...) {
+                element_gp <- gpar(fontsize = size, col = element$colour,
+                                   fontfamily = family, fontface = face,
+                                   lineheight = element$lineheight)
+                textGrob(
+                  labels, x, y, hjust = hj, vjust = vj,
+                  default.units = default.units,
+                  gp = modifyList(element_gp, gp),
+                  rot = angle, ...
+                  )
+              })
+      gTree(children=do.call("gList", children))
     } else {
-      print("what")
-      textGrob(
+       textGrob(
         stringsplits$labels, x, y, hjust = hj, vjust = vj,
         default.units = default.units,
         gp = modifyList(element_gp, gp),
@@ -295,8 +307,8 @@ replace_theme_text_elements <- function(theme, ...) {
 unicode_demo <- function() {
   theme_set(replace_theme_text_elements(
               theme_bw(12, "Myriad Pro"),
-              c(12, 24), c("Myriad Pro", "Apple Symbols")))
-  qplot(x=-10:10, y=(-10:10)^2, geom="line")
+              size=c(12, 24), family=c("Myriad Pro", "Apple Symbols")))
+  qplot(x=-10:10, y=(-10:10)^2, geom="line", xlab="foo\u21BBbaz")
 }
 
 #
