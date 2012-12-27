@@ -173,7 +173,6 @@ renderable_split <- function(label, family=NULL, face=NULL, size=NULL,
             data.frame(labels=substr(label, starts, ends),
                  family=family[[1]], face=face[[1]], size=size[[1]])
           } else {
-            browser()
             renderable_split(substr(label, starts, ends),
                              family=pbutfirst(family),
                              face=pbutfirst(face),
@@ -227,13 +226,6 @@ element_grob.element_text_with_symbols <-
   fontcheck <- fontcheck %||% element$fontcheck
 
      #split the string up into substrings based on the criterion
-  gp <- gpar(fontsize = size, col = colour,
-             fontfamily = family, fontface = face,
-             lineheight = lineheight)
-  element_gp <- gpar(fontsize = element$size, col = element$colour,
-                     fontfamily = element$family, fontface = element$face,
-                     lineheight = element$lineheight)
-
   if (length(label) > 1) {
     ## hack to support multiple labels.
     args <- list(label = label, x = x, y = y,
@@ -249,8 +241,21 @@ element_grob.element_text_with_symbols <-
                         c(element=list(list(element)), args,
                           FUN=element_grob.element_text_with_symbols,
                           SIMPLIFY=FALSE))
-    gTree(children=do.call("gList", children))
-  } else if (length(label) == 0) {
+    return(gTree(children=do.call("gList", children)))
+  } else {
+    if (is.list(family)) family <- family[[1]]
+    if (is.list(face)) face <- face[[1]]
+    if (is.list(size)) size <- size[[1]]
+  }
+
+  if (length(label) == 0) {
+    gp <- gpar(fontsize = size, col = colour,
+               fontfamily = family, fontface = face,
+               lineheight = lineheight)
+    element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
+                       fontfamily = firsts(element$family),
+                       fontface = firsts(element$face),
+                       lineheight = firsts(element$lineheight))
     textGrob(
       label, x, y, hjust = hj, vjust = vj,
       default.units = default.units,
@@ -263,16 +268,19 @@ element_grob.element_text_with_symbols <-
     offset.x = 0
     offset.y = 0
 
-    #then make a tree of text grobs that attach to each others' ends
-    #The gp settings can override element_gp
-
     if (dim(stringsplits)[1] > 1) {
+      #plot with multiple fonts in the same frame.
+      #what we should do is pack a frame, and something something alignment...
       children <-
         mlply(stringsplits[c("labels", "family", "face", "size")],
               function(labels, family, face, size, ...) {
-                element_gp <- gpar(fontsize = size, col = element$colour,
-                                   fontfamily = family, fontface = face,
-                                   lineheight = element$lineheight)
+
+                gp <- gpar(fontsize = size, col = colour,
+                           fontfamily = family, fontface = face,
+                           lineheight = lineheight)
+                element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
+                         fontfamily = firsts(element$family), fontface = firsts(element$face),
+                         lineheight = firsts(element$lineheight))
                 textGrob(
                   labels, x, y, hjust = hj, vjust = vj,
                   default.units = default.units,
@@ -280,9 +288,16 @@ element_grob.element_text_with_symbols <-
                   rot = angle, ...
                   )
               })
+      print(do.call(rbind, children))
       gTree(children=do.call("gList", children))
     } else {
-       textGrob(
+      gp <- gpar(fontsize = size, col = colour,
+                 fontfamily = family, fontface = face,
+                 lineheight = lineheight)
+      element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
+                         fontfamily = firsts(element$family), fontface = firsts(element$face),
+                         lineheight = firsts(element$lineheight))
+      textGrob(
         stringsplits$labels, x, y, hjust = hj, vjust = vj,
         default.units = default.units,
         gp = modifyList(element_gp, gp),
@@ -291,6 +306,8 @@ element_grob.element_text_with_symbols <-
     }
   }
 }
+
+firsts <- function(x) if (is.list(x)) sapply(x, `[`, 1) else x
 
 replace_theme_text_elements <- function(theme, ...) {
   lapply(theme, function(el) {
@@ -307,7 +324,7 @@ replace_theme_text_elements <- function(theme, ...) {
 unicode_demo <- function() {
   theme_set(replace_theme_text_elements(
               theme_bw(12, "Myriad Pro"),
-              size=c(12, 24), family=c("Myriad Pro", "Apple Symbols")))
+              size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols"))))
   qplot(x=-10:10, y=(-10:10)^2, geom="line", xlab="foo\u21BBbaz")
 }
 
