@@ -10,6 +10,7 @@ Geom <- ggplot2:::Geom
 ggname <- ggplot2:::ggname
 .pt <- ggplot2:::.pt
 identity_scale <- ggplot2:::identity_scale
+`%||%` <- ggplot2::: `%||%`
 
 ## The "numdensity" geom draws a circle with some evenly spaced
 ##
@@ -130,12 +131,13 @@ GeomNumdensity <- proto(Geom, {
 #' @export
 element_text_with_symbols <- function(family = NULL, face = NULL, colour = NULL,
   size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
-  color = NULL, fontcheck=NULL) {
+  color = NULL, fontcheck=renderable_char) {
 
   if (!is.null(color))  colour <- color
   structure(
     list(family = family, face = face, colour = colour, size = size,
-      hjust = hjust, vjust = vjust, angle = angle, lineheight = lineheight, fontcheck=renderable_char),
+      hjust = hjust, vjust = vjust, angle = angle, lineheight = lineheight,
+         fontcheck=fontcheck, stack="vert"),
     class = c("element_text_with_symbols", "element_text", "element")
   )
 }
@@ -179,15 +181,15 @@ renderable_split <- function(label, family=NULL, face=NULL, size=NULL,
         })
 }
 
-family <- c("Myriad", "Apple Symbols")
-face <- "plain"
-size <- c(12, 24)
-
 #' @S3method element_grob element_text_with_symbols
+#' this is rather
+#' goofy but it also paves the way to showing how to put graphics and
+#' other grobs in axis labels.
 element_grob.element_text_with_symbols <-
   function(element, label = "", x = NULL, y = NULL,
            family = NULL, face = NULL, colour = NULL, size = NULL,
            hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
+           fontcheck = renderable_char, stack=NULL,
            default.units = "npc", ...)
  {
 
@@ -199,7 +201,7 @@ element_grob.element_text_with_symbols <-
     stop("Text element requires non-NULL value for 'angle'.")
   }
   angle <- angle %% 360
-  
+
   if (angle == 90) {
     xp <- vj
     yp <- hj
@@ -217,41 +219,96 @@ element_grob.element_text_with_symbols <-
   x <- x %||% xp
   y <- y %||% yp
 
-  #split the string up into substrings based on the criterion
-    if (length(label) != 1) {
-    stop("Multiple labels are specified, this is not supported.")
-  }
-
   #divide the string up into renderable and non-renderable characters.
-  
-  if(renderable) {}
+  family <- family %||% element$family
+  face <- face %||% element$face
+  size <- size %||% element$size
+  fontcheck <- fontcheck %||% element$fontcheck
 
-  #then make a tree of text grobs that attach to each others' ends
-
-  # The gp settings can override element_gp
+     #split the string up into substrings based on the criterion
   gp <- gpar(fontsize = size, col = colour,
-    fontfamily = family, fontface = face,
-    lineheight = lineheight)
+             fontfamily = family, fontface = face,
+             lineheight = lineheight)
   element_gp <- gpar(fontsize = element$size, col = element$colour,
-    fontfamily = element$family, fontface = element$face,
-    lineheight = element$lineheight)
+                     fontfamily = element$family, fontface = element$face,
+                     lineheight = element$lineheight)
 
-  textGrob(
-    label, x, y, hjust = hj, vjust = vj,
-    default.units = default.units,
-    gp = modifyList(element_gp, gp),
-    rot = angle, ...
-  )
+  if (length(label) > 1) {
+    ## hack to support multiple labels.
+    args <- list(label = label, x = x, y = y,
+                 family = family, face = face, colour = colour, size = size,
+                 hjust = hjust, vjust = vjust, angle = angle,
+                 lineheight = lineheight, fontcheck = fontcheck, #?!
+                 stack=stack, default.units = default.units, ...)
+    listy <- vapply(args, is.recursive, TRUE)
+    nully <- vapply(args, is.null, TRUE)
+    args[listy | nully] <- lapply(args[listy | nully], list)
+
+    children <- do.call("mapply",
+                        c(element=list(list(element)), args,
+                          FUN=element_grob.element_text_with_symbols,
+                          SIMPLIFY=FALSE))
+    gTree(children=do.call("gList", children))
+  } else if (length(label) == 0) {
+    textGrob(
+      label, x, y, hjust = hj, vjust = vj,
+      default.units = default.units,
+      gp = modifyList(element_gp, gp),
+      rot = angle, ...
+      )
+  } else {
+    stringsplits = renderable_split(label, family, face, size, fontcheck)
+    stack <- fontcheck %||% element$stack
+    offset.x = 0
+    offset.y = 0
+
+    #then make a tree of text grobs that attach to each others' ends
+    #The gp settings can override element_gp
+
+    if (dim(stringsplits)[1] > 1) {
+      #need to stack up those labels, horizontally or vertically
+      browser()
+    } else {
+      print("what")
+      textGrob(
+        stringsplits$labels, x, y, hjust = hj, vjust = vj,
+        default.units = default.units,
+        gp = modifyList(element_gp, gp),
+        rot = angle, ...
+        )
+    }
+  }
+}
+
+replace_theme_text_elements <- function(theme, ...) {
+  lapply(theme, function(el) {
+    if (inherits(el, "element_text")) {
+      args <- as.list(el)
+      new.args <- list(...)
+      args[names(new.args)] <- new.args
+      do.call("element_text_with_symbols", args)
+    } else {
+      el
+    }})
+}
+
+unicode_demo <- function() {
+  theme_set(replace_theme_text_elements(
+              theme_bw(12, "Myriad Pro"),
+              c(12, 24), c("Myriad Pro", "Apple Symbols")))
+  qplot(x=-10:10, y=(-10:10)^2, geom="line")
 }
 
 #
-
 custom_geom_demo <- function() {
   #here's an example that uses these.
   library(ptools)
-  theme_set(theme_bw(12, "Apple Symbols"))
-  theme_update(panel.grid.major = element_blank(),
-               panel.grid.minor = element_blank())
+  theme_set(replace_theme_text_elements(
+              theme_bw(12, "Myriad Pro"),
+              c(12, 24), c("Myriad Pro", "Apple Symbols")))
+  theme_update(  panel.grid.major = element_blank()
+               , panel.grid.minor = element_blank()
+               )
   use_unicode <<- TRUE
   source("scales.R")
   library(binom)
