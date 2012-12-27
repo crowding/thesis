@@ -81,25 +81,19 @@ GeomNumdensity <- proto(Geom, {
   draw <- function(., data, scales, coordinates, ...) {
     munched <- coord_transform(coordinates, data, scales)
 
-    ## draw the major glyphs out of minor glyphs.  the minor glyphs are
-    ## IRL scaled, not data scaled, so there are separate 'offset.x'
-    ## and 'offset.y (which have units of mm.)
+    ## The glyphs are IRL scaled, not data scaled, so there are
+    ## separate 'offset.x' and 'offset.y (which have units of mm.)
     ## Otherwise, what defaults do we use though?
 
-    (ggname)(.$my_name(), gTree(.$my_name(),
-                                children = circles_and_ticks(munched)))
+    ggname(.$my_name(), gTree(.$my_name(),
+                              children = circles_and_ticks(munched)))
    }
 
-  #We use geom_point's guide for now, but we will need a custom guide...
   guide_geom <- function(.) "numdensity"
 
   draw_legend <- function(., data, ...) {
     #draw the legend symbol...
-    #here we have the legen
     data <- aesdefaults(data, .$default_aes(), list(...))
-    print(data)
-
-    #Each time, we are drawing one "thing"
     gTree(  gp = gpar(
               col = data$colour
               , lwd = data$weight * .pt
@@ -110,7 +104,147 @@ GeomNumdensity <- proto(Geom, {
           )
   }})
 
+## here is a theme object for mixing different fonts using a fallback
+## unicode symbols into the display of
+## a text label.
 
+#
+
+#' This is an extension of element_text which can specify multiple
+#' fonts to use, for example a symbol font to fall back on if a glyph
+#' is not available in the main font.
+#'
+#' @param family font family. This may be a vector, in which case it
+#' specifies a list of font faces in priority order.
+#' @param face font face ("plain", "italic", "bold", "bold.italic")
+#' @param colour text colour
+#' @param size text size (in pts)
+#' @param hjust horizontal justification (in [0, 1])
+#' @param vjust vertical justification (in [0, 1])
+#' @param angle angle (in [0, 360])
+#' @param lineheight line height
+#' @param color an alias for \code{colour}
+#' @param fallback A function (glyph, family, face) that returns FALSE
+#' if the specified font should not be used.
+#' @param symbolsize
+#' @export
+element_text_with_symbols <- function(family = NULL, face = NULL, colour = NULL,
+  size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
+  color = NULL, fontcheck=NULL) {
+
+  if (!is.null(color))  colour <- color
+  structure(
+    list(family = family, face = face, colour = colour, size = size,
+      hjust = hjust, vjust = vjust, angle = angle, lineheight = lineheight, fontcheck=renderable_char),
+    class = c("element_text_with_symbols", "element_text", "element")
+  )
+}
+
+renderable <- function(label, family, face, size) {
+  lapply(strsplit(label, ""), vapply, renderable_char, FALSE, family, face, size)
+}
+
+renderable_char <- function(char, family, face, size) {
+  is.character(char) && (nchar(char) == 1) || stop("Must be called on individual chars.")
+  length(charToRaw(char)) == 1
+}
+
+#return the label, split into
+#family, face and size are
+pbutfirst <- function(x) if (length(x) > 1) x[-1] else x
+
+renderable_split <- function(label, family=NULL, face=NULL, size=NULL,
+                             fontcheck = renderable_char) {
+  renderable_p = vapply(strsplit(label, "")[[1]], renderable_char, FALSE,
+    family[[1]], face[[1]], size[[1]])
+
+  #each "TRUE" gets the first family element. Each "FALSE" get s
+  renderable_splits = mutate(
+    as.data.frame(unclass(rle(renderable_p)))
+    , ends = cumsum(lengths)
+    , starts = ends-lengths+1
+    )
+
+  mdply(renderable_splits,
+        function(lengths, values, ends, starts) {
+          if (values || all(vapply(list(family, face, size), length, 0) == 1)) {
+            data.frame(labels=substr(label, starts, ends),
+                 family=family[[1]], face=face[[1]], size=size[[1]])
+          } else {
+            renderable_split(substr(label, starts, ends),
+                             family=pbutfirst(family),
+                             face=pbutfirst(face),
+                             size=pbutfirst(size))
+          }
+        })
+}
+
+family <- c("Myriad", "Apple Symbols")
+face <- "plain"
+size <- c(12, 24)
+
+#' @S3method element_grob element_text_with_symbols
+element_grob.element_text_with_symbols <-
+  function(element, label = "", x = NULL, y = NULL,
+           family = NULL, face = NULL, colour = NULL, size = NULL,
+           hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
+           default.units = "npc", ...)
+ {
+
+  vj <- vjust %||% element$vjust
+  hj <- hjust %||% element$hjust
+
+  angle <- angle %||% element$angle
+  if (is.null(angle)) {
+    stop("Text element requires non-NULL value for 'angle'.")
+  }
+  angle <- angle %% 360
+  
+  if (angle == 90) {
+    xp <- vj
+    yp <- hj
+  } else if (angle == 180) {
+    xp <- 1 - hj
+    yp <- vj
+  } else if (angle == 270) {
+    xp <- vj
+    yp <- 1 - hj
+  }else {
+    xp <- hj
+    yp <- vj
+  }
+
+  x <- x %||% xp
+  y <- y %||% yp
+
+  #split the string up into substrings based on the criterion
+    if (length(label) != 1) {
+    stop("Multiple labels are specified, this is not supported.")
+  }
+
+  #divide the string up into renderable and non-renderable characters.
+  
+  if(renderable) {}
+
+  #then make a tree of text grobs that attach to each others' ends
+
+  # The gp settings can override element_gp
+  gp <- gpar(fontsize = size, col = colour,
+    fontfamily = family, fontface = face,
+    lineheight = lineheight)
+  element_gp <- gpar(fontsize = element$size, col = element$colour,
+    fontfamily = element$family, fontface = element$face,
+    lineheight = element$lineheight)
+
+  textGrob(
+    label, x, y, hjust = hj, vjust = vj,
+    default.units = default.units,
+    gp = modifyList(element_gp, gp),
+    rot = angle, ...
+  )
+}
+
+#
 
 custom_geom_demo <- function() {
   #here's an example that uses these.
