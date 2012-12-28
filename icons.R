@@ -12,7 +12,7 @@ ggname <- ggplot2:::ggname
 identity_scale <- ggplot2:::identity_scale
 `%||%` <- ggplot2::: `%||%`
 
-## The "numdensity" geom draws a circle with some evenly spaced
+## The "numdensity" geom draws a circle with some evenly spaced tickmarks sticking out of it.
 ##
 ## tickmarks sticking out of it.
 ## It accepts the following aesthetics:
@@ -24,6 +24,7 @@ identity_scale <- ggplot2:::identity_scale
 ## "spacing" the angle (in radians, assuming you use an identity scale) between tickmarks.
 ## "in most cases youant to covary spacing and number.
 ## "weight" -- the thickness of the tickmarks.
+## "stack" --"h" or "v"
 
 ## "color" and "fill" have their usual meanings.
 
@@ -137,7 +138,7 @@ element_text_with_symbols <- function(family = NULL, face = NULL, colour = NULL,
   structure(
     list(family = family, face = face, colour = colour, size = size,
       hjust = hjust, vjust = vjust, angle = angle, lineheight = lineheight,
-         fontcheck=fontcheck, stack="vert"),
+         fontcheck=fontcheck, stack="h"),
     class = c("element_text_with_symbols", "element_text", "element")
   )
 }
@@ -248,14 +249,15 @@ element_grob.element_text_with_symbols <-
     if (is.list(size)) size <- size[[1]]
   }
 
+  gp <- gpar(fontsize = size, col = colour,
+             fontfamily = family, fontface = face,
+             lineheight = lineheight)
+  element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
+                     fontfamily = firsts(element$family),
+                     fontface = firsts(element$face),
+                     lineheight = firsts(element$lineheight))
+
   if (length(label) == 0) {
-    gp <- gpar(fontsize = size, col = colour,
-               fontfamily = family, fontface = face,
-               lineheight = lineheight)
-    element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
-                       fontfamily = firsts(element$family),
-                       fontface = firsts(element$face),
-                       lineheight = firsts(element$lineheight))
     textGrob(
       label, x, y, hjust = hj, vjust = vj,
       default.units = default.units,
@@ -269,34 +271,34 @@ element_grob.element_text_with_symbols <-
     offset.y = 0
 
     if (dim(stringsplits)[1] > 1) {
-      #plot with multiple fonts in the same frame.
-      #what we should do is pack a frame, and something something alignment...
+      #plot with multiple fonts in the same frame.  what we should do
+      #is pack a frame, and something something alignment...  the
+      #angle, horisontal aliignment and vertical alignment should
+      #become peroperties of how the frame is drawn...
       children <-
         mlply(stringsplits[c("labels", "family", "face", "size")],
               function(labels, family, face, size, ...) {
-
-                gp <- gpar(fontsize = size, col = colour,
+                gp <- gpar(fontsize = size,
                            fontfamily = family, fontface = face,
                            lineheight = lineheight)
-                element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
-                         fontfamily = firsts(element$family), fontface = firsts(element$face),
-                         lineheight = firsts(element$lineheight))
                 textGrob(
-                  labels, x, y, hjust = hj, vjust = vj,
+                  labels, x=0, y=0, hjust=0, vjust=0, #x, y, hjust = hj, vjust = vj,
                   default.units = default.units,
-                  gp = modifyList(element_gp, gp),
-                  rot = angle, ...
+                  gp = modifyList(element_gp, gp), ...
                   )
               })
-      print(do.call(rbind, children))
-      gTree(children=do.call("gList", children))
+      
+      #need to work in hj and vj in there somehow
+      fr = frameGrob(vp=viewport(angle=angle))
+      for (ch in children) {
+        fr = switch(stack
+          , h=packGrob(fr, ch, side="right") 
+          , v=packGrob(fr, ch, side="bottom")
+          , stop("'stack' must be 'h' or 'v'"))
+      }
+      browser()
+      fr
     } else {
-      gp <- gpar(fontsize = size, col = colour,
-                 fontfamily = family, fontface = face,
-                 lineheight = lineheight)
-      element_gp <- gpar(fontsize = firsts(element$size), col = element$colour,
-                         fontfamily = firsts(element$family), fontface = firsts(element$face),
-                         lineheight = firsts(element$lineheight))
       textGrob(
         stringsplits$labels, x, y, hjust = hj, vjust = vj,
         default.units = default.units,
