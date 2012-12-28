@@ -1,4 +1,5 @@
 ## In this file we define some custom graphical objects for ggplot2.
+options(encoding="UTF-8")
 library(plyr)
 library(grid)
 library(ggplot2)
@@ -10,22 +11,50 @@ Geom <- ggplot2:::Geom
 ggname <- ggplot2:::ggname
 .pt <- ggplot2:::.pt
 identity_scale <- ggplot2:::identity_scale
-`%||%` <- ggplot2::: `%||%`
+`%||%` <- ggplot2:::`%||%`
 
-## The "numdensity" geom draws a circle with some evenly spaced tickmarks sticking out of it.
-##
+###Until ggplot2 merges pull request #748, monkey patch it.
+if (packageVersion("ggplot2") < package_version('0.9.4')) {
+  e <- environment(ggplot2:::combine_elements)
+  unlockBinding("combine_elements", e)
+  evalq(envir=e, {
+    combine_elements <- function(e1, e2) {
+
+      # If e2 is NULL, nothing to inherit
+      if (is.null(e2))  return(e1)
+
+      # If e1 is NULL, or if e2 is element_blank, inherit everything from e2
+      if (is.null(e1) || inherits(e2, "element_blank"))  return(e2)
+
+      # If e1 has any NULL properties, inherit them from e2
+      n <- vapply(e1[names(e2)], is.null, logical(1))
+      e1[names(n[n])] <- e2[names(n[n])]
+
+      # Calculate relative sizes
+      if (is.rel(e1$size)) {
+        e1$size <- e2$size * unclass(e1$size)
+      }
+
+      e1
+    }
+  })
+}
+
+## 
+
+## The "numdensity" geom draws a circle with some evenly spaced
 ## tickmarks sticking out of it.
+##
 ## It accepts the following aesthetics:
 ## "number" -- the number of ticks.
 ## "size" -- the diameter of the circle, in mm.
-## "center" the angle (in radians measured CCW from rightward) that the ticks stick out at.
+## "center" the angle (in radians measured CCW from rightward) that the ticks
+## cluster around.
 ## "tick_in" the length by which the ticks stick "in" to the circle (in mm)
-## "tick_out" the length by which hte ticks stick out.
-## "spacing" the angle (in radians, assuming you use an identity scale) between tickmarks.
-## "in most cases youant to covary spacing and number.
+## "tick_out" the length by which the ticks stick out.
+## "spacing" the angle (in radians, assuming you use an identity scale)
+## between tickmarks.
 ## "weight" -- the thickness of the tickmarks.
-## "stack" --"h" or "v"
-
 ## "color" and "fill" have their usual meanings.
 
 geom_numdensity <- function(mapping=NULL, data=NULL,
@@ -113,8 +142,9 @@ GeomNumdensity <- proto(Geom, {
 #
 
 #' This is an extension of element_text which can specify multiple
-#' fonts to use, for example a symbol font to fall back on if a glyph
-#' is not available in the main font.
+#' fonts to use, for example a symbol font to fall back on if a glyph=
+#' is not available in the main font. For example, using a Unicode
+#' symbol from one font but the rest of text from another font.
 #'
 #' @param family font family. This may be a vector, in which case it
 #' specifies a list of font faces in priority order.
@@ -128,40 +158,45 @@ GeomNumdensity <- proto(Geom, {
 #' @param color an alias for \code{colour}
 #' @param fallback A function (glyph, family, face) that returns FALSE
 #' if the specified font should not be used.
-#' @param symbolsize
+#' @param stack -- "h" or "v" to stack chunks horizontally or vertically.
 #' @export
-element_text_with_symbols <- function(family = NULL, face = NULL, colour = NULL,
-  size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
-  color = NULL, fontcheck=renderable_char) {
+element_text_with_symbols <-
+  function(
+    family = NULL, face = NULL, colour = NULL,
+    size = NULL, hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
+    stack=NULL, fontcheck=renderable_char, color=NULL) {
 
   if (!is.null(color))  colour <- color
   structure(
     list(family = family, face = face, colour = colour, size = size,
       hjust = hjust, vjust = vjust, angle = angle, lineheight = lineheight,
-         fontcheck=fontcheck, stack="h"),
+          stack = stack, fontcheck = fontcheck),
     class = c("element_text_with_symbols", "element_text", "element")
   )
 }
 
-renderable <- function(label, family, face, size) {
-  lapply(strsplit(label, ""), vapply, renderable_char, FALSE, family, face, size)
-}
-
+#Decide if a character is renderable in the given face. Or it
+#should. I just punt and say that things outside ASCII are not
+#renderable.
 renderable_char <- function(char, family, face, size) {
   is.character(char) && (nchar(char) == 1) || stop("Must be called on individual chars.")
   length(charToRaw(char)) == 1
 }
 
-#return the label, split into
-#family, face and size are
-pbutfirst <- function(x) if (length(x) > 1) x[-1] else x
-
+#given s string, and vectors of fonts to try, split the string up into
+#chunks returning a data frame.
 renderable_split <- function(label, family=NULL, face=NULL, size=NULL,
-                             fontcheck = renderable_char) {
-  renderable_p = vapply(strsplit(label, "")[[1]], renderable_char, FALSE,
+                             lineheight=NULL, fontcheck = renderable_char) {
+  pbutfirst <- function(x) {
+    if (length(x) > 1) x[-1] else x
+  }
+  pfirst <- function(x) if (is.null(x)) list(x) else x[[1]]
+
+  renderable_p = vapply(strsplit(label, "")[[1]], fontcheck, FALSE,
     family[[1]], face[[1]], size[[1]])
 
-  #each "TRUE" gets the first family element. Each "FALSE" get s
+  #each "TRUE" gets the first font spec.
+  #Each "FALSE" we try over again with the second, if it exists.
   renderable_splits = mutate(
     as.data.frame(unclass(rle(renderable_p)))
     , ends = cumsum(lengths)
@@ -170,29 +205,36 @@ renderable_split <- function(label, family=NULL, face=NULL, size=NULL,
 
   mdply(renderable_splits,
         function(lengths, values, ends, starts) {
-          if (values || all(vapply(list(family, face, size), length, 0) == 1)) {
-            data.frame(labels=substr(label, starts, ends),
-                 family=family[[1]], face=face[[1]], size=size[[1]])
+          lengths <- vapply(list(family, face, size, lineheight), length, 0)
+          if (values
+              || all(lengths <= 1)) {
+            #no more fonts to try
+            quickdf(list( labels=substr(label, starts, ends)
+                         , family=pfirst(family)
+                         , face=pfirst(face)
+                         , size=pfirst(size)
+                         , lineheight=pfirst(lineheight)))
           } else {
-            renderable_split(substr(label, starts, ends),
-                             family=pbutfirst(family),
-                             face=pbutfirst(face),
-                             size=pbutfirst(size))
+            #descend through the font list
+            renderable_split(  substr(label, starts, ends)
+                             , family=pbutfirst(family)
+                             , face=pbutfirst(face)
+                             , size=pbutfirst(size)
+                             , lineheight=pbutfirst(lineheight)
+                             )
           }
         })
 }
 
 #' @S3method element_grob element_text_with_symbols
-#' this is rather
-#' goofy but it also paves the way to showing how to put graphics and
-#' other grobs in axis labels.
-element_grob.element_text_with_symbols <-
-  function(element, label = "", x = NULL, y = NULL,
+#' Draws a text label with potentially mixed fonts.
+element_grob.element_text_with_symbols <- function(
+           element, label = "", x = NULL, y = NULL,
            family = NULL, face = NULL, colour = NULL, size = NULL,
            hjust = NULL, vjust = NULL, angle = NULL, lineheight = NULL,
            fontcheck = renderable_char, stack=NULL,
-           default.units = "npc", ...)
- {
+           default.units = "npc", ...) {
+  firsts <- function(x) if (is.list(x=x)) sapply(x, `[`, 1) else x
 
   vj <- vjust %||% element$vjust
   hj <- hjust %||% element$hjust
@@ -212,7 +254,7 @@ element_grob.element_text_with_symbols <-
   } else if (angle == 270) {
     xp <- vj
     yp <- 1 - hj
-  }else {
+  } else {
     xp <- hj
     yp <- vj
   }
@@ -220,19 +262,18 @@ element_grob.element_text_with_symbols <-
   x <- x %||% xp
   y <- y %||% yp
 
-  #divide the string up into renderable and non-renderable characters.
   family <- family %||% element$family
   face <- face %||% element$face
   size <- size %||% element$size
   fontcheck <- fontcheck %||% element$fontcheck
+  lineheight <- lineheight %||% element$lineheight
 
-     #split the string up into substrings based on the criterion
   if (length(label) > 1) {
     ## hack to support multiple labels.
     args <- list(label = label, x = x, y = y,
                  family = family, face = face, colour = colour, size = size,
                  hjust = hjust, vjust = vjust, angle = angle,
-                 lineheight = lineheight, fontcheck = fontcheck, #?!
+                 lineheight = lineheight, fontcheck = fontcheck,
                  stack = stack, default.units = default.units, ...)
     listy <- vapply(args, is.recursive, TRUE)
     nully <- vapply(args, is.null, TRUE)
@@ -247,6 +288,7 @@ element_grob.element_text_with_symbols <-
     if (is.list(family)) family <- family[[1]]
     if (is.list(face)) face <- face[[1]]
     if (is.list(size)) size <- size[[1]]
+    if (is.list(lineheight)) lineheight <- lineheight[[1]]
   }
 
   gp <- gpar(fontsize = size, col = colour,
@@ -265,7 +307,7 @@ element_grob.element_text_with_symbols <-
       rot = angle, ...
       )
   } else {
-    stringsplits = renderable_split(label, family, face, size, fontcheck)
+    stringsplits = renderable_split(label, family, face, size, lineheight, fontcheck)
     stack <- stack %||% element$stack
     offset.x = 0
     offset.y = 0
@@ -276,27 +318,28 @@ element_grob.element_text_with_symbols <-
       #angle, horisontal aliignment and vertical alignment should
       #become peroperties of how the frame is drawn...
       children <-
-        mlply(stringsplits[c("labels", "family", "face", "size")],
-              function(labels, family, face, size, ...) {
+        mlply(stringsplits[c("labels", "family", "face", "size", "lineheight")],
+              function(labels, family, face, size, lineheight, ...) {
                 gp <- gpar(fontsize = size,
                            fontfamily = family, fontface = face,
                            lineheight = lineheight)
                 textGrob(
-                  labels, x=0, y=0, hjust=0, vjust=0, #x, y, hjust = hj, vjust = vj,
+                  labels, x=0, y=0,
+                  hjust=ifelse(stack=='h', 0, hj),
+                  vjust=ifelse(stack=='v', vj, 0),
                   default.units = default.units,
                   gp = modifyList(element_gp, gp), ...
                   )
               })
-      
+
       #need to work in hj and vj in there somehow
-      fr = frameGrob(vp=viewport(angle=angle))
+      fr = frameGrob(vp=viewport(angle=angle, just=c(hj, vj)))
       for (ch in children) {
         fr = switch(stack
-          , h=packGrob(fr, ch, side="right") 
+          , h=packGrob(fr, ch, side="right")
           , v=packGrob(fr, ch, side="bottom")
           , stop("'stack' must be 'h' or 'v'"))
       }
-      browser()
       fr
     } else {
       textGrob(
@@ -309,34 +352,69 @@ element_grob.element_text_with_symbols <-
   }
 }
 
-firsts <- function(x) if (is.list(x)) sapply(x, `[`, 1) else x
-
-replace_theme_text_elements <- function(theme, ...) {
-  lapply(theme, function(el) {
-    if (inherits(el, "element_text")) {
-      args <- as.list(el)
-      new.args <- list(...)
-      args[names(new.args)] <- new.args
-      do.call("element_text_with_symbols", args)
-    } else {
-      el
-    }})
-}
 
 unicode_demo <- function() {
-  theme_set(replace_theme_text_elements(
-              theme_bw(12, "Myriad Pro"),
-              size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols"))))
-  qplot(x=-10:10, y=(-10:10)^2, geom="line", xlab="foo\u21BBbaz")
+  curveleft = "\u21BA"
+  curveright = "\u21BB"
+  circleleft = "\u27F2"
+  circleright = "\u27F3"
+
+  combine_arrows <- function(x, combine) {
+    first <- which(!is.na(x))[1]
+    last <- length(x) + 1 - which(!is.na(rev(x)))[1]
+    if (substr(x[[first]], 1, 1) == "-") {
+      x[first] <- combine(circleleft, x[first])
+      x[last] <- combine(circleright, x[last])
+    } else {
+      x[first] <- combine(curveright, x[first])
+      x[last] <- combine(circleright, x[last])
+    }
+    x
+  }
+
+  append_arrows <- function(x) {
+    combine_arrows(x, combine=function(x, y) paste(y, x, sep=""))
+  }
+
+  prepend_arrows <- function(x) {
+    combine_arrows(x, combine=function(x, y) paste(x, y, sep=" "))
+  }
+
+  newline_arrows <- function(x) {
+    combine_arrows(x, combine = function(x, y) paste(y, x, sep="\n"))
+  }
+
+  theme_set(theme_bw(12, "Myriad Pro"))
+  theme_update(
+    axis.title.x = element_text_with_symbols(
+      size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),
+      lineheight=list(c(0.9, 1.5)), stack="h")
+    , axis.title.y = element_text_with_symbols(
+        size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),
+        lineheight=list(c(0.9, 1.5)), angle=0, stack="v")
+    , axis.text.x = element_text(size=10, family="Apple Symbols", vjust=1)
+    , axis.text.y = element_text(size=10, family="Apple Symbols", hjust=1)
+    ## , axis.text.x = element_text_with_symbols(
+    ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
+    ##     angle=0, stack="v", vjust=1)
+    ## , axis.text.y = element_text_with_symbols(
+    ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
+    ##     angle=0, stack="h", hjust=1)
+      )
+  (qplot(x=-10:10, y=(-10:10)^2, geom="line",
+         xlab="foo\u21BBbaz", ylab="abla\u21BAedio")
+   ## + scale_x_continuous(labels=append_arrows)
+   ## + scale_y_continuous(labels=prepend_arrows)
+   + scale_x_continuous(labels=newline_arrows)
+   + scale_y_continuous(labels=prepend_arrows)
+   )
 }
 
 #
 custom_geom_demo <- function() {
   #here's an example that uses these.
   library(ptools)
-  theme_set(replace_theme_text_elements(
-              theme_bw(12, "Myriad Pro"),
-              c(12, 24), c("Myriad Pro", "Apple Symbols")))
+  theme_set(theme_bw(12, "Myriad Pro"))
   theme_update(  panel.grid.major = element_blank()
                , panel.grid.minor = element_blank()
                )
