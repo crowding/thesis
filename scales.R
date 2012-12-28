@@ -1,10 +1,11 @@
 library(scales)
 
-if (use_unicode) {
+if ( !exists("use_unicode") || use_unicode) {
   curveleft = "\u21BA"
   curveright = "\u21BB"
-  circleleft = "\u21BA" #"0x27F2L"
-  circleright = "\u21BB" #"0x27F3L"
+  circleleft = "\u27F2"
+  circleright = "\u27F3"
+  use_unicode <- TRUE
 } else {
   curveleft = "$\\curvearrowleft$"
   curveright = "$\\curvearrowright$"
@@ -12,38 +13,55 @@ if (use_unicode) {
   circleright = "$\\curvearrowright$"
 }
 
-add_arrows <- function(x, sep=" ") {
+combine_arrows <- function(x, combine) {
   first <- which(!is.na(x))[1]
   last <- length(x) + 1 - which(!is.na(rev(x)))[1]
   if (substr(x[[first]], 1, 1) == "-") {
-    x[first] <- paste(curveleft, x[first])
-    x[last] <- paste(curveright, x[last])
+    x[first] <- combine(circleleft, x[first])
+    x[last] <- combine(circleright, x[last])
   } else {
-    x[first] <- paste(curveleft, x[first])
-    x[last] <- paste(curveright, x[last])
+    x[first] <- combine(curveright, x[first])
+    x[last] <- combine(circleright, x[last])
   }
   x
 }
 
-add_arrows_newline <- function(x) {
-  first <- which(!is.na(x))[1]
-  last <- length(x) + 1 - which(!is.na(rev(x)))[1]
-  if (substr(x[[first]], 1, 1) == "-") {
-    x[first] <- paste(x[first], curveleft, sep="\n")
-    x[last] <- paste(x[last], curveright, sep="\n")
-  } else {
-    x[first] <- paste(x[first], curveleft, sep="\n")
-    x[last] <- paste(x[last], curveright, sep="\n")
-  }
-  x
+append_arrows <- function(x) {
+  combine_arrows(x, combine=function(x, y) paste(y, x, sep=""))
+}
+
+prepend_arrows <- function(x) {
+  combine_arrows(x, combine=function(x, y) paste(x, y, sep=" "))
+}
+
+newline_arrows <- function(x) {
+  combine_arrows(x, combine = function(x, y) paste(y, x, sep="\n"))
 }
 
 replace_arrows <- function(x) {
-  first <- which(!is.na(x))[1]
-  last <- length(x) + 1 - which(!is.na(rev(x)))[1]
-  x[first] <- curveleft
-  x[last] <- curveright
-  x
+  combine_arrows(combine=function(x, y) x)
+}
+
+setup_theme <- function() {
+  theme_set(theme_bw(12, "Myriad Pro"))
+  theme_update(
+    ## axis.title.x = element_text_with_symbols(
+    ##   size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),
+    ##   lineheight=list(c(0.9, 1.5)), stack="h")
+    ## , axis.title.y = element_text_with_symbols(
+    ##     size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),
+    ##     lineheight=list(c(0.9, 1.5)), angle=0, stack="v")
+      axis.text.x = element_text(size=10, family="Apple Symbols", vjust=1)
+    , axis.text.y = element_text(size=10, family="Apple Symbols", hjust=1)
+    , panel.grid.major = element_blank()
+    , panel.grid.minor = element_blank()
+    ## , axis.text.x = element_text_with_symbols(
+    ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
+    ##     angle=0, stack="v", vjust=1)
+    ## , axis.text.y = element_text_with_symbols(
+    ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
+    ##     angle=0, stack="h", hjust=1)
+    )
 }
 
 proportion_scale <-
@@ -95,7 +113,7 @@ decision_color_scale <-
                                       muted(c("red", "yellow"),
                                             l=70, c=180))),
                                   values = c(0, 0.4, 0.5, 0.6, 1)),
-                   guide="legend", breaks=seq(0,1,0.1), labels=add_arrows)
+                   guide="legend", breaks=seq(0,1,0.1), labels=append_arrows)
 
 decision_contour <-
   list( 
@@ -108,8 +126,8 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 
 displacement_scale <-
   list( aes(x=displacement),
-       scale_x_continuous(if (use_unicode) "\u0394x" else "$\\Delta x$"
-                          , labels=add_arrows_newline))
+       scale_x_continuous(if (use_unicode) " \u0394x" else "$\\Delta x$"
+                          , labels=newline_arrows))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)
 y_nopadding <- scale_y_continuous(expand = c(0,0))
@@ -154,7 +172,7 @@ content_color_scale <-
              fill=factor(content))),
     with_arg(name=if (use_unicode) "C" else "$C$",
              palette=color_pal,
-             labels=add_arrows,
+             labels=append_arrows,
              discrete_scale("fill", "manual"),
              discrete_scale("colour", "manual")
              )
@@ -162,8 +180,8 @@ content_color_scale <-
 
 content_x_scale <-
   list(aes(x=content),
-       scale_x_continuous(name="Direction content",labels=add_arrows_newline, expand=c(0,0))
-       )
+       scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
+       ) 
 
 ribbon <- list(
             geom_ribbon(color="transparent", alpha=0.2,

@@ -26,7 +26,6 @@ mkrates <- function(data,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
   nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()), n_cw=I(c()), n_ccw=I(c()))
-  browser()
   chain(data
         , if(empty(.)) nullcounter(.) else ddply(.,splits, counter)
         , arrange(desc(n)))
@@ -41,3 +40,6 @@ seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 `%v%` <- union
 
 `%^%` <- intersect
+
+`%call%` <- function(x, y) do.call(x, as.list(y), envir=parent.frame())
+

@@ -1,20 +1,14 @@
- 
 ## @knitr density-setup
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
-library(Cairo)
 library(ggplot2)
 library(plyr)
 library(grid)
 library(ptools)
-theme_set(theme_bw(12, "Apple Symbols"))
-theme_update(panel.grid.major = element_blank(),
-             panel.grid.minor = element_blank())
 source("latexing.R")
-use_unicode <- TRUE
 source("scales.R")
 source("library.R")
-CairoFonts(regular="Apple Symbols:style=Regular", bold="Geneva:style=Bold",
-           italic="Geneva:style=Italic", bolditalic="Geneva:style=BoldItalic")
+source("icons.R")
+setup_theme()
 
 ## @knitr density-load
 load("../modeling/data.Rdata")
@@ -23,27 +17,63 @@ segment <- subset(data, exp_type=="numdensity" & subject %in% names(models))
 
 #this just illustrates the combinations of number and density.
 configurations <- unique(segment[c("target_spacing", "target_number_shown")])
-personalizations <- unique(segment[c("subject", "folded_displacement", "folded_direction_content")])
+personalizations <- unique(segment[c("subject", "folded_displacement",
+                                     "folded_direction_content")])
 
-## Sanity check: for each personalization, check that all configurations are represented.
+## Sanity check: for each personalization, check that all
+## configurations are represented.
 unmatching <-
-  ddply(personalizations, .(subject, folded_displacement, folded_direction_content)
+  ddply(personalizations,
+        .(subject, folded_displacement, folded_direction_content)
         , mkchain(  match_df(segment, ., names(.))
                   , unique(.[c("target_spacing", "target_number_shown")])
-                  , merge(cbind(., .a=1), cbind(configurations, .a=1), by=names(.))
+                  , merge(cbind(., .a=1), cbind(configurations, .a=1),
+                          by=names(.))
                   , subset(is.na(.a.x) | is.na(.a.y))
                   ))
  if (!empty(unmatching)) stop("unmatching data")
 
-(ggplot(configurations)
- + aes(x=target_spacing, y=target_number_shown)
- + geom_point()
+
+##knitr index-plot
+#choose four examples to illustrate changes of number and of density.
+#lareg number/tight spacing
+#med number/narrow spacing
+#med number/wide spacing
+#small number/wide spacing
+rad <- 20/3
+segment.examples <- data.frame(
+    target_spacing = sort(unique(configurations$target_spacing))[c(2, 2, 5, 5)]
+  , target_number_shown = sort(unique(configurations$target_number_shown))[c(6, 3, 3, 1)]
+  , label=as.character(c(1, 2, 3, 4))
+)
+segment.examples <- mutate(  examples
+                           , target_number_all=round(2*pi*rad/target_spacing)
+                           , color=TRUE)
+configs <- merge(segment.examples, configurations, all.y=TRUE)
+
+(ggplot(configs)
+ + aes(x=target_spacing,
+       y=target_number_shown,
+       number=factor(target_number_shown),
+       spacing=target_spacing)
+ + geom_numdensity(size=7, aes(fill=color))
+ + scale_fill_manual(values=c("gray80"), na.value=NA)
  + scale_x_continuous(breaks=unique(configurations$target_spacing),
-                      labels=function(x)format(x, digits=2))
- + labs(x="Target spacing (degrees)", y="Number of targets", title="Stimulus configurations")
+                       labels=function(x)format(x, digits=2))
+ + scale_y_continuous("Element number")
+ + continuous_scale("spacing", "spacing", identity,
+                    , rescaler=function(x, from) {
+                      rescale(x , from = from , to = from/rad)
+                    }
+                    , name="Spacing")
+ + labs(x="Element spacing (degrees) at 6.7\u0080 eccentricity",
+        y="Number of elements",
+        title="Stimulus configurations")
+ + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
+ + theme(legend.position="none")
  )
 
-##TODO: pick four of these to demo. What is already demoed?
+## Pick four of these to demo. What is already demoed?
 
 ## @knitr spacing-data-plots
 
@@ -60,17 +90,8 @@ chain(  personalizations
       , mkrates(splits=c("subject", "spacing", "content", "target_number_shown"))
       ) -> segment.data
 
-## and let's plot them with texture and color scales... here express a
-## texture and color scale....  how about building miniature
-## representations of the stimuli out of dots? That might actually be
-## better than using Unicode.
-
-black_circled_number_unicode <- 0x278a:0x2793
-white_circled_number_unicode <- 0x2780:0x2789
 
 
-number_symbol_scale <-
-  list(aes(shape=factor(target_number_shown, levels=target_number_shown, ordered=TRUE, )))
 
 #add some binomial confidence intervals.
 library(binom)
