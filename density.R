@@ -5,9 +5,9 @@ library(plyr)
 library(grid)
 library(ptools)
 source("latexing.R")
+source("icons.R")
 source("scales.R")
 source("library.R")
-source("icons.R")
 setup_theme()
 
 ## @knitr density-load
@@ -116,35 +116,46 @@ geometric_shape_scale2 <-
     , continuous_scale(
         "spacing", "spacing"
         , identity, name="Spacing (deg.)"
-        , rescaler = function(x, from) rescale(x, from=from, to=from/20*3))
+        , rescaler = function(x, from) rescale(x, from=from, to=from/20*3)
+        )
     , discrete_scale(  "number", "identity", identity_pal()
                      , name="Element\nnumber")
     , scale_size("Eccentricity")
     )
 
+bind[segment.by.soacing, segment.by.number] <- zip()
+
 dlply_along(
   segment.rates.sided,
   segment.experiment.vars,
   function(row, data){
+    errorbar <- ddply(  data, "side", summarize
+                      , y = 0.5
+                      , ymax=0.5 + binom_se(min(n), 0.5)
+                      , ymin=0.5 - binom_se(min(n), 0.5))
     (  ggplot(data)
      + aes(x=spacing)
      + proportion_scale
-     + geom_point(size=6, color="white")
+     + geom_line(aes(group=target_number_shown), show_guide=FALSE)
+     + geom_point(size=6, color="white") # to interrupt the lines.
      + geometric_shape_scale2
      + number_color_scale
-     + geom_line(aes(group=target_number_shown), show_guide=FALSE)
      + facet_wrap( ~ side)
-     ## + annotate(  "text", x=NA, y=0, size=3
-     ##            , label=sprintf(
-     ##                "%s, dx = %03f, C = %03f",
-     ##                toupper(row$subject),
-     ##                row$displacement,
-     ##                row$content)
-     ##            )
+     ##     + geom_text(aes())
+     + annotate(  "text", size=3
+                , xmin=-Inf, xmax=Inf, x=Inf, y=-Inf
+                , vjust=-0.5, hjust=1.1
+                , label=sprintf("%s, \u0394x = %s, C = %s",
+                    toupper(row$subject), format(row$displacement, digits=2),
+                    format(row$content, digits=2)))
+     + geom_pointrange(  data=errorbar, inherit.aes=FALSE, x=max(data$spacing)
+                     , aes(y=y, ymin=ymin, ymax=ymax))
      )}) -> segment.raw.plots
 segment.raw.plots[[2]]
 
-##now I_want to jam two of these plots side by side, sharing a y-axis.
+##now I_want to jam two of these plots side by side, sharing a y-axis,
+##but having different x-axises.
+
 
 ## @knitr illustrated-customizations
 
