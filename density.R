@@ -123,23 +123,24 @@ geometric_shape_scale2 <-
     , scale_size("Eccentricity")
     )
 
-bind[segment.by.soacing, segment.by.number] <- zip()
+bind[segment.by.spacing, segment.by.number] <- zip()
 
-dlply_along(
-  segment.rates.sided,
-  segment.experiment.vars,
-  function(row, data){
+#here we make the raw plots, one
+
+base_plot <- function(row, data, xaxis=spacing, connect=target_number_shown,
+                      ...) {
+  eval(substitute(env=list(xaxis=substitute(xaxis), connect=substitute(xaxis)), {
     errorbar <- ddply(  data, "side", summarize
                       , y = 0.5
+                      , x = max(xaxis)
                       , ymax=0.5 + binom_se(min(n), 0.5)
                       , ymin=0.5 - binom_se(min(n), 0.5))
     (  ggplot(data)
-     + aes(x=spacing)
+     + aes(x=xaxis)
      + proportion_scale
-     + geom_line(aes(group=target_number_shown), show_guide=FALSE)
+     + geom_line(aes(group=connect), show_guide=FALSE)
      + geom_point(size=6, color="white") # to interrupt the lines.
      + geometric_shape_scale2
-     + number_color_scale
      + facet_wrap( ~ side)
      ##     + geom_text(aes())
      + annotate(  "text", size=3
@@ -148,10 +149,26 @@ dlply_along(
                 , label=sprintf("%s, \u0394x = %s, C = %s",
                     toupper(row$subject), format(row$displacement, digits=2),
                     format(row$content, digits=2)))
-     + geom_pointrange(  data=errorbar, inherit.aes=FALSE, x=max(data$spacing)
-                     , aes(y=y, ymin=ymin, ymax=ymax))
-     )}) -> segment.raw.plots
-segment.raw.plots[[2]]
+     + with_arg(  data=errorbar, inherit.aes=FALSE
+                , mapping=aes(x=x, y=y, ymin=ymin, ymax=ymax)
+                , show_guide=FALSE
+                , geom_linerange(), geom_point(size=4, shape="+"))
+     + list(...)
+     )}))}
+
+dlply_along(  segment.rates.sided, segment.experiment.vars, base_plot
+            , xaxis=spacing
+            , number_color_scale
+            , 
+) -> segment.raw.plots
+segment.plot.spacing[[2]]
+
+dlply_along(  segment.rates.sided, segment.experiment.vars, base_plot
+            , xaxis=target_number_shown
+) -> segment.plot.number
+segment.plot.number[[2]]
+
+
 
 ##now I_want to jam two of these plots side by side, sharing a y-axis,
 ##but having different x-axises.
