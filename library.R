@@ -43,3 +43,27 @@ seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 
 `%call%` <- function(x, y) do.call(x, as.list(y), envir=parent.frame())
 
+
+ddply_along <-
+  function(.data, .variables, .fun=NULL, ...
+           , .progress = "none", .inform = FALSE, .drop = TRUE
+           , .parallel = FALSE, .paropts = NULL) {
+    split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
+    rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
+    ldply(  .data=seq_len(length(split))
+          , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
+          , .progress = .progress, .inform = .inform
+          , .parallel = .parallel, .paropts = .paropts)
+}
+
+dlply_along <-
+  function(.data, .variables, .fun=NULL, ...
+           , .progress = "none", .inform = FALSE, .drop = TRUE
+           , .parallel = FALSE, .paropts = NULL) {
+    split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
+    rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
+    llply(  .data=seq_len(length(split))
+          , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
+          , .progress = .progress, .inform = .inform
+          , .parallel = .parallel, .paropts = .paropts)
+}

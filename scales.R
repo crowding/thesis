@@ -39,7 +39,7 @@ newline_arrows <- function(x) {
 }
 
 replace_arrows <- function(x) {
-  combine_arrows(combine=function(x, y) x)
+  combine_arrows(x, combine=function(x, y) x)
 }
 
 setup_theme <- function() {
@@ -104,6 +104,15 @@ balloon <- list(geom_point(aes(size=n))
                 , scale_size_area()
                 )
 
+geometric_shape_scale <-
+  list(
+    aes(  number=factor(target_number_shown)
+        , spacing=spacing/eccentricity)
+    , geom_numdensity(size=7)
+    , identity_scale(continuous_scale("spacing", "spacing",
+                                      identity, name="Spacing")))
+
+
 decision_color_scale <-
   continuous_scale(name="Responses CW", "colour", "color_m",
                    gradient_n_pal(colours = (
@@ -147,6 +156,15 @@ color_pal <- #function(n) rainbow(n, start=0, end=0.75)
   discretize(gradient_n_pal(
                colours=muted(c("blue", "cyan", "yellow", "red"), l=70, c=180)))
 
+number_color_scale <-
+  c(  list(aes(  color=factor(target_number_shown)))
+       , with_arg(name="Element\nnumber",
+             palette=color_pal,
+             labels=prettyprint,
+             discrete_scale("fill", "manual"),
+             discrete_scale("colour", "manual")
+             ))
+
 spacing_color_scale <-
   c(
     list(aes(color=factor(spacing),
@@ -165,6 +183,8 @@ spacing_texture_scale <-
          paste(y <- c(1:9, LETTERS)[seq_len(x)], y, sep="")
        }, labels=prettyprint)
        )
+
+
 
 content_color_scale <-
   c(

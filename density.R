@@ -13,20 +13,26 @@ setup_theme()
 ## @knitr density-load
 load("../modeling/data.Rdata")
 load("../modeling/slopeModel.RData")
-segment <- subset(data, exp_type=="numdensity" & subject %in% names(models))
+segment <- chain(  data
+                 , subset(exp_type=="numdensity" & subject %in% names(models))
+                 , do.rename(folding=TRUE)
+                 )
 
 #this just illustrates the combinations of number and density.
-configurations <- unique(segment[c("target_spacing", "target_number_shown")])
-personalizations <- unique(segment[c("subject", "folded_displacement",
-                                     "folded_direction_content")])
+segment.config.vars <-
+  c("spacing", "target_number_shown", "target_number_all")
+segment.experiment.vars <-
+  c("subject", "displacement", "content", "eccentricity")
+configurations <- unique(segment[segment.config.vars])
+personalizations <- unique(segment[segment.experiment.vars])
 
 ## Sanity check: for each personalization, check that all
 ## configurations are represented.
 unmatching <-
-  ddply(personalizations,
-        .(subject, folded_displacement, folded_direction_content)
+  ddply(  personalizations
+        , segment.experiment.vars
         , mkchain(  match_df(segment, ., names(.))
-                  , unique(.[c("target_spacing", "target_number_shown")])
+                  , unique(.[segment.config.vars])
                   , merge(cbind(., .a=1), cbind(configurations, .a=1),
                           by=names(.))
                   , subset(is.na(.a.x) | is.na(.a.y))
@@ -40,102 +46,105 @@ unmatching <-
 #med number/narrow spacing
 #med number/wide spacing
 #small number/wide spacing
-rad <- 20/3
-segment.examples <- data.frame(
-    target_spacing = sort(unique(configurations$target_spacing))[c(2, 2, 5, 5)]
-  , target_number_shown = sort(unique(configurations$target_number_shown))[c(6, 3, 3, 1)]
-  , label=as.character(c(1, 2, 3, 4))
-)
-segment.examples <- mutate(  examples
-                           , target_number_all=round(2*pi*rad/target_spacing)
-                           , color=TRUE)
+segment.examples <-
+  chain(  configurations
+        , summarize(  spacing = sort(unique(spacing))[c(2, 2, 5, 5)]
+                    , target_number_shown =
+                         sort(unique(target_number_shown))[c(6, 3, 3, 1)]
+                    , label=as.character(c(4, 3, 2, 1))
+                    , eccentricity=rep(20/3, 4)
+                    , color=rep(TRUE, 4)
+                  )
+        , merge(configurations))
 configs <- merge(segment.examples, configurations, all.y=TRUE)
 
 (ggplot(configs)
- + aes(x=target_spacing,
+ + aes(x=spacing,
        y=target_number_shown,
-       number=factor(target_number_shown),
-       spacing=target_spacing)
- + geom_numdensity(size=7, aes(fill=color))
+       fill=color)
+ + geometric_shape_scale
  + scale_fill_manual(values=c("gray80"), na.value=NA)
- + scale_x_continuous(breaks=unique(configurations$target_spacing),
-                       labels=function(x)format(x, digits=2))
+ + scale_x_continuous(breaks=unique(configurations$spacing),
+                       labels=function(x) format(x, digits=2))
  + scale_y_continuous("Element number")
- + continuous_scale("spacing", "spacing", identity,
-                    , rescaler=function(x, from) {
-                      rescale(x , from = from , to = from/rad)
-                    }
-                    , name="Spacing")
- + labs(x="Element spacing (degrees) at 6.7\u0080 eccentricity",
+ + labs(x="Element spacing (at 6.7\u0080 eccentricity)",
         y="Number of elements",
         title="Stimulus configurations")
  + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
- + theme(legend.position="none")
- )
+ + theme(legend.position="none"))
 
-## Pick four of these to demo. What is already demoed?
+## @knitr spacing-data-plot
 
-## @knitr spacing-data-plots
+segment.rates <-
+  mkrates(  segment
+          , c(  segment.config.vars, segment.experiment.vars))
 
-##For each personalization, collect the "segment" data to compare it against.
-alply(personalizations, 1,
-      mkchain(  match_df(segment, ., on=names(.))
-              , do.rename(folding=TRUE)
-              , mkrates(splits=c("spacing", "content", "target_number_shown"))) 
-      ) -> personalization.segment.data
+segment.rates.sided <-
+  mkrates(  segment
+          , c(  segment.config.vars, segment.experiment.vars
+              , "side","eccentricity"))
 
-chain(  personalizations
-      , match_df(segment, ., on=names(.))
-      , do.rename(folding=TRUE)
-      , mkrates(splits=c("subject", "spacing", "content", "target_number_shown"))
-      ) -> segment.data
+#sanity check:
+#I think that in each experiment the number of trials is meant to be
+#the same for each condition, at least for each side. Close to the same.
+#Sometimes a prematurely terminated experiment means one or two are different.
+all(unlist(dlply(  segment.rates
+                 , c(segment.experiment.vars)
+                 , mkchain(`$`(n), range, diff))) <= 2) || stop("oops")
 
+all(unlist(dlply(segment.rates.sided
+                 , c(segment.experiment.vars, "side")
+                 , mkchain(`$`(n), range, diff))) <= 2) || stop("oops")
 
+# Note that sometimes there is ine mroe "left" than "right"
+# compute a standard error bar over a nominal 50% rate.
+binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
+##before any more malarkey, let's make the basic graph I've been
+##showing people all along. I'll facet by side tested, for now.
+geometric_shape_scale2 <-
+  list(
+    aes(  number=factor(target_number_shown)
+        , spacing=spacing/eccentricity*20/3
+        , center = (
+            if (exists("side"))
+            c(top=pi/2, bottom=3*pi/2, left=pi, right=0)[side]
+            else pi/2
+            )
+        )
+    , geom_numdensity(aes(size=eccentricity))
+    , continuous_scale(
+        "spacing", "spacing"
+        , identity, name="Spacing (deg.)"
+        , rescaler = function(x, from) rescale(x, from=from, to=from/20*3))
+    , discrete_scale(  "number", "identity", identity_pal()
+                     , name="Element\nnumber")
+    , scale_size("Eccentricity")
+    )
 
-#add some binomial confidence intervals.
-library(binom)
-segment.data <- cbind(segment.data,
-                      with(segment.data, binom.confint(n_cw, n, method="wilson") ))
-## mutate(  segment_data,
-##        , pmin=qbinom(0.05, n, p)/n
-##        , pmax=qbinom(0.095, n, p)/n) -> segment.data
-
-##before any more malarkey, let's make the basic graph I've been showing people all along.
-
-number_color_scale <-
-  c(  list(aes(  color=factor(target_number_shown)
-               , fill=factor(target_number_shown)))
-       , with_arg(name="Element\nnumber",
-             palette=color_pal,
-             labels=prettyprint,
-             discrete_scale("fill", "manual"),
-             discrete_scale("colour", "manual")
-             ))
-##
-Map(alply(personalizations, 1, identity), personalization.segment.data,
-    f=function(row, data){
-      chain(data,
-            with(binom.confint(n_cw, n, method="wilson", conf.level=0.75)),
-            cbind(data,.)) -> data
-      (  ggplot(data)
-       + aes(x=spacing)
-       + aes(y=p, ymin=lower, ymax=upper)
-       + geom_errorbar()
-       + geom_point()
- #      + spacing_texture_scale
-       + proportion_scale
-       + number_color_scale
-       + geom_line(aes(group=spacing))
-       ## + facet_wrap( ~ subject)
-       + annotate(  "text", x=0, y=0
-                  , label=sprintf("%s, dx=%03f", toupper(row$subject),
-                      row$folded_direction_content)
-                  )
-       )}
-    #make a gtable plotting it both ways...
-    ) -> segment.raw.plots
+dlply_along(
+  segment.rates.sided,
+  segment.experiment.vars,
+  function(row, data){
+    (  ggplot(data)
+     + aes(x=spacing)
+     + proportion_scale
+     + geom_point(size=6, color="white")
+     + geometric_shape_scale2
+     + number_color_scale
+     + geom_line(aes(group=target_number_shown), show_guide=FALSE)
+     + facet_wrap( ~ side)
+     ## + annotate(  "text", x=NA, y=0, size=3
+     ##            , label=sprintf(
+     ##                "%s, dx = %03f, C = %03f",
+     ##                toupper(row$subject),
+     ##                row$displacement,
+     ##                row$content)
+     ##            )
+     )}) -> segment.raw.plots
 segment.raw.plots[[2]]
+
+##now I_want to jam two of these plots side by side, sharing a y-axis.
 
 ## @knitr illustrated-customizations
 
