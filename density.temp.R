@@ -14,23 +14,19 @@ segment.plot <- function(row, data, number=FALSE) {
      + geom_point(size = 6, color = "white")
      + geom_numdensity(
          aes(size = eccentricity,
+             eccentricity = eccentricity,
              number = factor(target_number_shown),
-             spacing = spacing/eccentricity * 20/3,
+             spacing = spacing,
              center = {
                if (exists("side"))
                  c(top = pi/2, bottom = 3 * pi/2, left = pi, right = 0)[side]
                else pi/2}
              ))
-     + continuous_scale(
-         "spacing", "spacing",
-         function(x) {print(x); x},
-         breaks=unique(data$spacing),
-         #     labels=function(x) format(x, digits=2),
-         rescaler = function(x, from) {
-           ##THIS_IS_GETTING_AN_NA_ARGUMENT in scale_map.continuous
-           #if (any(is.na(x))) stop("WHAT")
-           rescale(x, from = from, to = from/20 * 3)
-         })
+     + identity_scale(
+         continuous_scale(
+           "spacing", "spacing", identity,
+           breaks=unique(data$spacing),
+           labels=function(x) format(x, digits=2)))
      + discrete_scale("number", "identity", identity_pal())
      + scale_size("Eccentricity", guide="none")
      + list(...({
@@ -46,13 +42,11 @@ segment.plot <- function(row, data, number=FALSE) {
                             gradient_n_pal(muted(c("cyan", "magenta", "yellow"),
                                                  l=70, c=180)),
                             breaks=unique(data$spacing),
-                         #   labels=function(x) format(x, digits=2)
-                            ),
+                            labels=function(x) format(x, digits=2)),
            guides(colour=guide_legend("Spacing (deg.)"),
-                  spacing=guide_legend("Spacing (deg.)"),
-                  number="none"
-                  )
-           )
+                  spacing=guide_legend("Spacing (deg.)",
+                    override.aes=list(eccentricity=20/3)),
+                  number="none"))
        else
          alist(
            aes(x=spacing),

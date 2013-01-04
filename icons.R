@@ -54,6 +54,7 @@ if (packageVersion("ggplot2") < package_version('0.9.4')) {
 ## "tick_out" the length by which the ticks stick out.
 ## "spacing" the angle (in radians, assuming you use an identity scale)
 ## between tickmarks.
+## "eccentricity" a scaling factor for "size"
 ## "weight" -- the thickness of the tickmarks.
 ## "color" and "fill" have their usual meanings.
 
@@ -68,15 +69,15 @@ GeomNumdensity <- proto(Geom, {
   default_stat <- function(.) StatIdentity
   default_aes <- function(.) aes(  colour = "black", size=4, weight=0.5, linetype=1
                                  , tick_in=1, tick_out = 2, alpha = NA, shape=16, fill=NA
-                                 , center = pi/2)
+                                 , center = pi/2, eccentricity=1)
   required_aes <- c("x", "y", "spacing", "number")
 
   circles_and_ticks <- function(munched) {
     # legend defaults; use of "with" below will fall back on these for legends.
     x <- 0.5; y <- 0.5; spacing <- pi/9; number <- 3;
     tickmarked <- adply(  munched, 1, function(row) {
-      angles <- with(row, seq(  center - spacing/2 * (as.numeric(number) - 1)
-                              , by=spacing, length=as.numeric(number)))
+      angles <- with(row, seq(  center - spacing/eccentricity/2 * (as.numeric(number) - 1)
+                              , by=spacing/eccentricity, length=as.numeric(number)))
       with(row, data.frame(
                   begin.x = size/2 * cos(angles) * (size - tick_in) / size
                   , begin.y = size/2 * sin(angles) * (size - tick_in) / size
