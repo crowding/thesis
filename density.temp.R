@@ -1,6 +1,8 @@
 bind[arow, adata] <- dlply_along(segment.rates.sided, segment.experiment.vars, list)[[2]]
 
+library(gtable)
 segment.plot <- function(row, data, number=FALSE) {
+  #use template to provide a version for spacing and a version for number
   eval(template({
     errorbar <-
       ddply(data, "side", summarize,
@@ -25,43 +27,12 @@ segment.plot <- function(row, data, number=FALSE) {
      + identity_scale(
          continuous_scale(
            "spacing", "spacing", identity,
-           breaks=unique(data$spacing),
+           breaks=sort(unique(data$spacing)),
            labels=function(x) format(x, digits=2)))
      + discrete_scale("number", "identity", identity_pal())
      + scale_size("Eccentricity", guide="none")
-     + list(...({
-       #choose the rest conditional on number or density scale
-       if (number)
-         alist(
-           aes(x=target_number_shown, color=spacing),
-           scale_x_continuous("Element number"),
-           geom_line(
-             ##color="black",
-             aes(group=spacing), show_guide=FALSE),
-           continuous_scale("colour", "colour",
-                            gradient_n_pal(muted(c("cyan", "magenta", "yellow"),
-                                                 l=70, c=180)),
-                            breaks=unique(data$spacing),
-                            labels=function(x) format(x, digits=2)),
-           guides(colour=guide_legend("Spacing (deg.)"),
-                  spacing=guide_legend("Spacing (deg.)",
-                    override.aes=list(eccentricity=20/3)),
-                  number="none"))
-       else
-         alist(
-           aes(x=spacing),
-           scale_x_continuous("Spacing (deg.)", breaks=unique(data$spacing),
-                              labels=function(x) format(x, digits=2)),
-           number_color_scale,
-           geom_line(
-             aes(group=target_number_shown),
-             show_guide=FALSE),
-           guides(colour=guide_legend("Element\nnumber"),
-                  number=guide_legend("Element\nnumber"),
-                  spacing="none"))
-     }))
      #   + geom_text(size = 2.5, aes(label = target_number_shown), fontface = "bold")
-     + facet_wrap(~side)
+     + list(...(if (length(unique(data$side)) > 1) alist(facet_wrap(~side, nrow=2))))
      + annotate("text",
                 size = 3, xmin = -Inf, xmax = Inf, x = Inf, y = -Inf,
                 vjust = -0.5, hjust = 1.1,
@@ -74,10 +45,48 @@ segment.plot <- function(row, data, number=FALSE) {
                 , mapping = aes(x = x, y = y, ymin = ymin, ymax = ymax)
                 , show_guide = FALSE, geom_linerange(),
                 geom_point(size = 4, shape = "+"))
-     + theme(legend.position=.(if (number) "left" else "right"))
-     )}))
+     + list(...({
+       ## The rest changes conditional on number or density scale
+       if (number)
+         alist(
+           aes(x=target_number_shown, color=spacing),
+           scale_x_continuous("Element number"),
+           geom_line(
+             ##color="black",
+             aes(group=spacing), show_guide=FALSE),
+           continuous_scale("colour", "colour",
+                            gradient_n_pal(muted(c("cyan", "magenta", "yellow"),
+                                                 l=70, c=180)),
+                            breaks=sort(unique(data$spacing)),
+                            labels=function(x) format(x, digits=2)),
+           guides(colour=guide_legend("Spacing (deg.)"),
+                  spacing=guide_legend("Spacing (deg.)",
+                    override.aes=list(eccentricity=20/3)),
+                  number="none"),
+           theme(legend.position="left"))
+       else
+         alist(
+           aes(x=spacing),
+           scale_x_continuous("Spacing (deg.)", breaks=unique(data$spacing),
+                              labels=function(x) format(x, digits=2)),
+           number_color_scale,
+           geom_line(
+             aes(group=target_number_shown),
+             show_guide=FALSE),
+           guides(colour=guide_legend("Element\nnumber"),
+                  number=guide_legend("Element\nnumber"),
+                  spacing="none")
+           ## theme(axis.text.y=element_blank(),
+           ##       axis.ticks.y=element_blank(),
+           ##       axis.title.y=element_blank())
+           )
+     })))
+  }))
 }
-dev.set(2); grid.newpage(); dev.flush()
-print(segment.plot(arow, adata, number=FALSE))
-dev.set(3); grid.newpage(); dev.flush()
-print(segment.plot(arow, adata, number=TRUE))
+
+right = ggplot_gtable(ggplot_build(segment.plot(arow, adata, number=FALSE)))
+left = ggplot_gtable(ggplot_build(segment.plot(arow, adata, number=TRUE)))
+grid.newpage()
+grid.draw(cbind(left, right, size="first"))
+
+
