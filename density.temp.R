@@ -1,5 +1,3 @@
-bind[arow, adata] <- dlply_along(segment.rates.sided, segment.experiment.vars, list)[[2]]
-
 library(gtable)
 segment.plot <- function(row, data, number=FALSE) {
   #use template to provide a version for spacing and a version for number
@@ -83,10 +81,3 @@ segment.plot <- function(row, data, number=FALSE) {
      })))
   }))
 }
-
-right = ggplot_gtable(ggplot_build(segment.plot(arow, adata, number=FALSE)))
-left = ggplot_gtable(ggplot_build(segment.plot(arow, adata, number=TRUE)))
-grid.newpage()
-grid.draw(cbind(left, right, size="first"))
-
-

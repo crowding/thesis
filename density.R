@@ -101,78 +101,27 @@ all(unlist(dlply(segment.rates.sided
 binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
 ##before any more malarkey, let's make the basic graph I've been
-##showing people all along. I'll facet by side tested, for now.
-geometric_shape_scale2 <-
-  list(
-    aes(  number=factor(target_number_shown)
-        , spacing=spacing/eccentricity*20/3
-        , center = (
-            if (exists("side"))
-            c(top=pi/2, bottom=3*pi/2, left=pi, right=0)[side]
-            else pi/2
-            )
-        )
-    , geom_numdensity(aes(size=eccentricity))
-    , continuous_scale(
-        "spacing", "spacing"
-        , identity, name="Spacing (deg.)"
-        , rescaler = function(x, from) rescale(x, from=from, to=from/20*3)
-        )
-    , discrete_scale(  "number", "identity", identity_pal()
-                     , name="Element\nnumber")
-    , scale_size("Eccentricity")
-    )
+##showing people all along. It's complicated enough to need its own file.
 
-bind[segment.by.spacing, segment.by.number] <- zip()
+source("density.temp.R")
 
-#here we make the raw plots, one
+##Now illustrate these conjointly with the matching configurations...
+joinedplot <- function(row, data) {
+  cbind(ggplot_gtable(ggplot_build()),
+        ggplot_gtable(ggplot_build()),
+        size="first")
+}
 
-base_plot <- function(row, data, xaxis=spacing, connect=target_number_shown,
-                      ...) {
-  eval(substitute(env=list(xaxis=substitute(xaxis), connect=substitute(xaxis)), {
-    errorbar <- ddply(  data, "side", summarize
-                      , y = 0.5
-                      , x = max(xaxis)
-                      , ymax=0.5 + binom_se(min(n), 0.5)
-                      , ymin=0.5 - binom_se(min(n), 0.5))
-    (  ggplot(data)
-     + aes(x=xaxis)
-     + proportion_scale
-     + geom_line(aes(group=connect), show_guide=FALSE)
-     + geom_point(size=6, color="white") # to interrupt the lines.
-     + geometric_shape_scale2
-     + facet_wrap( ~ side)
-     ##     + geom_text(aes())
-     + annotate(  "text", size=3
-                , xmin=-Inf, xmax=Inf, x=Inf, y=-Inf
-                , vjust=-0.5, hjust=1.1
-                , label=sprintf("%s, \u0394x = %s, C = %s",
-                    toupper(row$subject), format(row$displacement, digits=2),
-                    format(row$content, digits=2)))
-     + with_arg(  data=errorbar, inherit.aes=FALSE
-                , mapping=aes(x=x, y=y, ymin=ymin, ymax=ymax)
-                , show_guide=FALSE
-                , geom_linerange(), geom_point(size=4, shape="+"))
-     + list(...)
-     )}))}
+segment.lefts <- dlply_along(segment.rates.sided, segment.experiment.vars,
+                             segment.plot, number=TRUE)
+segment.rights <- dlply_along(segment.rates.sided, segment.experiment.vars,
+                              segment.plot, number=FALSE)
 
-dlply_along(  segment.rates.sided, segment.experiment.vars, base_plot
-            , xaxis=spacing
-            , number_color_scale
-            , 
-) -> segment.raw.plots
-segment.plot.spacing[[2]]
+grid.newpage()
 
-dlply_along(  segment.rates.sided, segment.experiment.vars, base_plot
-            , xaxis=target_number_shown
-) -> segment.plot.number
-segment.plot.number[[2]]
-
-
-
-##now I_want to jam two of these plots side by side, sharing a y-axis,
-##but having different x-axises.
-
+grid.draw(cbind(ggplot_gtable(ggplot_build(segment.lefts[[3]])),
+                ggplot_gtable(ggplot_build(segment.rights[[3]])),
+                size="first"))
 
 ## @knitr illustrated-customizations
 
