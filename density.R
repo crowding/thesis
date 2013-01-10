@@ -78,7 +78,6 @@ configs <- merge(segment.examples, configurations, all.y=TRUE)
 segment.rates <-
   mkrates(  segment
           , c(  segment.config.vars, segment.experiment.vars))
-
 segment.rates.sided <-
   mkrates(  segment
           , c(  segment.config.vars, segment.experiment.vars
@@ -88,99 +87,38 @@ segment.rates.sided <-
 #I think that in each experiment the number of trials is meant to be
 #the same for each condition, at least for each side. Close to the same.
 #Sometimes a prematurely terminated experiment means one or two are different.
-all(unlist(dlply(  segment.rates
-                 , c(segment.experiment.vars)
-                 , mkchain(`$`(n), range, diff))) <= 2) || stop("oops")
+mapply(rates=list(segment.rates, segment.rates.sided),
+       extra = list(c(), "side"), function(rates, extra) {
+  all(unlist(dlply(  rates
+                   , c(segment.experiment.vars, extra)
+                   , mkchain(`$`(n), range, diff))) <= 2) || stop("oops")
+})
 
-all(unlist(dlply(segment.rates.sided
-                 , c(segment.experiment.vars, "side")
-                 , mkchain(`$`(n), range, diff))) <= 2) || stop("oops")
-
-# Note that sometimes there is ine mroe "left" than "right"
-# compute a standard error bar over a nominal 50% rate.
+# Compute a standard error bar over a nominal 50% rate.
 binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
 ##before any more malarkey, let's make the basic graph I've been
 ##showing people all along. It's complicated enough to need its own file.
-
-source("density.temp.R")
+source("density.rawplot.R")
 
 ##Now illustrate these conjointly with the matching configurations...
 joinedplot <- function(row, data) {
-  cbind(ggplot_gtable(ggplot_build()),
-        ggplot_gtable(ggplot_build()),
+  cbind(ggplot_gtable(ggplot_build(segment.plot(row, data, number=TRUE))),
+        ggplot_gtable(ggplot_build(segment.plot(row, data, number=FALSE))),
         size="first")
 }
 
-segment.lefts <- dlply_along(segment.rates.sided, segment.experiment.vars,
-                             segment.plot, number=TRUE)
-segment.rights <- dlply_along(segment.rates.sided, segment.experiment.vars,
-                              segment.plot, number=FALSE)
+segment.plot.sided.gtables <-
+  dlply_along(segment.rates.sided, segment.experiment.vars, joinedplot)
+
+segment.plot.gtables <-
+  dlply_along(segment.rates, segment.experiment.vars, joinedplot)
 
 grid.newpage()
+grid.draw(segment.plot.gtables[[5]])
 
-grid.draw(cbind(ggplot_gtable(ggplot_build(segment.lefts[[3]])),
-                ggplot_gtable(ggplot_build(segment.rights[[3]])),
-                size="first"))
-
-## @knitr illustrated-customizations
-
-## For this figure we describe a "configuration" from an
-## experiment. First we have a spacing-series for a subject, showing a
-## particular direction content, with a vertical intercept-line
-## showing the particular value of direction content the cirrent data was collected under.
-
-#to take "unfolded" data from a model and make it fold
-
-##for each personalization, collect the "spacing" data
-alply(personalizations, 1,
-      splat(function(subject, freq, ...) {
-            #okay one problem is that the models are phrased in terms of
-            #the abs displacement whereas I want to plot the folded
-            #displacement (as that is more relevant to the fix that, I
-            #force the bias term to zero?)
-        matchby <- data.frame(subject, ...)
-        chain(  data
-              , match_df(matchby, on=names(matchby) %-% "folded_displacement")
-              , subset(exp_type %in% c("spacing", "content"))
-              , do.rename(folding=TRUE)
-              , mkrates
-              )
-      })) -> personalization.spacing.data
-
-personalization.sampling <-
-  seq %call% c(range(data$folded_displacement), len=100)
-
-
-#Here's the question: my prediction lines are supposed to match the
-#data, or the test data??? They are not necessarily equal.
-Map %call% c(  personalizations
-             , spacing.data=personalization.spacing.data
-             , segment.data=personalization.segment.data
-             , FUN = function(subject, spacing.data, folded_direction_content, ...) {
-               model <- models[[subject]]
-               predictions.matching.spacing.data <-
-                 expand.grid(displacement=personalization.sampling
-                             , spacing = unique(rawdata$spacing)
-                             , content=folded_direction_content)
-                predictions.matching.collected.data <-
-                 expand.grid(displacement=personalization.sampling)
-
-
-             })
-
-
-(ggplot(rawdata)
-         + proportion_scale + displacement_scale
-         + balloon + spacing_color_scale + spacing_texture_scale
-         + labs(y="Response proportion",
-                title=paste(
-                  "Subject ", toupper(subject),
-                  ", direction content ",
-                  format(matchby$folded_direction_content, digits=3))
-                )
-          + add_predictions(rawdata, models[[subject]])
-         )
+## @knitr segment-calibration-plot
+source("density.calibration.R")
 
 ##------------------------------------------------------------
 
