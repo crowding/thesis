@@ -82,12 +82,14 @@ calibration.data <-
     })
 
 # now make a plot out of all that.
-calibration.plot <- function(row, full, full.predicted, segment.predicted, ...) {
+calibration.plot <-
+  function(row, full, full.predicted, segment.predicted, ...,
+           spacing_breaks = sort(unique(segment$spacing)),
+           spacing_range = range(segment$spacing, full.predicted$spacing)
+                              ) {
   #we'll have to manually limit the scales for spacing and color, etc.
   # because the range and values differ in each dataset.
-  spacing_breaks <- sort(unique(segment$spacing))
   model_spacing_breaks <- unique(full$spacing)
-  spacing_range <- range(segment$spacing, full.predicted$spacing)
   number_breaks <- sort(round(2*pi*row$eccentricity/spacing_breaks), dec=TRUE)
   spacing_labels <- format(spacing_breaks, digits=2)
   (ggplot(full)
@@ -128,9 +130,9 @@ calibration.plot <- function(row, full, full.predicted, segment.predicted, ...) 
             number=guide_legend("Spacing"),
             fill=guide_colorbar("Spacing"),
             size="none"
-            ))
+            )
+   + theme(legend.box="horizontal"))
 }
-splat(calibration.plot)(calibration.data[[5]])
 
 #let's have a colorbar for the line fits and a spa
 

@@ -10,6 +10,10 @@ source("scales.R")
 source("library.R")
 setup_theme()
 
+## @knitr do-not-run
+cairo_pdf("density.pdf", onefile=TRUE)
+#on.exit(dev.off(), add=TRUE)
+
 ## @knitr density-load
 load("../modeling/data.Rdata")
 load("../modeling/slopeModel.RData")
@@ -58,20 +62,20 @@ segment.examples <-
         , merge(configurations))
 configs <- merge(segment.examples, configurations, all.y=TRUE)
 
-(ggplot(configs)
- + aes(x=spacing,
-       y=target_number_shown,
-       fill=color)
- + geometric_shape_scale
- + scale_fill_manual(values=c("gray80"), na.value=NA)
- + scale_x_continuous(breaks=unique(configurations$spacing),
-                       labels=function(x) format(x, digits=2))
- + scale_y_continuous("Element number")
- + labs(x="Element spacing (at 6.7\u0080 eccentricity)",
-        y="Number of elements",
-        title="Stimulus configurations")
- + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
- + theme(legend.position="none"))
+print(ggplot(configs)
+      + aes(x=spacing,
+            y=target_number_shown,
+            fill=color)
+      + geometric_shape_scale
+      + scale_fill_manual(values=c("gray80"), na.value=NA)
+      + scale_x_continuous(breaks=unique(configurations$spacing),
+                           labels=function(x) format(x, digits=2))
+      + scale_y_continuous("Element number")
+      + labs(x="Element spacing (at 6.7\u0080 eccentricity)",
+             y="Number of elements",
+             title="Stimulus configurations")
+      + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
+      + theme(legend.position="none"))
 
 ## @knitr spacing-data-plot
 
@@ -102,26 +106,66 @@ binom_se <- function(n, p) sqrt(p*(1-p)/n)
 source("density.rawplot.R")
 
 ##Now illustrate these conjointly with the matching configurations...
-joinedplot <- function(row, data) {
-  cbind(ggplot_gtable(ggplot_build(segment.plot(row, data, number=TRUE))),
-        ggplot_gtable(ggplot_build(segment.plot(row, data, number=FALSE))),
+joinedplot <- function(...) {
+  cbind(ggplot_gtable(ggplot_build(segment.plot(..., number=TRUE))),
+        ggplot_gtable(ggplot_build(segment.plot(..., number=FALSE))),
         size="first")
 }
 
-segment.plot.sided.gtables <-
+##@knitr skip-for-paper
+FALSE && {segment.plot.sided.gtables <-
   dlply_along(segment.rates.sided, segment.experiment.vars, joinedplot)
-
 segment.plot.gtables <-
   dlply_along(segment.rates, segment.experiment.vars, joinedplot)
-
-grid.newpage()
-grid.draw(segment.plot.gtables[[5]])
-
+#grid.newpage()
+#grid.draw(segment.plot.gtables[[5]])
+}
 ## @knitr segment-calibration-plot
+
 source("density.calibration.R")
 
-##------------------------------------------------------------
+combined_plot <- function(row, segment, full, full.predicted, ...) {
+  spacing_breaks <- sort(unique(segment$spacing))
+  spacing_range <- range(segment$spacing, full.predicted$spacing)
+  upper_plot <- calibration.plot(row=row, full=full, ...,
+                                 full.predicted=full.predicted,
+                                 spacing_breaks=spacing_breaks,
+                                 spacing_range=spacing_range)
+  lower_left_plot <- segment.plot(row, segment, number=TRUE,
+                                  spacing_breaks=spacing_breaks,
+                                  spacing_range=spacing_range)
+  browser()
+  lower_right_plot <- segment.plot(row, segment, number=FALSE)
+  lower_left_table <- ggplot_gtable(ggplot_build(lower_left_plot))
+  lower_right_table <- ggplot_gtable(ggplot_build(lower_right_plot))
+  lower_table <- cbind(lower_left_table, lower_right_table, size="first")
+  #now how to mismatched bind these...I need to insert a column to the left
+  #and stretch the middle
+  #move one of the legend grobs over...
+  upper_table <- ggplot_gtable(ggplot_build(upper_plot))
+  move_legend <- upper_table[3,5][[1]][[1]]
+  total_table <- chain(upper_table
+                       , gtable_filter("^[^g]")
+                       , gtable_add_grob(move_legend[,c(1,2,5)], 3, 5)
+                       , gtable_add_cols(unit(1, "null"), pos=1)
+                       , gtable_add_grob(move_legend[,c(1,4,5)], 3, 2)
+                       , gtable_add_cols(rep(unit(1, "null"), 5), pos=5)
+                       , `$<-`(., layout, mutate(.$layout, r=ifelse(l==5, r+5, r)))
+                       , rbind(lower_table, size="last")
+                       )
+  total_table
+}
 
+## @knitr do-not-run
+
+combined_plots <- lapply(calibration.data, splat(combined_plot))
+
+lapply(combined_plots, plot)
+
+dev.off()
+
+##------------------------------------------------------------
+FALSE && {
 prefixing.assign('segment.', within(list(),{
   load("Segment.Rdata")
   common.manipulations(environment())
@@ -242,4 +286,4 @@ vp <- viewport(x=0,y=1, height=0.5, width=1, just=c("left", "top"))
 print(segment.by.spacing, vp=vp)
 vp <- viewport(x=0, y=0, height=0.5, just=c("left", "bottom"))
 print(segment.by.elements, vp=vp) 
-
+}

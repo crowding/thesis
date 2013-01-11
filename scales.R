@@ -161,11 +161,13 @@ color_pal <- #function(n) rainbow(n, start=0, end=0.75)
 number_color_scale <-
   c(  list(aes(  color=factor(target_number_shown)))
        , with_arg(name="Element\nnumber",
-             palette=color_pal,
-             labels=prettyprint,
-             discrete_scale("fill", "manual"),
-             discrete_scale("colour", "manual")
-             ))
+                  palette=discretize(gradient_n_pal(
+                    muted(c("cyan", "magenta", "yellow"),
+                          l=70, c=180))),
+                  labels= prettyprint,
+                  discrete_scale("fill", "manual"),
+                  discrete_scale("colour", "manual")
+                  ))
 
 spacing_color_scale <-
   c(
@@ -185,8 +187,6 @@ spacing_texture_scale <-
          paste(y <- c(1:9, LETTERS)[seq_len(x)], y, sep="")
        }, labels=prettyprint)
        )
-
-
 
 content_color_scale <-
   c(
