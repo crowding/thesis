@@ -23,10 +23,14 @@ load("../modeling/data.Rdata")
 load("../modeling/slopeModel.RData")
 
 #this just illustrates the combinations of number and density.
-segment.config.vars <-
-  c("spacing", "target_number_shown", "target_number_all")
+
+#these are the columns which define each "experiment"
 segment.experiment.vars <-
   c("subject", "displacement", "content", "eccentricity")
+
+#within an experiment these are the vars which separate each "stimulus condition"
+segment.config.vars <-
+  c("spacing", "target_number_shown", "target_number_all")
 
 ## we like to plot with folded data, and with the "segment" data we
 ## spindle the data too, as the stimuli were presented in different
@@ -34,6 +38,8 @@ segment.experiment.vars <-
 ## plotting but not as good for modeling.
 ## "fold" collapses CW and CCW direction contents.
 ## "spindle" collapses CW and CCW spindling.
+labeler <- mkchain(mutate(label=sprintf("%s d=%.2g C=%.2g",
+                 toupper(subject), displacement, content)))
 extract_segment <- function(df, fold=FALSE, spindle=FALSE)
   chain(df,
         subset(exp_type=="numdensity" & subject %in% names(models)),
@@ -44,21 +50,33 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE)
                sidedness=if(spindle) 0 else 1,
                side=if(spindle) data$side[[1]] else side,
                extent = spacing * target_number_shown,
-               label=sprintf("%s d=%.2g C=%.2g",
-                 toupper(subject), displacement, content)))
+               labeler
+               ))
 
-##We'll be modeling raw data, but plotting folded/spindled. Here's how...
-##
-mutilate.predictions <- function(pred, fold=FALSE, spindle=FALSE) {
+##We'll be modeling raw data, but plotting folded/spindled. Here's a
+##function that  "re-folds" the predictions
+mutilate.predictions <-
+  function(pred,
+           fold=abs(diff(range(sign(pred$displacement)))) > 1,
+           spindle=length(unique(pred$side)) > 1) {
+    chain(pred,
+          refold(fold),
+          ddply(c(as.quoted(segment.config.vars),
+                  (if (spindle)
+                   c(as.quoted(quote(abs(content))),
+                     as.quoted(segment.experiment.vars %-% "content"))
+                  else as.quoted(segment.experiment.vars)),
+                  if (fold) NULL else as.quoted("side")),
+                summarize, fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
+          labeler)
+  }
 
-}
-
-bind[segment, segment.folded, segment.spindled] <-
+bind[segment, segment.folded, segment.folded.spindled] <-
   Map(extract_segment, list(data),
       fold = c(FALSE, TRUE, TRUE),
       spindle = c(FALSE, FALSE,TRUE))
 
-plot.basic <- (ggplot(segment.rates)
+plot.basic <- (ggplot(segment.folded.spindled)
                + proportion_scale
                + spacing_texture_scale[-1]
                + number_color_scale[-1]
@@ -74,7 +92,7 @@ plot(extent.plot <- plot.basic
 
 plot(number.plot <- plot.basic
      + aes(x=target_number_shown)
-     + geom_line(aes(group=factor(spacing), color=factor(spacing))))
+     + geom_line(aes(group=factor(spacing), linetype=factor(spacing))))
 
 plot(spacing.plot <- plot.basic
      + aes(x=spacing)
@@ -83,41 +101,45 @@ plot(spacing.plot <- plot.basic
 
 ## now how can we reconcile this data with the models?
 
-##let's start with a simple regression on the "unfolded" data (there
-##will need to be coefficient to account for side)
+##let's start with a simple regression on the "unfolded" data
+##"sidedness" and "bias" are control coefficients, set to 1 always
+##unless I'm doing something funny with the predictions.
 
+##do a regression for each subject:
 segment.models <-
   ddply_along(
-    segment.rates.sided, "subject",
+    segment, "subject",
     function(group, dataset) {
       model = glm(
         cbind(n_cw, n_ccw) ~ spacing + displacement
         + target_number_shown
-        + sidedness:factor(side),
+        + factor(side) - 1,
         family=binomial(link=logit.2asym(g=0.025, lam=0.025)),
         data=dataset)
-      mutate(group, model=I(list(model)))
+      mutate(group, model=list(model))
     })
+#now that it isn't folding we don't have warnings about failing to converge.
+#really though, factor(side) should play into spacing somehow???
 
 ##plot fit lines from this...
 `%<-%` <- function(x, y) NULL
 
-segment.model.pred <- adply(segment.models, 1,
-                            function(row) {
-                              bind[model=bind[model], ...=group] <- as.list(row)
-                              data <- match_df(segment.rates, quickdf(group))
-                              pred <- predict(model, newdata=data,
-                                              se.fit=TRUE, type="response")
-                              cbind(data, pred, model=NA) })
-
-
+segment.models.pred <-
+  chain(segment.models,
+        adply(1, function(row) {
+          bind[model=bind[model], ...=group] <- as.list(row)
+          data <- match_df(segment, quickdf(group))
+          pred <- predict(model, newdata=data,
+                          se.fit=TRUE, type="response")
+          cbind(data, pred, model=NA) }),
+        mutilate.predictions(fold=TRUE))
 
 ## TASK 2. for checking-purposes, plot these (local) model fits
 ## against the data.
 
 (spacing.plot
  + geom_line(data=segment.model.pred,
-             aes(y=fit, color=factor(target_number_shown)), linetype=3)
+             aes(y=fit, color=factor(target_number_shown)), linetype=4)
  + geom_ribbon(data=segment.model.pred,
                aes(ymin = fit - se.fit,
                    ymax = fit + se.fit,
@@ -136,7 +158,7 @@ segment.model.pred <- adply(segment.models, 1,
 ## TASK_3. derive some predictiion from the already fit model,
 ## somehow.
 
-segment.model.pred <-
+slope.model.pred <-
   mapply(models, subject=names(models),
          FUN=function(model, subject) {
            spacing_data <- match_df()
