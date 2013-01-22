@@ -1,5 +1,5 @@
 library(gtable)
-segment.plot <- function(row, segment, number=FALSE,
+segment.plot <- function(row, segment, x.axis="spacing",
                          spacing_breaks=unique(segment$spacing),
                          spacing_range=range(segment$spacing), ...) {
   #use template to provide a version for spacing and a version for number
@@ -8,7 +8,10 @@ segment.plot <- function(row, segment, number=FALSE,
       ddply(segment, .(if("side" %in% names(segment)) "side" else c()), summarize,
             y = 0.5,
             x = max(.(
-              if (number) quote(target_number_shown) else quote(spacing))),
+              switch(x.axis,
+                     number=quote(target_number_shown),
+                     spacing=quote(spacing),
+                     extent=quote(extent)))),
             ymax = 0.5 + binom_se(min(n), 0.5),
             ymin = 0.5 - binom_se(min(n), 0.5))
     (ggplot(segment)
@@ -48,27 +51,28 @@ segment.plot <- function(row, segment, number=FALSE,
          ...(if ("side" %in% names(segment)) alist(facet_wrap(~side, nrow=2)) else list()),
          ...({
            ## The rest changes conditional on number or density scale
-           if (number)
-             alist(
+           switch(
+             x.axis,
+             number = alist(
                aes(x=target_number_shown, color=spacing),
                scale_x_continuous("Element number"),
                geom_line(
-                 ##color="black",
                  aes(group=spacing), show_guide=FALSE),
-               continuous_scale("colour", "colour",
-                                trans=log_trans(),
-                                gradient_n_pal(
-                                  colours=muted(c("blue", "cyan", "yellow", "red"), l=70, c=180)),
-                                breaks=spacing_breaks,
-                                limits=spacing_range, 
-                                labels=function(x) format(x, digits=2)),
+               continuous_scale(
+                 "colour", "colour",
+                 trans=log_trans(),
+                 gradient_n_pal(
+                   colours = muted(c("blue", "cyan", "yellow", "red"),
+                                   l=70, c=180)),
+                 breaks=spacing_breaks,
+                 limits=spacing_range,
+                 labels=function(x) format(x, digits=2)),
                guides(colour=guide_legend("Spacing (deg.)"),
                       spacing=guide_legend("Spacing (deg.)",
                         override.aes=list(eccentricity=20/3)),
                       number="none"),
-               theme(legend.position="left"))
-           else
-             alist(
+               theme(legend.position="left")),
+             spacing = alist(
                aes(x=spacing),
                scale_x_continuous("Spacing (deg.)", breaks=unique(segment$spacing),
                                   labels=function(x) format(x, digits=2)),
@@ -82,7 +86,21 @@ segment.plot <- function(row, segment, number=FALSE,
                ## theme(axis.text.y=element_blank(),
                ##       axis.ticks.y=element_blank(),
                ##       axis.title.y=element_blank())
+               ),
+             extent = alist(
+               x=spacing * target_number_shown,
+               scale_x_continuous("Spacing (deg.)", breaks=unique(segment$spacing),
+                                  labels=function(x) format(x, digits=2)),
+               number_color_scale,
+               geom_line(
+                 aes(group=target_number_shown),
+                 show_guide=FALSE),
+               guides(colour=guide_legend("Element\nnumber"),
+                      number=guide_legend("Element\nnumber"),
+                      spacing="none")
                )
-         })))
+             )
+         }))
+     )
   }))
 }

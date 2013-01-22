@@ -11,8 +11,10 @@ source("library.R")
 setup_theme()
 
 ## @knitr do-not-run
-cairo_pdf("density.pdf", onefile=TRUE)
-#on.exit(dev.off(), add=TRUE)
+if (!interactive()) {
+  cairo_pdf("density.pdf", onefile=TRUE)
+  #on.exit(dev.off(), add=TRUE)
+}
 
 ## @knitr density-load
 load("../modeling/data.Rdata")
@@ -43,26 +45,24 @@ unmatching <-
                   ))
  if (!empty(unmatching)) stop("unmatching data")
 
-
 ##knitr index-plot
 #choose four examples to illustrate changes of number and of density.
 #lareg number/tight spacing
 #med number/narrow spacing
 #med number/wide spacing
 #small number/wide spacing
-segment.examples <-
+configs <-
   chain(  configurations
         , summarize(  spacing = sort(unique(spacing))[c(2, 2, 5, 5)]
                     , target_number_shown =
                          sort(unique(target_number_shown))[c(6, 3, 3, 1)]
                     , label=as.character(c(4, 3, 2, 1))
-                    , eccentricity=rep(20/3, 4)
                     , color=rep(TRUE, 4)
                   )
-        , merge(configurations))
-configs <- merge(segment.examples, configurations, all.y=TRUE)
+        , merge(configurations, all.y=TRUE)
+        , mutate(eccentricity = 20/3))
 
-print(ggplot(configs)
+(ggplot(configs)
       + aes(x=spacing,
             y=target_number_shown,
             fill=color)
@@ -87,6 +87,8 @@ segment.rates.sided <-
           , c(  segment.config.vars, segment.experiment.vars
               , "side","eccentricity"))
 
+
+
 #sanity check:
 #I think that in each experiment the number of trials is meant to be
 #the same for each condition, at least for each side. Close to the same.
@@ -107,19 +109,11 @@ source("density.rawplot.R")
 
 ##Now illustrate these conjointly with the matching configurations...
 joinedplot <- function(...) {
-  cbind(ggplot_gtable(ggplot_build(segment.plot(..., number=TRUE))),
-        ggplot_gtable(ggplot_build(segment.plot(..., number=FALSE))),
+  cbind(ggplot_gtable(ggplot_build(segment.plot(..., x.axis="spacing"))),
+        ggplot_gtable(ggplot_build(segment.plot(..., x.axis="number"))),
         size="first")
 }
 
-##@knitr skip-for-paper
-FALSE && {segment.plot.sided.gtables <-
-  dlply_along(segment.rates.sided, segment.experiment.vars, joinedplot)
-segment.plot.gtables <-
-  dlply_along(segment.rates, segment.experiment.vars, joinedplot)
-#grid.newpage()
-#grid.draw(segment.plot.gtables[[5]])
-}
 ## @knitr segment-calibration-plot
 
 source("density.calibration.R")
@@ -131,11 +125,10 @@ combined_plot <- function(row, segment, full, full.predicted, ...) {
                                  full.predicted=full.predicted,
                                  spacing_breaks=spacing_breaks,
                                  spacing_range=spacing_range)
-  lower_left_plot <- segment.plot(row, segment, number=TRUE,
+  lower_left_plot <- segment.plot(row, segment, x.axis="number",
                                   spacing_breaks=spacing_breaks,
                                   spacing_range=spacing_range)
-  browser()
-  lower_right_plot <- segment.plot(row, segment, number=FALSE)
+  lower_right_plot <- segment.plot(row, segment, x.axis="spacing")
   lower_left_table <- ggplot_gtable(ggplot_build(lower_left_plot))
   lower_right_table <- ggplot_gtable(ggplot_build(lower_right_plot))
   lower_table <- cbind(lower_left_table, lower_right_table, size="first")
@@ -160,11 +153,23 @@ combined_plot <- function(row, segment, full, full.predicted, ...) {
 
 combined_plots <- lapply(calibration.data, splat(combined_plot))
 
-lapply(combined_plots, plot)
+if (!interactive()) {
+  lapply(combined_plots, plot)
+  dev.off()
+} else {
+  plot(combined_plots[[5]])
+}
 
-dev.off()
+
+## @knitr do-not-run
+
+# I don't think I am moved by the "extent" data.
+# now what can we do with this data?
+
+source("density.modeling.R")
 
 ##------------------------------------------------------------
+#below this line is old code that I_don't know right now
 FALSE && {
 prefixing.assign('segment.', within(list(),{
   load("Segment.Rdata")
@@ -208,6 +213,16 @@ segment.properties <- with(segment.trials,within(list(),{
   tested <- mutate(tested, !is.na(selected))
 }))
 
+segment.plot.sided.gtables <-
+    dlply_along(segment.rates.sided, segment.experiment.vars, joinedplot)
+segment.plot.gtables <-
+  dlply_along(segment.rates, segment.experiment.vars, joinedplot)
+#grid.newpage()
+#grid.draw(segment.plot.gtables[[5]])
+
+if (!interactive) {
+  lapply(segment.plot.gtables, plot)
+}
 
 ## @knitr segment-diagnostics
 #here is how much data I have (incl. non-incongruent trials)
@@ -285,5 +300,5 @@ print(segment.colormap)
 vp <- viewport(x=0,y=1, height=0.5, width=1, just=c("left", "top"))
 print(segment.by.spacing, vp=vp)
 vp <- viewport(x=0, y=0, height=0.5, just=c("left", "bottom"))
-print(segment.by.elements, vp=vp) 
+print(segment.by.elements, vp=vp)
 }

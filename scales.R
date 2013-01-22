@@ -108,7 +108,8 @@ balloon <- list(geom_point(aes(size=n))
   geometric_shape_scale <-
     list(
       aes(  number=factor(target_number_shown)
-          , spacing=spacing/eccentricity)
+          , spacing=spacingq
+          , eccentricity=eccentricity)
       , geom_numdensity(size=7)
       , identity_scale(continuous_scale("spacing", "spacing",
                                         identity, name="Spacing")))
