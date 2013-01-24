@@ -25,7 +25,7 @@ refold <- function(data, fold=TRUE) {
   fold.trial <- with(data, fold & (content <= 0))
   response <- NA
   p <- NA
-  chain(data,
+   chain(data,
         mutate(content = ifelse(fold.trial, -content, content),
                displacement = ifelse(fold.trial, -displacement, displacement),
                response = ifelse(fold.trial, !response, response),
