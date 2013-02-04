@@ -12,7 +12,7 @@ setup_theme()
 
 ## @knitr do-not-run
 if (!interactive()) {
-  cairo_pdf("density.pdf", onefile=TRUE)
+  cairo_pdf("density1.pdf", onefile=TRUE)
   #on.exit(dev.off(), add=TRUE)
 }
 

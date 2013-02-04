@@ -22,7 +22,8 @@ do.rename <- function(data, folding=TRUE) {
 }
 
 refold <- function(data, fold=TRUE) {
-  fold.trial <- with(data, fold & (content <= 0))
+  fold.trial <- with(data, fold & ((content < 0)
+                                   | (content == 0 & displacement < 0)))
   response <- NA
   p <- NA
    chain(data,
