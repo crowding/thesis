@@ -166,7 +166,7 @@ if (!interactive()) {
 # I don't think I am moved by the "extent" data.
 # now what can we do with this data?
 
-source("density.modeling.R")
+#source("density.modeling.R")
 
 ##------------------------------------------------------------
 #below this line is old code that I_don't know right now

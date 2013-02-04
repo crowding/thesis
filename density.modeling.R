@@ -3,6 +3,7 @@ options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE
 library(ggplot2)
 library(plyr)
 library(grid)
+library(gnm)
 library(psyphy)
 library(ptools)
 source("latexing.R")
@@ -16,7 +17,7 @@ setup_theme()
 if (interactive()) {
   quartz()
 } else {
-  cairo_pdf("density.pdf", onefile=TRUE)
+  cairo_pdf("density2.pdf", onefile=TRUE)
   #on.exit(dev.off(), add=TRUE)
 }
 
@@ -27,23 +28,29 @@ load("../modeling/slopeModel.RData")
 
 #this just illustrates the combinations of number and density.
 
-#these are the columns which define each "experiment"
+#these are the columns which define each "experiment" (facet on the
+#graph)
 segment.experiment.vars <-
   c("subject", "displacement", "content", "eccentricity")
-
-#within an experiment these are the vars which separate each "stimulus condition"
+#within an experiment these are the vars which separate each "stimulus
+#condition" (data point on the graph)
 segment.config.vars <-
   c("spacing", "target_number_shown", "target_number_all")
 
-## we like to plot with folded data, and with the "segment" data we
-## spindle the data too, as the stimuli were presented in different
-## hemifields. Averaging foldings and hemifields is useful for
-## plotting but not as good for modeling.
-## "fold" collapses CW and CCW direction contents.
-## "spindle" collapses CW and CCW spindling.
-labeler <- mkchain(mutate(label=sprintf("%s d=%.2g C=%.2g",
-                            toupper(subject), displacement, content)))
+#label function for each facet
+labeler <- function(data) {
+  mutate(data, label=sprintf("%s d=%s C=%s",
+                 toupper(subject),
+                 format(displacement,digits=2),
+                 format(content,digits=2)))
+ }
 
+
+## we like to plot with folded data, and with the "segment" data we,
+## uh, "spindle" collapsing stimuli presented in different
+## hemifields. Averaging foldings and hemifields is useful for
+## plotting but not as good for modeling. "fold" collapses CW and CCW
+## direction contents.  "spindle" collapses stimulus locations.
 extract_segment <- function(df, fold=FALSE, spindle=FALSE)
   chain(df,
         subset(exp_type=="numdensity" & subject %in% names(models)),
@@ -56,29 +63,12 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE)
                extent = spacing * target_number_shown),
         labeler)
 
-##We'll be modeling raw data, but plotting folded/spindled. Here's a
-##function that  "re-folds" the predictions
-mutilate.predictions <-
-  function(pred,
-           fold=abs(diff(range(sign(pred$displacement)))) > 1,
-           spindle=length(unique(pred$side)) > 1) {
-    chain(pred,
-          refold(fold),
-          ddply(c(as.quoted(segment.config.vars),
-                  (if (spindle)
-                   c(as.quoted(quote(abs(content))),
-                     as.quoted(segment.experiment.vars %-% "content"))
-                  else as.quoted(segment.experiment.vars)),
-                  if (fold) NULL else as.quoted("side")),
-                summarize, fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
-          labeler)
-  }
-
 bind[segment, segment.folded, segment.folded.spindled] <-
   Map(extract_segment, list(data),
       fold = c(FALSE, TRUE, TRUE),
       spindle = c(FALSE, FALSE,TRUE))
 
+#base plot
 plot.basic <- (ggplot(segment.folded.spindled)
                + proportion_scale
                + spacing_texture_scale[-1]
@@ -86,25 +76,26 @@ plot.basic <- (ggplot(segment.folded.spindled)
                + facet_wrap(~label)
                )
 
-
-
+#plot with x-axis of target number, lines of constant spacing
 plot(number.plot <- plot.basic
      + aes(x=target_number_shown, group=factor(spacing), linetype=factor(spacing))
      + geom_line())
 
+#plot with x-axis of target spacing, lines of constant number
 plot(spacing.plot <- plot.basic
      + aes(x=spacing)
      + geom_line(aes(group = factor(target_number_shown),
                      color = factor(target_number_shown))))
 
+#plot with x-axis of "extent"
 plot(extent.plot <- plot.basic
      + aes(x = extent,
            group = factor(target_number_shown),
            color = factor(target_number_shown),
            fill = factor(target_number_shown))
      + geom_line(linetype=1)
-     + geom_line(aes(group = factor(spacing), linetype = factor(spacing),
-                     color="black", fill="black")))
+     + geom_line(aes(group = factor(spacing), linetype = factor(spacing)),
+                 color="black", fill="black"))
 
 ## now how can we reconcile this data with the models?
 
@@ -118,17 +109,32 @@ segment.models <-
     segment, "subject",
     function(group, dataset) {
       model = glm(
-        cbind(n_cw, n_ccw) ~ spacing + displacement
-        + target_number_shown
+        cbind(n_cw, n_ccw) ~ displacement
+        + target_number_shown:content
+        + content/spacing + content
         + factor(side) - 1,
         family=binomial(link=logit.2asym(g=0.025, lam=0.025)),
         data=dataset)
       mutate(group, model=list(model))
     })
-#now that it isn't folding we don't have warnings about failing to converge.
 
-##plot fit lines from this...
+##We'll be modeling raw data, but plotting folded/spindled. Here's a
+##function that  "re-folds" the predictions
+mutilate.predictions <-
+  function(pred,
+           fold=abs(diff(range(sign(pred$content)))) > 1,
+           spindle=length(unique(pred$side)) > 1) {
+    columns <- c(as.quoted(segment.config.vars),
+                 as.quoted(segment.experiment.vars),
+                 if (spindle) NULL else as.quoted("side"))
+    chain(pred,
+          refold(fold),
+          ddply(columns, summarize,
+                fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
+          labeler)
+  }
 
+##So extract model predictions for our descriptive model (and re-fold them)
 segment.models.pred <-
   chain(segment.models,
         adply(1, function(row) {
@@ -137,22 +143,31 @@ segment.models.pred <-
           pred <- predict(model, newdata=data,
                           se.fit=TRUE, type="response")
           cbind(data, pred, model=NA) }),
-        mutilate.predictions(fold=TRUE))
-
+        mutilate.predictions(fold=TRUE, spindle=TRUE)
+        )
 ## TASK 2. for checking-purposes, plot these (local) model fits
 ## against the data.
 
-prediction.layers <- function(dataset)
-  with_args(
-    data=dataset,
-    mapping=aes(
-      y=fit, ymin = fit - se.fit, ymax = fit + se.fit,
-      fill=factor(target_number_shown),
-      color=factor(target_number_shown)),
-    geom_line(linetype=4), geom_ribbon(alpha=0.3, linetype=0))
+#ggplot layers to add predictions
+prediction.layers <- function(dataset, connect=c("number","spacing"))  {
+  connect <- match.arg(connect)
+  eval(template(
+         with_arg(
+           data=dataset,
+           mapping=aes(
+             y=fit, ymin = fit - se.fit, ymax = fit + se.fit,
+             ...(list(
+                   number=alist(
+                     color=factor(target_number_shown),
+                     fill=factor(target_number_shown)),
+                   spacing=alist(
+                     linetype=factor(spacing)
+                     ))[[connect]])),
+           geom_line(...(if (connect=="number") list(linetype=3) else list())),
+           geom_ribbon(alpha=0.3, linetype=0))))
+}
 
-(spacing.plot + prediction.layers(segment.models.pred))
-
+print(spacing.plot + prediction.layers(segment.models.pred))
 
 #okay, that's a start. You'll note that the PBM data doesn't capture
 #the two displacements where PBM always responds with the content. Ah,
@@ -200,7 +215,7 @@ segment_model_subject <- function(model, subject) {
            target_number_all = target_number_shown,
            content_global = content * target_number_shown,
            content_local = content / spacing,
-           extent = eccentricity * spacing * target_number_all)
+           extent = spacing * target_number_all)
 
   #now the simplistic model of induced motion is that it summates over
   #the whole visual field. However, we do not (in the full-circle data)
@@ -214,8 +229,8 @@ segment_model_subject <- function(model, subject) {
   #with thinking of it as a center-surround type of effect.
   new_formula <-  (
     cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
-    + content:extent + I(content * abs(content)):extent
-    + content_local
+    + content + I(content * abs(content))
+    + content_local:extent
     + bias - 1)
 
   #Refit the model (this is still to the full-curcle-data. Despite
@@ -230,42 +245,45 @@ segment_model_subject <- function(model, subject) {
   mutate(segment.model$data,
          content_local = content/spacing,
          content_global = content*target_number_shown,
+         extent = extent*2
          ) -> segment.data
 
   new.pred <- cbind(
     segment.data,
-    predict(new_model, newdata=segment.data, type="link", se.fit=TRUE))
+    predict(new_model, newdata=segment.data, type="response", se.fit=TRUE))
+
+  #what if we just added a little offset to reconcile the predictions
+  #with the data?
+  #this doesn't propabage error bars but:
+  offset.pred <-
+    chain(segment.data,
+          cbind(., predict(new_model, newdata=., type="link", se.fit=FALSE)),
+          glm(new_model, data=., cbind(n_cw, n_ccw) ~ fit:content,
+              family=binomial(link=logit.2asym(g=0.025, lam=0.025))),
+          cbind(segment.data, predict(., type="response", se.fit=TRUE)))
 
   #return segment-from-circle predictions Might return other things in the future.
-  list(segment.pred.from.circle=new.pred)
+  list(segment.circle.model = I(list(new_model)),
+       segment.pred.from.circle=new.pred,
+       offset.pred.from.circle=offset.pred)
 }
-alply(segment.models, 1, splat(segment_model_subject)) -> segment.analysis 
 
-#juggle each subject's analysis into joined data frames
+#analyze each subject as above, then juggle into topical data frames
+alply(segment.models, 1, splat(segment_model_subject)) -> segment.analysis
 chain(segment.analysis,
       do.call(mapply, c(., FUN=list, SIMPLIFY=FALSE)),
       lapply(do.call, what=rbind)) -> segment.analysis
 bind[segment.pred.from.circle=segment.pred.from.circle,
+     offset.pred=offset.pred,
      ...=] <- segment.analysis
 
 # graph these predictions...
-(spacing.plot + predictions(segment.models.pred))
+print(spacing.plot + prediction.layers(mutilate.predictions(segment.pred.from.circle)))
 
-test <- do.call(mapply, c(segment.model.data, FUN=rbind))
-aaply(do.call, rbind)
-
-segment.model.data <- llply(segment.model.data, splat(rbind.fill))
-
+print(number.plot +
+      prediction.layers(mutilate.predictions(segment.pred.from.circle),
+                        connect="spacing"))
 
 
-pred <- do.call(pred, 1)
 
-
-pred <- do.call(pred, 1)
-
-## TASK 4. how to compare and reconcile? the
-
-#another idea would be to cast raw predictions from the models onto
-#this experiment.
-
-
+## TASK 4. how to compare and reconcile? Refit a constrained model?

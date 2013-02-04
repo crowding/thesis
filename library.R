@@ -29,7 +29,8 @@ refold <- function(data, fold=TRUE) {
         mutate(content = ifelse(fold.trial, -content, content),
                displacement = ifelse(fold.trial, -displacement, displacement),
                response = ifelse(fold.trial, !response, response),
-               p = ifelse(fold.trial, 1-p, p)))
+               p = ifelse(fold.trial, 1-p, p),
+               fit = if(exists("fit")) ifelse(fold.trial, 1-fit, fit)))
 }
 
 mkrates <- function(data,
