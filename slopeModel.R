@@ -5,7 +5,6 @@ library(ptools)
 library(psyphy)
 library(gnm)
 library(grid)
-library(extrafont)
 })
 theme_set(theme_bw())
 use_unicode=TRUE
@@ -30,12 +29,14 @@ do.rename <- function(data, folding=TRUE) {
       target_spacing="spacing"
       )
   }
-  rename(data, replacements)
+  chain(
+    rename(data, replacements)
+    , mutate(bias=if(folding) 0 else 1))
 }
 
 mkrates <- function(data,
                     splits=c("displacement", "content",
-                      "spacing", "subject", "exp_type")) {
+                      "spacing", "subject", "exp_type", "bias")) {
   chain(data,
         ddply(splits,
               summarize,
@@ -77,7 +78,7 @@ class(displacementTerm) <- "nonlin"
 
 makePredictions <-
   function(model, data=model$data,
-           splitting_vars=c("subject", "content", "exp_type", "spacing"),
+           splitting_vars=c("subject", "content", "exp_type", "spacing", "bias"),
            ordinate = "displacement"
            ) {
     r <- range(data[ordinate])
@@ -100,7 +101,8 @@ plotPredictions <- function(...) {
 
 plot_fit <- function(model, subject=model$data$subject[1]) {
   rates <- match_df(model$data,
-                    data.frame(subject=subject), on="subject")
+                    data.frame(subject=subject, stringsAsFactors=FALSE),
+                    on="subject")
   print((ggplot(rates)
          + displacement_scale
          + proportion_scale
@@ -118,8 +120,8 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
 
   #use only subjects whose number of trials exceed 2000
   chain(e$data
-        , do.rename(folding=FALSE)
         , subset(exp_type %in% c("spacing", "content"))
+        , do.rename(folding=FALSE)
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
         ) -> data
 
@@ -133,6 +135,7 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
            + content
            + I(content*abs(content))
            + I(1/spacing):content
+           + bias - 1 #allows us to switch off bias to predict unfolded data
            )
         , family=binomial(link=logit.2asym(g=0.025, lam=0.025))
         , data=chunk
@@ -178,7 +181,8 @@ plot_contours <- function(model) {
   displacement_sampling <- expand.grid(
                 spacing=seq_range(pmin(range(model$data$spacing), 10), length=100),
                 displacement = seq_range(range(model$data$displacement), length=100),
-                content = 0.1
+                content = 0.1,
+                bias=1
                 )
   displacement_sampling$pred <-
     predict(model, newdata=displacement_sampling, type="response")
@@ -201,7 +205,8 @@ plot_contours <- function(model) {
       spacing      = seq_range(pmin(range(model$data$spacing), 10), length=100),
       content      = seq_range(range(model$data$content), length=100),
       displacement = 0,
-      subject = model$data$subject[[1]]
+      subject = model$data$subject[[1]],
+      bias=1
       )
   content_sampling$pred <-
     predict(model, newdata=content_sampling, type="response")
@@ -211,7 +216,7 @@ plot_contours <- function(model) {
    + geom_contour(size=0.2, color="gray70", breaks=seq(0,1,0.02))
    + decision_contour
    + y_nopadding
-   + scale_x_continuous(name="Direction content",labels=add_arrows, expand=c(0,0))
+   + scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
    + no_grid
    + annotate("text", label=toupper(model$data$subject[[1]]),
               x=max(content_sampling$content), y=min(content_sampling$spacing),
@@ -225,7 +230,8 @@ plot_contours <- function(model) {
   uncertainty_sampling <- expand.grid(
         spacing = c(2, 3, 5, 10, 20),
         displacement = seq_range(range(model$data$displacement), length=100),
-        content = 0.1
+        content = 0.1,
+        bias=1
   )
   pred = predict(model, newdata=uncertainty_sampling, type="response", se.fit=TRUE)
   uncertainty_sampling <- cbind(uncertainty_sampling, pred)
@@ -247,7 +253,8 @@ plot_contours <- function(model) {
     expand.grid(
       spacing = c(2, 3, 5, 10, 20),
       content = seq(-1, 1, length=100),
-      displacement = 0)
+      displacement = 0,
+      bias = 1)
   pred = predict(model, newdata=content_sampling, type="response", se.fit=TRUE)
   content_sampling <- cbind(content_sampling, pred)
 
@@ -276,7 +283,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   # with the critical spacing.
   # another way to get at this is to run a prediction.
   sensitivity_data <-
-    expand.grid(spacing=seq(0, 10, len=200), content=0)
+    expand.grid(spacing=seq(0, 10, len=200), content=0, bias=1)
 
   sensitivity_data <- cbind(sensitivity_data,
                                 s=(predict(m,  data.frame(sensitivity_data, displacement=0.5) )
@@ -315,15 +322,15 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   dev.off()
 
   #another way to look at it is to plot the bias (instead of the scaled plot)
-  bias_all_data$bias <- predict(m, bias_all_data)
+  bias_all_data$localbias <- predict(m, bias_all_data)
   bias_all_plot2 <- (
     ggplot(bias_all_data)
-    + aes(y = bias)
+    + aes(y = localbias)
     + scale_y_continuous("Bias", labels=replace_arrows)
     + aes(x=spacing)
     + geom_line()
-    + geom_ribbon(aes(ymin=pmin(0, bias), ymax=bias), color=NA, fill="green", alpha=0.5)
-    + geom_ribbon(aes(ymin=bias, ymax=pmax(0,bias)), color=NA, fill="red", alpha=0.5)
+    + geom_ribbon(aes(ymin=pmin(0, localbias), ymax=localbias), color=NA, fill="green", alpha=0.5)
+    + geom_ribbon(aes(ymin=localbias, ymax=pmax(0,localbias)), color=NA, fill="red", alpha=0.5)
     + coord_cartesian(ylim=c(-5,20))
     )
   print(bias_all_plot2)
@@ -332,22 +339,22 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   wide_content_data <-
     expand.grid( content = seq(-1, 1, len=200), spacing=10, displacement=0)
   wide_content_data <- cbind(wide_content_data,
-                             bias=predict(m, wide_content_data)
-                                - predict(m, mutate(wide_content_data, content=-content)))
+                             losalbias=predict(m, wide_content_data)
+                                      - predict(m, mutate(wide_content_data, content=-content)))
   wide_content_plot <- (
     ggplot(wide_content_data)
     + geom_line()
-    + aes(y = bias)
+    + aes(y = localbias)
     + scale_y_continuous("Bias", labels=replace_arrows)
     + aes(x=content)
-    + scale_x_continuous(name="Direction content (at 10 degrees spacing)",labels=add_arrows, expand=c(0,0))
+    + scale_x_continuous(name="Direction content (at 10 degrees spacing)",labels=newline_arrows, expand=c(0,0))
     + geom_ribbon(aes(
-                    ymin=ifelse(content>0, pmin(0, bias), 0),
-                    ymax=ifelse(content>0, 0,             pmax(0, bias))),
+                    ymin=ifelse(content>0, pmin(0, localbias), 0),
+                    ymax=ifelse(content>0, 0,             pmax(0, localbias))),
                   color=NA, fill="red", alpha=0.5)
     + geom_ribbon(aes(
                     ymin=ifelse(content>0, pmax(0, bias), 0),
-                    ymax=ifelse(content>0, 0,             pmin(0, bias))),
+                    ymax=ifelse(content>0, 0,             pmin(0, localbias))),
                   color=NA, fill="green", alpha=0.5)
     )
   cairo_pdf(file=paste(prefix, "wide_content.pdf", sep=""), width=3, height=2, family="MS Gothic")
@@ -376,3 +383,5 @@ extract.nonlin.function <- function(nonlin.term) {
     }
     ), parent.frame())
 }
+
+run_as_command()

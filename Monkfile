@@ -10,6 +10,13 @@
 		     discrimination.sqlite
 --input --invisible  discrimination.sqlite.DONE
 --output             modeling/{0}_trials.csv
+--input              motion_energy.mat
+
+#collect the motion energy data in another file (as it has a grid)
+--command            Rscript
+--input mat2csv.R   
+--input --match (motion_energy)\.mat
+--output modeling/{0}.csv
 
 #plot threshold values
 --command            --once ./runmatlab 
@@ -87,6 +94,11 @@
 --once --output 'modeling/residuals_{0}_plots.pdf'
 --input --match 'modeling/residual_(.*)_.*\.pdf$'
 --invisible --phony --once figures
+
+--command cd modeling && Rscript
+--input --invisible modeling/slopeModel.R slopeModel.R
+--input --invisible --match modeling/data\.RData data.RData
+--output --invisible modeling/slopeModel.RData slopeModel.RData
 
 --command --once echo --once "making modeling"
 --input --match modeling/.*
