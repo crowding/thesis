@@ -142,7 +142,7 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
         )
   })
 
-  save(models, file="slopeModel.RData")
+  save(models, displacementTerm, file="slopeModel.RData")
 
   #plot the models
   cairo_pdf("slopeModel.pdf", onefile=TRUE, family="MS Gothic")

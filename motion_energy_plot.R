@@ -27,11 +27,11 @@ add_energies <- function(data){
 
 relabel_energy <- function(data) {
   mutate(data, variable = revalue(variable, c(
-                 energy_cw = paste("CW Energy", circleright),
+                 energy_cw = paste("CW energy", circleright),
                  energy_ccw = paste("CCW energy", circleleft),
-                 energy_diff = "CW - CCW",
-                 energy_total = "CW + CCW",
-                 norm_diff = "(CW-CCW)/(CW+CCW)")))
+                 energy_diff = "Difference",
+                 energy_total = "Total",
+                 norm_diff = "Normalized diff")))
 }
 
 revalue_named = function(value, x, ...) {
@@ -81,20 +81,16 @@ main <- function(motion_energy_file="motion_energy.csv",
               aes(y=value, x=displacement,
                   color=content, group=content))
        + geom_line()
-       + facet_grid(variable~target_number_all, scales="free_y")
+       + facet_grid(variable~., scales="free_y")
        + labs(title="Motion energy as a function of displacement", y="Energy")
-       + scale_color_gradientn(colours=c("yellow", "red", "black", "blue", "cyan"),
-                               values=c(0, 0.4999,0.5,0.5001,1))
+       + content_scale_continuous_waterline
        + geom_vline(x=0, alpha=0.3)
-       )
-  if (interactive)
-  
-  #let's make a surface plot too...
+       + displacement_scale)
 
-  #weird as fuck, why is it scaling up and down so much? maybe I need
-  #a surface plot. Or maybe the calculation is off?
+  #The second plot sort of gets at it, but let's also make a surface plot!
 
   library(rgl)
 
-  invisible(NULL)}
+  invisible(NULL)
+}
 
