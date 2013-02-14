@@ -187,6 +187,16 @@ number_color_scale <-
                   discrete_scale("colour", "manual")
                   ))
 
+number_color_alt_scale <-
+    c(  list(aes(  color=factor(target_number_shown)))
+       , with_arg(name="Element\nnumber",
+                  palette=discretize(gradient_n_pal(
+                    muted(c("blue", "cyan", "yellow", "red"), l=70, c=180))),
+                  labels= prettyprint,
+                  discrete_scale("fill", "manual"),
+                  discrete_scale("colour", "manual")
+                  ))
+
 spacing_color_scale <-
   c(
     list(aes(color=factor(spacing),
@@ -242,7 +252,7 @@ displacement_scale_continuous_waterline <-
 content_scale <-
   list(aes(x=content),
        scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
-       ) 
+       )
 
 ribbon <- list(
             geom_ribbon(color="transparent", alpha=0.2,

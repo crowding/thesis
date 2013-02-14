@@ -188,11 +188,16 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
       subset(segment, abs(content) >= 0), modelsplit,
       function(group, dataset) {
         formula <- (  cbind(n_cw, n_ccw) ~
-                    #+ content:target_number_shown
-                    + content:spacing
+                    + content:target_number_shown
+                    + content:I(1/spacing)
                     + factor(side) - 1)
         #only include a displacement term if the data need it...
+        if (with(dataset, chain(content, unique, length, .>1))) {
+          cat("displacement on", group$subject, "\n")
+          update(formula, . ~ . + content) -> formula
+        }
         if (with(dataset, chain(displacement, unique, length, .>1))) {
+          cat("content on", group$subject, "\n")
           update(formula, . ~ . + displacement) -> formula
         }
         model <- glm(formula,
@@ -213,7 +218,7 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
     chain(descriptive.models, subset(rank.deficient > 0, select=modelsplit), print)
   }
   plot(spacing.plot
-       + prediction_layers(predict_from_model_frame(descriptive.models, segment))
+       + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
        + labs(title="Descriptive fits"))
   #
   if (!is.null(prev.descriptive.models) && !is.null(descriptive.models)) {
@@ -231,14 +236,18 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
   }
 }
 
-#For the next step,I need to incorporate realistic spacing. Since we
+#can motion energy explain NJ wobbling?
+
+
+#For the next step, I need to incorporate realistic spacing. Since we
 #know that at wide spacings, there is no change in displacement
 #sensitivity with number of elements (no pooling,) then we expect the
 #relationship between displacement sensitivity and spacing to be
 #unchanged. So let's capture that relation
 
 FALSE || {
-  ##The first thing I'll do is capture some descriptive coefficients for each subject.
+  ##The first thing I'll do is capture some descriptive coefficients
+  ##for each subject.
 
   #okay first of all I'm just going to borrow the "critical spacing" and
   #the "displacement" coefficients from the model data and then refit

@@ -333,7 +333,9 @@ plot_curves <- function(models, prefix="../writing/inset_") {
     + geom_ribbon(aes(ymin=localbias, ymax=pmax(0,localbias)), color=NA, fill="red", alpha=0.5)
     + coord_cartesian(ylim=c(-5,20))
     )
+  cairo_pdf(file=paste(prefix, "all_bias2.pdf", sep=""), width=3, height=2, family="MS Gothic")
   print(bias_all_plot2)
+  dev.off()
 
   #and for my last trick some plot of the distant bias
   wide_content_data <-
