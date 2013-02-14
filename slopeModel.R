@@ -47,7 +47,7 @@ mkrates <- function(data,
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 
-`%++%` <- function(x, y) paste(x, y, sep="")
+`%++%` <- paste0
 
 #Our model has one term nonlinear in the spacing-dependent
 #sensitivity to displacement and to direction content.
