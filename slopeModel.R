@@ -259,7 +259,7 @@ plot_contours <- function(model) {
   content_sampling <- cbind(content_sampling, pred)
 
   print(ggplot(content_sampling)
-        + content_x_scale
+        + content_scale
         + proportion_scale
         + spacing_texture_scale
         + ribbon
@@ -306,7 +306,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
 
   #another way to get at this is to run a prediction.
   bias_all_data <-
-    expand.grid(spacing=seq(0, 10, len=200), content=0.2, displacement=0)
+    expand.grid(spacing=seq(0, 10, len=200), content=0.2, displacement=0, bias=1)
   bias_all_data <- cbind(bias_all_data, p=predict(m, bias_all_data, type="response")
                          )
   bias_all_plot <- (
@@ -337,9 +337,9 @@ plot_curves <- function(models, prefix="../writing/inset_") {
 
   #and for my last trick some plot of the distant bias
   wide_content_data <-
-    expand.grid( content = seq(-1, 1, len=200), spacing=10, displacement=0)
+    expand.grid( content = seq(-1, 1, len=200), spacing=10, displacement=0, bias=1)
   wide_content_data <- cbind(wide_content_data,
-                             losalbias=predict(m, wide_content_data)
+                             localbias=predict(m, wide_content_data)
                                       - predict(m, mutate(wide_content_data, content=-content)))
   wide_content_plot <- (
     ggplot(wide_content_data)

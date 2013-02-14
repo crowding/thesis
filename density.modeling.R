@@ -8,7 +8,7 @@ library(grid)
 library(gnm)
 library(psyphy)
 library(ptools)
-source("latexing.R")
+#source("latexing.R")
 source("icons.R")
 source("scales.R")
 source("library.R")
@@ -17,19 +17,17 @@ setup_theme()
 
 ## @knitr do-not-run
 if (interactive()) {
-  quartz()
+  figure("plot")
 } else {
   cairo_pdf("density2.pdf", onefile=TRUE)
   #on.exit(dev.off(), add=TRUE)
 }
 
 ## @knitr density-load
-load("../modeling/data.Rdata")
-load("../modeling/slopeModel.RData")
+load("data.RData")
+load("slopeModel.RData")
 
 ##}}}
-
-
 ##{{{ ---------- COUNT AND LABEL TRIALS ----------------------------------
 
 #this just illustrates the combinations of number and density.
