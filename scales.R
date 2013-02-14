@@ -1,4 +1,5 @@
 library(scales)
+library(ggplot2)
 
 if ( !exists("use_unicode") || use_unicode) {
   curveleft = "\u21BA"
@@ -128,7 +129,7 @@ decision_color_scale <-
                    guide="legend", breaks=seq(0,1,0.1), labels=append_arrows)
 
 decision_contour <-
-  list( 
+  list(
     geom_contour(aes(color=..level..), breaks = seq(0,1,length=11)),
     decision_color_scale
     )
@@ -154,6 +155,22 @@ discretize <- function(pal) {
     pal(seq(0,1,length=n))
   }
 }
+
+sat <- function(x, min, max)
+  ifelse(x > min, ifelse(x < max, x, max), min)
+
+clip <- function(x, min, max, replace=NA)
+  ifelse(x > min, ifelse(x < max, x, replace), replace)
+
+mapColors <- function(data, map,
+                      min=base::min(data), max=base::max(data), limit=sat, ...,
+                      sampling=1024) {
+  data <- limit(data, min, max, ...)
+  colors <- map(sampling)
+  index <- round((data - min) / (max-min) * (sampling - 1)) + 1
+  colors[index]
+}
+
 
 color_pal <- #function(n) rainbow(n, start=0, end=0.75)
   discretize(gradient_n_pal(
@@ -201,7 +218,28 @@ content_color_scale <-
              )
     )
 
-content_x_scale <-
+#a palette with a waterline in the middle
+energy_palette <- gradient_n_pal(
+                    colours=c("#00DDDD", "blue", "black", "red", "#DDDD00"),
+                    values=c(0, 0.4999,0.5,0.5001,1))
+
+energy.colors <- function(n) energy_palette(seq(0, 1, length=n))
+
+content_scale_continuous_waterline <-
+  scale_color_gradientn("Direction\ncontent",
+                        colours=c("#00DDDD", "blue", "black", "red", "#DDDD00"),
+                        values=c(0, 0.4999,0.5,0.5001,1), limits=c(-1,1),
+                        labels=append_arrows
+                        )
+
+displacement_scale_continuous_waterline <-
+  scale_color_gradientn("Displacement",
+                        colours=c("#00DDDD", "blue", "black", "red", "#DDDD00"),
+                        values=c(0, 0.4999,0.5,0.5001,1),
+                        labels=append_arrows
+                        )
+
+content_scale <-
   list(aes(x=content),
        scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
        ) 

@@ -101,6 +101,17 @@
 --input --match 'modeling/residual_(.*)_.*\.pdf$'
 --invisible --phony --once figures
 
+#grab our motion energy demo movie
+--command cp
+--input --match (deltax\.mov)
+--output modeling/energy/{0}
+
+#make our motion energy graphs
+--command cd modeling && Rscript
+--input --invisible modeling/motion_energy_plot.R motion_energy_plot.R
+--input --invisible --match modeling/motion_energy\.csv motion_energy.csv
+--output --listing --invisible modeling/energy/motion_energy_plot.list energy/motion_energy_plot.list
+
 --command cd modeling && Rscript
 --input --invisible modeling/slopeModel.R slopeModel.R
 --input --invisible --match modeling/data\.RData data.RData
