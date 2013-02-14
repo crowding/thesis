@@ -211,7 +211,21 @@ content_color_scale <-
              )
     )
 
-content_x_scale <-
+content_scale_continuous_waterline <-
+  scale_color_gradientn("Direction\ncontent",
+                        colours=c("#DDDD00", "red", "black", "blue", "#00DDDD"),
+                        values=c(0, 0.4999,0.5,0.5001,1), limits=c(-1,1),
+                        labels=append_arrows
+                        )
+
+displacement_scale_continuous_waterline <-
+  scale_color_gradientn("Displacement",
+                        colours=c("#DDDD00", "red", "black", "blue", "#00DDDD"),
+                        values=c(0, 0.4999,0.5,0.5001,1),
+                        labels=append_arrows
+                        )
+
+content_scale <-
   list(aes(x=content),
        scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
        ) 
