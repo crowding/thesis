@@ -42,10 +42,10 @@
 --output --invisible --once modeling/data.mat
 
 #might as well unpack into an R data file.
---command --once Rscript --once --input modeling/unpack.R
---input --invisible modeling/unpack.R
---output --once modeling/data.RData
---input --match modeling/(.*_trials\.csv)
+--command --once cd --once modeling --once && --once Rscript
+--once --input --invisible modeling/unpack.R --once unpack.R
+--output --invisible --once modeling/data.RData --once data.RData
+--input --match --invisible modeling/(.*_trials\.csv) {0}
 
 #the model-fitting function
 #--command ./runmatlab "\"addpath('modeling'); MeilstrupBoyntonModel\""

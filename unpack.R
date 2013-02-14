@@ -1,5 +1,5 @@
 #!/bin/Rscript
-source("modeling/library.R")
+source("library.R")
 library(ptools)
 library(plyr)
 
