@@ -6,26 +6,6 @@ source("scales.R")
 library(reshape2)
 setup_theme()
 
-
-add_energies <- function(data){
-  cw_cols <- grep("(.*)_cw\\.\\d$", names(data), value=TRUE)
-  ccw_cols <- grep("(.*)_ccw\\.\\d$", names(data), value=TRUE)
-  channel_cols <- grep("\\.\\d*$", names(data), value=TRUE)
-  chain(data,
-        mutate(
-          total_e = rowSums(data[c(cw_cols, ccw_cols)]),
-          energy_cw = rowSums(data[cw_cols]) / max(total_e),
-          energy_ccw = rowSums(data[ccw_cols]) / max(total_e),
-          energy_diff = energy_cw - energy_ccw,
-          energy_total = total_e / max(total_e),
-          norm_diff = energy_diff / energy_total),
-        drop_columns(c(cw_cols, ccw_cols, "total_e")),
-#        drop_columns(drop_cols),
-        rename(c(abs_displacement="displacement",
-                 abs_direction_content="content"))
-        )
-}
-
 relabel_energy <- function(data) {
   mutate(data, variable = revalue(variable, c(
                  energy_cw = paste("CW energy", circleright),
@@ -136,7 +116,7 @@ main <- function(motion_energy_file="motion_energy.csv",
           mtext3d("Direction content", 'y+-', 2)
           mtext3d(zlab, 'z++', 2)
           fdir <- dirname(outfile)
-          fname <- path.name(fdir,paste0(file,".html"))
+          fname <- file.path(fdir,paste0(file,".html"))
           writeWebGL(fdir, fname)
           writeLines(fname, fout)
         })
@@ -144,3 +124,5 @@ main <- function(motion_energy_file="motion_energy.csv",
 
   invisible(NULL)
 }
+
+run_as_command()

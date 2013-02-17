@@ -9,7 +9,7 @@ library(gnm)
 library(psyphy)
 library(ptools)
 #source("latexing.R")
-source("icons.R")
+#source("icons.R")
 source("scales.R")
 source("library.R")
 source("model.R")
@@ -191,15 +191,14 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
                     + content:target_number_shown
                     + content:I(1/spacing)
                     + factor(side) - 1)
-        #only include a displacement term if the data need it...
-        if (with(dataset, chain(content, unique, length, .>1))) {
-          cat("displacement on", group$subject, "\n")
-          update(formula, . ~ . + content) -> formula
+        #only include a displacement or content term if the data support it.
+        update.if <- function(formula, update.formula) {
+          updated <- update(formula, update.formula)
+          m <- model.matrix(updated, dataset)
+          if (qr(m)$rank == ncol(m)) updated else formula
         }
-        if (with(dataset, chain(displacement, unique, length, .>1))) {
-          cat("content on", group$subject, "\n")
-          update(formula, . ~ . + displacement) -> formula
-        }
+        formula <- update.if(formula, . ~ . + displacement)
+        formula <- update.if(formula, . ~ . + content)
         model <- glm(formula,
                      family=binomial(link=logit.2asym(g=0.025, lam=0.025)),
                      data=dataset)
@@ -239,61 +238,62 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
 #can motion energy explain NJ wobbling?
 
 
+
 #For the next step, I need to incorporate realistic spacing. Since we
 #know that at wide spacings, there is no change in displacement
 #sensitivity with number of elements (no pooling,) then we expect the
 #relationship between displacement sensitivity and spacing to be
 #unchanged. So let's capture that relation
 
-FALSE || {
-  ##The first thing I'll do is capture some descriptive coefficients
-  ##for each subject.
+##The first thing I'll do is capture some descriptive coefficients
+##for each subject.
 
-  #okay first of all I'm just going to borrow the "critical spacing" and
-  #the "displacement" coefficients from the model data and then refit
-  #adding some other coefficients.
+#okay first of all I'm just going to borrow the "critical spacing" and
+#the "displacement" coefficients from the model data and then refit
+#adding some other coefficients.
 
-  ##Here's a data frame of the coefficients of my "full circle" models
-  circle.models <- data.frame(model=I(models), subject=names(models),
-                              stringsAsFactors=FALSE)
-  circle.coefs <- adply(circle.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <-as.list(row)
-    data.frame(c(coef(model), group), model=NA)
+##Here's a data frame of the coefficients of my "full circle" models
+circle.models <- data.frame(model=I(models), subject=names(models),
+                            stringsAsFactors=FALSE)
+circle.coefs <- adply(circle.models, 1, function(row) {
+  bind[model=bind[model], ...=group] <-as.list(row)
+  data.frame(c(coef(model), group), model=NA)
+})
+
+##here's a function to plot those predictions
+
+##Now what I'd like is a "descriptive model" that more or less
+##captures what we see in the plots above.
+informed.models <-
+  adply(circle.models, 1, function(row){
+    bind[model=bind[model], ...=group] <- as.list(row)
+    #
+    #skip if there is not corresponding segment data
+    if (empty(match_df(as.data.frame(group), segment, names(group))))
+      return(data.frame())
+    segdata <- merge(group, segment)
+    #
+    #Let's fix a model taking the position-discrimination as granted.
+    #To do that, we'll predict the old model terms over the new data,
+    #then use that as an offset in the new model.
+    #
+    pred <- predict(model, newdata=segdata, type="terms")
+    #
+    newfit <- glm((cbind(n_cw, n_ccw)
+                   ~ offset(pred[,  "displacementTerm(spacing, displacement)"])
+                   + bias + content:factor(side) - 1),
+                  data = segdata,
+                  family = binomial(link=logit.2asym(g=0.025, lam=0.025))
+                  )
+    c(group, list(model=newfit))
   })
 
-  ##here's a function to plot those predictions
+##here's a function to plot those predictions
+plot(spacing.plot
+     + prediction_layers(predict_from_model_frame(informed.models, segment))
+     + labs(title="Fits using spacing/displacement relation from Exp. 1"))
 
-  ##Now what I'd like is a "descriptive model" that more or less
-  ##captures what we see in the plots above.
-  informed.models <-
-    adply(circle.models, 1, function(row){
-      bind[model=bind[model], ...=group] <- as.list(row)
-      #
-      #skip if there is not corresponding segment data
-      if (empty(match_df(as.data.frame(group), segment, names(group))))
-        return(data.frame())
-      segdata <- merge(group, segment)
-      #
-      #Let's fix a model taking the position-discrimination as granted.
-      #To do that, we'll predict the old model terms over the new data,
-      #then use that as an offset in the new model.
-      #
-      pred <- predict(model, newdata=segdata, type="terms")
-      #
-      newfit <- glm((cbind(n_cw, n_ccw)
-                     ~ offset(pred[,  "displacementTerm(spacing, displacement)"])
-                     + bias + content:factor(side) - 1),
-                    data = segdata,
-                    family = binomial(link=logit.2asym(g=0.025, lam=0.025))
-                    )
-      c(group, list(model=newfit))
-    })
-
-  ##here's a function to plot those predictions
-  plot(spacing.plot
-       + prediction_layers(predict_from_model_frame(informed.models, segment))
-       + labs(title="Fits using spacing/displacement relation from Exp. 1"))
-
+FALSE || {
   ##here's a function to plot those predictions
   plot(spacing.plot
        + prediction_layers(predict_from_model_frame(informed.models, segment)))

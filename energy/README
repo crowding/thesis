@@ -6,11 +6,15 @@ by constructive or destructive interference between successive
 presentations of motion elements.
 
 The motion energy is calculated by reconstructing the stimulus and
-filtering against several. The filters have spatial bandwidth matched to
-psychophysical data for human subjects at the appropriate
-eccentricities, and temporal bandwidth matched to measurements of MT
-cell physiology. The temporal filters are the same as have been used
-before for reconstructing motion energy of stimuli (Kiani et al.)
+filtering them in a usual motion-energy (Adelson and Bergen 1985.) The
+filters have spatial bandwidth matched to published psychophysical
+data for human subjects at the same eccentricities (Anderson and Burr,
+1987; Banks et al, 1991), and temporal bandwidth matched to
+measurements of MT cell physiology. Temporal bandwidth does not change
+appreciably with eccentricity (Virsu et al., 1982; Wright and
+Johnston, 1983). The temporal filters we use here are the same as have
+been used before for reconstructing motion energy of stimuli (Kiani et
+al. 2008.)
 
 The demo movie [deltax.mov] shows the motion energy changing as a
 function of displacement. At top is a space-time diagram of the
@@ -22,7 +26,7 @@ of "clockwise" and "counterclockwise" versions of the
 filters. Scrubbing the movie should show you how these responses
 change as a function of the displacement parameter.
 
-The file [motion_energy.pdf] shows a computation of motion energy over
+The file [motion_energy_plot.pdf] shows a computation of motion energy over
 two parameters, direction content and spacing. The first page shows
 energy as a function of direction content, stratified by
 displacement. The two subplots at the bottom are the most interesting,
