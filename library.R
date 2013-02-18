@@ -32,13 +32,33 @@ refold <- function(data, fold=TRUE) {
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type")) {
+
+  kept.columns <- structure( rep(TRUE, length(data))
+                           , names=colnames(data))
+
   counter <- function(s) summarize(s,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
+
   nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()), n_cw=I(c()), n_ccw=I(c()))
+
+  with_unique_cols <- function(summary, data) {
+    keep <- unlist(lapply(names(data),
+      function(n) if (length(unique(data[[n]])) == 1) n else NULL))
+    keep <- keep %-% names(summary)
+    kept.columns[names(data)[names(data) %in% keep]] <- FALSE
+    cbind(summary, data[keep])
+  }
+
+  #if there are columns we can propagate, keep them.
+  count_and_drop <- function(df)
+    chain(df, counter, with_unique_cols(df))
+
   chain(data
-        , if(empty(.)) nullcounter(.) else ddply(.,splits, counter)
-        , arrange(desc(n)))
+        , if(empty(.)) nullcounter(.) else ddply(.,splits, count_and_drop)
+        , arrange(desc(n))
+        ) -> out
+  out[colnames(out) %-% names(kept.columns)[!kept.columns]]
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -88,6 +108,10 @@ unique_by <- function(data, columns) {
 
 drop_columns <- function(data, drop) {
   data[colnames(data)[!colnames(data) %in% drop]]
+}
+
+attach_energies <- function(trials, data) {
+  
 }
 
 add_energies <- function(data){

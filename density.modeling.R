@@ -67,7 +67,8 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE)
                extent = spacing * target_number_shown),
         labeler)
 
-##make up some datasets with and without folding
+##Aggregate data into counts of CW and CCW responses, with various
+##levels of folding/spindling
 bind[segment, segment.folded, segment.folded.spindled] <-
   Map(extract_segment, list(data),
       fold = c(FALSE, TRUE, TRUE),
@@ -110,7 +111,8 @@ plot(extent.plot <- plot.basic
                  color="black", fill="black"))
 
 ##We'll be modeling raw data, but plotting folded/spindled. Here's a
-##function that  "re-folds" the predictions
+##function that "re-folds" the predictions so that they can be plotted
+##on a folded plot.
 mutilate.predictions <-
   function(pred,
            fold=abs(diff(range(sign(pred$content)))) > 1,
@@ -125,7 +127,7 @@ mutilate.predictions <-
           labeler)
   }
 
-#ggplot layers to add predictions
+#Build ggplot layers to add predictions to a plot.
 prediction_layers <- function(dataset, connect = c("number","spacing"))  {
   connect <- match.arg(connect)
   eval(template(
@@ -236,7 +238,8 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
 }
 
 #can motion energy explain NJ wobbling?
-
+chain(segment, subset(subject="nj"),
+      add_energies)
 
 
 #For the next step, I need to incorporate realistic spacing. Since we
