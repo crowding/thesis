@@ -58,13 +58,13 @@ labeler <- function(data) {
 extract_segment <- function(df, fold=FALSE, spindle=FALSE)
   chain(df,
         subset(exp_type=="numdensity" & subject %in% names(models)),
-        do.rename(folding = FALSE),
-        refold(fold = TRUE),
+        do.rename(folding = FALSE), # we handle the folds more comprehensively.
+        refold(fold = fold),
         mkrates(c(  segment.config.vars, segment.experiment.vars
                   , "eccentricity", if(!spindle) "side")),
         mutate(bias = if (fold) 0 else 1,
                sidedness = if (spindle) 0 else 1,
-               side = if (spindle) data$side[[1]] else side,
+               side = if (spindle) NA else side,
                extent = spacing * target_number_shown),
         labeler)
 
@@ -81,7 +81,6 @@ bind[segment, segment.folded, segment.folded.spindled] <-
 ##{{{ ---------- BASIC PLOTS ----------------------------------------
 
 #base plot
-
 
 plot.basic <- (ggplot(segment.folded.spindled)
                + proportion_scale
@@ -181,9 +180,7 @@ prev.descriptive.models <- NULL
 descriptive.models <- NULL
 library(reshape2)
 
-mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
 ##keep editing and rerunning this chunk until I'm satisfied.
-
 {
   modelsplit <- "subject"
   testModel <- function() {
@@ -191,14 +188,20 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
       subset(segment, abs(content) >= 0), modelsplit,
       function(group, dataset) {
         formula <- (  cbind(n_cw, n_ccw) ~
-                    + content:target_number_shown
+                      content:target_number_shown
                     + content:I(1/spacing)
                     + factor(side) - 1)
         #only include a displacement or content term if the data support it.
         update.if <- function(formula, update.formula) {
           updated <- update(formula, update.formula)
           m <- model.matrix(updated, dataset)
-          if (qr(m)$rank == ncol(m)) updated else formula
+          if (qr(m)$rank == ncol(m)) {
+            #cat(unlist(group), deparse(formula) , "->", deparse(updated), "\n")
+            updated
+          } else {
+            #cat(unlist(group), deparse(formula) , "!>", deparse(updated), "\n")
+            formula
+          }
         }
         formula <- update.if(formula, . ~ . + displacement)
         formula <- update.if(formula, . ~ . + content)
@@ -239,7 +242,8 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
 }
 
 #can motion energy explain NJ wobbling?
-chain(segment.folded.spindled, subset(subject=="nj" && abs(direction_content=0.2))
+chain(segment.folded.spindled, subset(subject=="nj" && abs(direction_content==0.2))
+      , print
       , add_energies
       , subset(target_number_shown == 3 & target_number_all == 9)
       , ddply(., c('target_number_shown', 'target_number_all'),

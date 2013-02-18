@@ -35,7 +35,7 @@ refold <- function(data, fold=TRUE) {
     if (any(cw_cols[,c(2,3)] != ccw_cols[,c(2,3)])) stop("hmm")
     Map(a=cw_cols[,1], b=ccw_cols[,1],
         f=function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL})
-    lapply(diff_cols, function(c) {trials[c, fold] <<- -trials[c, fold]; NULL})
+    lapply(diff_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
     trials
   }
 
@@ -67,7 +67,7 @@ mkrates <- function(data,
       function(n) if (length(unique(data[[n]])) == 1) n else NULL))
     keep <- keep %-% names(summary)
     kept.columns[names(data)[names(data) %in% keep]] <- FALSE
-    cbind(summary, data[keep])
+    cbind(summary, data[1,keep])
   }
 
   #if there are columns we can propagate, keep them.
@@ -87,6 +87,7 @@ seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 `%v%` <- union
 `%^%` <- intersect
 `%call%` <- function(x, y) do.call(x, as.list(y), envir=parent.frame())
+mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
 
 ddply_along <-
   function(.data, .variables, .fun=NULL, ...
