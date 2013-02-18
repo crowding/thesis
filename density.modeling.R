@@ -58,7 +58,8 @@ labeler <- function(data) {
 extract_segment <- function(df, fold=FALSE, spindle=FALSE)
   chain(df,
         subset(exp_type=="numdensity" & subject %in% names(models)),
-        do.rename(folding = fold),
+        do.rename(folding = FALSE),
+        refold(fold = TRUE),
         mkrates(c(  segment.config.vars, segment.experiment.vars
                   , "eccentricity", if(!spindle) "side")),
         mutate(bias = if (fold) 0 else 1,
@@ -238,9 +239,17 @@ mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
 }
 
 #can motion energy explain NJ wobbling?
-chain(segment, subset(subject="nj"),
-      add_energies)
+chain(segment.folded.spindled, subset(subject=="nj" && abs(direction_content=0.2))
+      , add_energies
+      , subset(target_number_shown == 3 & target_number_all == 9)
+      , ddply(., c('target_number_shown', 'target_number_all'),
+              mkchain(summarize(n=sum(n), p =), keep_columns(.)))
+      , (colwise(fun(length(unique(x)))))()
+      ) -> nj.energy
 
+ggplot(nj.energy, aes())
+
+NULL
 
 #For the next step, I need to incorporate realistic spacing. Since we
 #know that at wide spacings, there is no change in displacement

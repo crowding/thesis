@@ -1,4 +1,6 @@
 library(R.devices)
+library(stringr)
+
 do.rename <- function(data, folding=TRUE) {
   replacements <- if (folding) {
     c(folded_direction_content="content",
@@ -16,17 +18,35 @@ do.rename <- function(data, folding=TRUE) {
   rename(data, replacements)
 }
 
+str_match_matching <- function(...) {
+  x <- str_match(...)
+  x[!is.na(x[,1]), , drop=FALSE]
+}
+
 refold <- function(data, fold=TRUE) {
   fold.trial <- with(data, fold & ((content < 0)
                                    | (content == 0 & displacement < 0)))
-  response <- NA
+
+  refold_me <- function(trials, fold) {
+    #how to "fold" the motion energy calculation and other paired fields
+    cw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_cw(.*)")
+    ccw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_ccw(.*)")
+    diff_cols <- str_match_matching(sort(colnames(trials)), "(.*)_diff(.*)")
+    if (any(cw_cols[,c(2,3)] != ccw_cols[,c(2,3)])) stop("hmm")
+    Map(a=cw_cols[,1], b=ccw_cols[,1],
+        f=function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL})
+    lapply(diff_cols, function(c) {trials[c, fold] <<- -trials[c, fold]; NULL})
+    trials
+  }
+
   p <- NA
-   chain(data,
+  chain(data,
         mutate(content = ifelse(fold.trial, -content, content),
                displacement = ifelse(fold.trial, -displacement, displacement),
                response = ifelse(fold.trial, !response, response),
                p = ifelse(fold.trial, 1-p, p),
-               fit = if(exists("fit")) ifelse(fold.trial, 1-fit, fit)))
+               fit = if(exists("fit")) ifelse(fold.trial, 1-fit, fit)),
+        refold_me(fold.trial))
 }
 
 mkrates <- function(data,
@@ -62,17 +82,11 @@ mkrates <- function(data,
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
-
 `%++%` <- function(x, y) paste(x, y, sep="")
-
 `%-%` <- setdiff
-
 `%v%` <- union
-
 `%^%` <- intersect
-
 `%call%` <- function(x, y) do.call(x, as.list(y), envir=parent.frame())
-
 
 ddply_along <-
   function(.data, .variables, .fun=NULL, ...
@@ -110,10 +124,6 @@ drop_columns <- function(data, drop) {
   data[colnames(data)[!colnames(data) %in% drop]]
 }
 
-attach_energies <- function(trials, data) {
-  
-}
-
 add_energies <- function(data){
   cw_cols <- grep("(.*)_cw\\.\\d$", names(data), value=TRUE)
   ccw_cols <- grep("(.*)_ccw\\.\\d$", names(data), value=TRUE)
@@ -129,6 +139,6 @@ add_energies <- function(data){
         drop_columns(c(cw_cols, ccw_cols, "total_e")),
 #        drop_columns(drop_cols),
         rename(c(abs_displacement="displacement",
-                 abs_direction_content="content"))
+                 abs_direction_content="content"), warn_missing=FALSE)
         )
 }
