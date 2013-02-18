@@ -242,16 +242,16 @@ library(reshape2)
 }
 
 #can motion energy explain NJ wobbling?
-chain(segment.folded.spindled, subset(subject=="nj" && abs(direction_content==0.2))
-      , print
-      , add_energies
-      , subset(target_number_shown == 3 & target_number_all == 9)
-      , ddply(., c('target_number_shown', 'target_number_all'),
-              mkchain(summarize(n=sum(n), p =), keep_columns(.)))
-      , (colwise(fun(length(unique(x)))))()
-      ) -> nj.energy
+## chain(segment, subset(subject=="nj" & content==0.4)
+##       , add_energies
+##       , ddply("displacement", summarize,
+##               p=sum(n*p)/sum(n),
+##               norm_diff = mean(norm_diff))
+##       , ggplot
+##       , (. + aes(displacement, p)
+##          + geom_point() + geom_line(aes(y=norm_diff/mean(norm_diff)))))
+#No, not really.
 
-ggplot(nj.energy, aes())
 
 NULL
 
