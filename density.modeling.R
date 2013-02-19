@@ -149,11 +149,13 @@ prediction_layers <- function(dataset, connect = c("number","spacing"))  {
 predict_from_model_frame <- function(models, newdata, fold=TRUE, spindle=TRUE) {
   ##take a data frame with a list of models, and the variables to
   ##match by, produce predictions for the folding data.
+  newdata_missing <- missing(newdata)
   chain(models,
         adply(1, function(row) {
           bind[model=bind[model], ...=group] <- as.list(row)
-          data <- match_df(segment, quickdf(group),
-                           on = names(segment) %^% names(group))
+          if (newdata_missing) newdata <- model$data
+          data <- match_df(newdata, quickdf(group),
+                           on = names(newdata) %^% names(group))
           pred <- predict(model, newdata=data,
                           se.fit=TRUE, type="response")
           cbind(data, pred, model=NA)
@@ -189,7 +191,7 @@ library(reshape2)
       function(group, dataset) {
         formula <- (  cbind(n_cw, n_ccw) ~
                       content:target_number_shown
-                    + content:I(1/spacing)
+                    + content:I(spacing)
                     + factor(side) - 1)
         #only include a displacement or content term if the data support it.
         update.if <- function(formula, update.formula) {
@@ -252,17 +254,12 @@ library(reshape2)
 ##          + geom_point() + geom_line(aes(y=norm_diff/mean(norm_diff)))))
 #No, not really.
 
-
-NULL
-
 #For the next step, I need to incorporate realistic spacing. Since we
 #know that at wide spacings, there is no change in displacement
 #sensitivity with number of elements (no pooling,) then we expect the
 #relationship between displacement sensitivity and spacing to be
-#unchanged. So let's capture that relation
-
-##The first thing I'll do is capture some descriptive coefficients
-##for each subject.
+#unchanged. So let's extract the relationships to "critical spacing"
+#and "displacement" from the slope model.
 
 #okay first of all I'm just going to borrow the "critical spacing" and
 #the "displacement" coefficients from the model data and then refit
@@ -278,36 +275,55 @@ circle.coefs <- adply(circle.models, 1, function(row) {
 
 ##here's a function to plot those predictions
 
-##Now what I'd like is a "descriptive model" that more or less
-##captures what we see in the plots above.
 informed.models <-
   adply(circle.models, 1, function(row){
     bind[model=bind[model], ...=group] <- as.list(row)
-    #
     #skip if there is not corresponding segment data
     if (empty(match_df(as.data.frame(group), segment, names(group))))
       return(data.frame())
     segdata <- merge(group, segment)
-    #
     #Let's fix a model taking the position-discrimination as granted.
     #To do that, we'll predict the old model terms over the new data,
     #then use that as an offset in the new model.
-    #
     pred <- predict(model, newdata=segdata, type="terms")
+    segdata$pred <- pred[,  "displacementTerm(spacing, displacement)"]
     #
-    newfit <- glm((cbind(n_cw, n_ccw)
-                   ~ offset(pred[,  "displacementTerm(spacing, displacement)"])
-                   + bias + content:factor(side) - 1),
-                  data = segdata,
-                  family = binomial(link=logit.2asym(g=0.025, lam=0.025))
+    newfit <- glm(cbind(n_cw, n_ccw)
+                  ~ offset(pred)
+                  + content + factor(side) - 1
+                  , data = segdata
+                  , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
                   )
-    c(group, list(model=newfit))
+    quickdf(c(group, list(model=I(list(newfit)))))
   })
 
 ##here's a function to plot those predictions
 plot(spacing.plot
-     + prediction_layers(predict_from_model_frame(informed.models, segment))
-     + labs(title="Fits using spacing/displacement relation from Exp. 1"))
+     + prediction_layers(predict_from_model_frame(informed.models))
+     + labs(title="Exp. 1 displacement/spacing, + offset by 'content' in exp. 2",
+            x=paste("spacing", sep="\n",
+              "(ignore the stratification with target number, that is not in this model.",
+              "The point is that we get slope of response~spacing right without even trying)")
+            ))
+
+## let's look also as a function of spacing
+plot(spacing.plot
+     )
+
+##That is really cool. this gets the slope with respect to "spacing"
+##exactly right, with only offset terms. The slope of every line here
+##is determined by exp. 1 and only the y-intercept is being adjusted
+##to exp.2.
+
+##Now what does that success actually tell us? It's telling us how the
+##"content" sensitivity trades off with the spacing sensitivity. Slope
+##with respect to spacing is an odd metric though, as it's the
+##nonlinear term of the model.
+
+##Let's think about what that means. For any LIMITED number of
+##targets, the spacing / displacement trades off with the
+##direction-content in exactly such a way as to recapitulate the
+##variation with spacing... I need to draw some graphs.
 
 FALSE || {
   ##here's a function to plot those predictions
