@@ -1,4 +1,4 @@
-##{{{ ---------- SETUP AND LOAD DATA -------------------------------------
+ ##{{{ ---------- SETUP AND LOAD DATA -------------------------------------
 
 ## @knitr density-setup
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center = TRUE)
@@ -73,7 +73,9 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE)
 bind[segment, segment.folded, segment.folded.spindled] <-
   Map(extract_segment, list(data),
       fold = c(FALSE, TRUE, TRUE),
-      spindle = c(FALSE, FALSE,TRUE))
+      spindle = c(FALSE, FALSE,TRUE),
+      strip.background = element_blank(),
+      strip.text=element_text())
 
 ##}}}
 
@@ -86,29 +88,36 @@ plot.basic <- (ggplot(segment.folded.spindled)
                + proportion_scale
                + spacing_texture_scale[-1]
                + number_color_alt_scale[-1]
-               + facet_wrap(~label)
+               + theme(strip.text=element_text(size=8))
                )
 
+plot.wrap <- list(facet_wrap(~label))
+
+by.number <- list(aes(x=target_number_shown, group=factor(spacing),
+                      linetype=factor(spacing)),
+                  geom_line())
+
+by.spacing <- list(  aes(x=spacing)
+                   , geom_line(aes(  group = factor(target_number_shown)
+                                   , color = factor(target_number_shown))))
+
+by.extent <- list(aes(x = extent,
+                      group = factor(target_number_shown),
+                      color = factor(target_number_shown),
+                      fill = factor(target_number_shown))
+                  , geom_line(linetype=1)
+                  , geom_line(aes(group = factor(spacing),
+                                  linetype = factor(spacing)),
+                              color="black", fill="black"))
+
 #plot with x-axis of target number, lines of constant spacing
-plot(number.plot <- plot.basic
-     + aes(x=target_number_shown, group=factor(spacing), linetype=factor(spacing))
-     + geom_line())
+plot(number.plot <- plot.basic + by.number + plot.wrap)
 
 #plot with x-axis of target spacing, lines of constant number
-plot(spacing.plot <- plot.basic
-     + aes(x=spacing)
-     + geom_line(aes(group = factor(target_number_shown),
-                     color = factor(target_number_shown))))
+plot(spacing.plot <- plot.basic + by.spacing + plot.wrap)
 
 #plot with x-axis of "extent"
-plot(extent.plot <- plot.basic
-     + aes(x = extent,
-           group = factor(target_number_shown),
-           color = factor(target_number_shown),
-           fill = factor(target_number_shown))
-     + geom_line(linetype=1)
-     + geom_line(aes(group = factor(spacing), linetype = factor(spacing)),
-                 color="black", fill="black"))
+plot(extent.plot <- plot.basic + by.extent + plot.wrap)
 
 ##We'll be modeling raw data, but plotting folded/spindled. Here's a
 ##function that "re-folds" the predictions so that they can be plotted
@@ -126,6 +135,8 @@ mutilate.predictions <-
                 fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
           labeler)
   }
+
+mutilate <- function(data, fold=TRUE, spindle=TRUE)
 
 #Build ggplot layers to add predictions to a plot.
 prediction_layers <- function(dataset, connect = c("number","spacing"))  {
@@ -153,15 +164,21 @@ predict_from_model_frame <- function(models, newdata, fold=TRUE, spindle=TRUE) {
   chain(models,
         adply(1, function(row) {
           bind[model=bind[model], ...=group] <- as.list(row)
-          if (newdata_missing) newdata <- model$data
-          data <- match_df(newdata, quickdf(group),
-                           on = names(newdata) %^% names(group))
-          pred <- predict(model, newdata=data,
-                          se.fit=TRUE, type="response")
-          cbind(data, pred, model=NA)
+          if (newdata_missing) {
+            predict_from_model(model)
+          } else {
+            predict_from_model(model,
+                               match_df(newdata, quickdf(group),
+                                        on = names(newdata) %^% names(group)))
+          }
         }),
-        mutilate.predictions(fold=TRUE, spindle=TRUE)
+        mutilate.predictions(fold=fold, spindle=spindle)
         )
+}
+
+predict_from_model <- function(model, newdata=model$data, fold=TRUE, spindle=TRUE) {
+  pred <- predict(model, newdata=newdata, se.fit=TRUE, type="response")
+  cbind(newdata, pred, model=NA)
 }
 ##}}}
 
@@ -182,7 +199,7 @@ prev.descriptive.models <- NULL
 descriptive.models <- NULL
 library(reshape2)
 
-##keep editing and rerunning this chunk until I'm satisfied.
+##keep tweaking the formula until I'm satisfied.
 {
   modelsplit <- "subject"
   testModel <- function() {
@@ -191,19 +208,17 @@ library(reshape2)
       function(group, dataset) {
         formula <- (  cbind(n_cw, n_ccw) ~
                       content:target_number_shown
-                    + content:I(spacing)
+                    + content:I(1/spacing)
+                    + content:factor(side)
                     + factor(side) - 1)
-        #only include a displacement or content term if the data support it.
+        #Some of our subjects were tested at multiple
+        #displacements/contents, others not. So teh
+        #displacement/content coefficient only makes sense to include
+        #if the data support it:
         update.if <- function(formula, update.formula) {
           updated <- update(formula, update.formula)
           m <- model.matrix(updated, dataset)
-          if (qr(m)$rank == ncol(m)) {
-            #cat(unlist(group), deparse(formula) , "->", deparse(updated), "\n")
-            updated
-          } else {
-            #cat(unlist(group), deparse(formula) , "!>", deparse(updated), "\n")
-            formula
-          }
+          if (qr(m)$rank == ncol(m)) updated else formula
         }
         formula <- update.if(formula, . ~ . + displacement)
         formula <- update.if(formula, . ~ . + content)
@@ -220,6 +235,8 @@ library(reshape2)
   #
   bind[prev.descriptive.models, descriptive.models] <-
     list(descriptive.models, testModel())
+  #if we did our job with update.if cirrectly above, thsi shouldn't
+  #happen, but check it:
   if(any(descriptive.models$rank.deficient > 0)) {
     cat("Rank deficient:\n")
     chain(descriptive.models, subset(rank.deficient > 0, select=modelsplit), print)
@@ -229,7 +246,9 @@ library(reshape2)
        + labs(title="Descriptive fits"))
   #
   if (!is.null(prev.descriptive.models) && !is.null(descriptive.models)) {
-    chain(ldply(list(old = prev.descriptive.models, new = descriptive.models),
+    #while iterating this code chunk and the model formulas, tell me
+    #if my changes are improving things.
+    chain(ldply(list(last = prev.descriptive.models, next = descriptive.models),
                 adply, 1, summarize,
                 aic = extractAIC(model[[1]])[[2]] ),
           `$<-`(model, NULL),
@@ -239,7 +258,7 @@ library(reshape2)
           rbind(., change=aaply(., 2, diff)),
           cbind(total=aaply(.,1,sum), .)
           ) -> scores
-    print(scores)
+    print(scores) #lower AIC scores are better
   }
 }
 
@@ -252,7 +271,7 @@ library(reshape2)
 ##       , ggplot
 ##       , (. + aes(displacement, p)
 ##          + geom_point() + geom_line(aes(y=norm_diff/mean(norm_diff)))))
-#No, not really.
+#No, not really. It's just day-to-day variations.
 
 #For the next step, I need to incorporate realistic spacing. Since we
 #know that at wide spacings, there is no change in displacement
@@ -300,15 +319,18 @@ informed.models <-
 ##here's a function to plot those predictions
 plot(spacing.plot
      + prediction_layers(predict_from_model_frame(informed.models))
-     + labs(title="Exp. 1 displacement/spacing, + offset by 'content' in exp. 2",
+     + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
             x=paste("spacing", sep="\n",
               "(ignore the stratification with target number, that is not in this model.",
-              "The point is that we get slope of response~spacing right without even trying)")
+              "The point is that we got slope of response~spacing right without even trying)")
             ))
 
-## let's look also as a function of spacing
-plot(spacing.plot
-     )
+##what about the spacing predictions?
+plot(number.plot
+     + prediction_layers(predict_from_model_frame(informed.models), connect="spacing")
+     + labs(title="Exp. 1 model of displacement/spacing, + offset by 'content'",
+            x=paste("Target number", sep="\n",
+              "(The model does not have target number anywhere so you expect this not to work)")))
 
 ##That is really cool. this gets the slope with respect to "spacing"
 ##exactly right, with only offset terms. The slope of every line here
@@ -320,39 +342,44 @@ plot(spacing.plot
 ##with respect to spacing is an odd metric though, as it's the
 ##nonlinear term of the model.
 
-##Let's think about what that means. For any LIMITED number of
-##targets, the spacing / displacement trades off with the
-##direction-content in exactly such a way as to recapitulate the
-##variation with spacing... I need to draw some graphs.
+##Let's think about what that means. We've captures the slope of lines of constant target number.
+##In the descriptive model, these slopes are determined by the term (content:I(1/spacing)) 
+
+
+((spacing.plot %+% segment[1,]
+  + prediction_layers(
+        predict_from_model(descriptive.models$model[[5]])))
+ + by.spacing
+ + facet_grid(content~side ~ displacement)
+)
+
+##  *the displacement sensitivity
+##  *the degree to which displacement changes with spacing, 
+##   *the degree to which summation within the critical distance influences out
+##
+##::: sensitivity to displacement is independent of number, which we suspected.
+##::: sensitivity to content is dependent on number.
+
+##::: he difference between our descriptive models and the informed
+##models is that the descriptive models have a single term every
+##descriptive model includes a term content:::target_number_shown
+##which should suffice if we can explain it.
+##
+##The other thing is that the model has already accounted for
+##summation -- as we drew predictions based on spacing.
+
+##So the variation with target number must be in the "induced motion -- and independent of spacing..."
+
+##Let's start designing a combined model.
+
+##So here's what I'd like to do: define a "subject plot" that shows all model fits for the subject and the
+##spacing.
+
+##The graphical technique I will use is to display the distance from the
+##combined models to the corrected models as a ribbon.
+
 
 FALSE || {
-  ##here's a function to plot those predictions
-  plot(spacing.plot
-       + prediction_layers(predict_from_model_frame(informed.models, segment)))
-
-
-  ##okay first of all this can't be a way we model because that
-  ##displacement coefficient 
-
-  ##So extract model predictions for our descriptive model (and re-fold them)
-  descriptive.models.pred <- predict_from_model_frame(descriptive.models, segment)
-
-  ###graph these predictions
-  plot(spacing.plot + prediction_layers(descriptive.models.pred))
-
-  ##I think was can agree that this model captures the behavior of the
-  ##"spacing experiment"_in a couple of coefficients. The question is
-  ##how to relate that to the full-circle data.
-  descriptive.coefs <- adply(descriptive.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <- as.list(row)
-    data.frame(c(coef(model), group), model=NA)
-  })
-
-  ##we'll ignore the side-to-side factors, leaving four interesting
-  ##coefficients -- intercepts for displacement and content, and oh,
-  ##maybe I should have a coef for displacement * spacing? Would that
-  ##even differ?
-
 
   ## just to be an ass, let's plot all the coefficients from one set
   ## against all the coefficients from another set.
@@ -369,8 +396,6 @@ FALSE || {
   coef.comparison <- merge(circle.coefs, descriptive.coefs, by="subject",
                            suffixes=c(".circle", ".descriptive"))
 
-
-
   (ggplot(subset(coef.comparison, TRUE ))
    + aes(x=value.circle, y=value.descriptive, label=subject)
    + geom_text()
@@ -385,8 +410,6 @@ FALSE || {
   ## models and classic models.
 
   segment.models[[1]]
-
-  ## Now here's where I'll go. I'll take the values for critical distance and
 
   ##}}}
 
@@ -524,5 +547,5 @@ FALSE || {
   ## I think these fits are actually very good! But how do I communicate that?
 
   ##}}}
-
 }
+

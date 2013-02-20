@@ -23,6 +23,14 @@ str_match_matching <- function(...) {
   x[!is.na(x[,1]), , drop=FALSE]
 }
 
+mutate_when_has <- function(data, columns, ...) {
+  if (all(columns %in% names(data))) {
+    evalq(function(...) mutate(...), parent.frame())(data, ...)
+  } else {
+    data
+  }
+}
+
 refold <- function(data, fold=TRUE) {
   fold.trial <- with(data, fold & ((content < 0)
                                    | (content == 0 & displacement < 0)))
@@ -39,15 +47,17 @@ refold <- function(data, fold=TRUE) {
     trials
   }
 
-  p <- NA
+  #p <- NA
   chain(data,
+        #n_ccw and n_cw were already taken care of...
         mutate(content = ifelse(fold.trial, -content, content),
                displacement = ifelse(fold.trial, -displacement, displacement),
-               response = ifelse(fold.trial, !response, response),
-               p = ifelse(fold.trial, 1-p, p),
-               fit = if(exists("fit")) ifelse(fold.trial, 1-fit, fit)),
+               response = ifelse(fold.trial, !response, response)),
+        mutate_when_has("fit", fit=ifelse(fold.trial, 1-fit, fit)),
+        mutate_when_has("p", p=ifelse(fold.trial, 1-p, p)),
         refold_me(fold.trial))
 }
+
 
 mkrates <- function(data,
                     splits=c("displacement", "content",
