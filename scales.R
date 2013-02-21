@@ -149,7 +149,14 @@ comp <- function(a, b) function(...) b(a(...))
 
 prettyprint <- function(x) format(as.numeric(x), digits=3)
 
-#I want a discrete color scape derived from a 4-point gradient, so I wrote:
+pretty_strip <- function(var, value) {
+  switch(class(value),
+         numeric=format(as.numeric(value), digits=2),
+         factor=as.character(value),
+         value)
+}
+
+#I want a discrete color scale derived from a 4-point gradient, so I wrote:
 discretize <- function(pal) {
   function(n) {
     pal(seq(0,1,length=n))

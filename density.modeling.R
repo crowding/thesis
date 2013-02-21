@@ -1,4 +1,4 @@
- ##{{{ ---------- SETUP AND LOAD DATA -------------------------------------
+##{{{ ---------- SETUP AND LOAD DATA -------------------------------------
 
 ## @knitr density-setup
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center = TRUE)
@@ -73,23 +73,21 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE)
 bind[segment, segment.folded, segment.folded.spindled] <-
   Map(extract_segment, list(data),
       fold = c(FALSE, TRUE, TRUE),
-      spindle = c(FALSE, FALSE,TRUE),
-      strip.background = element_blank(),
-      strip.text=element_text())
+      spindle = c(FALSE, FALSE,TRUE))
 
 ##}}}
 
 
-##{{{ ---------- BASIC PLOTS ----------------------------------------
+##{{{ ---------- PLOT INGREDIENTS ----------------------------------------
 
-#base plot
-
-plot.basic <- (ggplot(segment.folded.spindled)
-               + proportion_scale
-               + spacing_texture_scale[-1]
-               + number_color_alt_scale[-1]
-               + theme(strip.text=element_text(size=8))
+axes.basic <- list(proportion_scale[-1]
+                   , spacing_texture_scale[-1]
+                   , number_color_alt_scale[-1]
+                   , theme(strip.text=element_text(size=8))
                )
+
+plot.basic <- (ggplot(segment.folded.spindled) + aes(y=p)
+               + axes.basic)
 
 plot.wrap <- list(facet_wrap(~label))
 
@@ -111,13 +109,13 @@ by.extent <- list(aes(x = extent,
                               color="black", fill="black"))
 
 #plot with x-axis of target number, lines of constant spacing
-plot(number.plot <- plot.basic + by.number + plot.wrap)
+plot.number <- plot.basic + by.number + plot.wrap
 
 #plot with x-axis of target spacing, lines of constant number
-plot(spacing.plot <- plot.basic + by.spacing + plot.wrap)
+plot.spacing <- plot.basic + by.spacing + plot.wrap
 
 #plot with x-axis of "extent"
-plot(extent.plot <- plot.basic + by.extent + plot.wrap)
+plot.extent <- plot.basic + by.extent + plot.wrap
 
 ##We'll be modeling raw data, but plotting folded/spindled. Here's a
 ##function that "re-folds" the predictions so that they can be plotted
@@ -138,21 +136,22 @@ mutilate.predictions <-
 
 mutilate <- function(data, fold=TRUE, spindle=TRUE)
 
+prediction_layers(...)
+
 #Build ggplot layers to add predictions to a plot.
-prediction_layers <- function(dataset, connect = c("number","spacing"))  {
+prediction_layers <- function(data, connect = c("number","spacing"))  {
   connect <- match.arg(connect)
   eval(template(
          with_arg(
-           data=dataset,
+           ...(if (missing(data)) list() else list(data=quote(data))),
            mapping=aes(
              y=fit, ymin = fit - se.fit, ymax = fit + se.fit,
-             ...(list(
-                   number=alist(
-                     color=factor(target_number_shown),
-                     fill=factor(target_number_shown)),
-                   spacing=alist(
-                     linetype=factor(spacing)
-                     ))[[connect]])),
+             ...(switch(connect,
+                        number=alist(
+                          color=factor(target_number_shown),
+                          fill=factor(target_number_shown)),
+                        spacing=alist(
+                          linetype=factor(spacing))))),
            geom_line(...(if (connect=="number") list(linetype=3) else list())),
            geom_ribbon(alpha=0.3, linetype=0))))
 }
@@ -241,16 +240,17 @@ library(reshape2)
     cat("Rank deficient:\n")
     chain(descriptive.models, subset(rank.deficient > 0, select=modelsplit), print)
   }
-  plot(spacing.plot
+  plot(plot.spacing
        + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
        + labs(title="Descriptive fits"))
   #
   if (!is.null(prev.descriptive.models) && !is.null(descriptive.models)) {
     #while iterating this code chunk and the model formulas, tell me
-    #if my changes are improving things.
-    chain(ldply(list(last = prev.descriptive.models, next = descriptive.models),
-                adply, 1, summarize,
-                aic = extractAIC(model[[1]])[[2]] ),
+    #if my changes are improving things.  Did you know, synonyms for
+    #"before/after" that are lexicographically ordered are hard to
+    #come up w qith.
+    chain(ldply(list(ante = prev.descriptive.models, post = descriptive.models),
+                adply, 1, summarize, aic = extractAIC(model[[1]])[[2]] ),
           `$<-`(model, NULL),
           melt,
           subset(variable=="aic"),
@@ -317,7 +317,7 @@ informed.models <-
   })
 
 ##here's a function to plot those predictions
-plot(spacing.plot
+plot(plot.spacing
      + prediction_layers(predict_from_model_frame(informed.models))
      + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
             x=paste("spacing", sep="\n",
@@ -326,7 +326,7 @@ plot(spacing.plot
             ))
 
 ##what about the spacing predictions?
-plot(number.plot
+plot(plot.number
      + prediction_layers(predict_from_model_frame(informed.models), connect="spacing")
      + labs(title="Exp. 1 model of displacement/spacing, + offset by 'content'",
             x=paste("Target number", sep="\n",
@@ -346,12 +346,6 @@ plot(number.plot
 ##In the descriptive model, these slopes are determined by the term (content:I(1/spacing)) 
 
 
-((spacing.plot %+% segment[1,]
-  + prediction_layers(
-        predict_from_model(descriptive.models$model[[5]])))
- + by.spacing
- + facet_grid(content~side ~ displacement)
-)
 
 ##  *the displacement sensitivity
 ##  *the degree to which displacement changes with spacing, 
@@ -368,15 +362,62 @@ plot(number.plot
 ##The other thing is that the model has already accounted for
 ##summation -- as we drew predictions based on spacing.
 
-##So the variation with target number must be in the "induced motion -- and independent of spacing..."
+##So the variation with target number must be in the "induced motion
+##-- and independent of spacing..."
 
 ##Let's start designing a combined model.
 
-##So here's what I'd like to do: define a "subject plot" that shows all model fits for the subject and the
-##spacing.
+##So here's what I'd like to do: define a "subject plot" that shows
+##all model fits for the subject and the spacing.
 
 ##The graphical technique I will use is to display the distance from the
 ##combined models to the corrected models as a ribbon.
+
+#POSIT: I'm having a hard time because I should just extract NJ's or
+#PBM's data and work on one model at a time, eh?
+
+subject <- "nj" #"pbm"
+bind[descriptive.model, informed.model] <-
+  lapply(list(descriptive.models, informed.models),
+         (function(x) x[[which(x$subject=="nj"),"model"]]))
+
+#here's the a plot of one subject's data without any folding and spindling
+unfolded.prediction.plot <-
+  (ggplot(predict_from_model(descriptive.model)) + axes.basic + by.spacing
+   + prediction_layers(connect="number") + aes(y=fit)
+   + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
+
+plot(unfolded.prediction.plot)
+
+#and for comparison here's the "informed" predictions
+unfolded.prediction.plot %+% predict_from_model(informed.model)
+
+#Interesting, the informed model predicts an interaction of
+#displacement and spacing. That was hidden by folding? There's not
+#evidence for that in the data.  Also note that NJ has a bias on one
+#side (which _is_ backed up in the data.)
+
+#Now I'm going to graphically compare the "informed model" to the
+#"descriptive model" plot to show (in red) where things are too low
+#and (in green) where the prediction is too high.
+both_predictions <- function(model1, model2, data=model1$data)
+  chain(data
+        , predict_from_model(model=model1)
+        , rename(c(fit="fit1", se.fit="se.fit1"))
+        , predict_from_model(model=model2)
+        , rename(c(fit="fit2", se.fit="se.fit2"))
+        )
+head(both_predictions(informed.model, descriptive.model))
+
+(ggplot(predict_from_modelinformed.model)
+ + proportion_scale
+ + spacing_texture_scale[-1]
+ + number_color_alt_scale[-1]
+ + theme(strip.text=element_text(size=8))
+ )
+
+## he informen has a pretty large left vs. right disparity but it seems to be
+## borne out in the data.
 
 
 FALSE || {
@@ -405,11 +446,7 @@ FALSE || {
    + coord_trans(ytrans=trans_new("asinh", "asinh", "sinh"),
                  xtrans=trans_new("asinh", "asinh", "sinh"))
    )
-
-  ## A thing I could do is plot the coefficients, of both segment
-  ## models and classic models.
-
-  segment.models[[1]]
+  ## that didn't seem to do much.
 
   ##}}}
 
@@ -533,12 +570,12 @@ FALSE || {
        offset.pred=offset.pred,
        ...=] <- segment.analysis
 
-  print(spacing.plot + prediction_layers(segment.models.pred))
+  print(plot.spacing + prediction_layers(segment.models.pred))
 
   # graph these predictions...
-  print(spacing.plot + prediction_layers(mutilate.predictions(segment.pred.from.circle)))
+  print(plot.spacing + prediction_layers(mutilate.predictions(segment.pred.from.circle)))
 
-  print(number.plot +
+  print(plot.number +
         prediction_layers(mutilate.predictions(segment.pred.from.circle),
                           connect="spacing"))
 
