@@ -175,8 +175,9 @@ predict_from_model_frame <- function(models, newdata, fold=TRUE, spindle=TRUE) {
         )
 }
 
-predict_from_model <- function(model, newdata=model$data, fold=TRUE, spindle=TRUE) {
+predict_from_model <- function(model, newdata=model$data) {
   pred <- predict(model, newdata=newdata, se.fit=TRUE, type="response")
+  newdata[(names(newdata) %in% names(pred))] <- list()
   cbind(newdata, pred, model=NA)
 }
 ##}}}
@@ -292,14 +293,18 @@ circle.coefs <- adply(circle.models, 1, function(row) {
   data.frame(c(coef(model), group), model=NA)
 })
 
-##here's a function to plot those predictions
+##As a starting move, we'll use the circle model to "inform" simpler
+##models.  That is, make predictions using the interesting nonlinear
+##term that was fit in the circle model, then play around with the
+##residuals.
 
 inform_model <- function(model, newdata=model$data) {
   pred <- predict(model, newdata=newdata, type="terms")
-  newdata$pred <- pred[,  "displacementTerm(spacing, displacement)"]
+  newdata$pred <- rowSums(pred) #does this break earlier data?
   newfit <- glm(cbind(n_cw, n_ccw)
                 ~ offset(pred)
                 + content + factor(side) - 1
+                + content_local:extent
                 , data = newdata
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
                 )
@@ -379,21 +384,24 @@ plot(plot.number
 #POSIT: I'm having a hard time because I should just extract NJ's or
 #PBM's data and work on one model at a time, eh?
 
-subject <- "nj" #"pbm"
+sub <- data.frame(subject="pbm", stringsAsFactors=FALSE) #"nj"
+subject.data <- match_df(segment, sub)
 bind[descriptive.model, informed.model, circle.model] <-
   lapply(list(descriptive.models, informed.models, circle.models),
-         (function(x) x[[which(x$subject=="nj"),"model"]]))
+         function(x) match_df(x, sub)[[1,"model"]])
 
 #here's the a plot of one subject's data without any folding and spindling
 unfolded.prediction.plot <-
-  (ggplot(predict_from_model(descriptive.model)) + axes.basic + by.spacing
+  (ggplot(subset(predict_from_model(descriptive.model), content != 0))
+   + axes.basic + by.spacing
    + prediction_layers(connect="number") + aes(y=fit)
-   + facet_grid(abs(content) ~ side ~ displacement, labeller=pretty_strip))
+   + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
 
+figure("source")
 plot(unfolded.prediction.plot)
 
 #and for comparison here's the "informed" predictions
-unfolded.prediction.plot %+% predict_from_model(informed.model)
+#unfolded.prediction.plot %+% predict_from_model(informed.model)
 
 #Interesting, the informed model predicts an interaction of
 #displacement and spacing. That was hidden by folding? There's not
@@ -432,23 +440,39 @@ red_green_ribbon <- macro(function(lower, upper, ...) {
 #  + geom_line(aes(y=))
 })
 
-(ggplot(both_predictions(informed.model, descriptive.model))
- + proportion_scale + aes(x=spacing, group=target_number_shown, alpha=0.1)
- + theme(strip.text=element_text(size=8))
- + red_green_ribbon(fit2, fit1)
- + scale_fill_gradientn(  space="Lab", colours=c("cyan", "blue", "black", "red", "yellow")
-                        , values=c(0, .3125, 0.5, 0.6875,1)
-                        , breaks=c(-8:-3,3:8)
-                        )
- + geom_line(aes(y=fit2))
- + facet_grid(content ~ side ~ displacement, labeller=pretty_strip)
- )
+difference_plot <- function(informed.model, descriptive.model) {
+  (ggplot(both_predictions(informed.model, descriptive.model))
+   + proportion_scale + aes(x=spacing, group=target_number_shown, alpha=0.1)
+   + theme(strip.text=element_text(size=8))
+   + red_green_ribbon(fit2, fit1)
+   + scale_fill_gradientn(  space="Lab", colours=c("cyan", "blue", "black", "red", "yellow")
+                          , values=c(0, .3125, 0.5, 0.6875,1)
+                          , breaks=c(-8:-3,3:8)
+                          )
+   + geom_line(aes(y=fit2))
+   + facet_grid(content ~ side ~ displacement, labeller=pretty_strip)
+   )
+}
+
+#difference_plot(informed.model, descriptive.model)
 
 # whatever, we'll improve the color scheme as we come to use it.
 
 # Next step: what we see is that the descriptive model needs to have a
 # contribution from "number" that doesn't interact with the spacing.
 # The following function recasts the model in these terms.
+
+recast_data <- function(data) {
+  mutate(data,
+         eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
+         target_number_shown = (if(!exists("target_number_shown"))
+                                round(2*pi*eccentricity/spacing) else
+                                target_number_shown),
+         target_number_all = target_number_shown,
+         content_global = content * target_number_shown,
+         content_local = content / spacing,
+         extent = spacing * target_number_shown)
+}
 
 do_recast <- function(model) {
   #One thing we need to to is make the main model separate its two
@@ -468,14 +492,7 @@ do_recast <- function(model) {
   #now we've split "content" into "content_local" and
   #"content_global" so let's update to reflect what we think is
   #going on. Also fill in some other columns.
-  new_data <-
-    mutate(model$data,
-           eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
-           target_number_shown = round(2*pi*eccentricity/spacing),
-           target_number_all = target_number_shown,
-           content_global = content * target_number_shown,
-           content_local = content / spacing,
-           extent = spacing * target_number_all)
+  new_data <- recast_data(model$data)
 
   #now the simplistic model of induced motion is that it summates over
   #the whole visual field. However, we do not (in the full-circle data)
@@ -490,21 +507,41 @@ do_recast <- function(model) {
   new_formula <-  (
     cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
     + content + I(content * abs(content))
-    + content_local:extent
+    + content_local:extent # the dilemma_these are the same
     + bias - 1)
 
+
+  (content/spacing)*(spacing*target_number_shown) = content_global
   #Refit the model (this is still to the full-circle-data. Despite
   #splitting up the variables we should have the same result (so same
   #residual deviance etc.)
   new_model <- update(model,
                       data=new_data,
                       formula=new_formula)
-  if (deviance(model) - deviance(new_model) > 2) stop("models not equivalent...")
+  if (deviance(model) - deviance(new_model) > 2) {
+    cat("models not equivalent...\n")
+    print(c(new=extractAIC(new_model), old=extractAIC(model)))
+  }
+  new_model
 }
 
+figure("compare")
 recast.model <- do_recast(circle.model)
+informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
+unfolded.prediction.plot %+% subset(predict_from_model(informed.recast.model), content != 0)
+
+figure("source")
+unfolded.prediction.plot
+
+#currently: there needs to be more contribution of element number with
+#less change from spacing.
 
 ##With the recast model, recreate the "informed" model.
+##okay first of all the "recast" model is doing just the same thing as
+##the informed model. but it isn't plotting.
+
+#oh. why the hell doesn't this plot
+difference_plot(informed.recast.model, descriptive.model)
 
 FALSE || {
 
@@ -535,82 +572,17 @@ FALSE || {
   ## that didn't seem to do much.
 
   ##}}}
-
-  ##{{{ ---------- (UNFITTED) PREDICTIONS FROM FULL CIRCLE MODEL -------------
-
-  ## now how can we reconcile this data with the models?
-
-  ##let's start with a simple regression on the "unfolded" data
-  ##"sidedness" and "bias" are control coefficients, set to 1 always
-  ##unless I'm doing something funny with the predictions.
-
-  ## TASK 2. for checking-purposes, plot these (local) model fits
-  ## against the data.
-
-  #okay, that's a start. You'll note that the PBM data doesn't capture
-  #the two displacements where PBM always responds with the content. Ah,
-  #it's because the sensitivity to displacement changes with spacing.
-  #The fits are also rank deficient, because many fits do not sample
-  #different values of displacement. (or perhaps I should fit on
-  #unfolded data?! Ah, I think that might be it too. So what might what
-  #might make sense for that is to make the
-
-  ## TASK_3. derive some prediction from the already fit model,
-  ## somehow.
-  unattr <- function(x) {
-    attributes(x) <- NULL; x
-  }
-
-  segment_model_subject <- function(model, subject) {
-    segment.model = model[[1]]
-    model <- models[[subject]]
-    matched.data <- match_df(segment, data.frame(subject))
-    #skip subjects for whom we dont' have data
-    if (is.null(model)) return(data.frame())
-
-
-    new.pred <- cbind(
-                  segment.data,
-                  predict(new_model, newdata=segment.data, type="response", se.fit=TRUE))
-
-    #what if we just added a little offset to reconcile the predictions
-    #with the data?
-    #this doesn't propabage error bars but:
-    offset.pred <-
-      chain(segment.data,
-            cbind(., predict(new_model, newdata=., type="link", se.fit=FALSE)),
-            glm(new_model, data=., cbind(n_cw, n_ccw) ~ fit:content,
-                family=binomial(link=logit.2asym(g=0.025, lam=0.025))),
-            cbind(segment.data, predict(., type="response", se.fit=TRUE)))
-
-    #return segment-from-circle predictions Might return other things in the future.
-    list(segment.circle.model = I(list(new_model)),
-         segment.pred.from.circle=new.pred,
-         offset.pred.from.circle=offset.pred)
-  }
-
-  #analyze each subject as above, then juggle into topical data frames
-  alply(segment.models, 1, splat(segment_model_subject)) -> segment.analysis
-  chain(segment.analysis,
-        do.call(mapply, c(., FUN=list, SIMPLIFY=FALSE)),
-        lapply(do.call, what=rbind)) -> segment.analysis
-  bind[segment.pred.from.circle=segment.pred.from.circle,
-       offset.pred=offset.pred,
-       ...=] <- segment.analysis
-
-  print(plot.spacing + prediction_layers(segment.models.pred))
-
-  # graph these predictions...
-  print(plot.spacing + prediction_layers(mutilate.predictions(segment.pred.from.circle)))
-
-  print(plot.number +
-        prediction_layers(mutilate.predictions(segment.pred.from.circle),
-                          connect="spacing"))
-
-  ## TASK 4. how to compare and reconcile? Refit a constrained model?
-
   ## I think these fits are actually very good! But how do I communicate that?
+}
 
-  ##}}}
+#fuckit, the answer really is to write a combined model?
+combined_model <- function(circle.model, descriptive.model) {
+  data <- rbind.fill(recast_data(circle_model$data, recast_data(descriptive_model$data)))
+
+  gnm(formula = (cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
+                 + content + I(content * abs(content))
+                 + I(1/spacing):content + bias - 1)
+      , family = binomial(link = logit.2asym(g = 0.025, lam = 0.025))
+      , data = data)
 }
 
