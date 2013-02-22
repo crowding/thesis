@@ -385,7 +385,7 @@ bind[descriptive.model, informed.model] <-
 unfolded.prediction.plot <-
   (ggplot(predict_from_model(descriptive.model)) + axes.basic + by.spacing
    + prediction_layers(connect="number") + aes(y=fit)
-   + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
+   + facet_grid(abs(content) ~ side ~ displacement, labeller=pretty_strip))
 
 plot(unfolded.prediction.plot)
 
@@ -394,30 +394,57 @@ unfolded.prediction.plot %+% predict_from_model(informed.model)
 
 #Interesting, the informed model predicts an interaction of
 #displacement and spacing. That was hidden by folding? There's not
-#evidence for that in the data.  Also note that NJ has a bias on one
-#side (which _is_ backed up in the data.)
+#evidence for that in the data.  Also note that NJ has an interesting
+#bias on one side (which _is_ backed up in the data.)
 
 #Now I'm going to graphically compare the "informed model" to the
 #"descriptive model" plot to show (in red) where things are too low
 #and (in green) where the prediction is too high.
+#If I can fit both PBM and NJ it will be good.
 both_predictions <- function(model1, model2, data=model1$data)
   chain(data
         , predict_from_model(model=model1)
         , rename(c(fit="fit1", se.fit="se.fit1"))
         , predict_from_model(model=model2)
         , rename(c(fit="fit2", se.fit="se.fit2"))
+        , mutate(number1=target_number_shown, number2=target_number_shown)
         )
-head(both_predictions(informed.model, descriptive.model))
 
-(ggplot(predict_from_modelinformed.model)
- + proportion_scale
- + spacing_texture_scale[-1]
- + number_color_alt_scale[-1]
+#green when upper > lower and red elsewhen
+red_green_ribbon <- macro(function(lower, upper, ...) {
+  template(
+    list(
+      with_arg(color=NA, alpha=0.2, ...(list(...))
+               , geom_ribbon(  aes(ymin = pmin( .(lower), .(upper) ), ymax=.(upper)
+                                   , fill=-target_number_shown
+                                   )
+                             #                           , fill="green"
+                             )
+               , geom_ribbon(  aes(ymin = .(upper), ymax = pmax( .(lower), .(upper))
+                                   , fill=target_number_shown
+                                   )
+                             #                           , fill="red"
+                             ))
+      ))
+#  + geom_line(aes(y=))
+})
+
+(ggplot(both_predictions(informed.model, descriptive.model))
+ + proportion_scale + aes(x=spacing, group=target_number_shown, alpha=0.1)
  + theme(strip.text=element_text(size=8))
+ + red_green_ribbon(fit2, fit1)
+ + scale_fill_gradientn(  colours=c("#00DDDD", "blue", "black", "red", "#DDDD00")
+                        , values=c(0, .3125, 0.5, 0.6875,1)
+                        , breaks=c(-8:-3,3:8)
+                        )
+ + geom_line(aes(y=fit2))
+ + facet_grid(content ~ side ~ displacement, labeller=pretty_strip)
  )
 
-## he informen has a pretty large left vs. right disparity but it seems to be
-## borne out in the data.
+names(both_predictions(informed.model, descriptive.model))
+
+
+# whatever, we'll improve the color scheme as we come to use it.
 
 
 FALSE || {
