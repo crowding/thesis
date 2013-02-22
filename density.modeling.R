@@ -19,8 +19,8 @@ setup_theme()
 if (interactive()) {
   figure("plot")
 } else {
-  cairo_pdf("density2.pdf", onefile=TRUE)
-  #on.exit(dev.off(), add=TRUE)
+  cairo_pdf("density.modeling.pdf", onefile=TRUE)
+  on.exit(dev.off(), add=TRUE)
 }
 
 ## @knitr density-load
@@ -199,6 +199,28 @@ prev.descriptive.models <- NULL
 descriptive.models <- NULL
 library(reshape2)
 
+descriptive_model <- function(dataset) {
+  formula <- (  cbind(n_cw, n_ccw) ~
+              content:target_number_shown
+              + content:I(1/spacing)
+              + content:factor(side)
+              + factor(side) - 1)
+  #Some of our subjects were tested at multiple
+  #displacements/contents, others not. So teh
+  #displacement/content coefficient only makes sense to include
+  #if the data support it:
+  update.if <- function(formula, update.formula) {
+    updated <- update(formula, update.formula)
+    m <- model.matrix(updated, dataset)
+    if (qr(m)$rank == ncol(m)) updated else formula
+  }
+  formula <- update.if(formula, . ~ . + displacement)
+  formula <- update.if(formula, . ~ . + content)
+  glm(formula,
+      family=binomial(link=logit.2asym(g=0.025, lam=0.025)),
+      data=dataset)
+}
+
 ##keep tweaking the formula until I'm satisfied.
 {
   modelsplit <- "subject"
@@ -206,25 +228,7 @@ library(reshape2)
     ddply_along(
       subset(segment, abs(content) >= 0), modelsplit,
       function(group, dataset) {
-        formula <- (  cbind(n_cw, n_ccw) ~
-                      content:target_number_shown
-                    + content:I(1/spacing)
-                    + content:factor(side)
-                    + factor(side) - 1)
-        #Some of our subjects were tested at multiple
-        #displacements/contents, others not. So teh
-        #displacement/content coefficient only makes sense to include
-        #if the data support it:
-        update.if <- function(formula, update.formula) {
-          updated <- update(formula, update.formula)
-          m <- model.matrix(updated, dataset)
-          if (qr(m)$rank == ncol(m)) updated else formula
-        }
-        formula <- update.if(formula, . ~ . + displacement)
-        formula <- update.if(formula, . ~ . + content)
-        model <- glm(formula,
-                     family=binomial(link=logit.2asym(g=0.025, lam=0.025)),
-                     data=dataset)
+        model <- descriptive_model(dataset)
         #and we need to check that the models are not
         #underconstrained (rank-deficient)
         mutate(group,
@@ -243,7 +247,8 @@ library(reshape2)
   }
   plot(plot.spacing
        + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
-       + labs(title="Descriptive fits"))
+       + labs(title="Descriptive fits",
+              x="spacing\n(details unimportant, just capturing behavior for comparison)"))
   #
   if (!is.null(prev.descriptive.models) && !is.null(descriptive.models)) {
     #while iterating this code chunk and the model formulas, tell me
@@ -298,19 +303,18 @@ circle.coefs <- adply(circle.models, 1, function(row) {
 ##term that was fit in the circle model, then play around with the
 ##residuals.
 
-inform_model <- function(model, newdata=model$data) {
+basic_inform_model <- function(model, newdata=model$data) {
   pred <- predict(model, newdata=newdata, type="terms")
-  newdata$pred <- rowSums(pred) #does this break earlier data?
+  newdata$pred <- pred[,  "displacementTerm(spacing, displacement)"] #rowSums(pred) #does this break earlier data?
   newfit <- glm(cbind(n_cw, n_ccw)
                 ~ offset(pred)
-                + content + factor(side) - 1
-                + content_local:extent
+                + content:factor(side) - 1
                 , data = newdata
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
                 )
 }
 
-informed.models <-
+basic.informed.models <-
   adply(circle.models, 1, function(row){
     bind[model=bind[model], ...=group] <- as.list(row)
     #skip if there is not corresponding segment data
@@ -320,30 +324,41 @@ informed.models <-
     #Let's fix a model taking the position-discrimination as granted.
     #To do that, we'll predict the old model terms over the new data,
     #then use that as an offset in the new model.
-    newfit <- inform_model(model, newdata)
+    newfit <- basic_inform_model(model, newdata)
     quickdf(c(group, list(model=I(list(newfit)))))
   })
 
 ##here's a function to plot those predictions
 plot(plot.spacing
-     + prediction_layers(predict_from_model_frame(informed.models))
+     + prediction_layers(predict_from_model_frame(basic.informed.models))
      + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
             x=paste("spacing", sep="\n",
               "(ignore the stratification with target number, that is not in this model.",
               "The point is that we got slope of response~spacing right without even trying)")
             ))
 
-##what about the spacing predictions?
-plot(plot.number
-     + prediction_layers(predict_from_model_frame(informed.models), connect="spacing")
-     + labs(title="Exp. 1 model of displacement/spacing, + offset by 'content'",
-            x=paste("Target number", sep="\n",
-              "(The model does not have target number anywhere so you expect this not to work)")))
-
 ##That is really cool. this gets the slope with respect to "spacing"
 ##exactly right, with only offset terms. The slope of every line here
 ##is determined by exp. 1 and only the y-intercept is being adjusted
 ##to exp.2.
+
+##Let's put that on more solid footing.Calculate "what that slope
+##would be" for these predictions, by fitting out descriptive model to
+##the predictions.
+
+## desc.coef <- t( mapply %<<% descriptive.models %()% list(function(model, ...) {
+##   c(list(...), obs=model$coefficients[["content:I(1/spacing)"]])
+## }))
+
+## pred.coef <- t( mapply %<<% basic.informed.models %()% list(function(model, ...) {
+##   #predict the spacing~content slope. How? fit the descriptive model to it.
+##   ifit <- cbind(model$data, fit=predict(model, type="link"))
+##   newdata <- mutate(ifit, n_cw = fit*n, n_ccw = (1-fit)*n)
+##   c(list(...), pred=descriptive_model(newdata)$coefficients[["content:I(1/spacing)"]])
+## }))
+
+#merge(as.data.frame(desc.coef), as.data.frame(pred.coef), on="subject")
+
 
 ##Now what does that success actually tell us? It's telling us how the
 ##"content" sensitivity trades off with the spacing sensitivity. Slope
@@ -384,155 +399,171 @@ plot(plot.number
 #POSIT: I'm having a hard time because I should just extract NJ's or
 #PBM's data and work on one model at a time, eh?
 
-sub <- data.frame(subject="pbm", stringsAsFactors=FALSE) #"nj"
+
+for(subj in descriptive.models$subject) {
+  print(subj)
+sub <- data.frame(subject=subj, stringsAsFactors=FALSE) #"nj"
 subject.data <- match_df(segment, sub)
-bind[descriptive.model, informed.model, circle.model] <-
-  lapply(list(descriptive.models, informed.models, circle.models),
-         function(x) match_df(x, sub)[[1,"model"]])
+  bind[descriptive.model, informed.model, circle.model] <-
+    lapply(list(descriptive.models, basic.informed.models, circle.models),
+           function(x) match_df(x, sub)[[1,"model"]])
 
-#here's the a plot of one subject's data without any folding and spindling
-unfolded.prediction.plot <-
-  (ggplot(subset(predict_from_model(descriptive.model), content != 0))
-   + axes.basic + by.spacing
-   + prediction_layers(connect="number") + aes(y=fit)
-   + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
+  #here's the a plot of one subject's data without any folding and spindling
+  unfolded.prediction.plot <-
+    (ggplot(subset(predict_from_model(descriptive.model), content != 0))
+     + axes.basic + by.spacing
+     + prediction_layers(connect="number") + aes(y=fit)
+     + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
 
-figure("source")
-plot(unfolded.prediction.plot)
+  #and for comparison here's the "informed" predictions
+  #unfolded.prediction.plot %+% predict_from_model(informed.model)
 
-#and for comparison here's the "informed" predictions
-#unfolded.prediction.plot %+% predict_from_model(informed.model)
+  #Interesting, the informed model predicts an interaction of
+  #displacement and spacing. That was hidden by folding? There's not
+  #evidence for that in the data.  Also note that NJ has an interesting
+  #bias on one side (which _is_ backed up in the data.)
 
-#Interesting, the informed model predicts an interaction of
-#displacement and spacing. That was hidden by folding? There's not
-#evidence for that in the data.  Also note that NJ has an interesting
-#bias on one side (which _is_ backed up in the data.)
+  #Now I'm going to graphically compare the "informed model" to the
+  #"descriptive model" plot to show (in red) where things are too low
+  #and (in green) where the prediction is too high.
+  #If I can fit both PBM and NJ it will be good.
+  both_predictions <- function(model1, model2, data=model1$data)
+    chain(data
+          , predict_from_model(model=model1)
+          , rename(c(fit="fit1", se.fit="se.fit1"))
+          , predict_from_model(model=model2)
+          , rename(c(fit="fit2", se.fit="se.fit2"))
+          , mutate(number1=target_number_shown, number2=target_number_shown)
+          )
 
-#Now I'm going to graphically compare the "informed model" to the
-#"descriptive model" plot to show (in red) where things are too low
-#and (in green) where the prediction is too high.
-#If I can fit both PBM and NJ it will be good.
-both_predictions <- function(model1, model2, data=model1$data)
-  chain(data
-        , predict_from_model(model=model1)
-        , rename(c(fit="fit1", se.fit="se.fit1"))
-        , predict_from_model(model=model2)
-        , rename(c(fit="fit2", se.fit="se.fit2"))
-        , mutate(number1=target_number_shown, number2=target_number_shown)
-        )
+  #green when upper > lower and red elsewhen
+  red_green_ribbon <- macro(function(lower, upper, ...) {
+    template(
+      list(
+        with_arg(color=NA, ...(list(...))
+                 , geom_ribbon(  aes(ymin = pmin( .(lower), .(upper) ), ymax=.(upper)
+                                     , fill=-target_number_shown
+                                     )
+                               #                           , fill="green"
+                               )
+                 , geom_ribbon(  aes(ymin = .(upper), ymax = pmax( .(lower), .(upper))
+                                     , fill=target_number_shown
+                                     )
+                               #                           , fill="red"
+                               ))
+        ))
+    #  + geom_line(aes(y=))
+  })
 
-#green when upper > lower and red elsewhen
-red_green_ribbon <- macro(function(lower, upper, ...) {
-  template(
-    list(
-      with_arg(color=NA, alpha=0.2, ...(list(...))
-               , geom_ribbon(  aes(ymin = pmin( .(lower), .(upper) ), ymax=.(upper)
-                                   , fill=-target_number_shown
-                                   )
-                             #                           , fill="green"
-                             )
-               , geom_ribbon(  aes(ymin = .(upper), ymax = pmax( .(lower), .(upper))
-                                   , fill=target_number_shown
-                                   )
-                             #                           , fill="red"
-                             ))
-      ))
-#  + geom_line(aes(y=))
-})
-
-difference_plot <- function(informed.model, descriptive.model) {
-  (ggplot(both_predictions(informed.model, descriptive.model))
-   + proportion_scale + aes(x=spacing, group=target_number_shown, alpha=0.1)
-   + theme(strip.text=element_text(size=8))
-   + red_green_ribbon(fit2, fit1)
-   + scale_fill_gradientn(  space="Lab", colours=c("cyan", "blue", "black", "red", "yellow")
-                          , values=c(0, .3125, 0.5, 0.6875,1)
-                          , breaks=c(-8:-3,3:8)
-                          )
-   + geom_line(aes(y=fit2))
-   + facet_grid(content ~ side ~ displacement, labeller=pretty_strip)
-   )
-}
-
-#difference_plot(informed.model, descriptive.model)
-
-# whatever, we'll improve the color scheme as we come to use it.
-
-# Next step: what we see is that the descriptive model needs to have a
-# contribution from "number" that doesn't interact with the spacing.
-# The following function recasts the model in these terms.
-
-recast_data <- function(data) {
-  mutate(data,
-         eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
-         target_number_shown = (if(!exists("target_number_shown"))
-                                round(2*pi*eccentricity/spacing) else
-                                target_number_shown),
-         target_number_all = target_number_shown,
-         content_global = content * target_number_shown,
-         content_local = content / spacing,
-         extent = spacing * target_number_shown)
-}
-
-do_recast <- function(model) {
-  #One thing we need to to is make the main model separate its two
-  #different responses to "spacing." There's two "spacing" responses;
-  #the one that parameterizes the slope (which I argue should not
-  #change, at least in the subject's better hemifield) and another
-  #based on summation within the hemifield; and a third based on
-  #"induced motion"
-  old_formula <- (
-    cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement) +
-    content + I(content * abs(content)) + I(1/spacing):content +
-    bias - 1)
-
-  if (!identical(unattr(model$formula), unattr(old_formula)))
-    stop("model formula has changed?")
-
-  #now we've split "content" into "content_local" and
-  #"content_global" so let's update to reflect what we think is
-  #going on. Also fill in some other columns.
-  new_data <- recast_data(model$data)
-
-  #now the simplistic model of induced motion is that it summates over
-  #the whole visual field. However, we do not (in the full-circle data)
-  #see more induced motion for larger numbers of elements -- my best
-  #model just relates induced motion to the direction content. So
-  #perhaps it is a normalization happening.
-
-  #So it's a slight stretch to say that changing number will change
-  #induced motion, but that's what I'll do. I'll relate it to the
-  #"extent" (space covered) by the stimulus. This has some resonance
-  #with thinking of it as a center-surround type of effect.
-  new_formula <-  (
-    cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
-    + content + I(content * abs(content))
-    + content_local:extent # the dilemma_these are the same
-    + bias - 1)
-
-
-  (content/spacing)*(spacing*target_number_shown) = content_global
-  #Refit the model (this is still to the full-circle-data. Despite
-  #splitting up the variables we should have the same result (so same
-  #residual deviance etc.)
-  new_model <- update(model,
-                      data=new_data,
-                      formula=new_formula)
-  if (deviance(model) - deviance(new_model) > 2) {
-    cat("models not equivalent...\n")
-    print(c(new=extractAIC(new_model), old=extractAIC(model)))
+  difference_plot <- function(informed.model, descriptive.model) {
+    (ggplot(both_predictions(informed.model, descriptive.model))
+     + proportion_scale + aes(x=spacing, group=target_number_shown, alpha=0.1)
+     + theme(strip.text=element_text(size=8))
+     + geom_line(aes(y=fit2), size=0.1)
+     + red_green_ribbon(fit2, fit1, alpha=0.3)
+     + scale_fill_gradientn("Element\nnumber",
+                            , space="Lab", colours=c("cyan", "blue", "black", "red", "yellow")
+                            , values=c(0, .3125, 0.5, 0.6875,1)
+                            , breaks=c(-8, -5, -3, 3, 5, 8)
+                            , labels=as.character(c(8, 5, 3, 3, 5, 8))
+                            )
+     + facet_grid(content ~ side ~ displacement, labeller=pretty_strip)
+     )
   }
-  new_model
+
+  #difference_plot(informed.model, descriptive.model)
+
+  # whatever, we'll improve the color scheme as we come to use it.
+
+  # Next step: what we see is that the descriptive model needs to have a
+  # contribution from "number" that doesn't interact with the spacing.
+  # The following function recasts the model in these terms.
+
+  recast_data <- function(data) {
+    mutate(data,
+           eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
+           target_number_shown = (if(!exists("target_number_shown"))
+                                  round(2*pi*eccentricity/spacing) else
+                                  target_number_shown),
+           target_number_all = target_number_shown,
+           content_global = content * target_number_shown,
+           content_local = content / spacing,
+           extent = spacing * target_number_shown)
+  }
+
+  do_recast <- function(model) {
+    #One thing we need to to is make the main model separate its two
+    #different responses to "spacing." There's two "spacing" responses;
+    #the one that parameterizes the slope (which I argue should not
+    #change, at least in the subject's better hemifield) and another
+    #based on summation within the hemifield; and a third based on
+    #"induced motion"
+    old_formula <- (
+      cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement) +
+      content + I(content * abs(content)) + I(1/spacing):content +
+      bias - 1)
+
+    if (!identical(unattr(model$formula), unattr(old_formula)))
+      stop("model formula has changed?")
+
+    #now we've split "content" into "content_local" and
+    #"content_global" so let's update to reflect what we think is
+    #going on. Also fill in some other columns.
+    new_data <- recast_data(model$data)
+
+    #now the simplistic model of induced motion is that it summates over
+    #the whole visual field. However, we do not (in the full-circle data)
+    #see more induced motion for larger numbers of elements -- my best
+    #model just relates induced motion to the direction content. So
+    #perhaps it is a normalization happening.
+
+    #So it's a slight stretch to say that changing number will change
+    #induced motion, but that's what I'll do. I'll relate it to the
+    #"extent" (space covered) by the stimulus. This has some resonance
+    #with thinking of it as a center-surround type of effect.
+    new_formula <-  (
+      cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
+      + content + I(content * abs(content)) #induced motion ?
+      + content_global # summation? in place of I(1/spacing:content)
+      + bias - 1)
+
+    # (content/spacing)*(spacing*target_number_shown
+    #Refit the model (this is still to the full-circle-data. Despite
+    #splitting up the variables we should have the same result (so same
+    #residual deviance etc.)
+    new_model <- update(model,
+                        data=new_data,
+                        formula=new_formula)
+    if (deviance(model) - deviance(new_model) > 2) {
+      cat("models not equivalent...\n")
+      print(c(new=extractAIC(new_model), old=extractAIC(model)))
+    }
+    new_model
+  }
+
+  inform_model <- function(model, newdata=model$data) {
+    pred <- predict(model, newdata=newdata, type="terms")
+    newdata$pred <- rowSums(pred) #does this break earlier data?
+    newfit <- glm(cbind(n_cw, n_ccw)
+                  ~ offset(pred)
+                  + content:factor(side) - 1
+                  + content_global
+                  , data = newdata
+                  , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
+                  )
+  }
+
+  if (interactive()) figure("source")
+  plot(unfolded.prediction.plot
+       + labs(title=sprintf("Descriptive fits for subject %s, unfolded", toupper(sub$subject))))
+
+  if(interactive()) figure("compare")
+  recast.model <- do_recast(circle.model)
+  informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
+  plot(unfolded.prediction.plot %+% subset(predict_from_model(informed.recast.model), content != 0)
+       + labs(title=sprintf("Displacement model + global content sum, subject %s", toupper(sub$subject))))
+
 }
-
-figure("compare")
-recast.model <- do_recast(circle.model)
-informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
-unfolded.prediction.plot %+% subset(predict_from_model(informed.recast.model), content != 0)
-
-figure("source")
-unfolded.prediction.plot
-
 #currently: there needs to be more contribution of element number with
 #less change from spacing.
 
@@ -541,10 +572,24 @@ unfolded.prediction.plot
 ##the informed model. but it isn't plotting.
 
 #oh. why the hell doesn't this plot
-difference_plot(informed.recast.model, descriptive.model)
+## (difference_plot(informed.recast.model, descriptive.model)
+##  + labs(paste("Shaded difference between model and observation",
+##               "(warm colors overpredictions, cool underpredictions)", sep="\n")))
 
-FALSE || {
+FALSE && {
+  
+  #Now that we have that answer, let's make a combined model.
+  combined_model <- function(circle.model, descriptive.model) {
+    data <- rbind.fill(recast_data(circle_model$data, recast_data(descriptive_model$data)))
 
+    gnm(formula = (cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
+                   + content + I(content * abs(content))
+                   + I(1/spacing):content + bias - 1)
+        , family = binomial(link = logit.2asym(g = 0.025, lam = 0.025))
+        , data = data)
+  }
+
+  combined_model
   ## just to be an ass, let's plot all the coefficients from one set
   ## against all the coefficients from another set.
   circle.interesting <- names(circle.coefs) %-% c("bias", "model")
@@ -573,16 +618,5 @@ FALSE || {
 
   ##}}}
   ## I think these fits are actually very good! But how do I communicate that?
-}
-
-#fuckit, the answer really is to write a combined model?
-combined_model <- function(circle.model, descriptive.model) {
-  data <- rbind.fill(recast_data(circle_model$data, recast_data(descriptive_model$data)))
-
-  gnm(formula = (cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
-                 + content + I(content * abs(content))
-                 + I(1/spacing):content + bias - 1)
-      , family = binomial(link = logit.2asym(g = 0.025, lam = 0.025))
-      , data = data)
 }
 
