@@ -546,7 +546,7 @@ subject.data <- match_df(segment, sub)
     newdata$pred <- rowSums(pred) #does this break earlier data?
     newfit <- glm(cbind(n_cw, n_ccw)
                   ~ offset(pred)
-                  + content:factor(side) - 1
+                  + content:factor(side)
                   + content_global
                   , data = newdata
                   , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
