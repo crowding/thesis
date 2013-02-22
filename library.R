@@ -1,6 +1,8 @@
 library(R.devices)
 library(stringr)
 
+unattr <- function(x) `attributes<-`(x, NULL)
+
 do.rename <- function(data, folding=TRUE) {
   replacements <- if (folding) {
     c(folded_direction_content="content",

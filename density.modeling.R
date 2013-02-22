@@ -294,25 +294,28 @@ circle.coefs <- adply(circle.models, 1, function(row) {
 
 ##here's a function to plot those predictions
 
+inform_model <- function(model, newdata=model$data) {
+  pred <- predict(model, newdata=newdata, type="terms")
+  newdata$pred <- pred[,  "displacementTerm(spacing, displacement)"]
+  newfit <- glm(cbind(n_cw, n_ccw)
+                ~ offset(pred)
+                + content + factor(side) - 1
+                , data = newdata
+                , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
+                )
+}
+
 informed.models <-
   adply(circle.models, 1, function(row){
     bind[model=bind[model], ...=group] <- as.list(row)
     #skip if there is not corresponding segment data
     if (empty(match_df(as.data.frame(group), segment, names(group))))
       return(data.frame())
-    segdata <- merge(group, segment)
+    newdata <- merge(group, segment)
     #Let's fix a model taking the position-discrimination as granted.
     #To do that, we'll predict the old model terms over the new data,
     #then use that as an offset in the new model.
-    pred <- predict(model, newdata=segdata, type="terms")
-    segdata$pred <- pred[,  "displacementTerm(spacing, displacement)"]
-    #
-    newfit <- glm(cbind(n_cw, n_ccw)
-                  ~ offset(pred)
-                  + content + factor(side) - 1
-                  , data = segdata
-                  , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
-                  )
+    newfit <- inform_model(model, newdata)
     quickdf(c(group, list(model=I(list(newfit)))))
   })
 
@@ -377,8 +380,8 @@ plot(plot.number
 #PBM's data and work on one model at a time, eh?
 
 subject <- "nj" #"pbm"
-bind[descriptive.model, informed.model] <-
-  lapply(list(descriptive.models, informed.models),
+bind[descriptive.model, informed.model, circle.model] <-
+  lapply(list(descriptive.models, informed.models, circle.models),
          (function(x) x[[which(x$subject=="nj"),"model"]]))
 
 #here's the a plot of one subject's data without any folding and spindling
@@ -433,7 +436,7 @@ red_green_ribbon <- macro(function(lower, upper, ...) {
  + proportion_scale + aes(x=spacing, group=target_number_shown, alpha=0.1)
  + theme(strip.text=element_text(size=8))
  + red_green_ribbon(fit2, fit1)
- + scale_fill_gradientn(  colours=c("#00DDDD", "blue", "black", "red", "#DDDD00")
+ + scale_fill_gradientn(  space="Lab", colours=c("cyan", "blue", "black", "red", "yellow")
                         , values=c(0, .3125, 0.5, 0.6875,1)
                         , breaks=c(-8:-3,3:8)
                         )
@@ -441,11 +444,67 @@ red_green_ribbon <- macro(function(lower, upper, ...) {
  + facet_grid(content ~ side ~ displacement, labeller=pretty_strip)
  )
 
-names(both_predictions(informed.model, descriptive.model))
-
-
 # whatever, we'll improve the color scheme as we come to use it.
 
+# Next step: what we see is that the descriptive model needs to have a
+# contribution from "number" that doesn't interact with the spacing.
+# The following function recasts the model in these terms.
+
+do_recast <- function(model) {
+  #One thing we need to to is make the main model separate its two
+  #different responses to "spacing." There's two "spacing" responses;
+  #the one that parameterizes the slope (which I argue should not
+  #change, at least in the subject's better hemifield) and another
+  #based on summation within the hemifield; and a third based on
+  #"induced motion"
+  old_formula <- (
+    cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement) +
+    content + I(content * abs(content)) + I(1/spacing):content +
+    bias - 1)
+
+  if (!identical(unattr(model$formula), unattr(old_formula)))
+    stop("model formula has changed?")
+
+  #now we've split "content" into "content_local" and
+  #"content_global" so let's update to reflect what we think is
+  #going on. Also fill in some other columns.
+  new_data <-
+    mutate(model$data,
+           eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
+           target_number_shown = round(2*pi*eccentricity/spacing),
+           target_number_all = target_number_shown,
+           content_global = content * target_number_shown,
+           content_local = content / spacing,
+           extent = spacing * target_number_all)
+
+  #now the simplistic model of induced motion is that it summates over
+  #the whole visual field. However, we do not (in the full-circle data)
+  #see more induced motion for larger numbers of elements -- my best
+  #model just relates induced motion to the direction content. So
+  #perhaps it is a normalization happening.
+
+  #So it's a slight stretch to say that changing number will change
+  #induced motion, but that's what I'll do. I'll relate it to the
+  #"extent" (space covered) by the stimulus. This has some resonance
+  #with thinking of it as a center-surround type of effect.
+  new_formula <-  (
+    cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
+    + content + I(content * abs(content))
+    + content_local:extent
+    + bias - 1)
+
+  #Refit the model (this is still to the full-circle-data. Despite
+  #splitting up the variables we should have the same result (so same
+  #residual deviance etc.)
+  new_model <- update(model,
+                      data=new_data,
+                      formula=new_formula)
+  if (deviance(model) - deviance(new_model) > 2) stop("models not equivalent...")
+}
+
+recast.model <- do_recast(circle.model)
+
+##With the recast model, recreate the "informed" model.
 
 FALSE || {
 
@@ -509,64 +568,6 @@ FALSE || {
     #skip subjects for whom we dont' have data
     if (is.null(model)) return(data.frame())
 
-    #what we need to to is make the main model separate its two
-    #different responses to "spacing." There's two "spacing" responses;
-    #the one that parameterizes the slope (which I argue should not
-    #change, at least in the subject's better hemifield) and another
-    #based on summation within the hemifield; and a third based on
-    #"induced motion"
-
-    #so here is the model formula as it stands:
-    old_formula <-  (
-      cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement) +
-      content + I(content * abs(content)) + I(1/spacing):content +
-      bias - 1)
-
-    if (!identical(unattr(model$formula), unattr(old_formula)))
-      stop("model formula has changed?")
-
-    #now we've split "content" into "content_local" and
-    #"content_global" so let's update to reflect what we think is
-    #going on. Also fill in some other columns.
-    new_data <-
-      mutate(model$data,
-             eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
-             target_number_shown = round(2*pi*eccentricity/spacing),
-             target_number_all = target_number_shown,
-             content_global = content * target_number_shown,
-             content_local = content / spacing,
-             extent = spacing * target_number_all)
-
-    #now the simplistic model of induced motion is that it summates over
-    #the whole visual field. However, we do not (in the full-circle data)
-    #see more induced motion for larger numbers of elements -- my best
-    #model just relates induced motion to the direction content. So
-    #perhaps it is a normalization happening.
-
-    #So it's a slight stretch to say that changing number will chance
-    #induced motion, but that's what I'll do. I'll relate it to the
-    #"extent" (space covered) by the stimulus. This has some resonance
-    #with thinking of it as a center-surround type of effect.
-    new_formula <-  (
-      cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
-      + content + I(content * abs(content))
-      + content_local:extent
-      + bias - 1)
-
-    #Refit the model (this is still to the full-curcle-data. Despite
-    #splitting up the variables we should have the same result (so same
-    #residual deviance etc.)
-    new_model <- update(model,
-                        data=new_data,
-                        formula=new_formula)
-    if (deviance(model) - deviance(new_model) > 2) stop("models not equivalent...")
-
-    #Let's look at what this recast model predicts...
-    mutate(segment.model$data,
-           content_local = content/spacing,
-           content_global = content*target_number_shown,
-           extent = extent*2
-           ) -> segment.data
 
     new.pred <- cbind(
                   segment.data,
