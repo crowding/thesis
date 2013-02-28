@@ -40,6 +40,8 @@ mutate_when_has <- function(data, columns=dots_names(...), ...) {
   }
 }
 
+binom_se <- function(n, p) sqrt(p*(1-p)/n)
+
 refold <- function(data, fold=TRUE) {
   fold.trial <- with(data, fold & ((content < 0)
                                    | (content == 0 & displacement < 0)))

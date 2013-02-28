@@ -7,6 +7,7 @@ suppressPackageStartupMessages({
   library(plyr)
   library(grid)
   library(gnm)
+  library(binom)
   library(psyphy)
   library(ptools)
   library(reshape2)
@@ -20,27 +21,39 @@ source("model.R")
 datafile <- "data.RData"
 modelfile <- "slopeModel.RData"
 plotfile <- "density.modeling.pdf"
+detailfile <- "density.modeling.detail.pdf"
 
-main <- function(datafile="data.RData", modelfile="slopeModel.RData", plotfile="density.modeling.pdf") {
+main <- function(datafile="data.RData", modelfile="slopeModel.RData",
+                 plotfile="density.modeling.pdf",
+                 detailfile = "density.modeling.detail.pdf") {
 
   setup_theme()
   if (interactive()) {
-    figure("plot")
+    dev.new()
+    plot.dev <- dev.cur()
+    dev.new()
+    detail.dev <- dev.cur()
   } else {
     cairo_pdf(plotfile, onefile=TRUE)
-    on.exit(dev.off(), add=TRUE)
+    plot.dev <- dev.cur()
+    cairo_pdf(detailfile, onefile=TRUE)
+    detail.dev <- dev.cur()
   }
+  on.exit(dev.off(plot.dev), add=TRUE)
+  on.exit(dev.off(detail.dev), add=TRUE)
 
   bind[data=data, ...=] <- as.list(load2env(datafile))
   bind[models=models, ...=] <- as.list(load2env(modelfile))
 
+  #ugh globals
+  models <<- models
   #these are the columns which define each "experiment" (facet on the
   #unfolded graph)
-  segment.experiment.vars <-
+  segment.experiment.vars <<-
     c("subject", "displacement", "content", "eccentricity")
   #within an experiment these are the vars which separate each "stimulus
   #condition" (data point on the graph)
-  segment.config.vars <-
+  segment.config.vars <<-
     c("spacing", "target_number_shown", "target_number_all")
 
   ##Aggregate data into counts of CW and CCW responses, with various
@@ -102,16 +115,18 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData", plotfile="
 
   descriptive.models <- make_descriptive_models(segment)
 
-  plot(plot.spacing
-       + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
-       + labs(title="Descriptive fits",
-              x="spacing\n(details unimportant, just capturing behavior for comparison)"))
-
+  dev.set(plot.dev)
   plot(plot.spacing %+% segment.folded.spindled.mutilated
-       + prediction_layers(
-           predict_from_model_frame(descriptive.models, segment, collapse=TRUE),
-         connect="number")
-       + labs("Descriptive models (collapsed)"))
+       ## + prediction_layers(
+       ##     predict_from_model_frame(descriptive.models, segment, collapse=TRUE),
+       ##     connect="number")
+       + errorbars(segment.folded.spindled.mutilated)
+       + labs(title="Number/spacing data"))
+
+  ## plot(plot.spacing
+  ##      + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
+  ##      + labs(title="Descriptive fits",
+  ##             x="spacing\n(details unimportant, just capturing behavior for comparison)"))
 
   #For the next step, I need to incorporate realistic spacing. Since we
   #know that at wide spacings, there is no change in displacement
@@ -152,6 +167,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData", plotfile="
   })
 
   ##here's a function to plot those predictions
+  dev.set(detail.dev)
   plot(plot.spacing
        + prediction_layers(predict_from_model_frame(basic.informed.models))
        + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
@@ -210,13 +226,34 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData", plotfile="
   collapsed.predictions <-
     predict_from_model_frame(informed.models,
                              fold=TRUE, spindle=TRUE, collapse=TRUE)
-
-  plot(plot.spacing
+  dev.set(plot.dev)
+  plot(plot.spacing %+% segment.folded.spindled.mutilated
        + prediction_layers(collapsed.predictions)
 #       + labs (title="Exp. 1 model of displacement/spacing, offset by 'content'",
 #        x=paste("spacing", sep="\n")
+       + errorbars(segment.folded.spindled.mutilated)
+       + labs(title="Model fits (Experiment 1 model + global motion-energy)")
         )
 
+  #TODO: fit a "combined" model to all subject data
+}
+
+errorbars <- function(segment, x.axis="spacing") {
+  ddply(segment, .(label), here(summarize),
+        y = 0.5,
+        x = max(
+          switch(x.axis,
+                 number=target_number_shown,
+                 spacing=spacing,
+                 extent=extent)),
+        ymax = 0.5 + binom_se(min(n), 0.5),
+        ymin = 0.5 - binom_se(min(n), 0.5)) -> errorbar
+  with_arg(data = errorbar
+           , inherit.aes = FALSE
+           , mapping = aes(x = x, y = y, ymin = ymin, ymax = ymax)
+           , show_guide = FALSE, geom_errorbar(width=0.2)
+           #, geom_point(size = 4, shape = "+")
+           )
 }
 
 #label function for each facet
@@ -293,7 +330,7 @@ predict_from_model_frame <- function(models, newdata,
   ##take a data frame with a list of models, and the variables to
   ##match by, produce predictions for the folding data.
   newdata_missing <- missing(newdata)
-  chain(descriptive.models,
+  chain(models,
         adply(1, function(row) {
           bind[model=bind[model], ...=group] <- as.list(row)
           if (newdata_missing) {
@@ -311,7 +348,7 @@ collapse <- function(data) {
   #collapses different sides and direction contents together (as for
   #most subjects in this experiment these don't matter.)
   args <- dots(
-    chain(data, subset(abs(content) > 0 & displacement/sign(content) > -0.45)),
+    chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45)),
     segment.config.vars %v% segment.experiment.vars %-% c("displacement", "content"),
     summarize)
 
@@ -513,3 +550,4 @@ FALSE && {
    )
 }
 
+run_as_command()
