@@ -105,17 +105,16 @@ mkrates <- function(data,
 ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
   kept.columns <- structure( rep(TRUE, length(.data))
                             , names=colnames(.data))
-
-  with_unique_cols <- function(.chunk, .fn, ...) {
-    summary <- .fn(.chunk, ...)
-    keep <- unlist(lapply(names(.chunk),
-                          function(n) if (length(unique(.chunk[[n]])) <= 1) n else NULL))
-    keep <- keep %-% names(summary)
-    kept.columns[names(.chunk)[!names(.chunk) %in% keep]] <<- FALSE
-    cbind(summary, .chunk[1,keep])
-  }
-  out <- ddply(.data, .columns, with_unique_cols, .fn=.fun, ...)
-  out[colnames(out) %-% names(kept.columns[!kept.columns])]
+  summary <- ddply(.data, .columns, .fun, ...)
+  unique.columns <-
+    chain(.data,
+          ddply(.columns, colwise(function(x) length(unique(x)) <= 1)),
+          `[<-`(unique(as.character(.columns)), value=list()),
+          colwise(all)(),
+          unlist, .[.], names,
+          setdiff(names(summary)))
+  extra.data <- ddply(.data, .columns, `[`, 1, unique.columns)
+  cbind(summary, extra.data)
 }
 
 mkrates <- function(data,

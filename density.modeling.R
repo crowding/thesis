@@ -107,7 +107,11 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData", plotfile="
        + labs(title="Descriptive fits",
               x="spacing\n(details unimportant, just capturing behavior for comparison)"))
 
-  plot(plot.spacing %+% segment.folded.spindled.mutilated)
+  plot(plot.spacing %+% segment.folded.spindled.mutilated
+       + prediction_layers(
+           predict_from_model_frame(descriptive.models, segment, collapse=TRUE),
+         connect="number")
+       + labs("Descriptive models (collapsed)"))
 
   #For the next step, I need to incorporate realistic spacing. Since we
   #know that at wide spacings, there is no change in displacement
