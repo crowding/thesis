@@ -63,7 +63,7 @@ knitr
 
 \begin_body
 
-\begin_layout Subsection
+\begin_layout Section
 Experiment 1
 \begin_inset CommandInset label
 LatexCommand label
@@ -216,25 +216,110 @@ status collapsed
 
 \end_layout
 
-\begin_layout Section
-Model-based results and/or discussion
+\begin_layout Itemize
+Motivation
 \end_layout
 
 \begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Itemize
+Describe any methods specific to Experiment 1 (as opposed to general methods.
+\end_layout
+
+\begin_layout Itemize
+Participation
+\end_layout
+
+\begin_layout Itemize
+Stimulus selection
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+two types of stimulus sets used (varying direction content, varying spacing)
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Staircase procedure
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Interleaved 2up-1down staircases for each psychometric function.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Results
+\end_layout
+
+\begin_layout Itemize
+Show graphs of psychometric functions collected for two subjects.
+ Find an honest way of 
+\begin_inset Quotes eld
+\end_inset
+
+binning
+\begin_inset Quotes erd
+\end_inset
+
+ the data points to ~6-8 per function so that there are not a cloud of varying
+ size points.
+ Model fit curves should be included and based on the full model.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Show two subjects for 
+\begin_inset Quotes eld
+\end_inset
+
+spacing
+\begin_inset Quotes erd
+\end_inset
+
+ experiments.
+ These should illustrate that sensitivity to displacement (slope) collapses
+ at short spacings.
+\end_layout
+
+\begin_layout Itemize
+Show two subjects for 
+\begin_inset Quotes eld
+\end_inset
+
+content
+\begin_inset Quotes erd
+\end_inset
+
+ data.
+ This should illustrate that at short spacing, direction content (i.e.
+ summation) determines the response.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Discuss these broad features.
+ The following sections dive in to these features in an attempt to justify
+ and illustrate some features of the model.
+\end_layout
+
+\begin_layout Subsubsection
 Lack of pooling across large distances
 \end_layout
 
-\begin_layout Standard
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-Still under construction -- please skip to section 1.4
+\begin_layout Itemize
+This section should attempt to justify (illustrate with data) the claim
+ that displacement sensitivity reaches a plateau at large spacings.
 \end_layout
 
-\end_inset
-
-
+\begin_layout Itemize
+Do this by allowing the model to fit independent values of (but otherwise
+ letting the model do work for us in pooling data.)
 \end_layout
 
 \begin_layout Standard
@@ -291,38 +376,92 @@ Values of
 
  obtained by this procedure are plotted ...., using one symbol for each subject.
  We do not find that the number of visible elements significantly affects
- the 
+ the sensitivity to displacement at wide spacings [test].
 \end_layout
 
 \begin_layout Standard
-To further check whether there was any sign of pooling, we performed a one-way
- ANOVA on the fitted values of 
-\begin_inset Formula $\beta_{n}$
-\end_inset
+independently
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
- where.
- For __ subject did was any significant effect of element number; we interpret
- this as indicating there is not a significant amount of envelope position
- signals between elements.
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sensitivity to envelope motion characterized separately at several wide
+ spacings.
+ Points and errorbars show values of sensitivity obtained by allowing sensitivit
+y to fit independent values at these three spacings.
+ Curved lines and shaded regions show model fits and standard errors, based
+ on (we could even average across subjects here...?
 \end_layout
 
-\begin_layout Subsection
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 With shorter distances between elements, sensitivity to envelope motion
  declines.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Itemize
+A central feature of the model discussed earlier is that sensitivity to
+ envelope motion collapses to zero at small spacings.
+\end_layout
+
+\begin_layout Itemize
+Illustrate that (regardless whether it is forced to by the model) sensitivity
+ to envelope motion drops off at short spacings.
+ (i.e.
+ fit separate coefficients for separate values of spacing, still allowing
+ the model to help out on its other dimensions)
+\end_layout
+
+\begin_layout Subsubsection
 At shorter distances, carrier motion summates, causing an increase in sensitivit
-y to carrier motion.
+y to carrier direction content.
 \end_layout
 
 \begin_layout Standard
-One feature of our model, as illustrated in figure is that .
- We again motivate this model feature by allowing the model
+Another feature of our model, as illustrated in [previous figure] is that
+ motion energy due to the carrier component of the stimulus influences both
+ a local 
+\begin_inset Quotes eld
+\end_inset
+
+obligatory summation
+\begin_inset Quotes erd
+\end_inset
+
+ and a global 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
+\end_inset
+
+ process.
+ 
 \end_layout
 
-\begin_layout Subsection
-At longer distances, carrier motion repels direction judgments
+\begin_layout Itemize
+Again illustrate this model feature by allowing the model to fit separate
+ coefficients for direction contant at closer spacings, plotted against
+ model predictions.
+\end_layout
+
+\begin_layout Subsubsection
+At longer spacing, weak carrier direction content repels direction judgments.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-repulsion"
@@ -330,6 +469,11 @@ name "sub:results-repulsion"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The strength of repulsion described in the model by [coefficients] allows
+ for the 
 \end_layout
 
 \begin_layout Standard
@@ -414,10 +558,6 @@ reference "sub:results-repulsion"
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -426,6 +566,14 @@ reference "sub:results-repulsion"
 \begin_layout Standard
 An interesting feature of our model is the component 
 \begin_inset Formula $M_{I}$
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
 \end_inset
 
  which we describe as due to a very long range or global average of motion
@@ -490,9 +638,8 @@ induced,
  by the remainder of the display.
 \end_layout
 
-\begin_layout Subsection
-The induced motion effect is nonlinear in carrier direction content and
- insensitive to element number
+\begin_layout Subsubsection
+The induced motion effect is nonlinear in carrier direction content.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-induced-modeling"
@@ -931,14 +1078,6 @@ The other salient feature of induced motion is that it does not appear to
  depend on the number of elements, even at wide spacings.
  To show this, we consider the subset of data with spacings greater than
  6 degrees...
-\end_layout
-
-\begin_layout Section
-Experiment 2 number versus density.
-\end_layout
-
-\begin_layout Standard
-Our model distinguishes between two spacing-dependent 
 \end_layout
 
 \begin_layout Standard

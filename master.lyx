@@ -127,16 +127,6 @@ filename "density.lyx"
 \begin_layout Standard
 \begin_inset CommandInset include
 LatexCommand include
-filename "figure_captions.lyx"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand include
 filename "discussion.lyx"
 
 \end_inset

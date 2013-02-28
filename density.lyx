@@ -86,7 +86,7 @@ knitr
 
 \begin_layout Standard
 \begin_inset Flex Sweave Options
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -106,7 +106,7 @@ textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -158,7 +158,7 @@ maxwidth}
 \end_layout
 
 \begin_layout Section
-Experiment 3
+Experiment 2
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:number"
@@ -448,6 +448,51 @@ print(summary(with(segment.trials, interaction(subject,trial.extra.side))))
 
 \end_layout
 
+\begin_layout Itemize
+Motivation: Experiment 1 confounds things which might affect our ideas about
+ how motion works;
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Number of elements was confounded with spacing
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+We particularly want to establish that the collapse of sensitivity
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Local 
+\begin_inset Quotes eld
+\end_inset
+
+obligatory summation
+\begin_inset Quotes erd
+\end_inset
+
+ of motion energy is confounded with global motion energy that might contribute
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+When holding direction content constant, number of elements is also confounded
+ with aggregate motion energy
+\end_layout
+
+\end_deeper
+\end_deeper
 \begin_layout Standard
 In section 
 \begin_inset CommandInset ref
@@ -482,7 +527,7 @@ showed that this critical distance scaled in a roughly linear fashion with
  confound element spacing with element number.
  So it is possible that the apparent dependences on element spacing in the
  previous experiences are more directly effects of element number.
- Therefore 
+ Therefore we only
 \end_layout
 
 \begin_layout Standard
@@ -536,9 +581,10 @@ key "Pylyshyn:1988fk"
  to individuate and track each element, leading to the inability to correctly
  discern their change in position over time.
  Although the number of elements whose global motion can be correctly discerned
- in our display is substantially larger than the thresholds usually found
- in MOT studies, the elements also move coherently, consistent with a global
- rotation, which may increase the capacity for tracking 
+ in our display is substantially larger than the limits usually found in
+ MOT studies, the elements also move coherently, consistent with a structural
+ rotation of the stimulus, which may increase the capacity for tracking
+ 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Yantis:1992fk"
@@ -640,10 +686,6 @@ Therefore we wished to know whether the apparent reversal of the stimulus
 \end_layout
 
 \begin_layout Standard
-The configuration of the stimulus was 
-\end_layout
-
-\begin_layout Standard
 A secondary goal was to determine whether there were differences in performance
  dependent on the location of the elements in the visual field.
  This may give additional clues to the the nature of mechanisms underlying
@@ -659,17 +701,22 @@ key "Alvarez:2005uq"
 \end_inset
 
 .
- Depending In contrast, if the reversal shares mechanisms with crowding
- effects, then we might expect a lessened effect for stimuli that span the
- horizontal meridian (, but see...)
+ In contrast, if the reversal shares mechanisms with crowding effects, then
+ we might expect a lessened effect for stimuli that span the horizontal
+ meridian (, but see...)
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-I'm thinking that this turns out to be a bust, because we aren't measuring
- thresholds.
+It probably turns out we can't say anything useful on left vs.
+ right, because we aren't measuring thresholds.
  Response rates aren't really accurate for quantifying whether there's more
  or less interference.
+ Some subjects show differences, but we just explain any differences away
+ as a bias.
 \end_layout
 
 \end_inset
@@ -679,6 +726,42 @@ I'm thinking that this turns out to be a bust, because we aren't measuring
 
 \begin_layout Subsection
 Methods
+\end_layout
+
+\begin_layout Itemize
+Show stimulus design; covarying element number and density
+\end_layout
+
+\begin_layout Itemize
+Mention flankers, which are not counded as moving elements
+\end_layout
+
+\begin_layout Itemize
+Show demo movie, numbers linked to stimulus space
+\end_layout
+
+\begin_layout Itemize
+Mention how displacement and direction content is chosen, based on data
+ from Experiment 1, in an ad-hoc manner.
+ Illustrate with comparisons of Exp 1 and Exp 2 data from illustrative subjects
+ (NJ, PBM)
+\end_layout
+
+\begin_layout Itemize
+We also test in alternate hemifields blockwise (but this is less important.)
+\end_layout
+
+\begin_layout Itemize
+SUBTLE BUT IMPORTANT POINT: It's the slope of the lines that matters most,
+ not their height or the change in height with element number (which is
+ explained away as full-field sum of motion-energy).
+ Whether the lines collapse together plotted against spacing, as PBM, or
+ collapse plotted versus number, as NJ, doesn't actually matter.
+ What matters is that In particular, it's that the slope does not change
+ with element number, that distinguishes this model from e.g.
+ one in which element number causes collapse due to failure of attentive
+ tracking or whatever.
+ Work through why the model predicts this.
 \end_layout
 
 \begin_layout Standard
@@ -831,7 +914,8 @@ name "fig:segment-conditions"
 \end_inset
 
 The combinations of element spacing and element number used in this experiment.
- Points marked with a star are shown in 
+ Tickmarks on symbols depict variations in spacing and number.
+ Numbers reverence the demo in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "movie:segment-stimuli-1"
@@ -1225,8 +1309,8 @@ reference "fig:segment-conditions"
 \end_inset
 
 .
- We tested stimuli positioned above, below, to the left and right of the
- fixation point, in blocks during each session.
+ We tested stimuli positioned to the left and right of the fixation point,
+ alternating in blocks during each session.
 \begin_inset Note Note
 status collapsed
 
@@ -1353,27 +1437,15 @@ flanker
 The motion contrast and step size were chosen based on the results of [the
  experiment where we look at the motion detection thresholds] so as to elicit
  a motion reversal over the range of densities used.
- For P.M.
- we used a step size of ___ and a motion contrast of ___100%.
- For C.F.
- we used a step size of ___ and a motion contrast of ___.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-I'm working on this -- how to do a basic measure that works, and from that
- pick a justifiable values for motion contrast and delta-x that result in
- reliable motion reversal.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
 Results
+\end_layout
+
+\begin_layout Itemize
+Plot basic results (aggregated over different values of direction content
+ tested;
 \end_layout
 
 \begin_layout Standard
@@ -1879,26 +1951,8 @@ Results of density/number experiment.
 Effects of stimulus location
 \end_layout
 
-\begin_layout Standard
-From the graphs above it is clear that there is some effect on stimulus
- location.
- For example.
- P.M.
- responds to long-range motion direction at smaller spacings when tested
- in the left and bottom hemifields.
- We quantify this by ...
- 
-\end_layout
-
 \begin_layout Subsubsection*
 Effects of eye movements
-\end_layout
-
-\begin_layout Standard
-We recorded eye movement traces from all subjects in this task.
- We analyzed them both for the direction and velocity of eye movement sand
- for the presence of microsaccades.
- Potential microsaccades were detected using a phase coherence edge detector.
 \end_layout
 
 \begin_layout Standard

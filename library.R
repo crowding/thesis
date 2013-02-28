@@ -2,7 +2,14 @@
 #maybe put the package tarball in here? or maybe devtools is nice enough.
 suppressPackageStartupMessages({
   library(ptools)
+  library(R.devices)
+  library(plyr)
 })
+
+load2env <- function(file, env=new.env()) {
+  load(file, envir=env)
+  env
+}
 
 do.rename <- function(data, folding=TRUE) {
   replacements <- if (folding) {
@@ -71,14 +78,27 @@ ddply_along <-
           , .parallel = .parallel, .paropts = .paropts)
 }
 
-dlply_along <-
-  function(.data, .variables, .fun=NULL, ...
-           , .progress = "none", .inform = FALSE, .drop = TRUE
-           , .parallel = FALSE, .paropts = NULL) {
-    split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
-    rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
-    llply(  .data=seq_len(length(split))
-          , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
-          , .progress = .progress, .inform = .inform
-          , .parallel = .parallel, .paropts = .paropts)
+
+figure <- function(label, ...) {
+  if (devIsOpen(label)){
+    devSet(label)
+  } else {
+  devNew(...)
+  devSetLabel(label=label)
+  }
+}
+
+replace_extension <- function(filename, new_extension, append="") {
+  sub(  "((.)\\.[^.]*|)$"
+      , paste("\\2", append, ".", new_extension, sep="")
+      , filename)
+}
+
+unique_by <- function(data, columns) {
+  dups <- duplicated(data[columns])
+  data[!dups,]
+}
+
+drop_columns <- function(data, drop) {
+  data[colnames(data)[!colnames(data) %in% drop]]
 }
