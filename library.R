@@ -1,5 +1,12 @@
-library(R.devices)
-library(stringr)
+suppressPackageStartupMessages({
+  #library(R.devices)
+  library(stringr)
+})
+
+load2env <- function(file, env=new.env()) {
+  load(file, envir=env)
+  env
+}
 
 unattr <- function(x) `attributes<-`(x, NULL)
 
@@ -25,7 +32,7 @@ str_match_matching <- function(...) {
   x[!is.na(x[,1]), , drop=FALSE]
 }
 
-mutate_when_has <- function(data, columns, ...) {
+mutate_when_has <- function(data, columns=dots_names(...), ...) {
   if (all(columns %in% names(data))) {
     evalq(function(...) mutate(...), parent.frame())(data, ...)
   } else {
@@ -52,45 +59,80 @@ refold <- function(data, fold=TRUE) {
   #p <- NA
   chain(data,
         #n_ccw and n_cw were already taken care of...
-        mutate(content = ifelse(fold.trial, -content, content),
-               displacement = ifelse(fold.trial, -displacement, displacement),
-               response = ifelse(fold.trial, !response, response)),
-        mutate_when_has("fit", fit=ifelse(fold.trial, 1-fit, fit)),
-        mutate_when_has("p", p=ifelse(fold.trial, 1-p, p)),
+        mutate_when_has(content = ifelse(fold.trial, -content, content)),
+        mutate_when_has(displacement =
+                          ifelse(fold.trial, -displacement, displacement)),
+        mutate_when_has(response = ifelse(fold.trial, !response, response)),
+        mutate_when_has(fit=ifelse(fold.trial, 1-fit, fit)),
+        mutate_when_has(p=ifelse(fold.trial, 1-p, p)),
         refold_me(fold.trial))
 }
 
+ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
+  kept.columns <- structure( rep(TRUE, length(.data))
+                            , names=colnames(.data))
+  produced.columns <- character(0)
+  with_unique_cols <- function(.chunk, .fn, ...) {
+    summary <- .fn(.chunk, ...)
+    keep <- unlist(lapply(names(.chunk), function(n) {
+      if (length(unique(.chunk[[n]])) <= 1) n else NULL
+    }))
+    kept.columns[names(.chunk)[!names(.chunk) %in% keep]] <<- FALSE
+    produced.columns <<- produced.columns %v% names(summary)
+    cbind(summary, .chunk[1,keep])
+  }
+  out <- ddply(.data, .columns, with_unique_cols, .fn=.fun, ...)
+  out[produced.columns %v% names(kept.columns[kept.columns])]
+}
+
+mkrates <- function(data,
+                    splits=c("displacement", "content",
+                             "spacing", "subject", "exp_type")) {
+  counter <- function(s) summarize(s,
+    n = length(response), p = mean(response),
+    n_cw = sum(response), n_ccw = sum(!response))
+  nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()),
+                                    n_cw=I(c()), n_ccw=I(c()))
+  if (nrow(data) == 0) {
+    nullcounter(data)
+  } else {
+    chain(data,
+          ddply_keeping_unique_cols(splits, counter),
+          arrange(desc(n)))
+  }
+}
+
+ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
+  kept.columns <- structure( rep(TRUE, length(.data))
+                            , names=colnames(.data))
+
+  with_unique_cols <- function(.chunk, .fn, ...) {
+    summary <- .fn(.chunk, ...)
+    keep <- unlist(lapply(names(.chunk),
+                          function(n) if (length(unique(.chunk[[n]])) <= 1) n else NULL))
+    keep <- keep %-% names(summary)
+    kept.columns[names(.chunk)[!names(.chunk) %in% keep]] <<- FALSE
+    cbind(summary, .chunk[1,keep])
+  }
+  out <- ddply(.data, .columns, with_unique_cols, .fn=.fun, ...)
+  out[colnames(out) %-% names(kept.columns[!kept.columns])]
+}
 
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type")) {
-
-  kept.columns <- structure( rep(TRUE, length(data))
-                           , names=colnames(data))
-
   counter <- function(s) summarize(s,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
-
-  nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()), n_cw=I(c()), n_ccw=I(c()))
-
-  with_unique_cols <- function(summary, data) {
-    keep <- unlist(lapply(names(data),
-      function(n) if (length(unique(data[[n]])) == 1) n else NULL))
-    keep <- keep %-% names(summary)
-    kept.columns[names(data)[names(data) %in% keep]] <- FALSE
-    cbind(summary, data[1,keep])
+  nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()),
+                                    n_cw=I(c()), n_ccw=I(c()))
+  if (nrow(data) == 0) {
+    nullcounter(data)
+  } else {
+    chain(data,
+          ddply_keeping_unique_cols(splits, counter),
+          arrange(desc(n)))
   }
-
-  #if there are columns we can propagate, keep them.
-  count_and_drop <- function(df)
-    chain(df, counter, with_unique_cols(df))
-
-  chain(data
-        , if(empty(.)) nullcounter(.) else ddply(.,splits, count_and_drop)
-        , arrange(desc(n))
-        ) -> out
-  out[colnames(out) %-% names(kept.columns)[!kept.columns]]
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -114,12 +156,14 @@ ddply_along <-
 }
 
 figure <- function(label, ...) {
-  if (devIsOpen(label)){
-    devSet(label)
-  } else {
-  devNew(...)
-  devSetLabel(label=label)
-  }
+  #can't use R.devices because of name conflicts
+
+  ## if (devIsOpen(label)){
+  ##   devSet(label)
+  ## } else {
+  ## devNew(...)
+  ## devSetLabel(label=label)
+  ## }
 }
 
 replace_extension <- function(filename, new_extension, append="") {

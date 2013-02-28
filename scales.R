@@ -17,7 +17,7 @@ if ( !exists("use_unicode") || use_unicode) {
 combine_arrows <- function(x, combine) {
   first <- which(!is.na(x))[1]
   last <- length(x) + 1 - which(!is.na(rev(x)))[1]
-  if (substr(x[[first]], 1, 1) == "-") {
+  if (substr(x[[first]], 1, 1) %in% c("-", "0")) {
     x[first] <- combine(circleleft, x[first])
     x[last] <- combine(circleright, x[last])
   } else {
@@ -135,6 +135,7 @@ decision_contour <-
     )
 
 no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
+#no_padding <- list(scale_x_continuous(expand=c(0,0)), scale_y_continuous(expand=c(0,0)))
 no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
 
 displacement_scale <-
