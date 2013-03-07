@@ -3,43 +3,43 @@
 #This defines the response to displacement.
 enclass <- function(class, x) `class<-`(x, class)
 
-displacementTerm = enclass("nonlin", function(spacing, displacement) {
-  #for an intro to "gnm" custom terms see:
-  #http://statmath.wu.ac.at/research/friday/resources_WS0708_SS08/gnmTalk.pdf
-  #
-  #"variables" are in data. "predictors" are model parameters we introduce.
-  spacing = substitute(spacing)
-  displacement = substitute(displacement)
-  list(  predictors = alist(cs=1, beta_dx=1) #not sure why "1"
-       , variables = list(spacing, displacement)
-       , term = function(predLabels, varLabels) {
-         t = parse(text=c(predLabels, varLabels));
-         names(t) = c("cs", "beta_dx", "spacing", "displacement")
-         deparse(bquote( (2 - 2/(1 + exp( -.(t$cs) / .(t$spacing) ) ) )
-                        * .(t$beta_dx) * .(t$displacement) ))
-       }
-       , start = function(predictors) {
-         #spacing, displacement starting points.
-         predictors[c(1,2)] <- c(3, 14)
-         predictors
-       }
-       )
-})
+## the parts that we need to *specify" for a nonlinear term are: the
+## "predictors" might either be constant or expressions, and
+## interpreted similarly
+## How to use is by currying:
+## nonlinearTerm(predictors)(expr_variables)(expr)(data_terms)
 
-displacementFixed = function(fixCS, fixBetaDX)
-  enclass("nonlin", function(spacing, displacement) {
-    spacing = substitute(spacing)
-    displacement = substitute(displacement)
-    list(  predictors = list() #not sure why "1"
-         , variables = list(spacing, displacement)
-         , term = function(predLabels, varLabels) {
-           t = parse(text=c(predLabels, varLabels));
-           names(t) = c("spacing", "displacement")
-           deparse(bquote( (2 - 2/(1 + exp( -.(fixCS) / .(t$spacing) ) ) )
-                          * .(fixBetaDX) * .(t$displacement) ))
-         }
-         , start = identity
-         )
-  })
+## function to build a nonlinear term
+nonlinearTerm <- function(..., start=NULL) {
+  predictors <- quote_args(...)
+  predictors[is.missing(predictors)] <- list(1)
+  function(...) {
+    variables <- quote_args(...)
+    #
+    function(expr) {
+      expr <- substitute(expr)
+      eval(template(structure(
+        class="nonlin",
+        function(.=...(variables)) {
+          ...( lapply(names(variables),
+                      function(x) template( .(as.name(x))
+                                           <- substitute(.(as.name(x))))))
+          list( predictors = alist(...(predictors))
+               , variables = alist(...(names(variables)))
+               , term = function(predLabels, varLabels) {
+                 t = as.list(parse(text=c(predLabels, varLabels)))
+                 names(t) <- .(c(names(predictors), names(variables)))
+                 deparse(substitute(.(expr), t))
+               },
+               #we'll bother with "start" for now, but would be base
+               ...(if (is.null(start)) NULL else stop("start unsupported"))
+               )
+        })))
+    }
+  }
+}
+
+displacementTerm <- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
+                     ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
 
 
