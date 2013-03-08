@@ -1,80 +1,25 @@
 suppressPackageStartupMessages({
-library(plyr)
-library(ggplot2)
-library(ptools)
-library(psyphy)
-library(gnm)
-library(grid)
+  library(plyr)
+  library(ggplot2)
+  library(ptools)
+  library(psyphy)
+  library(gnm)
+  library(grid)
 })
+
 theme_set(theme_bw())
 use_unicode=TRUE
 source("scales.R")
+source("library.R")
 #suppressMessages(loadfonts())
 #quartz.options(family="MS Gothic")
 #pdf.options(family="MS Gothic")
 
 match_df <- function(...) suppressMessages(plyr::match_df(...))
 
-do.rename <- function(data, folding=TRUE) {
-  replacements <- if (folding) {
-    c(folded_direction_content="content",
-      folded_displacement="displacement",
-      folded_response_with_carrier="response",
-      target_spacing="spacing"
-      )
-  } else {
-    c(abs_direction_content="content",
-      abs_displacement="displacement",
-      abs_response_cw="response",
-      target_spacing="spacing"
-      )
-  }
-  chain(
-    rename(data, replacements)
-    , mutate(bias=if(folding) 0 else 1))
-}
-
-mkrates <- function(data,
-                    splits=c("displacement", "content",
-                      "spacing", "subject", "exp_type", "bias")) {
-  chain(data,
-        ddply(splits,
-              summarize,
-              n = length(response), p = mean(response),
-              n_cw = sum(response), n_ccw = sum(!response)),
-        arrange(desc(n)))
-}
-
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 
 `%++%` <- paste0
-
-#Our model has one term nonlinear in the spacing-dependent
-#sensitivity to displacement and to direction content.
-#This defines the response to displacement.
-displacementTerm = function(spacing, displacement) {
-  #for an intro to "gnm" custom terms see:
-  #http://statmath.wu.ac.at/research/friday/resources_WS0708_SS08/gnmTalk.pdf
-  #
-  #"variables" are in data. "predictors" are model parameters we introduce.
-  spacing = substitute(spacing)
-  displacement = substitute(displacement)
-  list(  predictors = alist(cs=1, beta_dx=1) #not sure why "1"
-       , variables = list(spacing, displacement)
-       , term = function(predLabels, varLabels) {
-         t = parse(text=c(predLabels, varLabels));
-         names(t) = c("cs", "beta_dx", "spacing", "displacement")
-         deparse(bquote( (2 - 2/(1 + exp( -.(t$cs) / .(t$spacing) ) ) )
-                        * .(t$beta_dx) * .(t$displacement) ))
-       }
-       , start = function(predictors) {
-         #spacing, displacement starting points.
-         predictors[c(1,2)] <- c(3, 14)
-         predictors
-       }
-       )
-}
-class(displacementTerm) <- "nonlin"
 
 makePredictions <-
   function(model, data=model$data,
@@ -114,35 +59,51 @@ plot_fit <- function(model, subject=model$data$subject[1]) {
          ))
 }
 
-main <- function(infile = "data.RData", outfile = "slopeModel.RData") {
+infile <- "data.Rdata"
+outfile <- "slopeModel.RData"
+grid <- "motion_energy.csv"
+
+main <- function(infile = "data.RData", outfile = "slopeModel.RData",
+                 grid = "motion_energy.csv") {
 
   load(infile, e <- new.env())
+  motion.energy <- read.csv(grid)
 
   #use only subjects whose number of trials exceed 2000
   chain(e$data
         , subset(exp_type %in% c("spacing", "content"))
         , do.rename(folding=FALSE)
+        , mutate(bias=1)
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
         ) -> data
 
-  rates = mkrates(data)
+  #count trials in each condition
+  rates <- mkrates(data)
+
+  #Our model has one term nonlinear in the spacing-dependent
+  #sensitivity to displacement and to direction content.
+  #This defines the response to displacement.
+  displacementTerm <- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
+                       ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
+  formula <- (  cbind(n_cw, n_ccw)
+              ~ displacementTerm(spacing, displacement,
+                                 start=c(cs=4, beta_dx=14))
+              + content
+              + I(content*abs(content))
+              + I(1/spacing):content
+              + bias - 1 #"bias" set to 0 to predict folded data (but a
+              # better way to predict folded data is to predict both
+              # directions then average)
+              )
+  family <- binomial(link=logit.2asym(g=0.025, lam=0.025))
 
   #fit models to each subject.
   models <- dlply(rates, "subject", function(chunk) {
     cat("fitting subject " %++% chunk$subject[1] %++% "\n")
-    gnm(  (  cbind(n_cw, n_ccw)
-           ~ displacementTerm(spacing, displacement)
-           + content
-           + I(content*abs(content))
-           + I(1/spacing):content
-           + bias - 1 #allows us to switch off bias to predict unfolded data
-           )
-        , family=binomial(link=logit.2asym(g=0.025, lam=0.025))
-        , data=chunk
-        )
+    gnm(formula, family=family, data=chunk)
   })
 
-  save(models, displacementTerm, file="slopeModel.RData")
+  save(models, displacementTerm, formula, family, file=outfile)
 
   #plot the models
   cairo_pdf("slopeModel.pdf", onefile=TRUE, family="MS Gothic")

@@ -3,12 +3,57 @@ suppressPackageStartupMessages({
   library(stringr)
 })
 
+## function to build a nonlinear term as used by the gnm package.
+## called like;
+##
+## nonlinearTerm(parameterTerms...)(predictorTerms...)(expression)(predictor...,
+## start) where "expression" is written in terms of "parameterTerms"
+## and "predictorTerms", and "predictor" nominates data terms
+## corresponding to predictor terms. "start" is a named vector of
+## starting values corresponding to the parameters.
+##
+##   displacementTerm <- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
+##                     ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
+## nonlinearTerm()
+nonlinearTerm <- function(..., start=NULL) {
+  predictors <- quote_args(...)
+  predictors[is.missing(predictors)] <- list(1)
+  function(...) {
+    variables <- quote_args(...)
+    #
+    function(expr) {
+      expr <- substitute(expr)
+      eval(template(structure(
+        class="nonlin",
+        function(.=...(variables), start) {
+          ...( lapply(names(variables),
+                      function(x) template( .(as.name(x))
+                                           <- substitute(.(as.name(x))))))
+          c(list( predictors = alist(...(predictors))
+                 , variables = list(...(lapply(names(variables), as.name)))
+                 , term = function(predLabels, varLabels) {
+                   t = as.list(parse(text=c(predLabels, varLabels)))
+                   names(t) <- .(c(names(predictors), names(variables)))
+                   deparse(substitute(.(expr), t))
+                 }),
+            if (missing(start)) NULL else list(start=function(x) {print(x); start[names(x)]}))
+        })))
+    }
+  }
+}
+
 load2env <- function(file, env=new.env()) {
   load(file, envir=env)
   env
 }
 
 unattr <- function(x) `attributes<-`(x, NULL)
+
+idf <- function(df) {
+  out <- idf(df);
+  class(out) <- union(class(out), "data.frame");
+  out
+}
 
 do.rename <- function(data, folding=TRUE) {
   replacements <- if (folding) {
@@ -24,7 +69,8 @@ do.rename <- function(data, folding=TRUE) {
       target_spacing="spacing"
       )
   }
-  rename(data, replacements)
+  chain(rename(data, replacements),
+        mutate(bias = if (folding) 0 else 1))
 }
 
 str_match_matching <- function(...) {
@@ -44,7 +90,7 @@ binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
 refold <- function(data, fold=TRUE) {
   fold.trial <- with(data, fold & ((content < 0)
-                                   | (content == 0 & displacement < 0)))
+                                    | (content == 0 & displacement < 0)))
 
   refold_me <- function(trials, fold) {
     #how to "fold" the motion energy calculation and other paired fields
@@ -70,26 +116,9 @@ refold <- function(data, fold=TRUE) {
         refold_me(fold.trial))
 }
 
-ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
-  kept.columns <- structure( rep(TRUE, length(.data))
-                            , names=colnames(.data))
-  produced.columns <- character(0)
-  with_unique_cols <- function(.chunk, .fn, ...) {
-    summary <- .fn(.chunk, ...)
-    keep <- unlist(lapply(names(.chunk), function(n) {
-      if (length(unique(.chunk[[n]])) <= 1) n else NULL
-    }))
-    kept.columns[names(.chunk)[!names(.chunk) %in% keep]] <<- FALSE
-    produced.columns <<- produced.columns %v% names(summary)
-    cbind(summary, .chunk[1,keep])
-  }
-  out <- ddply(.data, .columns, with_unique_cols, .fn=.fun, ...)
-  out[produced.columns %v% names(kept.columns[kept.columns])]
-}
-
 mkrates <- function(data,
                     splits=c("displacement", "content",
-                             "spacing", "subject", "exp_type")) {
+                             "spacing", "subject", "exp_type", "bias")) {
   counter <- function(s) summarize(s,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
@@ -104,24 +133,23 @@ mkrates <- function(data,
   }
 }
 
+#this is kind of ridiculously slow. Its main purpose it to carry
+#around motion energy values which are computed for each unique trial.
 ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
-  kept.columns <- structure( rep(TRUE, length(.data))
-                            , names=colnames(.data))
+  kept.columns <- structure(names(.data), names=names(.data))
+  d_ply(.data, .columns, function(df) {
+    u <- vapply(kept.columns, function(i)  length(unique(df[[i]])) <= 1, FALSE)
+    if (any(!u)) kept.columns <<- kept.columns[names(u[u])]
+  })
   summary <- ddply(.data, .columns, .fun, ...)
-  unique.columns <-
-    chain(.data,
-          ddply(.columns, colwise(function(x) length(unique(x)) <= 1)),
-          `[<-`(unique(as.character(.columns)), value=list()),
-          colwise(all)(),
-          unlist, .[.], names,
-          setdiff(names(summary)))
-  extra.data <- ddply(.data, .columns, `[`, 1, unique.columns)
-  cbind(summary, extra.data)
+  kept.columns <- setdiff(kept.columns, names(summary))
+  extradata <- ddply(.data, .columns, `[`, 1,  kept.columns)
+  cbind(summary, extradata[names(extradata) %-% names(summary)])
 }
 
 mkrates <- function(data,
                     splits=c("displacement", "content",
-                      "spacing", "subject", "exp_type")) {
+                      "spacing", "subject", "exp_type"), keep_unique=TRUE) {
   counter <- function(s) summarize(s,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
@@ -131,7 +159,7 @@ mkrates <- function(data,
     nullcounter(data)
   } else {
     chain(data,
-          ddply_keeping_unique_cols(splits, counter),
+          (if (keep_unique) ddply_keeping_unique_cols else ddply)(splits, counter),
           arrange(desc(n)))
   }
 }
