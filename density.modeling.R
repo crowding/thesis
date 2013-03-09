@@ -56,6 +56,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   segment.config.vars <<-
     c("spacing", "target_number_shown", "target_number_all")
 
+  splits <<- c(segment.config.vars, segment.experiment.vars)
+
   ##Aggregate data into counts of CW and CCW responses, with various
   ##levels of folding/spindling
   bind[segment, segment.folded, segment.folded.spindled,
@@ -169,7 +171,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##here's a function to plot those predictions
   dev.set(detail.dev)
   plot(plot.spacing
-       + prediction_layers(predict_from_model_frame(basic.informed.models))
+       + prediction_layers(predict_from_model_frame(basic.informed.models, splits=c))
        + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
               x=paste("spacing", sep="\n",
                 "(ignore the stratification with target number, that is not in this model.",
@@ -280,32 +282,12 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE, collapse=FALSE)
         refold(fold = fold),
         mkrates(c(  segment.config.vars, segment.experiment.vars
                   , "eccentricity", if(!spindle) "side")),
-#        nrow)
         mutate(bias = if (fold) 0 else 1,
                sidedness = if (spindle) 0 else 1,
                side = if (spindle) NA else side,
                extent = spacing * target_number_shown),
         if(collapse) collapse(.) else .,
         labeler)
-
-##We'll be modeling raw data, but plotting folded/spindled. Here's a
-##function that "re-folds" the predictions so that they can be plotted
-##on a folded plot.
-mutilate.predictions <-
-  function(pred,
-           fold=abs(diff(range(sign(pred$content)))) > 1,
-           spindle=length(unique(pred$side)) > 1,
-           collapse=FALSE) {
-    columns <- c(as.quoted(segment.config.vars),
-                 as.quoted(segment.experiment.vars),
-                 if (spindle) NULL else as.quoted("side"))
-    chain(pred,
-          refold(fold),
-          ddply_keeping_unique_cols(columns, summarize,
-                fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
-          if(collapse) collapse(.) else .,
-          labeler)
-  }
 
 #Build ggplot layers to add predictions to a plot.
 prediction_layers <- function(data, connect = c("number","spacing"))  {
@@ -323,53 +305,6 @@ prediction_layers <- function(data, connect = c("number","spacing"))  {
                           linetype=factor(spacing))))),
            geom_line(...(if (connect=="number") list(linetype=3) else list())),
            geom_ribbon(alpha=0.3, linetype=0))))
-}
-
-predict_from_model_frame <- function(models, newdata,
-                                     fold=TRUE, spindle=TRUE, collapse=FALSE) {
-  ##take a data frame with a list of models, and the variables to
-  ##match by, produce predictions for the folding data.
-  newdata_missing <- missing(newdata)
-  chain(models,
-        adply(1, function(row) {
-          bind[model=bind[model], ...=group] <- as.list(row)
-          if (newdata_missing) {
-            predict_from_model(model)
-          } else {
-            predict_from_model(model,
-                               match_df(newdata, quickdf(group),
-                                        on = names(newdata) %^% names(group)))
-          }
-        }),
-        mutilate.predictions(fold=fold, spindle=spindle, collapse=collapse))
-}
-
-collapse <- function(data) {
-  #collapses different sides and direction contents together (as for
-  #most subjects in this experiment these don't matter.)
-  args <- dots(
-    chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45)),
-    segment.config.vars %v% segment.experiment.vars %-% c("displacement", "content"),
-    summarize)
-
-  if ("n" %in% names(data)) {
-    if ("fit" %in% names(data)) {
-      args <- args %__% dots(fit = mean(fit*n)/sum(n),
-                             se.fit = sqrt(sum((se.fit^2)*n)/sum(n)))
-    }
-    args <- args %__% dots(n_ccw = sum(n_ccw), n_cw = sum(n_cw),
-                           n = sum(n), p = n_cw/n)
-  } else {
-    if ("fit" %in% names(data))
-      args <- args %__% dots(fit = mean(fit), se.fit = sqrt(mean(se.fit^2)))
-  }
-  ddply_keeping_unique_cols %()% args
-}
-
-predict_from_model <- function(model, newdata=model$data) {
-  pred <- predict(model, newdata=newdata, se.fit=TRUE, type="response")
-  newdata[(names(newdata) %in% names(pred))] <- list()
-  cbind(newdata, pred, model=NA)
 }
 
 descriptive_model <- function(dataset) {

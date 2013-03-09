@@ -36,10 +36,100 @@ nonlinearTerm <- function(..., start=NULL) {
                    names(t) <- .(c(names(predictors), names(variables)))
                    deparse(substitute(.(expr), t))
                  }),
-            if (missing(start)) NULL else list(start=function(x) {print(x); start[names(x)]}))
+            if (missing(start)) NULL else list(start=function(x) start[names(x)]))
         })))
     }
   }
+}
+
+predict_from_model_frame <- function(models, newdata,
+                                     fold=TRUE, spindle=TRUE, collapse=FALSE) {
+  ##take a data frame with a list of models, and the variables to
+  ##match by, produce predictions for the folding data.
+  newdata_missing <- missing(newdata)
+  chain(models,
+        adply(1, function(row) {
+          bind[model=bind[model], ...=group] <- as.list(row)
+          if (newdata_missing) {
+            predict_from_model(model)
+          } else {
+            predict_from_model(model,
+                               match_df(newdata, quickdf(group),
+                                        on = names(newdata) %^% names(group)))
+          }
+        }),
+        mutilate.predictions(fold=fold, spindle=spindle, collapse=collapse))
+}
+
+predict_from_model <- function(model, newdata=model$data) {
+  pred <- predict(model, newdata=newdata, se.fit=TRUE, type="response")
+  newdata[(names(newdata) %in% names(pred))] <- list()
+  cbind(newdata, pred, model=NA)
+}
+
+collapse <- function(data) {
+  #collapses different sides and direction contents together (as for
+  #most subjects in this experiment these don't matter.)
+  args <- dots(
+    chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45)),
+    segment.config.vars %v% segment.experiment.vars %-% c("displacement", "content"),
+    summarize)
+
+  if ("n" %in% names(data)) {
+    if ("fit" %in% names(data)) {
+      args <- args %__% dots(fit = mean(fit*n)/sum(n),
+                             se.fit = sqrt(sum((se.fit^2)*n)/sum(n)))
+    }
+    args <- args %__% dots(n_ccw = sum(n_ccw), n_cw = sum(n_cw),
+                           n = sum(n), p = n_cw/n)
+  } else {
+    if ("fit" %in% names(data))
+      args <- args %__% dots(fit = mean(fit), se.fit = sqrt(mean(se.fit^2)))
+  }
+  ddply_keeping_unique_cols %()% args
+}
+
+##We'll be modeling raw data, but plotting folded/spindled. Here's a
+##function that "re-folds" the predictions so that they can be plotted
+##on a folded plot.
+mutilate.predictions <-
+  function(pred,
+           fold=abs(diff(range(sign(pred$content)))) > 1,
+           spindle=length(unique(pred$side)) > 1,
+           collapse=FALSE) {
+    columns <- c(splits,
+                 if (spindle) NULL else as.quoted("side"))
+    chain(pred,
+          refold(fold),
+          ddply_keeping_unique_cols(columns, summarize,
+                fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
+          if(collapse) collapse(.) else .,
+          labeler)
+  }
+
+#' Try to bin values coming from staircase data into fewer
+#' values.
+#'
+#' Uses individually-counted data, not trial data. (because everyone
+#' hates my bubble scatter plots.)  Doing this honestly, i.e. most
+#' faithfully representing the difference between model and data,
+#' requires doing this with reference to the model (so that
+#' differences between prediction and model leave the same
+#' residuals). Adds new columns "n" and "p".
+#' @title
+#' @param data Data on the individual trial level
+#' @param predictor A function that predicts response, returning probabilities
+#' @param predicted The column that is predicted by the predictor.
+#' @param split Column names that define each separate psychometric function.
+#' @param along Column names that define the abscisssa of each psychometric function.
+#' @param n_bins The number of bins to split evenly into
+#' @param binsize The bin size to use. Either this or n_bins but be defined.
+#' @return A data frame with the "split" and "along" columns plus "n" and "p"
+#' @author Peter Meilstrup
+bin_along <- function(data, predictor, split, along, n_bins, binsize) {
+  ddply(data, model, function(model) {
+
+  })
 }
 
 load2env <- function(file, env=new.env()) {
@@ -118,7 +208,8 @@ refold <- function(data, fold=TRUE) {
 
 mkrates <- function(data,
                     splits=c("displacement", "content",
-                             "spacing", "subject", "exp_type", "bias")) {
+                             "spacing", "subject", "exp_type", "bias"),
+                    keep_columns=TRUE) {
   counter <- function(s) summarize(s,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
@@ -128,7 +219,8 @@ mkrates <- function(data,
     nullcounter(data)
   } else {
     chain(data,
-          ddply_keeping_unique_cols(splits, counter),
+          (if (keep_columns)
+           ddply else ddply_keeping_unique_cols)(splits, counter),
           arrange(desc(n)))
   }
 }

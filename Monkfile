@@ -115,7 +115,9 @@
 --command cd modeling && Rscript
 --input --invisible modeling/slopeModel.R slopeModel.R
 --input --invisible --match modeling/data\.RData data.RData
+--input --invisible modeling/motion_energy.RData motion_energy.csv
 --output --invisible modeling/slopeModel.RData slopeModel.RData
+--output --invisible modeling/slopeModel.pdf slopeModel.pdf
 
 --command
 --input --match --invisible modeling/.*

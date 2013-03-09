@@ -24,7 +24,7 @@ seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 makePredictions <-
   function(model, data=model$data,
            splitting_vars=c("subject", "content", "exp_type", "spacing", "bias"),
-           ordinate = "displacement"
+           ordinate = "displacement", ordinate.values = 
            ) {
     r <- range(data[ordinate])
     sampling <- merge(unique(data[splitting_vars]),
@@ -38,6 +38,7 @@ makePredictions <-
 
 plotPredictions <- function(...) {
   predictions = makePredictions(...)
+  
   with_arg(data=predictions,
            geom_ribbon(color="transparent", alpha=0.2,
                        aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
@@ -63,11 +64,15 @@ infile <- "data.Rdata"
 outfile <- "slopeModel.RData"
 grid <- "motion_energy.csv"
 
-main <- function(infile = "data.RData", outfile = "slopeModel.RData",
-                 grid = "motion_energy.csv") {
+main <- function(infile = "data.RData", grid = "motion_energy.csv",
+                 outfile = "slopeModel.RData", plot="slopeModel.pdf") {
 
   load(infile, e <- new.env())
   motion.energy <- read.csv(grid)
+
+  chain(motion.energy,
+        subset(grid=TRUE, select="abs_displacement"),
+        unique, arrange(abs_displacement)) -> plot.displacements
 
   #use only subjects whose number of trials exceed 2000
   chain(e$data
@@ -77,7 +82,8 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData",
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
         ) -> data
 
-  #count trials in each condition
+  #count trials in each condition. While keeping motion energy
+  #information, this kills speed. Might do binning instead.
   rates <- mkrates(data)
 
   #Our model has one term nonlinear in the spacing-dependent
@@ -99,27 +105,44 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData",
 
   #fit models to each subject.
   models <- dlply(rates, "subject", function(chunk) {
-    cat("fitting subject " %++% chunk$subject[1] %++% "\n")
+    cat("fitting subject ", chunk$subject[1],  "\n")
     gnm(formula, family=family, data=chunk)
   })
 
-  save(models, displacementTerm, formula, family, file=outfile)
+  model.frame <- data.frame(model = I(models), subject=names(models))
+
+  predictions <- predict_from_model_frame(model.frame, data, fold=TRUE,
+                                          spindle=TRUE, collapse=FALSE)
+
+  save(model.frame, models, displacementTerm, formula, family, file=outfile)
+
+  #try using motion energy (and normalized motion energy) instead of
+  #direction content in the model...
+  motion.energy.models <- dlply(rates, "subject", function(chunk) {
+    cat("fitting subject ", chunk$subject[1],  "\n")
+    gnm(formula, family=family, data=chunk)
+  })
 
   #plot the models
-  cairo_pdf("slopeModel.pdf", onefile=TRUE, family="MS Gothic")
-  mapply(models, names(models), FUN=function(model, name) {
-    cat("plotting subject " %++% name %++% "\n")
+  cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
+
+  (mapply %<<% model.frame)(function(model, subject) {
+    cat("plotting subject ", as.character(subject), "\n")
     plot_fit(model)
+    stop()
   })
   dev.off()
 
-  #how about some contour plots.
+  #how about some contour plots. Everyone hated these.
   cairo_pdf("contours.pdf", onefile=TRUE, family="MS Gothic")
-  mapply(models, names(models), FUN=function(model, name) {
+  (mapply %<<% model.frame)(function(model, subject) {
+    cat("plotting contours for", as.character(subject))
     plot_contours(model)
+    stop()
   })
   dev.off()
 
+  #this is where we might make some 3d plots.
   #make some contour plots
 
   #draw some random simulations of coefficients.  plot where the
@@ -132,6 +155,8 @@ main <- function(infile = "data.RData", outfile = "slopeModel.RData",
   #and 6 elements on screen. Somehow also average the data across
   #subjects, too?
 
+  #and this makes interesting plots that show us about the model
+  #properties???
   plot_curves(models)
 }
 
