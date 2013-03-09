@@ -16,18 +16,17 @@ source("library.R")
 #pdf.options(family="MS Gothic")
 
 match_df <- function(...) suppressMessages(plyr::match_df(...))
-
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
-
 `%++%` <- paste0
+splits <- c("subject", "content", "exp_type", "spacing", "bias")
 
 makePredictions <-
   function(model, data=model$data,
-           splitting_vars=c("subject", "content", "exp_type", "spacing", "bias"),
-           ordinate = "displacement", ordinate.values = 
+           splits=c("subject", "content", "exp_type", "spacing", "bias"),
+           ordinate = "displacement", ordinate.values = plot.displacements
            ) {
     r <- range(data[ordinate])
-    sampling <- merge(unique(data[splitting_vars]),
+    sampling <- merge(unique(data[splits]),
                       quickdf(structure(list(seq(r[1], r[2], length=100)),
                                         names=ordinate)),
                       by.x=c(), by.y=c())
@@ -38,17 +37,18 @@ makePredictions <-
 
 plotPredictions <- function(...) {
   predictions = makePredictions(...)
-  
   with_arg(data=predictions,
            geom_ribbon(color="transparent", alpha=0.2,
                        aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
            geom_line(aes(y=fit)))
 }
 
+#perhaps make this go using predict_from_model_frame
 plot_fit <- function(model, subject=model$data$subject[1]) {
-  rates <- match_df(model$data,
-                    data.frame(subject=subject, stringsAsFactors=FALSE),
-                    on="subject")
+  subdata <- match_df(model$data,
+                      data.frame(subject=subject, stringsAsFactors=FALSE),
+                      on="subject")
+  rates <- mkrates(subdata)
   print((ggplot(rates)
          + displacement_scale
          + proportion_scale
@@ -70,9 +70,9 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   load(infile, e <- new.env())
   motion.energy <- read.csv(grid)
 
-  chain(motion.energy,
+  plot.displacements <<- chain(motion.energy,
         subset(grid=TRUE, select="abs_displacement"),
-        unique, arrange(abs_displacement)) -> plot.displacements
+        unique, arrange(abs_displacement))
 
   #use only subjects whose number of trials exceed 2000
   chain(e$data
@@ -84,14 +84,13 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   #count trials in each condition. While keeping motion energy
   #information, this kills speed. Might do binning instead.
-  rates <- mkrates(data)
 
   #Our model has one term nonlinear in the spacing-dependent
   #sensitivity to displacement and to direction content.
   #This defines the response to displacement.
   displacementTerm <- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
                        ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
-  formula <- (  cbind(n_cw, n_ccw)
+  formula <- (  response
               ~ displacementTerm(spacing, displacement,
                                  start=c(cs=4, beta_dx=14))
               + content
@@ -104,11 +103,10 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   family <- binomial(link=logit.2asym(g=0.025, lam=0.025))
 
   #fit models to each subject.
-  models <- dlply(rates, "subject", function(chunk) {
+  models <- dlply(data, "subject", function(chunk) {
     cat("fitting subject ", chunk$subject[1],  "\n")
     gnm(formula, family=family, data=chunk)
   })
-
   model.frame <- data.frame(model = I(models), subject=names(models))
 
   predictions <- predict_from_model_frame(model.frame, data, fold=TRUE,
@@ -116,20 +114,18 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   save(model.frame, models, displacementTerm, formula, family, file=outfile)
 
-  #try using motion energy (and normalized motion energy) instead of
-  #direction content in the model...
-  motion.energy.models <- dlply(rates, "subject", function(chunk) {
-    cat("fitting subject ", chunk$subject[1],  "\n")
-    gnm(formula, family=family, data=chunk)
-  })
+  ## #try using motion energy (and normalized motion energy) instead of
+  ## #direction content in the model...
+  ## motion.energy.models <- dlply(rates, "subject", function(chunk) {
+  ##   cat("fitting subject ", chunk$subject[1],  "\n")
+  ##   gnm(formula, family=family, data=chunk)
+  ## })
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
-
   (mapply %<<% model.frame)(function(model, subject) {
     cat("plotting subject ", as.character(subject), "\n")
     plot_fit(model)
-    stop()
   })
   dev.off()
 

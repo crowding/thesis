@@ -107,6 +107,26 @@ mutilate.predictions <-
           labeler)
   }
 
+
+#label function for each facet
+labeler <- function(data) {
+  ddply(data, "exp_type", function(data) {
+    switch(data$exp_type[[1]],
+           numdensity={
+             if ("displacement" %in% names(data)) {
+               mutate(data, label = sprintf("%s d=%s C=%s",
+                              toupper(subject),
+                              format(displacement, digits = 2),
+                              format(content, digits = 2)))
+             } else {
+               mutate(data, label = sprintf("%s", toupper(subject)))
+             }
+           },
+           content=mutate(data, label="Content %s", toupper(subject)),
+           spacing=mutate(data, label="Spacing %s", tpupper(subject)))
+  })
+}
+
 #' Try to bin values coming from staircase data into fewer
 #' values.
 #'
@@ -209,7 +229,7 @@ refold <- function(data, fold=TRUE) {
 mkrates <- function(data,
                     splits=c("displacement", "content",
                              "spacing", "subject", "exp_type", "bias"),
-                    keep_columns=TRUE) {
+                    keep=TRUE) {
   counter <- function(s) summarize(s,
     n = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
@@ -219,8 +239,7 @@ mkrates <- function(data,
     nullcounter(data)
   } else {
     chain(data,
-          (if (keep_columns)
-           ddply else ddply_keeping_unique_cols)(splits, counter),
+           (if (keep) ddply_keeping_unique_cols else ddply)(splits, counter),
           arrange(desc(n)))
   }
 }

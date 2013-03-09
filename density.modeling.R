@@ -258,18 +258,6 @@ errorbars <- function(segment, x.axis="spacing") {
            )
 }
 
-#label function for each facet
-labeler <- function(data) {
-  if ("displacement" %in% names(data)) {
-    mutate(data, label = sprintf("%s d=%s C=%s",
-                   toupper(subject),
-                   format(displacement, digits = 2),
-                   format(content, digits = 2)))
-  } else {
-    mutate(data, label = sprintf("%s", toupper(subject)))
-  }
-}
-
 ## we like to plot with folded data, and with the "segment" data we,
 ## uh, "spindle" collapsing stimuli presented in different
 ## hemifields. Averaging foldings and hemifields is useful for
