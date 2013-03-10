@@ -23,16 +23,24 @@ splits <- c("subject", "content", "exp_type", "spacing", "bias")
 makePredictions <-
   function(model, data=model$data,
            splits=c("subject", "content", "exp_type", "spacing", "bias"),
-           ordinate = "displacement", ordinate.values = plot.displacements
+           ordinate = "displacement",
+           ordinate.values = plot.displacement
            ) {
     r <- range(data[ordinate])
     sampling <- merge(unique(data[splits]),
-                      quickdf(structure(list(seq(r[1], r[2], length=100)),
+                      quickdf(structure(list(ordinate.values),
                                         names=ordinate)),
                       by.x=c(), by.y=c())
-    pred <- predict(model, newdata=sampling, type="response", se.fit=TRUE)
-    cbind(sampling, pred[1:2])
-    #one can also do a prediction from the terms...
+    #chunk up predictions... gnm has some O(n^2) memory usage bullshit going on
+    #with making predictions on binary data, so predict 1000 trials at a time
+    #(tested faster than 500 or 2000)
+    .nrow <- nrow(sampling); .chunksize <- 1000
+    sampling <- mutate(sampling,  .chunk=floor(seq_len(.nrow)/.chunksize))
+    pred <- ddply(sampling, ".chunk",
+                  function(chunk) {
+                    pred <- predict(model, newdata=chunk, type="response", se.fit=TRUE)
+                    cbind(chunk, pred[1:2])
+                  })
   }
 
 plotPredictions <- function(...) {
@@ -44,25 +52,30 @@ plotPredictions <- function(...) {
 }
 
 #perhaps make this go using predict_from_model_frame
-plot_fit <- function(model, subject=model$data$subject[1]) {
+plot_fit <- function(model, subject=model$data$subject[1],
+                     style=c("binned", "bubble")) {
+  style <- match.arg(style)
   subdata <- match_df(model$data,
                       data.frame(subject=subject, stringsAsFactors=FALSE),
                       on="subject")
-  rates <- mkrates(subdata)
-  print((ggplot(rates)
+  plotdata <- bin_along(predict_from_model(model, subdata),
+                        "response", "fit", splits, "displacement")
+  print((ggplot(plotdata)
          + displacement_scale
          + proportion_scale
          + content_color_scale
          + facet_spacing_experiment
-         + plotPredictions(model, rates)
-         + balloon
+         + plotPredictions(model)
+         + geom_point()
+#         + list(if subdata)balloon
          + labs(title = "Data and model fits for subject " %++% subject)
          ))
 }
 
 infile <- "data.Rdata"
-outfile <- "slopeModel.RData"
 grid <- "motion_energy.csv"
+outfile <- "slopeModel.RData"
+plot <- "slopeModel.pdf"
 
 main <- function(infile = "data.RData", grid = "motion_energy.csv",
                  outfile = "slopeModel.RData", plot="slopeModel.pdf") {
@@ -70,9 +83,14 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   load(infile, e <- new.env())
   motion.energy <- read.csv(grid)
 
-  plot.displacements <<- chain(motion.energy,
-        subset(grid=TRUE, select="abs_displacement"),
-        unique, arrange(abs_displacement))
+  bind[plot.displacement, plot.content, plot.spacing] <- (
+    chain(motion.energy, subset(grid==TRUE),
+          mutate(spacing=target_number_all * 2*pi/eccentricity),
+          .[c("abs_displacement", "abs_direction_content", "spacing")],
+          lapply(unique), lapply(sort)))
+  plot.displacement <<- plot.displacement
+  plot.content <<- plot.content
+  plot.spacing <<- plot.spacing
 
   #use only subjects whose number of trials exceed 2000
   chain(e$data
@@ -109,9 +127,6 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   })
   model.frame <- data.frame(model = I(models), subject=names(models))
 
-  predictions <- predict_from_model_frame(model.frame, data, fold=TRUE,
-                                          spindle=TRUE, collapse=FALSE)
-
   save(model.frame, models, displacementTerm, formula, family, file=outfile)
 
   ## #try using motion energy (and normalized motion energy) instead of
@@ -125,21 +140,20 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
   (mapply %<<% model.frame)(function(model, subject) {
     cat("plotting subject ", as.character(subject), "\n")
-    plot_fit(model)
+    tryCatch(plot_fit(model), error=function(x) warning(x))
   })
   dev.off()
 
   #how about some contour plots. Everyone hated these.
   cairo_pdf("contours.pdf", onefile=TRUE, family="MS Gothic")
   (mapply %<<% model.frame)(function(model, subject) {
-    cat("plotting contours for", as.character(subject))
-    plot_contours(model)
-    stop()
+    cat("plotting contours for", as.character(subject), "\n")
+    tryCatch(plot_contours(model), error=function(x) warning(x))
   })
   dev.off()
 
-  #this is where we might make some 3d plots.
-  #make some contour plots
+  #this is where we might make some 3d plots. Or contour plots along
+  #different axes.
 
   #draw some random simulations of coefficients.  plot where the
   #coefficients of the models are (with confidence ellipses?)
@@ -161,10 +175,10 @@ plot_contours <- function(model) {
   #the y-axis.
 
   displacement_sampling <- expand.grid(
-                spacing=seq_range(pmin(range(model$data$spacing), 10), length=100),
-                displacement = seq_range(range(model$data$displacement), length=100),
+                spacing = plot.spacing,
+                displacement = plot.displacement,
                 content = 0.1,
-                bias=1
+                bias = 1
                 )
   displacement_sampling$pred <-
     predict(model, newdata=displacement_sampling, type="response")
@@ -184,8 +198,8 @@ plot_contours <- function(model) {
   #now to show the (trickier) relation of direction content to spacing
   content_sampling <-
     expand.grid(
-      spacing      = seq_range(pmin(range(model$data$spacing), 10), length=100),
-      content      = seq_range(range(model$data$content), length=100),
+      spacing      = plot.spacing,
+      content      = plot.content,
       displacement = 0,
       subject = model$data$subject[[1]],
       bias=1
@@ -194,28 +208,30 @@ plot_contours <- function(model) {
     predict(model, newdata=content_sampling, type="response")
 
   print(ggplot(content_sampling)
-   + aes(x = content, y = spacing, z = pred)
-   + geom_contour(size=0.2, color="gray70", breaks=seq(0,1,0.02))
-   + decision_contour
-   + y_nopadding
-   + scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
-   + no_grid
-   + annotate("text", label=toupper(model$data$subject[[1]]),
-              x=max(content_sampling$content), y=min(content_sampling$spacing),
-              hjust=1.2, vjust=-0.5)
-   )
+        + aes(x = content, y = spacing, z = pred)
+        + geom_contour(size=0.2, color="gray70", breaks=seq(0,1,0.02))
+        + decision_contour
+        + y_nopadding
+        + scale_x_continuous(name="Direction content",
+                             labels=newline_arrows, expand=c(0,0))
+        + no_grid
+        + annotate("text", label=toupper(model$data$subject[[1]]),
+                   x=max(content_sampling$content),
+                   y=min(content_sampling$spacing),
+                   hjust=1.2, vjust=-0.5))
 
   #might be interesting to plot deviance over these coordinates. color
   #coded deviance plot?
 
   #uncertainty inside/outside
   uncertainty_sampling <- expand.grid(
-        spacing = c(2, 3, 5, 10, 20),
-        displacement = seq_range(range(model$data$displacement), length=100),
+    spacing = match_to(c(2, 3, 5, 10, 20), plot.spacing),
+        displacement = plot.displacement,
         content = 0.1,
         bias=1
   )
-  pred = predict(model, newdata=uncertainty_sampling, type="response", se.fit=TRUE)
+  pred <- predict(model, newdata=uncertainty_sampling,
+                  type="response", se.fit=TRUE)
   uncertainty_sampling <- cbind(uncertainty_sampling, pred)
 
   print(ggplot(uncertainty_sampling)
@@ -233,8 +249,8 @@ plot_contours <- function(model) {
 
   content_sampling <-
     expand.grid(
-      spacing = c(2, 3, 5, 10, 20),
-      content = seq(-1, 1, length=100),
+      spacing = match_to(c(2, 3, 5, 10, 20), plot.spacing),
+      content = plot.content,
       displacement = 0,
       bias = 1)
   pred = predict(model, newdata=content_sampling, type="response", se.fit=TRUE)
@@ -267,9 +283,10 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   sensitivity_data <-
     expand.grid(spacing=seq(0, 10, len=200), content=0, bias=1)
 
-  sensitivity_data <- cbind(sensitivity_data,
-                                s=(predict(m,  data.frame(sensitivity_data, displacement=0.5) )
-                                   -predict(m, data.frame(sensitivity_data, displacement=-0.5))))
+  sensitivity_data <-
+    cbind(sensitivity_data,
+          s=(predict(m,  data.frame(sensitivity_data, displacement=0.5) )
+             -predict(m, data.frame(sensitivity_data, displacement=-0.5))))
   sensitivity_plot <- (
     ggplot(sensitivity_data)
     + aes(x=spacing, y=s)
@@ -282,7 +299,8 @@ plot_curves <- function(models, prefix="../writing/inset_") {
                          labels = c("0", "\u03B2\u2080")
                          )
     )
-  cairo_pdf(file=paste(prefix, "sensitivity.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  cairo_pdf(file=paste(prefix, "sensitivity.pdf", sep=""),
+            width=3, height=2, family="MS Gothic")
   print(sensitivity_plot)
   dev.off()
 
@@ -299,7 +317,8 @@ plot_curves <- function(models, prefix="../writing/inset_") {
     + geom_ribbon(aes(ymin=pmin(0.5, p), ymax=p), color=NA, fill="green", alpha=0.5)
     + geom_ribbon(aes(ymin=p, ymax=pmax(0.5,p)), color=NA, fill="red", alpha=0.5)
     )
-  cairo_pdf(file=paste(prefix, "all_bias.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  cairo_pdf(file=paste(prefix, "all_bias.pdf", sep=""),
+            width=3, height=2, family="MS Gothic")
   print(bias_all_plot)
   dev.off()
 

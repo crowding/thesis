@@ -58,13 +58,23 @@ predict_from_model_frame <- function(models, newdata,
                                         on = names(newdata) %^% names(group)))
           }
         }),
-        mutilate.predictions(fold=fold, spindle=spindle, collapse=collapse))
+        if (any(fold, spindle, collapse)) {
+          mutilate.predictions(., fold=fold, spindle=spindle, collapse=collapse)
+        } else .)
 }
 
 predict_from_model <- function(model, newdata=model$data) {
-  pred <- predict(model, newdata=newdata, se.fit=TRUE, type="response")
-  newdata[(names(newdata) %in% names(pred))] <- list()
-  cbind(newdata, pred, model=NA)
+  #chunk prediction because predict.gnm does something odd
+  newdata$.chunk <- floor(seq_len(nrow(newdata))/1000)
+  ddply(newdata, ".chunk",
+        function(chunk) {
+          pred <- predict(model, newdata=chunk, type="response", se.fit=TRUE)
+          cbind(chunk, pred[1:2], model=NA)
+        })
+}
+
+match_to <- function(x, from) {
+  vapply(x, function(x) from[which.min(abs(log(x) - log(from)))], 0)
 }
 
 collapse <- function(data) {
@@ -97,7 +107,7 @@ mutilate.predictions <-
            fold=abs(diff(range(sign(pred$content)))) > 1,
            spindle=length(unique(pred$side)) > 1,
            collapse=FALSE) {
-    columns <- c(splits,
+    columns <- c(as.quoted(splits),
                  if (spindle) NULL else as.quoted("side"))
     chain(pred,
           refold(fold),
@@ -106,7 +116,6 @@ mutilate.predictions <-
           if(collapse) collapse(.) else .,
           labeler)
   }
-
 
 #label function for each facet
 labeler <- function(data) {
@@ -138,17 +147,39 @@ labeler <- function(data) {
 #' residuals). Adds new columns "n" and "p".
 #' @title
 #' @param data Data on the individual trial level
-#' @param predictor A function that predicts response, returning probabilities
-#' @param predicted The column that is predicted by the predictor.
+#' @param responsevar
+#' @param predictvar
 #' @param split Column names that define each separate psychometric function.
 #' @param along Column names that define the abscisssa of each psychometric function.
 #' @param n_bins The number of bins to split evenly into
 #' @param binsize The bin size to use. Either this or n_bins but be defined.
 #' @return A data frame with the "split" and "along" columns plus "n" and "p"
 #' @author Peter Meilstrup
-bin_along <- function(data, predictor, split, along, n_bins, binsize) {
-  ddply(data, model, function(model) {
+bin_along <- function(data, responsevar, predictvar,
+                      split, along, bins=6) {
+  ddply(data, split, function(chunk) {
+    a <- chunk[[along]]
+    chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
+    ddply(chunk, c(as.quoted(split), .(.bin)), function(x) {
+      names <- c("p", along, "n")
+      quickdf(structure(list(mean(x[[responsevar]]), mean(x[[along]]),
+                             nrow(x)),
+                        names=names))
+    })
+  })
+}
 
+bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
+  data$fit <- predict(model, data, type="response")
+  binned <- ddply(data, split, function(chunk) {
+    a <- chunk[[along]]
+    chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
+    ddply(chunk, c(as.quoted(split), .(.bin)), function(x) {
+      names <- c("p", along, "n")
+      quickdf(structure(list(mean(x[[responsevar]]), mean(x[[along]]),
+                             nrow(x)),
+                        names=names))
+    })
   })
 }
 
