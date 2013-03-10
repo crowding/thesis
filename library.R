@@ -160,7 +160,7 @@ bin_along <- function(data, responsevar, predictvar,
   ddply(data, split, function(chunk) {
     a <- chunk[[along]]
     chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
-    ddply(chunk, c(as.quoted(split), .(.bin)), function(x) {
+    ddply(chunk, .(.bin), function(x) {
       names <- c("p", along, "n")
       quickdf(structure(list(mean(x[[responsevar]]), mean(x[[along]]),
                              nrow(x)),
@@ -169,19 +169,39 @@ bin_along <- function(data, responsevar, predictvar,
   })
 }
 
+#bin observations, using an "average" that retains the Pearson
+#residual with respect to the model. Depending on your perspective
+#this may be a more "honest" depiction of the model's fit to the data.
 bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
   data$fit <- predict(model, data, type="response")
   binned <- ddply(data, split, function(chunk) {
     a <- chunk[[along]]
     chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
-    ddply(chunk, c(as.quoted(split), .(.bin)), function(x) {
-      names <- c("p", along, "n")
-      quickdf(structure(list(mean(x[[responsevar]]), mean(x[[along]]),
-                             nrow(x)),
-                        names=names))
+    chunk$.pred <- predict(model, newdata=chunk, type="response")
+    chunk <- ddply(chunk, .(.bin), function(x) {
+      l <- structure(list(mean(x[[along]])), names=along)
+      total_obs <- sum(x[[responsevar]])
+      total_pred <- sum(x$.pred)
+      total_var <- sum(x$.pred * (1-(x$.pred)))
+      pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
+      quickdf(c(l, list(n = nrow(x), total_obs=total_obs, total_pred=total_pred,
+                        total_var = total_var, pearson_resid=pearson_resid)))
     })
+    #we want a value for X that leads to the same Pearson residuals as
+    #we have observed.
   })
+  binned$pred <- predict(model, binned, type="response")
+  #this can produce valuce slightly outside [0,1]
+  binned <- mutate(binned,
+                   p = (n*pred + pearson_resid * sqrt(n*(pred)*(1-pred)))/n,
+                   new_resid = n*(p - pred)/sqrt(n*(pred)*(1-pred)) )
+  #assert that the residual is the same.
+  if (any(with(binned, abs(new_resid - pearson_resid) > 0.01)))
+    stop("not binning correctly")
+  binned
 }
+
+
 
 load2env <- function(file, env=new.env()) {
   load(file, envir=env)

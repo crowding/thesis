@@ -58,8 +58,8 @@ plot_fit <- function(model, subject=model$data$subject[1],
   subdata <- match_df(model$data,
                       data.frame(subject=subject, stringsAsFactors=FALSE),
                       on="subject")
-  plotdata <- bin_along(predict_from_model(model, subdata),
-                        "response", "fit", splits, "displacement")
+  plotdata <- bin_along_resid(model, subdata,
+                        "response", splits, "displacement")
   print((ggplot(plotdata)
          + displacement_scale
          + proportion_scale
@@ -140,7 +140,8 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
   (mapply %<<% model.frame)(function(model, subject) {
     cat("plotting subject ", as.character(subject), "\n")
-    tryCatch(plot_fit(model), error=function(x) warning(x))
+    plot_fit(model)
+    #tryCatch(plot_fit(model), error=function(x) warning(x))
   })
   dev.off()
 
@@ -148,6 +149,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   cairo_pdf("contours.pdf", onefile=TRUE, family="MS Gothic")
   (mapply %<<% model.frame)(function(model, subject) {
     cat("plotting contours for", as.character(subject), "\n")
+    #plot_contours(model)
     tryCatch(plot_contours(model), error=function(x) warning(x))
   })
   dev.off()
