@@ -173,7 +173,7 @@ bin_along <- function(data, responsevar, predictvar,
 #residual with respect to the model. Depending on your perspective
 #this may be a more "honest" depiction of the model's fit to the data.
 bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
-  data$fit <- predict(model, data, type="response")
+  data$fit <- predict(model, newdata=data, type="response")
   binned <- ddply(data, split, function(chunk) {
     a <- chunk[[along]]
     chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
@@ -190,7 +190,7 @@ bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
     #we want a value for X that leads to the same Pearson residuals as
     #we have observed.
   })
-  binned$pred <- predict(model, binned, type="response")
+  binned$pred <- predict(model, newdata=binned, type="response")
   #this can produce valuce slightly outside [0,1]
   binned <- mutate(binned,
                    p = (n*pred + pearson_resid * sqrt(n*(pred)*(1-pred)))/n,

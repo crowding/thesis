@@ -90,16 +90,28 @@ facet_spacing_experiment <-
              )
 
 facet_spacing_rows <-
-  facet_grid(spacing ~ .,
-               labeller=function(v, value) {
+  facet_grid(spacing ~ ., labeller=function(v, value) {
+    switch(v,
+           spacing = paste(
+             "$"[!use_unicode],
+             format(value, digits=2),
+             if(use_unicode) "\u0080" else "^\\circ",
+             "$"[!use_unicode], sep=""
+             ),
+           subject=sprintf("Subject %s", toupper(value)))
+  })
+
+facet_spacing_subject <-
+  facet_grid(spacing ~ subject,
+             labeller=function(v, value) {
+               print(v)
                  paste(
                    "$"[!use_unicode],
                    format(value, digits=2),
                    if(use_unicode) "\u0080" else "^\\circ",
                    "$"[!use_unicode], sep=""
                    )
-               }
-             )
+               })
 
 balloon <- list(geom_point(aes(size=n))
                 , scale_size_area()
@@ -140,7 +152,7 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 
 displacement_scale <-
   list( aes(x=displacement),
-       scale_x_continuous(if (use_unicode) " \u0394x" else "$\\Delta x$"
+       scale_x_continuous(if (use_unicode) " \u0394x (Displacement)" else "$\\Delta x$"
                           , labels=newline_arrows))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)

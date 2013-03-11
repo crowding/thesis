@@ -123,12 +123,13 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   #fit models to each subject.
   models <- dlply(data, "subject", function(chunk) {
-    cat("fitting subject ", chunk$subject[1],  "\n")
+    cat("fitting subject ", chunk$subject[1], "\n")
     gnm(formula, family=family, data=chunk)
   })
   model.frame <- data.frame(model = I(models), subject=names(models))
 
-  save(model.frame, models, displacementTerm, formula, family, file=outfile)
+  save(model.frame, models, displacementTerm, formula, family,
+       plot.displacement, plot.content, plot.spacing, file=outfile)
 
   #try using motion energy (and normalized motion energy) instead of
   #direction content in the model...
@@ -190,9 +191,9 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   #and this makes interesting plots that show us about the model
   #properties???
   plot_curves(models)
-}
 
-plot_contours <- function(model) {
+
+  plot_contours <- function}(model) {
   #make a contour plot with displacement on the x-axis and spacing on
   #the y-axis.
 
