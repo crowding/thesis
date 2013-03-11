@@ -67,7 +67,7 @@ plot_fit <- function(model, subject=model$data$subject[1],
          + facet_spacing_experiment
          + plotPredictions(model)
          + geom_point()
-#         + list(if subdata)balloon
+         + (if (style=="bubble") balloon else geom_point())
          + labs(title = "Data and model fits for subject " %++% subject)
          ))
 }
@@ -98,6 +98,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
         , do.rename(folding=FALSE)
         , mutate(bias=1)
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
+        , add_energies
         ) -> data
 
   #count trials in each condition. While keeping motion energy
@@ -129,12 +130,31 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   save(model.frame, models, displacementTerm, formula, family, file=outfile)
 
-  ## #try using motion energy (and normalized motion energy) instead of
-  ## #direction content in the model...
-  ## motion.energy.models <- dlply(rates, "subject", function(chunk) {
-  ##   cat("fitting subject ", chunk$subject[1],  "\n")
-  ##   gnm(formula, family=family, data=chunk)
-  ## })
+  #try using motion energy (and normalized motion energy) instead of
+  #direction content in the model...
+  motion.energy.formula <- (
+    response
+    ~ displacementTerm(spacing, displacement,
+                       start=c(cs=4, beta_dx=14))
+    + content
+    + I(content*abs(content))
+    + I(1/spacing):content #local energy summation
+    + bias - 1 #"bias" set to 0 to predict folded data (but a
+    # better way to predict folded data is to predict both
+    # directions then average)
+    )
+  motion.energy.models <- dlply(data, "subject", function(chunk) {
+    cat("fitting subject ", chunk$subject[1],  "\n")
+    gnm(motion.energy.formula, family=family, data=chunk)
+  })
+  motion.energy.model.frame <-
+    data.frame(model=I(motion.energy.models), subject=names(models))
+  #compare the models by residual deviance (smaller is better)
+  #Positive numbers are better here.
+  ddply(merge(model.frame, motion.energy.model.frame,
+              by="subject", suffixes=c(".content", ".energy")), "subject",
+        summarize, difference = (extractAIC(model.content[[1]])[[2]]
+                                 - extractAIC(model.energy[[1]])[[2]]))
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
