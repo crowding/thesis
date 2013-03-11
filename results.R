@@ -1,7 +1,9 @@
 ## @knitr results-libraries
-suppressWarnings(source("../modeling/slopeModel.R", chdir=TRUE))
+setwd("../modeling")
+suppressWarnings(source("slopeModel.R", chdir=TRUE))
+setwd("../writing")
 source("latexing.R")
-theme_set(theme_bw(10, "MS Gothic"))
+theme_set(theme_bw(10))
 #in this file I define pretty scales.
 use_unicode = TRUE
 pdf.options(encoding='ISOLatin2.enc')
@@ -10,28 +12,60 @@ pdf.options(encoding='ISOLatin2.enc')
 
 ## @knitr results-loadData
 load("../modeling/slopeModel.RData")
+motion.energy <- read.csv("../modeling/motion_energy.csv")
+bind[plot.displacement, plot.content, plot.spacing] <- (
+  chain(motion.energy, subset(grid==TRUE),
+        mutate(spacing=target_number_all * 2*pi/eccentricity),
+        .[c("abs_displacement", "abs_direction_content", "spacing")],
+        lapply(unique), lapply(sort)))
 #
 
-## @knitr results-jb-example
-model <- models$jb
-rates <- subset(model$data, exp_type=="spacing")
-#
+## @knitr results-nj-example
+plotdata <- mapply(
+  list(models$jb, models$nj, models$pbm),
+  c(1.0, 0.4, 0.15),
+  FUN=function(model, cherrypick) {
+    bins <- chain(model$data,
+                  subset((exp_type=="spacing") & (abs(content) %in% cherrypick)),
+                  bin_along_resid(model, ., "response", splits, "displacement"))
+    predictions <- makePredictions(model, bins)
+    list(bins=bins, predictions=predictions)
+  }, SIMPLIFY=FALSE)
+
+bins <- rbind %()% lapply(plotdata, `[[`, "bins")
+predictions <- rbind %()% lapply(plotdata, `[[`, "predictions")
+
+
 #the suppressWarnings is ther because of stupid encoding things and
 #the way that knitr chokes if it doesn't everything about the
 #encoding. Gah, someone give me a reproducible example. for knitr +
 #latex + unicode that actually works.
 #plot example data from subject JB
-suppressWarnings(print(ggplot(rates)
-                       + displacement_scale
-                       + proportion_scale
-                       + content_color_scale
-                       + plotPredictions(model, rates)
-                       + geom_point(aes(size=n))
-                       + scale_size_area(max_size=4)
-                       + facet_spacing_rows
-                       #  + labs(title = "Data and model fits for subject " %++% subject)
-                       + no_grid
-                       ))
+suppressWarnings(print(
+  (ggplot(bins)
+   #+ displacement_scale
+   + aes(x=displacement)
+   + scale_x_continuous("Envelope motion (+CW)")
+#   + proportion_scale
+   + aes(y=p)
+   + scale_y_continuous(breaks=c(0,0.5,1))
+   + content_color_scale
+   + with_arg(data=predictions,
+              geom_ribbon(color="transparent", alpha=0.2,
+                          aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+              geom_line(aes(y=fit)))
+   + geom_point(size=2)
+   + facet_spacing_subject
+   #  + labs(title = "Data and model fits for subject " %++% subject)
+   + no_grid
+   + labs(title=paste0("Carrier motion supports at narrow spacing, ",
+            "repels at wide spacing\n(rows indicate spacing)"),
+          y="Proportion CW responses" )
+   )))
+
+model <- model
+
+## @knitr results-example-effect
 
 ## @knitr results-induced-modeling
 
@@ -55,9 +89,7 @@ linear.models <- buildModel(null.models, .~.+content)
 #might make sens is a madel that responds to leftward and rightward
 #components.
 
-#third.models <- buildModel(linear.models, .~. + I(content^3))
 second.models <- buildModel(linear.models, .~. + I(abs(content) * content))
-#wobble.models <- buildModel(null.models, .~. + I(wobble1(content)) + I(wobble3(content)))
 
 #the other idea is "adding up the components differently" with the
 #idea that less dominant component matters more than the more dominant
@@ -73,9 +105,8 @@ free.asym.models <- buildModel(mutateModelData(models,
                                    + I(1/spacing):content + fContent:content
                                )
 
-#record some statistics on the likelihood ratio tests of null versus linear and linear versus second-order
-
 ## @knitr results-induced-stats
+#record some statistics on the likelihood ratio tests of null versus linear and linear versus second-order
 suppressMessages(library(lmtest))
 pvals <- function(models) sapply(models, `[`, 2, "Pr(>Chisq)")
 linear.model.test  <- Map(lrtest, null.models, linear.models)
@@ -117,7 +148,7 @@ spacingData <- function(models, type, newspacing=10, categorical=TRUE) {
     data = data.frame(subject=subject, model=type, spacing=newspacing,
                       content=newContent, displacement=0, fContent = fContent)
     cbind(data, predict(model, data, se.fit=TRUE))
-  }) 
+  })
 }
 
 plotBiasAtSpacing <- function(spacing) {
@@ -154,6 +185,12 @@ plotBiasAtSpacing <- function(spacing) {
 
 plotBiasAtSpacing(spacing=10)
 ##I think the 2nd order plot is totally fine for my purposes.
+
+## @knite results-sensitivity-modeling
+
+## Now make a graph to justify the claim that sensitivity declines with spacing.
+## do it by altering the formula to remove the displacement term....
+
 
 ## @knitr results-summation-models
 ##The other thing I_want to do now is look at the behavior at short ranges.
