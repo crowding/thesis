@@ -80,7 +80,7 @@ plot <- "slopeModel.pdf"
 main <- function(infile = "data.RData", grid = "motion_energy.csv",
                  outfile = "slopeModel.RData", plot="slopeModel.pdf") {
 
-  load(infile, e <- new.env())
+  load(infile, envir = e <- new.env())
   motion.energy <- read.csv(grid)
 
   bind[plot.displacement, plot.content, plot.spacing] <- (
@@ -107,7 +107,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   #Our model has one term nonlinear in the spacing-dependent
   #sensitivity to displacement and to direction content.
   #This defines the response to displacement.
-  displacementTerm <- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
+  displacementTerm <<- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
                        ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
   formula <- (  response
               ~ displacementTerm(spacing, displacement,
@@ -289,6 +289,16 @@ plot_contours <- function(model) {
                    hjust=1.2, vjust=-0.5)
         )
 
+}
+
+example_plots <- function(model.frame) {
+
+}
+
+illustrative_plots <- function(model.frame) {
+  #illustrate sensitivity changes with spacing...
+
+  #we want an x-axis: spacing, a y-axis: sensitivity
 }
 
 plot_curves <- function(models, prefix="../writing/inset_") {

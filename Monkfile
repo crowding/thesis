@@ -88,11 +88,11 @@
 --input --match 'modeling/fit_(.*)_.*\.pdf$'
 --invisible --phony --once figures
 
-#make diagnostic figures?
---command ./runmatlab "\"addpath('modeling'); makeDiagnostics\""
---input --match 'modeling/fits\.mat'
---output --listing 'modeling/diagnosticPlots.pdf'
---invisible --phony --once figures
+#make diagnostic figures? #WHY_IS_THIS_ALWAYS_RUNNING
+# --command ./runmatlab "\"addpath('modeling'); makeDiagnostics\""
+# --input --match 'modeling/fits\.mat'
+# --output --listing 'modeling/diagnosticPlots.pdf'
+# --invisible --phony --once figures
 
 #and bundle them
 --command --once pdfjoin
@@ -115,7 +115,7 @@
 --command cd modeling && Rscript
 --input --invisible modeling/slopeModel.R slopeModel.R
 --input --invisible --match modeling/data\.RData data.RData
---input --invisible modeling/motion_energy.RData motion_energy.csv
+--input --invisible modeling/motion_energy.csv motion_energy.csv
 --output --invisible modeling/slopeModel.RData slopeModel.RData
 --output --invisible modeling/slopeModel.pdf slopeModel.pdf
 
