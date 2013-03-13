@@ -137,29 +137,40 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   save(model.frame, models, displacementTerm, formula, family,
        plot.displacement, plot.content, plot.spacing, file=outfile)
 
-  #try using motion energy (and normalized motion energy) instead of
-  #direction content in the model...
-  motion.energy.formula <-
-    update(formula, . ~ . + I(contrast_diff/spacing) - I(1/spacing):content)
+  FALSE || {
+    #try using motion energy (and normalized motion energy) instead of
+    #direction content in the model...
+    #I think this turns out to be a bust.
+    motion.energy.formula <-
+      update(formula,
+             . ~ .
+             + I(contrast_diff/spacing) - I(1/spacing):content
+             + contrast_diff - content
+             + I(contrast_diff * abs(contrast_diff)) - I(content * abs(content))
+             )
 
-  motion.energy.models <- dlply(data, "subject", function(chunk) {
-    cat("fitting subject ", chunk$subject[1],  "\n")
-    motion_energy_model(gnm(motion.energy.formula, family=family, data=chunk),
-                        motion.energy)
-  })
-  motion.energy.model.frame <-
-    data.frame(model=I(motion.energy.models), subject=names(models))
-  #compare the models by residual deviance (smaller is better)
-  #Positive numbers are better here.
-  ddply(merge(model.frame, motion.energy.model.frame,
-              by="subject", suffixes=c(".content", ".energy")), "subject",
-        summarize, difference = (extractAIC(model.content[[1]])[[2]]
-                                 - extractAIC(model.energy[[1]])[[2]]))
+    motion.energy.models <- dlply(data, "subject", function(chunk) {
+      cat("fitting subject ", chunk$subject[1],  "\n")
+      motion_energy_model(gnm(motion.energy.formula, family=family, data=chunk),
+                          motion.energy)
+    })
 
-  #well, that's weird, it made things worse according to the
-  #AIC. You know what, maybe if I plot the fit it will shed some light.
-#  plot_fit(model.frame[["pbm", "model"]], style="binned")
-#  plot_fit(motion.energy.model.frame[["pbm", "model"]], style="bubble")
+    motion.energy.model.frame <-
+      data.frame(model=I(motion.energy.models), subject=names(models))
+    #compare the models by residual deviance (smaller is better)
+    #Positive numbers are better here.
+    ddply(merge(model.frame, motion.energy.model.frame,
+                by="subject", suffixes=c(".content", ".energy")), "subject",
+          summarize, difference = (extractAIC(model.content[[1]])[[2]]
+                                   - extractAIC(model.energy[[1]])[[2]]))
+
+    #well, that's weird, it made things worse according to the
+    #AIC. You know what, maybe if I plot the fit it will shed some light.
+    dev.set(2)
+    plot_fit(model.frame[["jb", "model"]], style="bubble")
+    dev.set(3)
+    plot_fit(motion.energy.model.frame[["jb", "model"]], style="bubble")
+  }
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
