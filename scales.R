@@ -89,8 +89,8 @@ facet_spacing_experiment <-
                }
              )
 
-facet_spacing_rows <-
-  facet_grid(spacing ~ ., labeller=function(v, value) {
+facet_spacing_subject <-
+  facet_grid(spacing ~ subject, labeller=function(v, value) {
     switch(v,
            spacing = paste(
              "$"[!use_unicode],
@@ -101,8 +101,8 @@ facet_spacing_rows <-
            subject=sprintf("Subject %s", toupper(value)))
   })
 
-facet_spacing_subject <-
-  facet_grid(spacing ~ subject,
+facet_spacing_rows <-
+  facet_grid(spacing ~ .,
              labeller=function(v, value) {
                print(v)
                  paste(
@@ -240,7 +240,7 @@ content_color_scale <-
   c(
     list(aes(color=factor(content),
              fill=factor(content))),
-    with_arg(name=if (use_unicode) "C" else "$C$",
+    with_arg(name=if (use_unicode) "Carrier motion\ncontent\n(+CW)" else "$C$",
              palette=color_pal,
              labels=append_arrows,
              discrete_scale("fill", "manual"),

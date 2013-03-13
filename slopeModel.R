@@ -38,7 +38,7 @@ makePredictions <-
     sampling <- mutate(sampling,  .chunk=floor(seq_len(.nrow)/.chunksize))
     pred <- ddply(sampling, ".chunk",
                   function(chunk) {
-                    pred <- predict(model, newdata=chunk, type="response", se.fit=TRUE)
+                    pred <- doPredict(model, newdata=chunk, type="response", se.fit=TRUE)
                     cbind(chunk, pred[1:2])
                   })
   }
@@ -58,8 +58,12 @@ plot_fit <- function(model, subject=model$data$subject[1],
   subdata <- match_df(model$data,
                       data.frame(subject=subject, stringsAsFactors=FALSE),
                       on="subject")
-  plotdata <- bin_along_resid(model, subdata,
-                        "response", splits, "displacement")
+  switch(style, bubble = {
+    plotdata <- subdata
+  }, binned = {
+    plotdata <- bin_along_resid(model, subdata,
+                                "response", splits, "displacement")
+  })
   print((ggplot(plotdata)
          + displacement_scale
          + proportion_scale
@@ -67,7 +71,7 @@ plot_fit <- function(model, subject=model$data$subject[1],
          + facet_spacing_experiment
          + plotPredictions(model)
          + geom_point()
-         + (if (style=="bubble") balloon else geom_point())
+         + (switch(style, bubble=balloon, binned=geom_point()))
          + labs(title = "Data and model fits for subject " %++% subject)
          ))
 }
@@ -81,12 +85,12 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
                  outfile = "slopeModel.RData", plot="slopeModel.pdf") {
 
   load(infile, envir = e <- new.env())
-  motion.energy <- read.csv(grid)
+  motion.energy <- add_energies(read.csv(grid))
 
   bind[plot.displacement, plot.content, plot.spacing] <- (
     chain(motion.energy, subset(grid==TRUE),
           mutate(spacing=target_number_all * 2*pi/eccentricity),
-          .[c("abs_displacement", "abs_direction_content", "spacing")],
+          .[c("displacement", "content", "spacing")],
           lapply(unique), lapply(sort)))
   plot.displacement <<- plot.displacement
   plot.content <<- plot.content
@@ -98,7 +102,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
         , do.rename(folding=FALSE)
         , mutate(bias=1)
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
-        , add_energies
+        , attach_motion_energy(motion.energy)
         ) -> data
 
   #count trials in each condition. While keeping motion energy
@@ -133,20 +137,13 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   #try using motion energy (and normalized motion energy) instead of
   #direction content in the model...
-  motion.energy.formula <- (
-    response
-    ~ displacementTerm(spacing, displacement,
-                       start=c(cs=4, beta_dx=14))
-    + content
-    + I(content*abs(content))
-    + I(1/spacing):content #local energy summation
-    + bias - 1 #"bias" set to 0 to predict folded data (but a
-    # better way to predict folded data is to predict both
-    # directions then average)
-    )
+  motion.energy.formula <-
+    update(formula, . ~ . + I(contrast_diff/spacing))
+
   motion.energy.models <- dlply(data, "subject", function(chunk) {
     cat("fitting subject ", chunk$subject[1],  "\n")
-    gnm(motion.energy.formula, family=family, data=chunk)
+    motion_energy_model(gnm(motion.energy.formula, family=family, data=chunk),
+                        motion.energy)
   })
   motion.energy.model.frame <-
     data.frame(model=I(motion.energy.models), subject=names(models))
@@ -156,6 +153,10 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
               by="subject", suffixes=c(".content", ".energy")), "subject",
         summarize, difference = (extractAIC(model.content[[1]])[[2]]
                                  - extractAIC(model.energy[[1]])[[2]]))
+
+  #well, that's weird, it made things worse according to the
+  #AIC. You know what, maybe if I plot the fit it will shed some light.
+  plot_fit(motion.energy.model.frame[["pbm", "model"]])
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
@@ -191,9 +192,10 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   #and this makes interesting plots that show us about the model
   #properties???
   plot_curves(models)
+}
 
 
-  plot_contours <- function}(model) {
+plot_contours <- function(model) {
   #make a contour plot with displacement on the x-axis and spacing on
   #the y-axis.
 

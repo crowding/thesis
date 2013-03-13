@@ -161,7 +161,7 @@ bin_along <- function(data, responsevar, predictvar,
     a <- chunk[[along]]
     chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
     ddply(chunk, .(.bin), function(x) {
-      names <- c("p", along, "n")
+      names <- c("p", along, "nobs")
       quickdf(structure(list(mean(x[[responsevar]]), mean(x[[along]]),
                              nrow(x)),
                         names=names))
@@ -169,17 +169,48 @@ bin_along <- function(data, responsevar, predictvar,
   })
 }
 
+motion_energy_model <- function(model, energy) {
+  model$motion.energy <- energy
+  class(model) <- union("motion_energy_model", class(model))
+  model
+}
+
+predict.motion_energy_model <- function(object, newdata=model$data, ...) {
+  newdata <- attach_motion_energy(newdata, object$motion.energy)
+  NextMethod("predict", object=object, newdata=newdata, ...)
+}
+
+bin_along_resid <-
+  function(model, data, responsevar, split, along, bins=6, restrict)
+  UseMethod("bin_along_resid")
+
+bin_along_resid.motion_energy_model <-
+  function(model, data, responsevar, split, along, bins, restrict) {
+    if (is.missing(restrict) || is.null(restrict)) {
+      restrict <- unique(model$motion.energy[[along]])
+    }
+    NextMethod("bin_along_resid", model, restrict=restrict)
+  }
+
 #bin observations, using an "average" that retains the Pearson
 #residual with respect to the model. Depending on your perspective
 #this may be a more "honest" depiction of the model's fit to the data.
-bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
+bin_along_resid.default <- function(model, data, responsevar, split, along, bins=6,
+                            restrict) {
+  missing.restrict <- missing(restrict)
   data$fit <- predict(model, newdata=data, type="response")
   binned <- ddply(data, split, function(chunk) {
     a <- chunk[[along]]
     chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
     chunk$.pred <- predict(model, newdata=chunk, type="response")
     chunk <- ddply(chunk, .(.bin), function(x) {
-      l <- structure(list(mean(x[[along]])), names=along)
+      mean_along <- mean(x[[along]])
+      if (!missing.restrict) {
+        #this is because we have only computed motion energy for
+        #discrete values of displacement.
+        mean_along <- restrict[which.min(abs(mean_along - restrict))]
+      }
+      l <- structure(list(mean_along), names=along)
       total_obs <- sum(x[[responsevar]])
       total_pred <- sum(x$.pred)
       total_var <- sum(x$.pred * (1-(x$.pred)))
@@ -187,11 +218,10 @@ bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
       quickdf(c(l, list(n = nrow(x), total_obs=total_obs, total_pred=total_pred,
                         total_var = total_var, pearson_resid=pearson_resid)))
     })
-    #we want a value for X that leads to the same Pearson residuals as
-    #we have observed.
   })
   binned$pred <- predict(model, newdata=binned, type="response")
   #this can produce valuce slightly outside [0,1]
+  # this should produce identical Pearson residuals.
   binned <- mutate(binned,
                    p = (n*pred + pearson_resid * sqrt(n*(pred)*(1-pred)))/n,
                    new_resid = n*(p - pred)/sqrt(n*(pred)*(1-pred)) )
@@ -201,7 +231,7 @@ bin_along_resid <- function(model, data, responsevar, split, along, bins=6) {
   binned
 }
 
-
+shuffle <- function(df) df[sample(seq_len(nrow(df))),]
 
 load2env <- function(file, env=new.env()) {
   load(file, envir=env)
@@ -372,21 +402,58 @@ drop_columns <- function(data, drop) {
   data[colnames(data)[!colnames(data) %in% drop]]
 }
 
-add_energies <- function(data){
+assert_finite <- function(x) {
+  if(any(!is.finite(x))) stop("Some NaN values found") else x
+}
+
+motion_energy_calcs <- dots(
+  target_number_shown = (ifelse(is.na(target_number_shown),
+                                target_number_all, target_number_shown)),
+  contrast_diff = assert_finite(
+    sqrt(rowSums(data[c(cw_cols)] / target_number_shown))
+    - sqrt(rowSums(data[c(ccw_cols)] / target_number_shown))),
+  total_e = assert_finite(rowSums(data[c(cw_cols, ccw_cols)])),
+  energy_cw = assert_finite(rowSums(data[cw_cols]) / max(total_e)),
+  energy_ccw = assert_finite(rowSums(data[ccw_cols]) / max(total_e)),
+  energy_diff = assert_finite(energy_cw - energy_ccw),
+  energy_total = assert_finite(total_e / max(total_e)),
+  norm_diff = assert_finite(energy_diff / energy_total)
+  )
+
+add_energies <- function(data, drop=TRUE) {
   cw_cols <- grep("(.*)_cw\\.\\d$", names(data), value=TRUE)
   ccw_cols <- grep("(.*)_ccw\\.\\d$", names(data), value=TRUE)
   channel_cols <- grep("\\.\\d*$", names(data), value=TRUE)
   chain(data,
-        mutate(
-          total_e = rowSums(data[c(cw_cols, ccw_cols)]),
-          energy_cw = rowSums(data[cw_cols]) / max(total_e),
-          energy_ccw = rowSums(data[ccw_cols]) / max(total_e),
-          energy_diff = energy_cw - energy_ccw,
-          energy_total = total_e / max(total_e),
-          norm_diff = energy_diff / energy_total),
+        (here(mutate) %<<% motion_energy_calcs)(),
         drop_columns(c(cw_cols, ccw_cols, "total_e")),
-#        drop_columns(drop_cols),
         rename(c(abs_displacement="displacement",
-                 abs_direction_content="content"), warn_missing=FALSE)
-        )
+                 abs_direction_content="content"), warn_missing=FALSE))
+}
+
+attach_motion_energy <- function(trials, motion_energy_frame) {
+  chain(motion_energy_frame,
+        mutate(
+          target_number_shown = ifelse(
+            is.na(target_number_shown),
+            target_number_all, target_number_shown))
+        ) -> menergy
+
+  trials$left.check <- 1:nrow(trials)
+  menergy$right.check <- 1:nrow(menergy)
+
+  trials <- drop_columns(trials, names(motion_energy_calcs))
+  joined <- merge(trials, menergy, type="inner",
+                  by = intersect(names(trials), names(menergy)), all.x=TRUE)
+
+  if (any(dups <- duplicated(joined$left.check))) {
+    #getting a lot of duplicated matches, for
+    #some reason?
+    warning("Multiple motion-energy matches")
+    joined <- joined[!dups,]
+  }
+  if (any(missed <- is.na(joined$right.check))) {
+    stop("Motion energy information not found for all trials")
+  }
+  drop_columns(joined, c("left.check", "right.check"))
 }
