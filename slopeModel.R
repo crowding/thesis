@@ -18,11 +18,13 @@ source("library.R")
 match_df <- function(...) suppressMessages(plyr::match_df(...))
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 `%++%` <- paste0
-splits <- c("subject", "content", "exp_type", "spacing", "bias")
+splits <- c("subject", "content", "exp_type", "target_number_all",
+            "target_number_shown", "spacing", "eccentricity", "bias")
 
 makePredictions <-
   function(model, data=model$data,
-           splits=c("subject", "content", "exp_type", "spacing", "bias"),
+           splits=c("subject", "content", "exp_type", "target_number_all",
+             "target_number_shown", "spacing", "eccentricity", "bias"),
            ordinate = "displacement",
            ordinate.values = plot.displacement
            ) {
@@ -38,7 +40,7 @@ makePredictions <-
     sampling <- mutate(sampling,  .chunk=floor(seq_len(.nrow)/.chunksize))
     pred <- ddply(sampling, ".chunk",
                   function(chunk) {
-                    pred <- doPredict(model, newdata=chunk, type="response", se.fit=TRUE)
+                    pred <- predict(model, newdata=chunk, type="response", se.fit=TRUE)
                     cbind(chunk, pred[1:2])
                   })
   }
@@ -59,7 +61,7 @@ plot_fit <- function(model, subject=model$data$subject[1],
                       data.frame(subject=subject, stringsAsFactors=FALSE),
                       on="subject")
   switch(style, bubble = {
-    plotdata <- subdata
+    plotdata <- mkrates(subdata)
   }, binned = {
     plotdata <- bin_along_resid(model, subdata,
                                 "response", splits, "displacement")
@@ -138,7 +140,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   #try using motion energy (and normalized motion energy) instead of
   #direction content in the model...
   motion.energy.formula <-
-    update(formula, . ~ . + I(contrast_diff/spacing))
+    update(formula, . ~ . + I(contrast_diff/spacing) - I(1/spacing):content)
 
   motion.energy.models <- dlply(data, "subject", function(chunk) {
     cat("fitting subject ", chunk$subject[1],  "\n")
@@ -156,7 +158,8 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   #well, that's weird, it made things worse according to the
   #AIC. You know what, maybe if I plot the fit it will shed some light.
-  plot_fit(motion.energy.model.frame[["pbm", "model"]])
+#  plot_fit(model.frame[["pbm", "model"]], style="binned")
+#  plot_fit(motion.energy.model.frame[["pbm", "model"]], style="bubble")
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")

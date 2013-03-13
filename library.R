@@ -199,15 +199,15 @@ bin_along_resid.default <- function(model, data, responsevar, split, along, bins
                             restrict) {
   missing.restrict <- missing(restrict)
   data$fit <- predict(model, newdata=data, type="response")
-  binned <- ddply(data, split, function(chunk) {
+  binned <- ddply_keeping_unique_cols(data, split, function(chunk) {
     a <- chunk[[along]]
     chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
     chunk$.pred <- predict(model, newdata=chunk, type="response")
     chunk <- ddply(chunk, .(.bin), function(x) {
       mean_along <- mean(x[[along]])
       if (!missing.restrict) {
-        #this is because we have only computed motion energy for
-        #discrete values of displacement.
+        #actually we want to restrict to values that are observed...
+        restrict <- unique(data[[along]])
         mean_along <- restrict[which.min(abs(mean_along - restrict))]
       }
       l <- structure(list(mean_along), names=along)
@@ -215,7 +215,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along, bins
       total_pred <- sum(x$.pred)
       total_var <- sum(x$.pred * (1-(x$.pred)))
       pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
-      quickdf(c(l, list(n = nrow(x), total_obs=total_obs, total_pred=total_pred,
+      quickdf(c(l, list(n_obs = nrow(x), total_obs=total_obs, total_pred=total_pred,
                         total_var = total_var, pearson_resid=pearson_resid)))
     })
   })
@@ -223,8 +223,8 @@ bin_along_resid.default <- function(model, data, responsevar, split, along, bins
   #this can produce valuce slightly outside [0,1]
   # this should produce identical Pearson residuals.
   binned <- mutate(binned,
-                   p = (n*pred + pearson_resid * sqrt(n*(pred)*(1-pred)))/n,
-                   new_resid = n*(p - pred)/sqrt(n*(pred)*(1-pred)) )
+                   p = (n_obs*pred + pearson_resid * sqrt(n_obs*(pred)*(1-pred)))/n_obs,
+                   new_resid = n_obs*(p - pred)/sqrt(n_obs*(pred)*(1-pred)) )
   #assert that the residual is the same.
   if (any(with(binned, abs(new_resid - pearson_resid) > 0.01)))
     stop("not binning correctly")
@@ -443,8 +443,8 @@ attach_motion_energy <- function(trials, motion_energy_frame) {
   menergy$right.check <- 1:nrow(menergy)
 
   trials <- drop_columns(trials, names(motion_energy_calcs))
-  joined <- merge(trials, menergy, type="inner",
-                  by = intersect(names(trials), names(menergy)), all.x=TRUE)
+  joined <- join(trials, menergy, type="left",
+                  by = intersect(names(trials), names(menergy)))
 
   if (any(dups <- duplicated(joined$left.check))) {
     #getting a lot of duplicated matches, for
@@ -457,3 +457,17 @@ attach_motion_energy <- function(trials, motion_energy_frame) {
   }
   drop_columns(joined, c("left.check", "right.check"))
 }
+
+#helper function for when merge doesn't retrieve anything
+merge_check <- function(x, y, ..., by=intersect(names(x), names(y))) {
+  sapply(by, function(col) nrow(merge(x, y, by=by %-% col)))
+}
+
+key_check <- function(x, y, ..., by=intersect(names(x), names(y))) {
+  sapply(by, function(col) length(unique(intersect(x[[col]], y[[col]]))))
+}
+
+## nrow(join(type="inner", trials[which(missed)[[1]],,drop=FALSE],
+##           menergy,
+##           by = intersect(names(trials), names(menergy))[1:4]
+##           ))
