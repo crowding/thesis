@@ -20,8 +20,26 @@ bind[plot.displacement, plot.content, plot.spacing] <- (
         lapply(unique), lapply(sort)))
 #
 
-## @knitr results-nj-example
-plotdata <- mapply(
+
+## @knitr results-functions
+#first make models with the linear induced motion
+buildModel <- function(modelList, update.arg) {
+  update.arg <- substitute(update.arg)
+  lapply(modelList, function(model) {
+    fmla <- eval(substitute(update(model$formula, arg), list(arg=update.arg)))
+    gnm(formula=fmla, family=family(model), data=model$data, verbose=F)
+  })
+}
+
+mutateModelData <- function(models, ...)
+  llply(models, function(model) `$<-`(model,"data", mutate(model$data, ...)))
+
+cbind_predictions <- function(dataset, model, ...)
+  cbind(dataset, predict(model, newdata=dataset, ...))
+
+
+## @knitr results-spacing-example
+ plotdata <- mapply(
   list(models$jb, models$nj, models$pbm),
   c(1.0, 0.4, 0.15),
   FUN=function(model, cherrypick) {
@@ -32,9 +50,8 @@ plotdata <- mapply(
     list(bins=bins, predictions=predictions)
   }, SIMPLIFY=FALSE)
 
-bins <- rbind %()% lapply(plotdata, `[[`, "bins")
-predictions <- rbind %()% lapply(plotdata, `[[`, "predictions")
-
+bins <- rbind.fill %()% lapply(plotdata, `[[`, "bins")
+predictions <- rbind.fill %()% lapply(plotdata, `[[`, "predictions")
 
 #the suppressWarnings is ther because of stupid encoding things and
 #the way that knitr chokes if it doesn't everything about the
@@ -44,8 +61,8 @@ predictions <- rbind %()% lapply(plotdata, `[[`, "predictions")
 suppressWarnings(print(
   (ggplot(bins)
    #+ displacement_scale
-   + aes(x=displacement)
-   + scale_x_continuous("Envelope motion (+CW)")
+   + aes(x=displacement*10)
+   + scale_x_continuous("Envelope motion (degree/sec +CW)")
 #   + proportion_scale
    + aes(y=p)
    + scale_y_continuous(breaks=c(0,0.5,1))
@@ -63,20 +80,7 @@ suppressWarnings(print(
           y="Proportion CW responses" )
    )))
 
-model <- model
-
-## @knitr results-example-effect
-
 ## @knitr results-induced-modeling
-
-#first make models with the linear induced motion
-buildModel <- function(modelList, update.arg) {
-  update.arg <- substitute(update.arg)
-  lapply(modelList, function(model) {
-    fmla <- eval(substitute(update(model$formula, arg), list(arg=update.arg)))
-    gnm(formula=fmla, family=family(model), data=model$data, verbose=F)
-  })
-}
 
 null.models <-
   buildModel(models,
@@ -96,9 +100,6 @@ second.models <- buildModel(linear.models, .~. + I(abs(content) * content))
 #component. how about square roots?
 
 #and we want some models just fit all direction contents freely, to plot as points.
-mutateModelData <- function(models, ...)
-  llply(models, function(model) `$<-`(model,"data", mutate(model$data, ...)))
-
 free.asym.models <- buildModel(mutateModelData(models,
                                           fContent = factor(content)),
                                . ~ displacementTerm(spacing, displacement)
@@ -188,6 +189,60 @@ plotBiasAtSpacing(spacing=10)
 
 ## @knite results-sensitivity-modeling
 
+## @knitr results-crossover
+#show the crossover from summation to induced motion as spacing changes
+
+
+#note I_also have to rip out the nonlinear term in order to get many of these to fit?
+crossover.free.models <-
+  buildModel(models,
+             . ~ . - I(1/spacing):content - content - I(content * abs(content)) - bias
+             + factor(spacing):content)
+
+
+free.model <- crossover.free.models[[1]]
+#what the hell, man, why isn't that working?  Might have to fake it with GLM instead of GNM.
+#The next step is to extract coefs and curves. Like so:
+
+crossover.plot.data <- rbind.fill %()% Map(
+  model=models, free.model=crossover.free.models,
+  f=function(model, free.model) rbind.fill(
+    chain(
+      free.model$data,
+      count(splits %-% c("displacement", "content", "exp_type")),
+      cbind(displacement=0, content=1, type="points"),
+      cbind_predictions(free.model, type="terms", se.fit=TRUE),
+       rename(c("fit.content:factor(spacing)"="fit",
+               "se.fit.content:factor(spacing)"="se.fit"))),
+    chain(
+      model$data,
+      count(splits %-% c("displacement", "content", "exp_type",
+                         "spacing", "target_number_all", "target_number_shown")),
+      cbind(displacement=0, spacing = seq(2, 20, length=100),
+            content=1, type="curve"),
+      cbind_predictions(model, type="terms", se.fit=TRUE),
+      rename(c("fit.content:I(1/spacing)"="fit",
+               "se.fit.content:I(1/spacing)"="se.fit")))))
+
+(ggplot(subset(crossover.plot.data, type=="points"))
+ + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
+ + geom_pointrange()
+ + with_arg(data=subset(crossover.plot.data, type=="curve"),
+            geom_line(), geom_ribbon(alpha=0.1))
+ + facet_wrap(~subject, scales="free_y"))
+
+## @knitr results-steepness
+
+## do the same thing with the claim that the models "slope" declines.
+
+slope.models <-
+  buildModel(models, )
+
+## @knitr results-example-effect
+
+
+
+
 ## Now make a graph to justify the claim that sensitivity declines with spacing.
 ## do it by altering the formula to remove the displacement term....
 
@@ -198,8 +253,6 @@ plotBiasAtSpacing(spacing=10)
 #start with the 2nd order model for induced motion, deconstruct its short-range behavior
 null.summation.models <- buildModel(second.models,
                                     . ~ . - I(1/spacing):content)
-
-linear.summation.models <- buildModel(null.summation.models, . ~ . - I(1/spacing):content)
 
 ## @knitr results-induced-element-number
 
