@@ -104,7 +104,10 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
         , do.rename(folding=FALSE)
         , mutate(bias=1)
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
-        , attach_motion_energy(motion.energy)
+        # , attach_motion_energy(motion.energy)
+        # mutate the displacement to avoid wagon wheel (this will need done anyway)
+        , mutate(data, displacement=((displacement + (spacing/2))
+                                     %% spacing - (spacing/2)))
         ) -> data
 
   #count trials in each condition. While keeping motion energy
@@ -115,6 +118,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   #This defines the response to displacement.
   displacementTerm <<- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
                        ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
+
   formula <- (  response
               ~ displacementTerm(spacing, displacement,
                                  start=c(cs=4, beta_dx=14))
@@ -136,41 +140,6 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   save(model.frame, models, displacementTerm, formula, family,
        plot.displacement, plot.content, plot.spacing, file=outfile)
-
-  FALSE || {
-    #try using motion energy (and normalized motion energy) instead of
-    #direction content in the model...
-    #I think this turns out to be a bust.
-    motion.energy.formula <-
-      update(formula,
-             . ~ .
-             + I(contrast_diff/spacing) - I(1/spacing):content
-             + contrast_diff - content
-             + I(contrast_diff * abs(contrast_diff)) - I(content * abs(content))
-             )
-
-    motion.energy.models <- dlply(data, "subject", function(chunk) {
-      cat("fitting subject ", chunk$subject[1],  "\n")
-      motion_energy_model(gnm(motion.energy.formula, family=family, data=chunk),
-                          motion.energy)
-    })
-
-    motion.energy.model.frame <-
-      data.frame(model=I(motion.energy.models), subject=names(models))
-    #compare the models by residual deviance (smaller is better)
-    #Positive numbers are better here.
-    ddply(merge(model.frame, motion.energy.model.frame,
-                by="subject", suffixes=c(".content", ".energy")), "subject",
-          summarize, difference = (extractAIC(model.content[[1]])[[2]]
-                                   - extractAIC(model.energy[[1]])[[2]]))
-
-    #well, that's weird, it made things worse according to the
-    #AIC. You know what, maybe if I plot the fit it will shed some light.
-    dev.set(2)
-    plot_fit(model.frame[["jb", "model"]], style="bubble")
-    dev.set(3)
-    plot_fit(motion.energy.model.frame[["jb", "model"]], style="bubble")
-  }
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
@@ -434,6 +403,61 @@ extract.nonlin.function <- function(nonlin.term) {
                         nonlin.term$variables ))[[1]])
     }
     ), parent.frame())
+}
+
+FALSE && {
+
+  #just thinking here about wagon-wheel effects. Probably pointless
+
+  periodic_arg <<- function(displacement, spacing)
+    ((displacement - (spacing)) %% (2*spacing) - (spacing))
+
+  periodic_mix <<- function(x, f, spacing)
+    (f(periodic_arg(x, spacing)) * (cos(pi*x/spacing/2))^2
+     + f(periodic_arg(x + spacing, spacing)) * (sin(x*pi/spacing/2))^2
+     )
+
+  #curve(periodic_mix(x, function(x) plogis(x/4), 5), -2.5, 2.5)
+  periodized_displacement <- function(d, beta, spacing)
+    qlogis(periodic_mix(d, function(x) plogis(beta*x), spacing))
+
+  curve(periodized_displacement(x, 40, 2), -1.5, 1.5)
+
+}
+
+FALSE && {
+  #try using motion energy (and normalized motion energy) instead of
+  #direction content in the model...
+  #I think this turns out to be a bust.
+  motion.energy.formula <-
+    update(formula,
+           . ~ .
+           + I(contrast_diff/spacing) - I(1/spacing):content
+           + contrast_diff - content
+           + I(contrast_diff * abs(contrast_diff)) - I(content * abs(content))
+           )
+
+  motion.energy.models <- dlply(data, "subject", function(chunk) {
+    cat("fitting subject ", chunk$subject[1],  "\n")
+    motion_energy_model(gnm(motion.energy.formula, family=family, data=chunk),
+                        motion.energy)
+  })
+
+  motion.energy.model.frame <-
+    data.frame(model=I(motion.energy.models), subject=names(models))
+  #compare the models by residual deviance (smaller is better)
+  #Positive numbers are better here.
+  ddply(merge(model.frame, motion.energy.model.frame,
+              by="subject", suffixes=c(".content", ".energy")), "subject",
+        summarize, difference = (extractAIC(model.content[[1]])[[2]]
+                                 - extractAIC(model.energy[[1]])[[2]]))
+
+  #well, that's weird, it made things worse according to the
+  #AIC. You know what, maybe if I plot the fit it will shed some light.
+  dev.set(2)
+  plot_fit(model.frame[["jb", "model"]], style="bubble")
+  dev.set(3)
+  plot_fit(motion.energy.model.frame[["jb", "model"]], style="bubble")
 }
 
 run_as_command()
