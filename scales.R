@@ -61,9 +61,14 @@ setup_theme <- function(base_size=theme_get()$text$size) {
     ##     angle=0, stack="v", vjust=1)
     ## , axis.text.y = element_text_with_symbols(
     ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
-    ##     angle=0, stack="h", hjust=1)
+    ##     angle=0, stack="h", hjusont=1)
     )
 }
+
+blank_proportion_scale <- list(
+  aes(y=p),
+  scale_y_continuous(
+    "P(Response CW)", breaks = c(0, 0.5, 1), labels = c("", "", "")))
 
 proportion_scale <-
   list(aes(y=p),
@@ -102,16 +107,16 @@ facet_spacing_rows <-
   })
 
 facet_spacing_subject <-
-  facet_grid(spacing ~ subject,
-             labeller=function(v, value) {
-               print(v)
-                 paste(
-                   "$"[!use_unicode],
-                   format(value, digits=2),
-                   if(use_unicode) "\u0080" else "^\\circ",
-                   "$"[!use_unicode], sep=""
-                   )
-               })
+  facet_grid(spacing ~ subject, labeller=function(v, value) {
+   switch(v,
+           spacing = paste(
+             "$"[!use_unicode],
+             format(value, digits=2),
+             if(use_unicode) "\u0080" else "^\\circ",
+             "$"[!use_unicode], sep=""
+             ),
+           subject=sprintf("Subject %s", toupper(value)))
+ })
 
 balloon <- list(geom_point(aes(size=n))
                 , scale_size_area()
@@ -242,7 +247,7 @@ content_color_scale <-
   c(
     list(aes(color=factor(content),
              fill=factor(content))),
-    with_arg(name=if (use_unicode) "C" else "$C$",
+    with_arg(name=if (use_unicode) "" else "$C$",
              palette=color_pal,
              labels=append_arrows,
              discrete_scale("fill", "manual"),
@@ -271,7 +276,15 @@ displacement_scale_continuous_waterline <-
                         labels=append_arrows
                         )
 
-content_scale <-
+label_count <- function(data, group, countvar=n_obs)
+  geom_text(data=eval(bquote(ddply(
+              data, group, summarize,
+              .count=sum(.(substitute(countvar)))))),
+    inherit.aes=FALSE, show_guide=FALSE,
+    aes(label = sprintf("N = %d", .count)),
+    x = -Inf, y = Inf, size=3, vjust = 1.5, hjust = -0.2)
+
+content_scale <- 
   list(aes(x=content),
        scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
        )
