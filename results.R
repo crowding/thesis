@@ -57,6 +57,7 @@ spacing.collapse.plotdata <- ziprbind(Map(
 
 #this only includes half the available data (no folding) so the
 #scatter can be expected to be improved
+
 print(ggplot(shuffle(spacing.collapse.plotdata$bins))
       + displacement_scale
       + proportion_scale
@@ -84,18 +85,41 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bins))
 ## all the direction contents, projecting it onto one direction
 ## content? That is sort of massive cheating though.
 
-with(spacing.collapse.plotdata$bins,
-     data.frame(binom_se_upper(n=n_obs, p=p),
-                p, binom_se_lower(n=n_obs, p)))
+## @knitr results-summation-increases
+summation.increases.plotdata <- ziprbind(Map(
+  model = models[c("cj","pbm")],
+  targnum = list(c(20, 5)),
+  f = function(model, targnum) {
+    bins <- chain(
+      model$data
+      , subset(exp_type == "content" & target_number_shown %in% targnum)
+      , bin_along_resid(model, ., "response", splits, "displacement"))
+    predictions <- makePredictions(model, bins)
+    list(bins = bins, predictions = predictions)
+  }))
+
+print(ggplot(summation.increases.plotdata$bins)
+      + displacement_scale
+      + proportion_scale
+      + content_color_scale
+      + aes(group=content)
+      + geom_point(size=2)# + binom_pointrange()
+      + ribbonf(summation.increases.plotdata$predictions)
+      + no_grid
+      + facet_spacing_subject
+      + coord_cartesian(xlim=c(-0.75, 0.75))
+      + label_count(summation.increases.plotdata$bins,
+                    c("spacing", "subject")))
 
 ## @knitr results-induced-crossover
-spacing.collapse.plotdata <- ziprbind(Map(
+spacing.crossover.plotdata <- ziprbind(Map(
   model=list(models$jb, models$nj, models$pbm),
-  content=c(1.0, 0.4, 0.15),
-  f=function(model, content) {
-    bins <- chain(model$data,
-                  subset((exp_type=="spacing") & (abs(content) %in% content)),
-                  bin_along_resid(model, ., "response", splits, "displacement"))
+  match_content=c(1.0, 0.4, 0.15),
+  f=function(model, match_content) {
+    bins <- chain(
+      model$data
+      , subset((exp_type=="spacing") & (abs(content) == match_content))
+      , bin_along_resid(model, ., "response", splits, "displacement"))
     predictions <- makePredictions(model, bins)
     list(bins=bins, predictions=predictions)
   }))
@@ -105,26 +129,27 @@ spacing.collapse.plotdata <- ziprbind(Map(
 #encoding. Gah, someone give me a reproducible example. for knitr +
 #latex + unicode that actually works.
 #plot example data from subject JB
-suppressWarnings(print(
-  (ggplot(spacing.collapse.plotdata$bins)
-   # + displacement_scale
-   + aes(x=displacement*10)
-   + scale_x_continuous("Envelope motion (degree/sec +CW)")
-   # + proportion_scale
-   + aes(y=p)
-   + scale_y_continuous(breaks=c(0,0.5,1))
-   + content_color_scale
-   + with_arg(data=spacing.collapse.plotdata$predictions,
-              geom_ribbon(color="transparent", alpha=0.2,
-                          aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
-              geom_line(aes(y=fit)))
-   + geom_point(size=2)
-   + facet_spacing_subject
-   + no_grid
-   + labs(title=paste0("Carrier motion assimilates at narrow spacing, ",
-            "repels at wide spacing\n(rows indicate spacing)"),
-          y="Proportion CW responses" )
-   )))
+suppressWarnings(
+
+  print(
+    ggplot(spacing.crossover.plotdata$bins)
+    + displacement_scale
+    + blank_proportion_scale
+    + content_color_scale
+    + with_arg(data=spacing.crossover.plotdata$predictions,
+               geom_ribbon(color="transparent", alpha=0.2,
+                           aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+               geom_line(aes(y=fit)))
+    + geom_point(size=2)
+    + facet_spacing_subject
+    + no_grid
+    + labs(title=paste0("Carrier motion assimilates at narrow spacing, ",
+             "repels at wide spacing\n(rows indicate spacing)"),
+           y="Proportion CW responses" )
+    + coord_cartesian(xlim=c(-1.1,1.1))
+    )
+
+  )
 
 ## @knitr results-induced-modeling
 

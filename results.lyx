@@ -361,16 +361,12 @@ name "fig:results-spacing-collapse"
  In each graph, direction content is held constant, and different curves
  show the responses as different spacings.
  The consistent effect of reducing spacing is to reduce the slope of the
- psychometric function; the subjects' sensitivity increases.
- 
+ psychometric function, indicating that nearby elements with subjects' ability
+ to discriminate an element's change in position.
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -386,20 +382,32 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset Caption
+\begin_inset ERT
+status open
 
 \begin_layout Plain Layout
-Sensitivity to displacement collapses as spacing decreases.
- In each subplot, the horizontal axis denotes spacing, while the vertical
- axis measures sensitivity to direction content (corresponding to the slopes
- of the psychometric functions as shown in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-spacing-collapse"
+
+%results-summation-increases
+\end_layout
+
+\begin_layout Plain Layout
+
+<<
+\end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Reducing spacing increases the effect of direction content.
+ Here two sets of psychometric functions are shown, the left set taken at
+ short spacing and the right set taken at wide spacing.
+ In each set, the 
 \end_layout
 
 \end_inset
@@ -462,9 +470,9 @@ The effect of carrier direction content changes from assimilative at high
  Here data from three subjects are shown.
  For each subject a single strength of direction content is used, one counterclo
 ckwise (negative) and one clockwise (positive).
- The vertical axis represents the proportion of thials during which the
+ The vertical axis represents the proportion of trials during which the
  subject responded clockwise.
- Data points are binned averages of staircase trials 
+ Data points plotted are binned averages
 \end_layout
 
 \end_inset
@@ -484,25 +492,24 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Reducing spacing increases the effect of direction content.
- Here two sets of psychometric functions are shown, the left set taken at
- short spacing and the right set taken at wide spacing.
- In each set, the 
-\end_layout
+Sensitivity to displacement collapses as spacing decreases.
+ In each subplot, the horizontal axis denotes spacing, while the vertical
+ axis measures sensitivity to direction content (corresponding to the slopes
+ of the psychometric functions as shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-collapse"
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
+
 
 \end_layout
 
@@ -1250,11 +1257,11 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
