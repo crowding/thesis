@@ -469,10 +469,15 @@ induced motion
  The influence of this process is generally repulsive; carrier motion outside
  the integration field biases observers towards perceiving the individual
  elements as moving in the opposite direction.
- We modeled this using a function defined as: 
+ 
+\change_inserted 232785317 1363251686
+However, this effect can have a nonlinearity, which (see Results).
+ 
+\change_unchanged
+We modeled this using a function defined as: 
 \begin_inset Formula 
 \[
-M_{I}=\left(\beta_{I_{b}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
+M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 \]
 
 \end_inset

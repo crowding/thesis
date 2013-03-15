@@ -59,7 +59,7 @@ configs <-
                     , label=as.character(c(4, 3, 2, 1))
                     , color=rep(TRUE, 4)
                   )
-        , merge(configurations, all.y=TRUE)
+        , merge(configuations, all.y=TRUE)
         , mutate(eccentricity = 20/3))
 
 (ggplot(configs)

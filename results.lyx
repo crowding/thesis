@@ -92,11 +92,11 @@ textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
 
 
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -214,6 +214,31 @@ status collapsed
 \end_inset
 
 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-functions
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-functions,cache=TRUE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
@@ -225,7 +250,7 @@ Methods
 \end_layout
 
 \begin_layout Itemize
-Describe any methods specific to Experiment 1 (as opposed to general methods.
+Describe any methods specific to Experiment 1 (as opposed to general methods)
 \end_layout
 
 \begin_layout Itemize
@@ -287,18 +312,234 @@ spacing
 \end_layout
 
 \begin_layout Itemize
-Show two subjects for 
-\begin_inset Quotes eld
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-spacing-collapse
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-spacing-collapse,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.he
+ight=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
-content
-\begin_inset Quotes erd
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-spacing-collapse"
+
 \end_inset
 
- data.
- This should illustrate that at short spacing, direction content (i.e.
- summation) determines the response.
+ Effect of spacing on sensitivity to direction content.
+ Psychometric functions of displacement are shown for three example subjects.
+ In each graph, direction content is held constant, and different curves
+ show the responses as different spacings.
+ The consistent effect of reducing spacing is to reduce the slope of the
+ psychometric function; the subjects' sensitivity increases.
  
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sensitivity to displacement collapses as spacing decreases.
+ In each subplot, the horizontal axis denotes spacing, while the vertical
+ axis measures sensitivity to direction content (corresponding to the slopes
+ of the psychometric functions as shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-collapse"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-induced-crossover
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-induced-crossover,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.h
+eight=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-induced-crossover"
+
+\end_inset
+
+The effect of carrier direction content changes from assimilative at high
+ densities to repulsive at larger target spacings.
+ Here data from three subjects are shown.
+ For each subject a single strength of direction content is used, one counterclo
+ckwise (negative) and one clockwise (positive).
+ The vertical axis represents the proportion of thials during which the
+ subject responded clockwise.
+ Data points are binned averages of staircase trials 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Reducing spacing increases the effect of direction content.
+ Here two sets of psychometric functions are shown, the left set taken at
+ short spacing and the right set taken at wide spacing.
+ In each set, the 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_deeper
@@ -320,6 +561,11 @@ This section should attempt to justify (illustrate with data) the claim
 \begin_layout Itemize
 Do this by allowing the model to fit independent values of (but otherwise
  letting the model do work for us in pooling data.)
+\end_layout
+
+\begin_layout Itemize
+Figure: show sensitivities measured at three wide spacings for different
+ numbers of objects.
 \end_layout
 
 \begin_layout Standard
@@ -380,7 +626,6 @@ Values of
 \end_layout
 
 \begin_layout Standard
-independently
 \begin_inset Float figure
 wide false
 sideways false
@@ -484,7 +729,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -934,7 +1179,7 @@ Sexpr{toupper(carissas.wierd)}
 \end_inset
 
 , indicating that small imbalances of motion energy at wide target spacings
- usually lead to repulsion, but that the repulsion is proportionately weaker,
+ usually lead to repulsion, but that the repulsion is ≈proportionately weaker,
  or even reverses, with stronger direction content.
 \end_layout
 
@@ -988,8 +1233,8 @@ status open
 
 \begin_layout Plain Layout
 [we do not have much of a speculation about what exactly the induced motion
- effect arises from; characterizing it as a divisive normalization of the
- motion signal seems promising.]
+ effect or its nonlinearity arises from; blah blah divisive normalization
+ etc.]
 \end_layout
 
 \end_inset
@@ -1001,6 +1246,10 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
@@ -1024,6 +1273,11 @@ status collapsed
 \end_layout
 
 \begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
 
 \end_layout
 

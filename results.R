@@ -18,8 +18,6 @@ bind[plot.displacement, plot.content, plot.spacing] <- (
         mutate(spacing=target_number_all * 2*pi/eccentricity),
         .[c("abs_displacement", "abs_direction_content", "spacing")],
         lapply(unique), lapply(sort)))
-#
-
 
 ## @knitr results-functions
 #first make models with the linear induced motion
@@ -37,21 +35,70 @@ mutateModelData <- function(models, ...)
 cbind_predictions <- function(dataset, model, ...)
   cbind(dataset, predict(model, newdata=dataset, ...))
 
+ziprbind <- function(l, collector=rbind.fill) Map %<<% dots(f=collector) %()% l
 
-## @knitr results-spacing-example
- plotdata <- mapply(
-  list(models$jb, models$nj, models$pbm),
-  c(1.0, 0.4, 0.15),
-  FUN=function(model, cherrypick) {
+bound_prob <- function(x) pmax(pmin(x, 1), 0)
+
+## @knitr results-spacing-collapse
+
+spacing.collapse.plotdata <- ziprbind(Map(
+  model = list(models$pbm, models$cj),
+  match_content = c(0.15, 0.4),
+  f = function(model, match_content) list(
+    bins = bins <- chain(
+      model$data,
+      subset(content == match_content), #but we really want to combine data and fold?
+      #subset(abs(content) == match_content),
+      # how to generate folded data from this binning function?
+      bin_along_resid(model, ., "response",
+                      splits %-% "exp_type", "displacement", bins=4)),
+    #also refold these predictions?
+    predictions = makePredictions(model, bins, splits=splits %-% "exp_type"))))
+
+#this only includes half the available data (no folding) so the
+#scatter can be expected to be improved
+print(ggplot(shuffle(spacing.collapse.plotdata$bins))
+      + displacement_scale
+      + proportion_scale
+      + spacing_color_scale
+      + aes(group=spacing)
+      + ribbonf(spacing.collapse.plotdata$predictions)
+      + geom_point(size=3)# + binom_pointrange()
+      + facet_grid(subject  ~ ., labeller=function(var, value) toupper(value))
+      + no_grid
+      + labs(title=paste(sep="\n","Sensitivity collapses at smaller spacings",
+                   "*FIXME* half of data missing, add folded data"))
+      + with_arg(inherit.aes=FALSE, show_guide=FALSE,
+                 data=ddply(spacing.collapse.plotdata$bins,
+                    c("subject", "content"),
+                   summarize, content = content[1], n_obs = sum(n_obs)),
+                 geom_text(aes(
+                   label = sprintf("direction content = %0.2g", content)),
+                             x=Inf, y=-Inf, size=3, vjust=-0.5, hjust=1.05),
+                 geom_text(aes(
+                   label = sprintf("N = %d", n_obs),
+                   x = -Inf, y = Inf, size=3, vjust = 1.5, hjust = -0.2))))
+
+## The error bars are ugly with the trials spread over so many spacings...
+## I wonder if there's a way to bin over displacement and spacing at
+## all the direction contents, projecting it onto one direction
+## content? That is sort of massive cheating though.
+
+with(spacing.collapse.plotdata$bins,
+     data.frame(binom_se_upper(n=n_obs, p=p),
+                p, binom_se_lower(n=n_obs, p)))
+
+## @knitr results-induced-crossover
+spacing.collapse.plotdata <- ziprbind(Map(
+  model=list(models$jb, models$nj, models$pbm),
+  content=c(1.0, 0.4, 0.15),
+  f=function(model, content) {
     bins <- chain(model$data,
-                  subset((exp_type=="spacing") & (abs(content) %in% cherrypick)),
+                  subset((exp_type=="spacing") & (abs(content) %in% content)),
                   bin_along_resid(model, ., "response", splits, "displacement"))
     predictions <- makePredictions(model, bins)
     list(bins=bins, predictions=predictions)
-  }, SIMPLIFY=FALSE)
-
-bins <- rbind.fill %()% lapply(plotdata, `[[`, "bins")
-predictions <- rbind.fill %()% lapply(plotdata, `[[`, "predictions")
+  }))
 
 #the suppressWarnings is ther because of stupid encoding things and
 #the way that knitr chokes if it doesn't everything about the
@@ -59,23 +106,22 @@ predictions <- rbind.fill %()% lapply(plotdata, `[[`, "predictions")
 #latex + unicode that actually works.
 #plot example data from subject JB
 suppressWarnings(print(
-  (ggplot(bins)
-   #+ displacement_scale
+  (ggplot(spacing.collapse.plotdata$bins)
+   # + displacement_scale
    + aes(x=displacement*10)
    + scale_x_continuous("Envelope motion (degree/sec +CW)")
-#   + proportion_scale
+   # + proportion_scale
    + aes(y=p)
    + scale_y_continuous(breaks=c(0,0.5,1))
    + content_color_scale
-   + with_arg(data=predictions,
+   + with_arg(data=spacing.collapse.plotdata$predictions,
               geom_ribbon(color="transparent", alpha=0.2,
                           aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
               geom_line(aes(y=fit)))
    + geom_point(size=2)
    + facet_spacing_subject
-   #  + labs(title = "Data and model fits for subject " %++% subject)
    + no_grid
-   + labs(title=paste0("Carrier motion supports at narrow spacing, ",
+   + labs(title=paste0("Carrier motion assimilates at narrow spacing, ",
             "repels at wide spacing\n(rows indicate spacing)"),
           y="Proportion CW responses" )
    )))
@@ -277,6 +323,14 @@ slope.plot.data <- rbind.fill %()% Map(
             geom_line(), geom_ribbon(alpha=0.1))
  + facet_wrap(~subject, scales="free_y")
  + coord_cartesian(xlim=c(0, 10)))
+
+
+plot_fit(slope.free.models$"mc", style="bubble")
+
+## @knitr results-example-effect
+
+## Next, maybe we can make some surface plots etc.
+
 
 ## @knitr results-example-effect
 
