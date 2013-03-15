@@ -68,10 +68,10 @@ setup_theme <- function(base_size=theme_get()$text$size) {
 proportion_scale <-
   list(aes(y=p),
        scale_y_continuous(
-         "Response", breaks=c(0, 0.5, 1),
-         labels=replace_arrows
+         "P(Response CW)", breaks=c(0, 0.5, 1)
+         #, labels=replace_arrows
          ),
-       coord_cartesian(ylim=c(0,1)),
+       coord_cartesian(ylim=c(-0.1,1.1)),
        theme(axis.text.y=element_text(angle=90)))
 
 facet_spacing_experiment <-
@@ -89,8 +89,8 @@ facet_spacing_experiment <-
                }
              )
 
-facet_spacing_subject <-
-  facet_grid(spacing ~ subject, labeller=function(v, value) {
+facet_spacing_rows <-
+  facet_grid(spacing ~ ., labeller=function(v, value) {
     switch(v,
            spacing = paste(
              "$"[!use_unicode],
@@ -101,8 +101,8 @@ facet_spacing_subject <-
            subject=sprintf("Subject %s", toupper(value)))
   })
 
-facet_spacing_rows <-
-  facet_grid(spacing ~ .,
+facet_spacing_subject <-
+  facet_grid(spacing ~ subject,
              labeller=function(v, value) {
                print(v)
                  paste(
@@ -152,11 +152,13 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 
 displacement_scale <-
   list( aes(x=displacement),
-       scale_x_continuous(if (use_unicode) " \u0394x (Displacement)" else "$\\Delta x$"
-                          , labels=newline_arrows))
+       scale_x_continuous(
+         paste0(if (use_unicode) " \u0394x" else "$\\Delta x$", displacement)
+#                          , labels=newline_arrows
+                          ))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)
-y_nopadding <- scale_y_continuous(expand = c(0,0))
+y_nopadidng <- scale_y_continuous(expand = c(0,0))
 
 comp <- function(a, b) function(...) b(a(...))
 
@@ -240,7 +242,7 @@ content_color_scale <-
   c(
     list(aes(color=factor(content),
              fill=factor(content))),
-    with_arg(name=if (use_unicode) "Carrier motion\ncontent\n(+CW)" else "$C$",
+    with_arg(name=if (use_unicode) "C" else "$C$",
              palette=color_pal,
              labels=append_arrows,
              discrete_scale("fill", "manual"),
@@ -278,6 +280,17 @@ ribbon <- list(
             geom_ribbon(color="transparent", alpha=0.2,
                         aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
             geom_line(aes(y=fit)))
+
+ribbonf <- function(data)
+  with_arg(data=data,
+           geom_ribbon(color="transparent", alpha=0.2,
+                       aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+           geom_line(aes(y=fit)))
+
+binom_pointrange <- function(...)
+  geom_pointrange(aes(ymin = binom_se_lower(n_obs, bound_prob(p)),
+                      ymax = binom_se_upper(n_obs, bound_prob(p))),
+                  ...)
 
 
 #have a custom stats function that shows the predictions with error bars.

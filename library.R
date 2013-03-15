@@ -277,7 +277,12 @@ mutate_when_has <- function(data, columns=dots_names(...), ...) {
   }
 }
 
+library(binom)
 binom_se <- function(n, p) sqrt(p*(1-p)/n)
+binom_se_upper <- function(n, p)
+  binom.confint(bound_prob(p)*n, n, methods="wilson", p=0.682)$upper
+binom_se_lower <- function(n, p)
+  binom.confint(bound_prob(p)*n, n, methods="wilson", p=0.682)$lower
 
 refold <- function(data, fold=TRUE) {
   fold.trial <- with(data, fold & ((content < 0)
