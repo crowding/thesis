@@ -12,6 +12,10 @@
 *.INIT
 *.files
 *.aux
+*.list
+*.nav
+*.snm
+*.toc
 *.bbl
 *.log
 *.map
@@ -26,7 +30,6 @@ monk.makefile
 last.dump.rda
 .Rhistory
 scripts.txt
-figure
 tikzdict*
 dependencies
 .Rdata
@@ -37,6 +40,7 @@ descriptions
 collections
 dbtickets
 auto
+energy
 *.tar.gz
 *.products
 *.out
@@ -50,8 +54,6 @@ filelist.txt
 poolplots
 Rdata
 unpacked
-common
-common_adj
 stripped
 datafiles
 eyemovements
