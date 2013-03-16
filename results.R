@@ -1,3 +1,4 @@
+## ----------------------------------------------------------------------
 ## @knitr results-libraries
 source("slopeModel.R", chdir=TRUE)
 source("latexing.R")
@@ -8,6 +9,7 @@ pdf.options(encoding='ISOLatin2.enc')
 #options(width = 60)
 #options(encoding="native.enc")=
 
+## ----------------------------------------------------------------------
 ## @knitr results-loadData
 load("../modeling/slopeModel.RData")
 motion.energy <- read.csv("../modeling/motion_energy.csv")
@@ -17,6 +19,7 @@ bind[plot.displacement, plot.content, plot.spacing] <- (
         .[c("abs_displacement", "abs_direction_content", "spacing")],
         lapply(unique), lapply(sort)))
 
+## ----------------------------------------------------------------------
 ## @knitr results-functions
 #first make models with the linear induced motion
 buildModel <- function(modelList, update.arg) {
@@ -37,6 +40,7 @@ ziprbind <- function(l, collector=rbind.fill) Map %<<% dots(f=collector) %()% l
 
 bound_prob <- function(x) pmax(pmin(x, 1), 0)
 
+## ----------------------------------------------------------------------
 ## @knitr results-spacing-collapse
 
 spacing.collapse.plotdata <- ziprbind(Map(
@@ -62,7 +66,7 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bins))
       + spacing_color_scale
       + aes(group=spacing)
       + ribbonf(spacing.collapse.plotdata$predictions)
-      + geom_point(size=3)# + binom_pointrange()
+      + geom_point(size=3) # + binom_pointrange()
       + facet_grid(subject  ~ ., labeller=function(var, value) toupper(value))
       + no_grid
       + labs(title=paste(sep="\n","Sensitivity collapses at smaller spacings",
@@ -83,6 +87,7 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bins))
 ## all the direction contents, projecting it onto one direction
 ## content? That is sort of massive cheating though.
 
+## ----------------------------------------------------------------------
 ## @knitr results-summation-increases
 summation.increases.plotdata <- ziprbind(Map(
   model = models[c("cj","pbm")],
@@ -109,6 +114,7 @@ print(ggplot(summation.increases.plotdata$bins)
       + label_count(summation.increases.plotdata$bins,
                     c("spacing", "subject")))
 
+## ----------------------------------------------------------------------
 ## @knitr results-induced-crossover
 spacing.crossover.plotdata <- ziprbind(Map(
   model=list(models$jb, models$nj, models$pbm),
@@ -149,6 +155,7 @@ suppressWarnings(
 
   )
 
+## ----------------------------------------------------------------------
 ## @knitr results-spacing-sensitivity
 
 ## Illustrate the claim that the models "slope"
@@ -196,32 +203,34 @@ print(ggplot(subset(sensitivity.plot.data, type=="points"))
       + coord_cartesian(xlim=c(0, 10)))
 
 ## @knitr results-spacing-summation
-#show the crossover from summation to induced motion as spacing changes
+# ----------------------------------------------------------------------
+# show the crossover from summation to induced motion as spacing changes
 
-
-#note I_also have to rip out the nonlinear term in order to get many of these to fit?
-crossover.free.models <-
-  buildModel(models,
-             . ~ . - I(1/spacing):content - content - I(content * abs(content)) - bias
-             + factor(spacing):content)
-
-
-free.model <- crossover.free.models[[1]]
-#what the hell, man, why isn't that working?  Might have to fake it
-#with GLM instead of GNM.
+# The big question is why all of these end up NA when i simply use GNM.
+# How does that happen?
+whichTerm <- ""
+summation.free.models <- lapply(models, function(m) {
+  ofs <- predict(m, type="terms")
+  dat <- mutate(m$data, ofs=ofs[, whichTerm <<- grep("displacementTerm", colnames(ofs))])
+  glm(family=m$family, data=dat,
+      formula = (response ~ offset(ofs) + content:factor(spacing) +
+                 I(content * abs(content)) - 1 + bias))
+})
 
 #The next step is to extract coefs and
 #curves. Individual coefs and curves from "terms" predictions of each
 #model, like so:
-crossover.plot.data <- rbind.fill %()% Map(
-  model=models, free.model=crossover.free.models,
-  f=function(model, free.model) rbind.fill(
+summation.plot.data <- rbind.fill %()% Map(
+  model=models, free.model=summation.free.models,
+  f=function(model, free.model) {
+    rbind.fill(
     chain(
       free.model$data,
       count(splits %-% c("displacement", "content", "exp_type")),
       cbind(displacement=0, content=1, type="points"),
+      mutate(., ofs = predict(newdata=., model, type="terms")[,whichTerm]),
       cbind_predictions(free.model, type="terms", se.fit=TRUE),
-       rename(c("fit.content:factor(spacing)"="fit",
+      rename(c("fit.content:factor(spacing)"="fit",
                "se.fit.content:factor(spacing)"="se.fit"))),
     chain(
       model$data,
@@ -231,12 +240,12 @@ crossover.plot.data <- rbind.fill %()% Map(
             content=1, type="curve"),
       cbind_predictions(model, type="terms", se.fit=TRUE),
       rename(c("fit.content:I(1/spacing)"="fit",
-               "se.fit.content:I(1/spacing)"="se.fit")))))
+               "se.fit.content:I(1/spacing)"="se.fit"))))})
 
-(ggplot(subset(crossover.plot.data, type=="points"))
+(ggplot(subset(summation.plot.data, type=="points"))
  + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
  + geom_pointrange()
- + with_arg(data=subset(crossover.plot.data, type=="curve"),
+ + with_arg(data=subset(summation.plot.data, type=="curve"),
             geom_line(), geom_ribbon(alpha=0.1))
  + facet_wrap(~subject, scales="free_y"))
 
