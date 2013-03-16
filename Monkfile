@@ -1,7 +1,7 @@
 #gather up all .csv files except those already gathered.
 --command cp
---input --match '.*(?<!modeling)/([^/]*)\.csv$'
---output 'modeling/{0}.csv'
+--input --match '.*(?<!writing)/([^/]*)\.csv$'
+--output 'writing/{0}.csv'
 
 #gather raw trial data and put them in CSV files
 --command            Rscript
@@ -9,66 +9,66 @@
 --input --match      'collections/(.*)\.list'
                      discrimination.sqlite
 --input --invisible  discrimination.sqlite.DONE
---output             modeling/{0}_trials.csv
+--output             writing/{0}_trials.csv
 --input              motion_energy.mat
 
 #collect the motion energy data in another file (as it has a grid)
 --command            Rscript
 --input mat2csv.R
 --input --match (motion_energy)\.mat
---output modeling/{0}.csv
+--output writing/{0}.csv
 
 #make a few plots relevant to motion ehergy
 --command Rscript
---input modeling/motion_energy_plot.R
+--input writing/motion_energy_plot.R
 --input --match motion_energy\.csv
 --output motion_energy.pdf
 
 #plot threshold values
 --command            --once ./runmatlab
---input --invisible  modeling/plotThresholds.m
---once               "\"addpath('modeling');\" plotThresholds"
---input --match      'modeling/.*_series_calculations.csv'
---output --invisible modeling/plotThresholds.fig
+--input --invisible  writing/plotThresholds.m
+--once               "\"addpath('writing');\" plotThresholds"
+--input --match      'writing/.*_series_calculations.csv'
+--output --invisible writing/plotThresholds.fig
 
 #type "make figures" to try to refresh the figures
 --command --input --invisible --match '.*\.fig$'
 --output --invisible --phony figures
 
 #matlab stuff requires we unpack all the data into a matlab file.
---command --once ./runmatlab --once "\"addpath('modeling');\" unpack"
---input --invisible --once modeling/unpack.m
---input --match modeling/(.*_trials\.csv)$
---output --invisible --once modeling/data.mat
+--command --once ./runmatlab --once "\"addpath('writing');\" unpack"
+--input --invisible --once writing/unpack.m
+--input --match writing/(.*_trials\.csv)$
+--output --invisible --once writing/data.mat
 
 #might as well unpack into an R data file.
---command --once cd --once modeling --once && --once Rscript
---once --input --invisible modeling/unpack.R --once unpack.R
---output --invisible --once modeling/data.RData --once data.RData
---input --match --invisible modeling/(.*_trials\.csv) {0}
+--command --once cd --once writing --once && --once Rscript
+--once --input --invisible writing/unpack.R --once unpack.R
+--output --invisible --once writing/data.RData --once data.RData
+--input --match --invisible writing/(.*_trials\.csv) {0}
 
 #the model-fitting function
-#--command ./runmatlab "\"addpath('modeling'); MeilstrupBoyntonModel\""
-#--input --invisible modeling/MeilstrupBoyntonModel.m
-#--input --invisible --match "modeling/data\.mat"
-#--output --invisible modeling/modelResults.mat
+#--command ./runmatlab "\"addpath('writing'); MeilstrupBoyntonModel\""
+#--input --invisible writing/MeilstrupBoyntonModel.m
+#--input --invisible --match "writing/data\.mat"
+#--output --invisible writing/modelResults.mat
 
 #and let's start translating this to R also.
---command --once Rscript --input modeling/MeilstrupBoyntonModel.R
---input --match 'modeling/data\.Rd'
---output --once modeling/result.Rd
---output --invisible modeling/modelResults.mat
+--command --once Rscript --input writing/MeilstrupBoyntonModel.R
+--input --match 'writing/data\.Rd'
+--output --once writing/result.Rd
+--output --invisible writing/modelResults.mat
 
 #and let's start translating this to R also.
---command --once Rscript --input modeling/MeilstrupBoyntonModel.R
---input --match 'modeling/data\.Rd'
---output --once modeling/result.Rd
+--command --once Rscript --input writing/MeilstrupBoyntonModel.R
+--input --match 'writing/data\.Rd'
+--output --once writing/result.Rd
 
 #fit all the models
---command ./runmatlab --once "\"addpath('modeling'); fitAll\""
---input --invisible modeling/fitAll.m
---input --match 'modeling/data\.mat'
---output 'modeling/fits.mat'
+--command ./runmatlab --once "\"addpath('writing'); fitAll\""
+--input --invisible writing/fitAll.m
+--input --match 'writing/data\.mat'
+--output 'writing/fits.mat'
 
 #plot all the fits
 #
@@ -76,49 +76,49 @@
 #appropriately. Furthermore multiple outputs inappropriately result in
 #multiple commands issued from Make. THis results in a bunch of
 #repeated commands...
---command --once ./runmatlab --once "\"addpath('modeling'); plotFits\""
---input --invisible modeling/plotFits.m
---input --match 'modeling/fits\.mat'
---output --listing --intermediate 'modeling/fit_plots.list'
+--command --once ./runmatlab --once "\"addpath('writing'); plotFits\""
+--input --invisible writing/plotFits.m
+--input --match 'writing/fits\.mat'
+--output --listing --intermediate 'writing/fit_plots.list'
 
 #bundle them all into a multipage PDF
 --command --once pdfjoin
 --once %--outfile
---once --output 'modeling/fits_{0}.pdf'
---input --match 'modeling/fit_(.*)_.*\.pdf$'
+--once --output 'writing/fits_{0}.pdf'
+--input --match 'writing/fit_(.*)_.*\.pdf$'
 --invisible --phony --once figures
 
 #make diagnostic figures? #WHY_IS_THIS_ALWAYS_RUNNING
-# --command ./runmatlab "\"addpath('modeling'); makeDiagnostics\""
-# --input --match 'modeling/fits\.mat'
-# --output --listing 'modeling/diagnosticPlots.pdf'
+# --command ./runmatlab "\"addpath('writing'); makeDiagnostics\""
+# --input --match 'writing/fits\.mat'
+# --output --listing 'writing/diagnosticPlots.pdf'
 # --invisible --phony --once figures
 
 #and bundle them
 --command --once pdfjoin
 --once %--outfile
---once --output 'modeling/residuals_{0}_plots.pdf'
---input --match 'modeling/residual_(.*)_.*\.pdf$'
+--once --output 'writing/residuals_{0}_plots.pdf'
+--input --match 'writing/residual_(.*)_.*\.pdf$'
 --invisible --phony --once figures
 
 #grab our motion energy demo movie
 --command cp
 --input --match (deltax\.mov)
---output modeling/energy/{0}
+--output writing/energy/{0}
 
 #make our motion energy graphs
---command cd modeling && Rscript
---input --invisible modeling/motion_energy_plot.R motion_energy_plot.R
---input --invisible --match modeling/motion_energy\.csv motion_energy.csv
---output --listing --invisible modeling/energy/motion_energy_plot.list energy/motion_energy_plot.list
+--command cd writing && Rscript
+--input --invisible writing/motion_energy_plot.R motion_energy_plot.R
+--input --invisible --match writing/motion_energy\.csv motion_energy.csv
+--output --listing --invisible writing/energy/motion_energy_plot.list energy/motion_energy_plot.list
 
---command cd modeling && Rscript
---input --invisible modeling/slopeModel.R slopeModel.R
---input --invisible --match modeling/data\.RData data.RData
---input --invisible modeling/motion_energy.csv motion_energy.csv
---output --invisible modeling/slopeModel.RData slopeModel.RData
---output --invisible modeling/slopeModel.pdf slopeModel.pdf
+--command cd writing && Rscript
+--input --invisible writing/slopeModel.R slopeModel.R
+--input --invisible --match writing/data\.RData data.RData
+--input --invisible writing/motion_energy.csv motion_energy.csv
+--output --invisible writing/slopeModel.RData slopeModel.RData
+--output --invisible writing/slopeModel.pdf slopeModel.pdf
 
 --command
---input --match --invisible modeling/.*
---output --once --invisible --phony modeling
+--input --match --invisible writing/.*
+--output --once --invisible --phony writing

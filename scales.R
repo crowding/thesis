@@ -79,44 +79,27 @@ proportion_scale <-
        coord_cartesian(ylim=c(-0.1,1.1)),
        theme(axis.text.y=element_text(angle=90)))
 
+facet_labeller <- function(v, value)
+  switch(v,
+         subject= sprintf("Subject %s", toupper(value)),
+         spacing = paste(
+             "$"[!use_unicode],
+             "S = ",
+             format(value, digits=2),
+             if(use_unicode) "\u0080" else "^\\circ",
+             "$"[!use_unicode], sep=""),
+         exp_type = paste(as.character(value), "experiment"))
+
 facet_spacing_experiment <-
   facet_grid(spacing ~ exp_type,
-               labeller=function(v, value) {
-                 switch(  v
-                        , spacing = paste(
-                            "$"[!use_unicode],
-                            "S = ",
-                            format(value, digits=2),
-                            if(use_unicode) "\u0080" else "^\\circ",
-                            "$"[!use_unicode], sep=""
-                            )
-                        , exp_type = paste(as.character(value), "experiment"))
-               }
+               labeller=facet_labeller
              )
 
 facet_spacing_rows <-
-  facet_grid(spacing ~ ., labeller=function(v, value) {
-    switch(v,
-           spacing = paste(
-             "$"[!use_unicode],
-             format(value, digits=2),
-             if(use_unicode) "\u0080" else "^\\circ",
-             "$"[!use_unicode], sep=""
-             ),
-           subject=sprintf("Subject %s", toupper(value)))
-  })
+  facet_grid(spacing ~ ., labeller=facet_labeller)
 
 facet_spacing_subject <-
-  facet_grid(spacing ~ subject, labeller=function(v, value) {
-   switch(v,
-           spacing = paste(
-             "$"[!use_unicode],
-             format(value, digits=2),
-             if(use_unicode) "\u0080" else "^\\circ",
-             "$"[!use_unicode], sep=""
-             ),
-           subject=sprintf("Subject %s", toupper(value)))
- })
+  facet_grid(spacing ~ subject, labeller=facet_labeller)
 
 balloon <- list(geom_point(aes(size=n))
                 , scale_size_area()
@@ -158,12 +141,12 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 displacement_scale <-
   list( aes(x=displacement),
        scale_x_continuous(
-         paste0(if (use_unicode) " \u0394x" else "$\\Delta x$", displacement)
+         paste0(if (use_unicode) " \u0394x" else "$\\Delta x$", "(Envelope, +CW)")
 #                          , labels=newline_arrows
                           ))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)
-y_nopadidng <- scale_y_continuous(expand = c(0,0))
+y_nopaddng <- scale_y_continuous(expand = c(0,0))
 
 comp <- function(a, b) function(...) b(a(...))
 

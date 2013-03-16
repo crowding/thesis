@@ -1,7 +1,5 @@
 ## @knitr results-libraries
-setwd("../modeling")
-suppressWarnings(source("slopeModel.R", chdir=TRUE))
-setwd("../writing")
+source("slopeModel.R", chdir=TRUE)
 source("latexing.R")
 theme_set(theme_bw(10))
 #in this file I define pretty scales.
@@ -151,6 +149,97 @@ suppressWarnings(
 
   )
 
+## @knitr results-spacing-sensitivity
+
+## Illustrate the claim that the models "slope"
+## declines. First, fit models that freely vary slope at each tested
+## spacing.
+sensitivity.term.label <- ""
+sensitivity.free.models <- lapply(models, function(m) {
+  l <- labels(terms(m))
+  toDrop <- grep("displacementTerm", l)
+  sensitivity.term.label <<- l[toDrop]
+  length(toDrop) == 1 || stop("no")
+  dropped <- drop.terms(terms(m), toDrop, keep.response=FALSE)
+  f <- reformulate(labels(dropped), response="response", intercept=FALSE)
+  f <- update(f, . ~ . + displacement:factor(spacing))
+  environment(f) <- environment(m$formula)
+  glm(formula=f, data=m$data, family=m$family)
+})
+
+sensitivity.plot.data <- rbind.fill %()% Map(
+  model=models, free.model=sensitivity.free.models,
+  f=function(model, free.model) rbind.fill(
+    chain(
+      free.model$data,
+      count(splits %-% c("displacement", "content", "exp_type")),
+      cbind(displacement=1, content=0, type="points"),
+      cbind_predictions(free.model, type="terms", se.fit=TRUE),
+      rename(c("fit.displacement:factor(spacing)"="fit",
+               "se.fit.displacement:factor(spacing)"="se.fit"))),
+    chain(
+      model$data,
+      count(splits %-% c("displacement", "content", "exp_type",
+                         "spacing", "target_number_all", "target_number_shown")),
+      cbind(displacement=1, content=0, type="curve",
+            spacing=seq(2, 20, length=100)),
+      cbind_predictions(model, type="terms", se.fit=TRUE),
+      rename(structure(names=paste0(c("fit.", "se.fit."), sensitivity.term.label),
+                       c("fit", "se.fit"))))))
+
+print(ggplot(subset(sensitivity.plot.data, type=="points"))
+      + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
+      + geom_pointrange()
+      + with_arg(data=subset(sensitivity.plot.data, type=="curve"),
+                 geom_line(), geom_ribbon(alpha=0.1))
+      + facet_wrap(~subject, scales="free_y")
+      + coord_cartesian(xlim=c(0, 10)))
+
+## @knitr results-spacing-summation
+#show the crossover from summation to induced motion as spacing changes
+
+
+#note I_also have to rip out the nonlinear term in order to get many of these to fit?
+crossover.free.models <-
+  buildModel(models,
+             . ~ . - I(1/spacing):content - content - I(content * abs(content)) - bias
+             + factor(spacing):content)
+
+
+free.model <- crossover.free.models[[1]]
+#what the hell, man, why isn't that working?  Might have to fake it
+#with GLM instead of GNM.
+
+#The next step is to extract coefs and
+#curves. Individual coefs and curves from "terms" predictions of each
+#model, like so:
+crossover.plot.data <- rbind.fill %()% Map(
+  model=models, free.model=crossover.free.models,
+  f=function(model, free.model) rbind.fill(
+    chain(
+      free.model$data,
+      count(splits %-% c("displacement", "content", "exp_type")),
+      cbind(displacement=0, content=1, type="points"),
+      cbind_predictions(free.model, type="terms", se.fit=TRUE),
+       rename(c("fit.content:factor(spacing)"="fit",
+               "se.fit.content:factor(spacing)"="se.fit"))),
+    chain(
+      model$data,
+      count(splits %-% c("displacement", "content", "exp_type",
+                         "spacing", "target_number_all", "target_number_shown")),
+      cbind(displacement=0, spacing = seq(2, 20, length=100),
+            content=1, type="curve"),
+      cbind_predictions(model, type="terms", se.fit=TRUE),
+      rename(c("fit.content:I(1/spacing)"="fit",
+               "se.fit.content:I(1/spacing)"="se.fit")))))
+
+(ggplot(subset(crossover.plot.data, type=="points"))
+ + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
+ + geom_pointrange()
+ + with_arg(data=subset(crossover.plot.data, type=="curve"),
+            geom_line(), geom_ribbon(alpha=0.1))
+ + facet_wrap(~subject, scales="free_y"))
+
 ## @knitr results-induced-modeling
 
 null.models <-
@@ -260,97 +349,7 @@ plotBiasAtSpacing(spacing=10)
 
 ## @knite results-sensitivity-modeling
 
-## @knitr results-crossover
-#show the crossover from summation to induced motion as spacing changes
 
-
-#note I_also have to rip out the nonlinear term in order to get many of these to fit?
-crossover.free.models <-
-  buildModel(models,
-             . ~ . - I(1/spacing):content - content - I(content * abs(content)) - bias
-             + factor(spacing):content)
-
-
-free.model <- crossover.free.models[[1]]
-#what the hell, man, why isn't that working?  Might have to fake it
-#with GLM instead of GNM.
-
-#The next step is to extract coefs and
-#curves. Individual coefs and curves from "terms" predictions of each
-#model, like so:
-crossover.plot.data <- rbind.fill %()% Map(
-  model=models, free.model=crossover.free.models,
-  f=function(model, free.model) rbind.fill(
-    chain(
-      free.model$data,
-      count(splits %-% c("displacement", "content", "exp_type")),
-      cbind(displacement=0, content=1, type="points"),
-      cbind_predictions(free.model, type="terms", se.fit=TRUE),
-       rename(c("fit.content:factor(spacing)"="fit",
-               "se.fit.content:factor(spacing)"="se.fit"))),
-    chain(
-      model$data,
-      count(splits %-% c("displacement", "content", "exp_type",
-                         "spacing", "target_number_all", "target_number_shown")),
-      cbind(displacement=0, spacing = seq(2, 20, length=100),
-            content=1, type="curve"),
-      cbind_predictions(model, type="terms", se.fit=TRUE),
-      rename(c("fit.content:I(1/spacing)"="fit",
-               "se.fit.content:I(1/spacing)"="se.fit")))))
-
-(ggplot(subset(crossover.plot.data, type=="points"))
- + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
- + geom_pointrange()
- + with_arg(data=subset(crossover.plot.data, type=="curve"),
-            geom_line(), geom_ribbon(alpha=0.1))
- + facet_wrap(~subject, scales="free_y"))
-
-## @knitr results-steepness
-
-## do the same thing with the claim that the models "slope"
-## declines. First, fit models that freely vary slope at each tested
-## spacing.
-slope.term.label <- ""
-slope.free.models <- lapply(models, function(m) {
-  l <- labels(terms(m))
-  toDrop <- grep("displacementTerm", l)
-  slope.term.label <<- l[toDrop]
-  length(toDrop) == 1 || stop("no")
-  f <- reformulate(labels(terms(m)[-toDrop]))
-  f <- update(f, .~. + displacement:factor(spacing))
-  update(m, formula=f, data=m$data)
-})
-
-slope.plot.data <- rbind.fill %()% Map(
-  model=models, free.model=slope.free.models,
-  f=function(model, free.model) rbind.fill(
-    chain(
-      free.model$data,
-      count(splits %-% c("displacement", "content", "exp_type")),
-      cbind(displacement=1, content=0, type="points"),
-      cbind_predictions(free.model, type="terms", se.fit=TRUE),
-      rename(c("fit.displacement:factor(spacing)"="fit",
-               "se.fit.displacement:factor(spacing)"="se.fit"))),
-    chain(
-      model$data,
-      count(splits %-% c("displacement", "content", "exp_type",
-                         "spacing", "target_number_all", "target_number_shown")),
-      cbind(displacement=1, content=0, type="curve",
-            spacing=seq(2, 20, length=100)),
-      cbind_predictions(model, type="terms", se.fit=TRUE),
-      rename(structure(names=paste0(c("fit.", "se.fit."), slope.term.label),
-                       c("fit", "se.fit"))))))
-
-(ggplot(subset(slope.plot.data, type=="points"))
- + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
- + geom_pointrange()
- + with_arg(data=subset(slope.plot.data, type=="curve"),
-            geom_line(), geom_ribbon(alpha=0.1))
- + facet_wrap(~subject, scales="free_y")
- + coord_cartesian(xlim=c(0, 10)))
-
-
-plot_fit(slope.free.models$"mc", style="bubble")
 
 ## @knitr results-example-effect
 

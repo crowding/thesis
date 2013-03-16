@@ -383,7 +383,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -392,7 +392,17 @@ status open
 
 \begin_layout Plain Layout
 
-<<
+<<results-summation-increases,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fi
+g.height=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -495,17 +505,37 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Sensitivity to displacement collapses as spacing decreases.
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+(higher-level look at 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-crossover"
+
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+ Sensitivity to displacement collapses as spacing decreases.
  In each subplot, the horizontal axis denotes spacing, while the vertical
  axis measures sensitivity to direction content (corresponding to the slopes
- of the psychometric functions as shown in 
+ of the psychometric functions shown in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-spacing-collapse"
 
 \end_inset
 
-
+.
+ Data points are obtained by re-fitting the model while allowing sensitivity
+ to vary freely for each value of spacing, while other aspects of the model
+ are unmodified.
+ Curves show the overall model fits for comparison.
 \end_layout
 
 \end_inset
@@ -532,7 +562,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-
+The influence of direction content on subjects' 
 \end_layout
 
 \end_inset
