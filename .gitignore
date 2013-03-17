@@ -27,6 +27,8 @@ monk.makefile
 *.pyc
 *.o
 *.sqlite-journal
+figure
+number-density
 last.dump.rda
 .Rhistory
 scripts.txt
