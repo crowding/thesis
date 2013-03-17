@@ -414,10 +414,18 @@ g.height=5>>=
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-summation-increases"
+
+\end_inset
+
 Reducing spacing increases the effect of direction content.
- Here two sets of psychometric functions are shown, the left set taken at
- short spacing and the right set taken at wide spacing.
- In each set, the 
+ Here two sets of psychometric functions are shown, the upper set taken
+ at short spacing and the right set taken at wide spacing.
+ In each set, the different colored curves and data points correspond to
+ different strengths of carrier direction content.
+ In addition to the 
 \end_layout
 
 \end_inset
@@ -482,7 +490,7 @@ The effect of carrier direction content changes from assimilative at high
 ckwise (negative) and one clockwise (positive).
  The vertical axis represents the proportion of trials during which the
  subject responded clockwise.
- Data points plotted are binned averages
+ Data points plotted are binned averages.
 \end_layout
 
 \end_inset
@@ -502,9 +510,42 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-spacing-sensitivity
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-spacing-sensitivity,echo=FALSE,cache=TRUE, results="hide",fig.width=6,f
+ig.height=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-spacing-sensitivity"
+
+\end_inset
+
+
 \begin_inset Note Greyedout
 status open
 
@@ -532,10 +573,18 @@ reference "fig:results-spacing-collapse"
 \end_inset
 
 .
- Data points are obtained by re-fitting the model while allowing sensitivity
+ Data points are obtained by re-fitting the model while allowing sensitivity
  to vary freely for each value of spacing, while other aspects of the model
  are unmodified.
- Curves show the overall model fits for comparison.
+ The vertical axis shows the value of the coefficient, 
+\begin_inset Formula $\beta_{\Delta_{x}}\left(S\right)$
+\end_inset
+
+, as a function of spacing 
+\begin_inset Formula $S$
+\end_inset
+
+. Curves show the prediction of the complete model.
 \end_layout
 
 \end_inset
@@ -555,6 +604,31 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-spacing-summation
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-spacing-summation,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.h
+eight=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -562,7 +636,58 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-The influence of direction content on subjects' 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-spacing-summation"
+
+\end_inset
+
+ 
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+(higher-level look at 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-crossover"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-summation-increases"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ The sensitivity to carrier direction content increases at smaller spacings.
+ The horizontal axis shows how the model coefficient 
+\begin_inset Formula $M_{s}(s)$
+\end_inset
+
+ (essentially, the distance between psychometric functions seen in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-crossover"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-summation-increases"
+
+\end_inset
+
+) varies as a function of spacing.
+ Points are obtained by letting this coefficient vary freely; curves indicate
+ model predictions.
 \end_layout
 
 \end_inset
