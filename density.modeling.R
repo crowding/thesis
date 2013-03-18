@@ -42,10 +42,23 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   on.exit(dev.off(detail.dev), add=TRUE)
 
   bind[data=data, ...=] <- as.list(load2env(datafile))
-  bind[models=models, ...=] <- as.list(load2env(modelfile))
+  bind[models=models, displacementTerm = displacementTerm, ...=] <- as.list(load2env(modelfile))
+
+  #replicate the data mutation from slopeModel.R
+  chain(data
+        , subset(exp_type %in% c("spacing", "content"))
+        , do.rename(folding=FALSE)
+        , mutate(bias=1)
+        , match_df(., subset(count(., "subject"), freq>2000), on="subject")
+        # , attach_motion_energy(motion.energy)
+        # mutate the displacement to avoid wagon wheel (this will need done anyway)
+        , mutate(data, displacement=((displacement + (spacing/2))
+                                     %% spacing - (spacing/2)))
+        ) -> data
 
   #ugh globals
   models <<- models
+  displacementTerm <<- displacementTerm
   #these are the columns which define each "experiment" (facet on the
   #unfolded graph)
   segment.experiment.vars <<-
@@ -65,6 +78,10 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
         fold = c(FALSE, TRUE, TRUE, TRUE),
         spindle = c(FALSE, FALSE, TRUE, TRUE),
         collapse = c(FALSE, FALSE, FALSE, TRUE))
+
+  segment.trials <-
+    extract_segment(data, fold=FALSE, spindle=FALSE,
+                                    collapse=FALSE, count=FALSE)
 
   axes.basic <- list(proportion_scale[-1]
                      , spacing_texture_scale[-1]
@@ -118,16 +135,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   dev.set(plot.dev)
   plot(plot.spacing %+% segment.folded.spindled.mutilated
-       ## + prediction_layers(
-       ##     predict_from_model_frame(descriptive.models, segment, collapse=TRUE),
-       ##     connect="number")
        + errorbars(segment.folded.spindled.mutilated)
        + labs(title="Number/spacing raw data"))
-
-  ## plot(plot.spacing
-  ##      + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
-  ##      + labs(title="Descriptive fits",
-  ##             x="spacing\n(details unimportant, just capturing behavior for comparison)"))
 
   #For the next step, I need to incorporate realistic spacing. Since we
   #know that at wide spacings, there is no change in displacement
@@ -144,6 +153,9 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##models.  That is, make predictions using the interesting nonlinear
   ##term that was fit in the circle model, then play around with the
   ##residuals.
+  ##Here's a data frame of the coefficients of my "full circle" models
+  circle.models <- data.frame(model=I(models), subject=names(models),
+                              stringsAsFactors=FALSE)
 
   basic.informed.models <-
   adply(circle.models, 1, function(row){
@@ -169,6 +181,14 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                 "The point is that we got slope of response~spacing right without even trying)")
               ))
 
+  dev.set(plot.dev)
+  plot((plot.spacing %+% segment.folded.spindled.mutilated)
+       + prediction_layers(predict_from_model_frame(
+         basic.informed.models, fold=TRUE, spindle=TRUE, collapse=TRUE))
+       + errorbars(segment.folded.spindled.mutilated)
+       + labs(title="Exp 1 model, predictions for Exp. 2 + intercept",
+              x=paste("Spacing", sep="\n")))
+
   ##That is really cool. this gets the slope with respect to "spacing"
   ##pretty much right, with only offset terms. The slope of every line here
   ##is determined by exp. 1 and only the y-intercept is being adjusted
@@ -179,17 +199,14 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##sensitivity. Slope with respect to spacing is an odd metric
   ##though, as it's drawing off the nonlinear term of the model.
 
-  ##Let's think about what that means. We've captures the slope of lines of constant target number.
-  ##In the descriptive model, these slopes are determined by the term (content:I(1/spacing))
-
-  ##Here's a data frame of the coefficients of my "full circle" models
-  circle.models <- data.frame(model=I(models), subject=names(models),
-                              stringsAsFactors=FALSE)
+  ##Let's think about what that means. We've captures the slope of
+  ##lines of constant target number.  In the descriptive model, these
+  ##slopes are determined by the term (content:I(1/spacing))
 
   dev.set(detail.dev)
   informed.models <- ldply(descriptive.models$subject, function(subj) {
     sub <- data.frame(subject=subj, stringsAsFactors=FALSE)
-    subject.data <- match_df(segment, sub)
+    subject.data <- match_df(segment, sub, on="subject")
     bind[descriptive.model, informed.model, circle.model] <-
       lapply(list(descriptive.models, basic.informed.models, circle.models),
              function(x) match_df(x, sub)[[1,"model"]])
@@ -222,19 +239,51 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     predict_from_model_frame(informed.models,
                              fold=TRUE, spindle=TRUE, collapse=TRUE)
   dev.set(plot.dev)
-
   plot((plot.spacing %+% segment.folded.spindled.mutilated)
        + prediction_layers(collapsed.predictions)
        + errorbars(segment.folded.spindled.mutilated)
        + labs(title="Model fits (Experiment 1 model + global motion-energy)",
-              x=paste("Spacing", sep="\n"))
-       )
+              x=paste("Spacing", sep="\n")))
 
+  combined.data <- chain(
+    data,
+    rbind.fill(segment.trials),
+    subset(exp_type %in% c("content", "spacing", "numdensity")),
+    mutate(side=ifelse(exp_type %in% "numdensity", side, "all")))
+  
+  #fit a "combined" model to all subject data
+  combined.models <- adply(circle.models, 1, function(row) {
+    bind[model=bind[model], ...=group] <- as.list(row)
+    print(row$subject)
+    #pull in the old stuff and recase the data
+    dataset <-
+      match_df(combined.data, as.data.frame(group), on=names(group))
+    if (!any(dataset$exp_type == "numdensity")) return(data.frame())
+    cm <- combined_model(dataset, model)
+    quickdf(c(group, list(model=I(list(cm)))))
+  })
+
+  prediction.dataset <- chain(
+    c(segment.config.vars, segment.experiment.vars, "bias", "exp_type", "side"),
+    segment.trials[.],
+    unique,
+    recast_data)
+
+  combined.predictions <-
+    predict_from_model_frame(combined.models, newdata=prediction.dataset)
+
+  plot((plot.spacing %+% segment.folded.spindled)
+       + prediction_layers(combined.predictions))
 }
 
-
-combined_model <- function(dataset, orig.fmla) {
-
+combined_model <- function(dataset, orig.model) {
+  recast.model <- do_recast(orig.model)
+  dataset <- recast_data(dataset)
+  fmla <- orig.model$formula
+  fmla <- update(fmla, .~.
+                 - content:I(1/spacing) - content
+                 + content_local + content:factor(side))
+  update(orig.model, formula=fmla, data=dataset, family=orig.model$family)
 }
 
 errorbars <- function(segment, x.axis="spacing") {
@@ -402,7 +451,7 @@ do_recast <- function(model) {
   #residual deviance etc.)
   new_model <- update(model,
                       data=new_data,
-                      formula=new_formula)
+                      formula=new_formula, family=model$family)
   if (deviance(model) - deviance(new_model) > 2) {
     cat("models not equivalent...\n")
     print(c(new=extractAIC(new_model), old=extractAIC(model)))
