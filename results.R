@@ -243,15 +243,18 @@ summation.plot.data <- rbind.fill %()% Map(
       cbind(displacement=0, spacing = seq(2, 20, length=100),
             content=1, type="curve"),
       cbind_predictions(model, type="terms", se.fit=TRUE),
-      rename(c("fit.content:I(1/spacing)"="fit",
-               "se.fit.content:I(1/spacing)"="se.fit"))))})
+      mutate(fit=`fit.content:I(1/spacing)` + `fit.content`,
+             se.fit=`se.fit.content:I(1/spacing)`)))
+  })
 
 print(ggplot(subset(summation.plot.data, type=="points"))
       + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
       + geom_pointrange()
       + with_arg(data=subset(summation.plot.data, type=="curve"),
                  geom_line(), geom_ribbon(alpha=0.1))
-      + facet_wrap(~subject, scales="free_y"))
+      + facet_wrap(~subject, scales="free_y")
+      + labs(title="Sensitivity to carrier direction is inversely related to spacing"
+             , y="Summation strength"))
 
 ## @knitr results-induced-modeling
 null.models <-
