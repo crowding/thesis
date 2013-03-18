@@ -120,21 +120,21 @@ mutilate.predictions <-
 #label function for each facet
 labeler <- function(data) {
   ddply(data, "exp_type", function(data) {
-    switch(data$exp_type[[1]],
-           numdensity={
-             if ("displacement" %in% names(data)) {
-               mutate(data, label = sprintf("%s d=%s C=%s",
-                              toupper(subject),
-                              format(displacement, digits = 2),
-                              format(content, digits = 2)))
-             } else {
-               mutate(data, label = sprintf("%s", toupper(subject)))
-             }
-           },
-           content=mutate(data, label="Content %s", toupper(subject)),
-           spacing=mutate(data, label="Spacing %s", tpupper(subject)))
+    mutate(data, label={
+      switch(
+        as.character(exp_type[[1]]),
+        numdensity = {
+          paste(
+            sprintf("%s", toupper(subject) ),
+            if ("displacement" %in% names(data)) sprintf("d=%.2g", displacement) else "",
+            if ("content" %in% names(data)) sprintf("c=%.2g", content) else ""
+            )},
+        content=mutate(data, label="Content %s", toupper(subject)),
+        spacing=mutate(data, label="Spacing %s", tpupper(subject)))
+    })
   })
 }
+
 
 #' Try to bin values coming from staircase data into fewer
 #' values.

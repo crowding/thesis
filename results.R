@@ -250,7 +250,6 @@ summation.plot.data <- rbind.fill %()% Map(
  + facet_wrap(~subject, scales="free_y"))
 
 ## @knitr results-induced-modeling
-
 null.models <-
   buildModel(models,
              . ~ displacementTerm(spacing, displacement) + I(1/spacing):content)

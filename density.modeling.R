@@ -82,7 +82,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                         linetype=factor(spacing)),
                     geom_line())
 
-  by.spacing <- list(  aes(x=spacing)
+  by.spacing <- list(  aes(x=spacing), labs(x="Spacing")
                      , geom_line(aes(  group = factor(target_number_shown)
                                      , color = factor(target_number_shown))))
 
@@ -123,7 +123,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        ##     predict_from_model_frame(descriptive.models, segment, collapse=TRUE),
        ##     connect="number")
        + errorbars(segment.folded.spindled.mutilated)
-       + labs(title="Number/spacing data"))
+       + labs(title="Number/spacing raw data"))
 
   ## plot(plot.spacing
   ##      + prediction_layers(predict_from_model_frame(descriptive.models, segment), connect="number")
@@ -263,13 +263,14 @@ errorbars <- function(segment, x.axis="spacing") {
 ## hemifields. Averaging foldings and hemifields is useful for
 ## plotting but not as good for modeling. "fold" collapses CW and CCW
 ## direction contents.  "spindle" collapses stimulus locations.
-extract_segment <- function(df, fold=FALSE, spindle=FALSE, collapse=FALSE)
+extract_segment <- function(df, fold=FALSE, spindle=FALSE, collapse=FALSE,
+                            count=TRUE)
   chain(df,
         subset(exp_type=="numdensity" & subject %in% names(models)),
         do.rename(folding = FALSE), # we handle the folds more comprehensively.
         refold(fold = fold),
-        mkrates(c(  segment.config.vars, segment.experiment.vars
-                  , "eccentricity", if(!spindle) "side")),
+        if(count) mkrates(., c(  segment.config.vars, segment.experiment.vars
+                               , "eccentricity", if(!spindle) "side")) else .,
         mutate(bias = if (fold) 0 else 1,
                sidedness = if (spindle) 0 else 1,
                side = if (spindle) NA else side,
@@ -332,13 +333,13 @@ make_descriptive_models <- function(segment) {
 
 basic_inform_model <- function(model, newdata=model$data) {
   pred <- predict(model, newdata=newdata, type="terms")
-  newdata$pred <- pred[,  "displacementTerm(spacing, displacement)"] #rowSums(pred) #does this break earlier data?
+  whichterm <- grep("displacementTerm", names(pred))
+  newdata$pred <- pred[,  whichterm] #rowSums(pred) #does this break earlier data?
   newfit <- glm(cbind(n_cw, n_ccw)
                 ~ offset(pred)
-                + content:factor(side) - 1
+#                + content:factor(side) - 1
                 , data = newdata
-                , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
-                )
+                , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
 }
 
 
