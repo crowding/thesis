@@ -140,15 +140,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   #okay first of all I'm just going to borrow the "critical spacing" and
   #the "displacement" coefficients from the model data and then refit
   #adding some other coefficients.
-
-  ##Here's a data frame of the coefficients of my "full circle" models
-  circle.models <- data.frame(model=I(models), subject=names(models),
-                              stringsAsFactors=FALSE)
-  circle.coefs <- adply(circle.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <-as.list(row)
-    data.frame(c(coef(model), group), model=NA)
-  })
-
+  
   ##As a starting move, we'll use the circle model to "inform" simpler
   ##models.  That is, make predictions using the interesting nonlinear
   ##term that was fit in the circle model, then play around with the
@@ -171,7 +163,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##here's a function to plot those predictions
   dev.set(detail.dev)
   plot(plot.spacing
-       + prediction_layers(predict_from_model_frame(basic.informed.models, splits=c))
+       + prediction_layers(predict_from_model_frame(basic.informed.models))
        + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
               x=paste("spacing", sep="\n",
                 "(ignore the stratification with target number, that is not in this model.",
@@ -191,7 +183,24 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##Let's think about what that means. We've captures the slope of lines of constant target number.
   ##In the descriptive model, these slopes are determined by the term (content:I(1/spacing))
 
-  subj <- "nj"
+  informed.model.descriptions <- adply(basic.informed.models, 1, function(row) {
+    bind[model=bind[model], ...=group] <- as.list(row)
+    responses <- predict(model, type="response")
+    dataset <- model$data
+    dataset <- mutate(dataset, p=responses)
+    if ("n_cw" %in% names(model$data)) {
+      dataset <- mutate(dataset, p=responses, n_obs = n_ccw + n_cw,
+                        n_cw = n_obs * p, n_ccw = n_obs * (1 - p))
+    }
+    description <- descriptive_model(dataset)
+    quickdf(c(group, list(model=I(list(description)))))
+  })
+
+#  adply (comparo, function(x) coef(x$model.x[[1]]) se.)
+
+  ##Here's a data frame of the coefficients of my "full circle" models
+  circle.models <- data.frame(model=I(models), subject=names(models),
+                              stringsAsFactors=FALSE)
 
   informed.models <- ldply(descriptive.models$subject, function(subj) {
     print(subj)
@@ -211,7 +220,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     if (interactive()) figure("source")
     plot(unfolded.prediction.plot
          + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
-                              toupper(sub$subject))))
+                  toupper(sub$subject))))
 
     if(interactive()) figure("compare")
     recast.model <- do_recast(circle.model)
@@ -219,9 +228,9 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     plot(unfolded.prediction.plot
          %+% subset(predict_from_model(informed.recast.model), content != 0)
          + labs(title=paste0("Displacement model + global content",
-                             " sum, subject ", toupper(sub$subject))))
+                  " sum, subject ", toupper(sub$subject))))
 
-    data.frame(subject=subj, model=I(list(informed.recast.model)))
+    data.frame(subject=subj, model=I(list(informed.recast.model)), row.names=subj)
   })
 
   #finally, plot "collapsed" predictions.
@@ -231,11 +240,11 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   dev.set(plot.dev)
   plot(plot.spacing %+% segment.folded.spindled.mutilated
        + prediction_layers(collapsed.predictions)
-#       + labs (title="Exp. 1 model of displacement/spacing, offset by 'content'",
-#        x=paste("spacing", sep="\n")
+       #       + labs (title="Exp. 1 model of displacement/spacing, offset by 'content'",
+       #        x=paste("spacing", sep="\n")
        + errorbars(segment.folded.spindled.mutilated)
        + labs(title="Model fits (Experiment 1 model + global motion-energy)")
-        )
+       )
 
   #TODO: fit a "combined" model to all subject data
 }
@@ -333,11 +342,11 @@ make_descriptive_models <- function(segment) {
 
 basic_inform_model <- function(model, newdata=model$data) {
   pred <- predict(model, newdata=newdata, type="terms")
-  whichterm <- grep("displacementTerm", names(pred))
+  whichterm <- grep("displacementTerm", colnames(pred))
   newdata$pred <- pred[,  whichterm] #rowSums(pred) #does this break earlier data?
   newfit <- glm(cbind(n_cw, n_ccw)
                 ~ offset(pred)
-#                + content:factor(side) - 1
+                + content:factor(side) - 1
                 , data = newdata
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
 }
@@ -448,9 +457,32 @@ FALSE && {
         , data = data)
   }
 
+  informed.coefs <- adply(informed.model.descriptions, 1, function(row) {
+    bind[model=bind[model], ...=group] <-as.list(row)
+    data.frame(c(coef(model), group), model=NA)
+  })
+
+  descriptive.coefs <- adply(descriptive.models, 1, function(row) {
+    bind[model=bind[model], ...=group] <-as.list(row)
+    data.frame(c(coef(model), group), model=NA)
+  })
+
+  dev.set(detail.dev)
+  plot(  plot.spacing
+       + prediction_layers(predict_from_model_frame(informed.model.descriptions)))
+
+  ## comparo <- merge(
+  ##   descriptive.models, informed.model.descriptions,
+  ##   by = ((names(informed.model.descriptions) %^% names(descriptive.models))
+  ##         %-% "model"),
+  ##   suffixes = c(".descriptive", ".informed"))
+
   ## just to be an ass, let's plot all the coefficients from one set
   ## against all the coefficients from another set.
-  circle.interesting <- names(circle.coefs) %-% c("bias", "model")
+  informed.interesting <- chain(names(informed.coefs),
+                                . %-% c("bias", "model"),
+                                . %-% grep("^factor", ., value=TRUE),
+                                . %-% c("model"))
   descriptive.interesting <- chain(descriptive.coefs,
                                    names,
                                    . %-% grep("^factor", ., value=TRUE),
@@ -458,7 +490,7 @@ FALSE && {
 
   ## make a long-format data frame of each and join
   library(reshape2)
-  circle.coefs <- melt(circle.coefs[c(circle.interesting)], "subject")
+  circle.coefs <- melt(informed.coefs[c(informed.interesting)], "subject")
   descriptive.coefs <- melt(descriptive.coefs[c(descriptive.interesting)], "subject")
   coef.comparison <- merge(circle.coefs, descriptive.coefs, by="subject",
                            suffixes=c(".circle", ".descriptive"))
@@ -469,9 +501,10 @@ FALSE && {
    + facet_grid(variable.descriptive ~ variable.circle, scales="free")
    + scale_x_continuous(expand=c(0.2,0.2))
    + scale_y_continuous(expand=c(0.2,0.2))
-   + coord_trans(ytrans=trans_new("asinh", "asinh", "sinh"),
-                 xtrans=trans_new("asinh", "asinh", "sinh"))
+   ## + coord_trans(ytrans=trans_new("asinh", "asinh", "sinh"),
+   ##               xtrans=trans_new("asinh", "asinh", "sinh"))
    )
+  
 }
 
 run_as_command()

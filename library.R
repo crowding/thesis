@@ -126,8 +126,10 @@ labeler <- function(data) {
         numdensity = {
           paste(
             sprintf("%s", toupper(subject) ),
-            if ("displacement" %in% names(data)) sprintf("d=%.2g", displacement) else "",
-            if ("content" %in% names(data)) sprintf("c=%.2g", content) else ""
+            if ("displacement" %in% names(data))
+              paste0("d=", format(displacement, digits=2)) else "",
+            if ("content" %in% names(data))
+              paste0("C=", format(content, digits=2)) else ""
             )},
         content=mutate(data, label="Content %s", toupper(subject)),
         spacing=mutate(data, label="Spacing %s", tpupper(subject)))
