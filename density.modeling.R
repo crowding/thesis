@@ -46,11 +46,10 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   #replicate the data mutation from slopeModel.R
   chain(data
-        , subset(exp_type %in% c("spacing", "content"))
         , do.rename(folding=FALSE)
         , mutate(bias=1)
-        , match_df(., subset(count(., "subject"), freq>2000), on="subject")
-        # , attach_motion_energy(motion.energy)
+        , ddply("subject",
+                function(x) if ("numdensity" %in% x$exp_type) x else data.frame())
         # mutate the displacement to avoid wagon wheel (this will need done anyway)
         , mutate(data, displacement=((displacement + (spacing/2))
                                      %% spacing - (spacing/2)))
@@ -247,7 +246,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   combined.data <- chain(
     data,
-    rbind.fill(segment.trials),
     subset(exp_type %in% c("content", "spacing", "numdensity")),
     mutate(side=ifelse(exp_type %in% "numdensity", side, "all")))
   
@@ -390,22 +388,6 @@ basic_inform_model <- function(model, newdata=model$data) {
 
 
 
-##Let's put that on more solid footing.Calculate "what that slope
-##would be" for these predictions, by fitting out descriptive model to
-##the predictions.
-
-## desc.coef <- t( mapply %<<% descriptive.models %()% list(function(model, ...) {
-##   c(list(...), obs=model$coefficients[["content:I(1/spacing)"]])
-## }))
-
-## pred.coef <- t( mapply %<<% basic.informed.models %()% list(function(model, ...) {
-##   #predict the spacing~content slope. How? fit the descriptive model to it.
-##   ifit <- cbind(model$data, fit=predict(model, type="link"))
-##   newdata <- mutate(ifit, n_cw = fit*n, n_ccw = (1-fit)*n)
-##   c(list(...), pred=descriptive_model(newdata)$coefficients[["content:I(1/spacing)"]])
-## }))
-
-##merge(as.data.frame(desc.coef), as.data.frame(pred.coef), on="subject")
 
 recast_data <- function(data) {
   mutate(data,
@@ -473,17 +455,6 @@ inform_model <- function(model, newdata=model$data) {
 
 
 FALSE && {
-  #Now that we have that answer, let's fit a combined model...
-  combined_model <- function(circle.model, descriptive.model) {
-    data <- rbind.fill(recast_data(circle_model$data, recast_data(descriptive_model$data)))
-
-    gnm(formula = (cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
-                   + content + I(content * abs(content))
-                   + I(1/spacing):content + bias - 1)
-        , family = binomial(link = logit.2asym(g = 0.025, lam = 0.025))
-        , data = data)
-  }
-
   informed.model.descriptions <- adply(basic.informed.models, 1, function(row) {
     bind[model=bind[model], ...=group] <- as.list(row)
     responses <- predict(model, type="response")
@@ -544,7 +515,24 @@ FALSE && {
    ## + coord_trans(ytrans=trans_new("asinh", "asinh", "sinh"),
    ##               xtrans=trans_new("asinh", "asinh", "sinh"))
    )
-  
+
+  ##Let's put that on more solid footing.Calculate "what that slope
+  ##would be" for these predictions, by fitting out descriptive model to
+  ##the predictions.
+
+  ## desc.coef <- t( mapply %<<% descriptive.models %()% list(function(model, ...) {
+  ##   c(list(...), obs=model$coefficients[["content:I(1/spacing)"]])
+  ## }))
+
+  ## pred.coef <- t( mapply %<<% basic.informed.models %()% list(function(model, ...) {
+  ##   #predict the spacing~content slope. How? fit the descriptive model to it.
+  ##   ifit <- cbind(model$data, fit=predict(model, type="link"))
+  ##   newdata <- mutate(ifit, n_cw = fit*n, n_ccw = (1-fit)*n)
+  ##   c(list(...), pred=descriptive_model(newdata)$coefficients[["content:I(1/spacing)"]])
+  ## }))
+
+  ##merge(as.data.frame(desc.coef), as.data.frame(pred.coef), on="subject")
+
 }
 
 run_as_command()

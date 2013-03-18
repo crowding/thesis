@@ -146,7 +146,7 @@ displacement_scale <-
                           ))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)
-y_nopaddng <- scale_y_continuous(expand = c(0,0))
+y_nopadding <- scale_y_continuous(expand = c(0,0))
 
 comp <- function(a, b) function(...) b(a(...))
 
@@ -269,7 +269,9 @@ label_count <- function(data, group, countvar=n_obs)
 
 content_scale <- 
   list(aes(x=content),
-       scale_x_continuous(name="Direction content",labels=newline_arrows, expand=c(0,0))
+       scale_x_continuous(name="Direction content (+CW)",
+                          #labels=newline_arrows,
+                          expand=c(0,0))
        )
 
 ribbon <- list(

@@ -144,7 +144,7 @@ labeler <- function(data) {
 #' Uses individually-counted data, not trial data. (because everyone
 #' hates my bubble scatter plots.)  Doing this honestly, i.e. most
 #' faithfully representing the difference between model and data,
-#' requires doing this with reference to the model (so that
+#' requires doing this with reference to the model (so that31
 #' differences between prediction and model leave the same
 #' residuals). Adds new columns "n" and "p".
 #' @title

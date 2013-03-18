@@ -9,10 +9,13 @@ pdf.options(encoding='ISOLatin2.enc')
 #options(width = 60)
 #options(encoding="native.enc")=
 
+## @knitr do-not-run
+cairo_pdf("results_plots.pdf", onefile=TRUE)
+
 ## ----------------------------------------------------------------------
 ## @knitr results-loadData
-load("../modeling/slopeModel.RData")
-motion.energy <- read.csv("../modeling/motion_energy.csv")
+load("slopeModel.RData")
+motion.energy <- read.csv("motion_energy.csv")
 bind[plot.displacement, plot.content, plot.spacing] <- (
   chain(motion.energy, subset(grid==TRUE),
         mutate(spacing=target_number_all * 2*pi/eccentricity),
@@ -200,7 +203,8 @@ print(ggplot(subset(sensitivity.plot.data, type=="points"))
       + with_arg(data=subset(sensitivity.plot.data, type=="curve"),
                  geom_line(), geom_ribbon(alpha=0.1))
       + facet_wrap(~subject, scales="free_y")
-      + coord_cartesian(xlim=c(0, 10)))
+      + coord_cartesian(xlim=c(0, 10))
+      + labs(title="Sensitivity to envelope motion declines below 3 deg. spacing"))
 
 ## @knitr results-spacing-summation
 # ----------------------------------------------------------------------
@@ -242,17 +246,17 @@ summation.plot.data <- rbind.fill %()% Map(
       rename(c("fit.content:I(1/spacing)"="fit",
                "se.fit.content:I(1/spacing)"="se.fit"))))})
 
-(ggplot(subset(summation.plot.data, type=="points"))
- + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
- + geom_pointrange()
- + with_arg(data=subset(summation.plot.data, type=="curve"),
-            geom_line(), geom_ribbon(alpha=0.1))
- + facet_wrap(~subject, scales="free_y"))
+print(ggplot(subset(summation.plot.data, type=="points"))
+      + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
+      + geom_pointrange()
+      + with_arg(data=subset(summation.plot.data, type=="curve"),
+                 geom_line(), geom_ribbon(alpha=0.1))
+      + facet_wrap(~subject, scales="free_y"))
 
 ## @knitr results-induced-modeling
 null.models <-
   buildModel(models,
-             . ~ displacementTerm(spacing, displacement) + I(1/spacing):content)
+             . ~ . - content - I(content*abs(content)))
 
 #with a linear induced motion response
 linear.models <- buildModel(null.models, .~.+content)
@@ -268,10 +272,9 @@ second.models <- buildModel(linear.models, .~. + I(abs(content) * content))
 #component. how about square roots?
 
 #and we want some models just fit all direction contents freely, to plot as points.
-free.asym.models <- buildModel(mutateModelData(models,
-                                          fContent = factor(content)),
-                               . ~ displacementTerm(spacing, displacement)
-                                   + I(1/spacing):content + fContent:content
+free.asym.models <- buildModel(mutateModelData(null.models,
+                                               fContent = factor(content)),
+                               . ~ . + fContent:content
                                )
 
 ## @knitr results-induced-stats
@@ -315,7 +318,7 @@ spacingData <- function(models, type, newspacing=10, categorical=TRUE) {
       fContent = model$data$fContent[iu]
     }
     data = data.frame(subject=subject, model=type, spacing=newspacing,
-                      content=newContent, displacement=0, fContent = fContent)
+                      content=newContent, displacement=0, fContent = fContent, bias=1)
     cbind(data, predict(model, data, se.fit=TRUE))
   })
 }
@@ -336,7 +339,7 @@ plotBiasAtSpacing <- function(spacing) {
   #models.
   ##
   (ggplot(curve.fits)
-   + content_x_scale
+   + content_scale
    + facet_wrap(~subject)
    + aes(y=fit, color=model, fill=model, ymin=fit-se.fit, ymax=fit+se.fit)
    + geom_line()
@@ -345,14 +348,13 @@ plotBiasAtSpacing <- function(spacing) {
    + geom_errorbar(data=cat.fits)
 #   + coord_cartesian(ylim=c(-10,10))
    + labs(y="bias",
-          title=paste(
-            "Estimated bias with stationary envelope\nat ",
-            format(spacing, digits=3),
-            "\u0080 spacing", sep=""))
+          title=paste( sep="\n",
+            "Induced motion as a function of direction content",
+            "(stationary envelope, 10 deg. spacing)"))
    )
  }
 
-plotBiasAtSpacing(spacing=10)
+print(plotBiasAtSpacing(spacing=10))
 ##I think the 2nd order plot is totally fine for my purposes.
 
 ## @knite results-sensitivity-modeling
@@ -375,35 +377,40 @@ plotBiasAtSpacing(spacing=10)
 
 ## @knitr results-summation-models
 ##The other thing I_want to do now is look at the behavior at short ranges.
+FALSE && {
+  #start with the 2nd order model for induced motion, deconstruct its short-range behavior
+  null.summation.models <- buildModel(second.models,
+                                      . ~ . - I(1/spacing):content)
 
-#start with the 2nd order model for induced motion, deconstruct its short-range behavior
-null.summation.models <- buildModel(second.models,
-                                    . ~ . - I(1/spacing):content)
+  ## @knitr results-induced-element-number
 
-## @knitr results-induced-element-number
+  ##the next thing is to justify the 1/x dependence on spacing?
+  null.summation.models <- buildModel(models, .~. - content:I(1/spacing))
 
-##the next thing is to justify the 1/x dependence on spacing?
-null.summation.models <- buildModel(models, .~. - content:I(1/spacing))
+  free.summation.models <- buildModel(null.summation.models, .~. + content:I(factor(spacing)))
 
-free.summation.models <- buildModel(null.summation.models, .~. + content:I(factor(spacing)))
+  ##
+  #library(gridExtra)
+  #do.call(grid.arrange, c(plots, ncol=2))
+  #then compare them all.
 
-##
-#library(gridExtra)
-#do.call(grid.arrange, c(plots, ncol=2))
-#then compare them all.
+  #another possible series of functions, motion energy balance of the
+  #scene? divided by leftward squared plus rightward squared? Could be a
+  #thing... and probably not detailed enough to worry about.
+  curve( 2*x / ((1-x)^2+(x+1)^2), -1, 1)
+  curve( x - 2*x / ((1-x)^2+(x+1)^2), -1, 1, add=TRUE)
+  curve( abs(x) * x / 2, -1, 1, add=TRUE, col="red") 
+  curve( x - abs(x) * x / 2, -1, 1, add=TRUE, col="red")
+  curve( x^3/2, add=TRUE, col="blue")
+  ##it would be really nifty if we could collapse the induced motion
+  ##into one thing summation (opponent) versus divisive normalization
+  ##(induced)
 
-#another possible series of functions, motion energy balance of the
-#scene? divided by leftward squared plus rightward squared? Could be a
-#thing... and probably not detailed enough to worry about.
-curve( 2*x / ((1-x)^2+(x+1)^2), -1, 1)
-curve( x - 2*x / ((1-x)^2+(x+1)^2), -1, 1, add=TRUE)
-curve( abs(x) * x / 2, -1, 1, add=TRUE, col="red") 
-curve( x - abs(x) * x / 2, -1, 1, add=TRUE, col="red")
-curve( x^3/2, add=TRUE, col="blue")
-##it would be really nifty if we could collapse the induced motion
-##into one thing summation (opponent) versus divisive normalization
-##(induced)
+  #The thing is, this is misleading unless we can also let the other
+  #function of dorection content -- the short-range summation --vary
+  #freely with direction content.
 
-#The thing is, this is misleading unless we can also let the other
-#function of dorection content -- the short-range summation --vary
-#freely with direction content.
+}
+
+## @knitr do-not-run
+dev.off()
