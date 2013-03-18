@@ -16,7 +16,6 @@ suppressPackageStartupMessages({
 #source("icons.R")
 source("scales.R")
 source("library.R")
-source("model.R")
 
 datafile <- "data.RData"
 modelfile <- "slopeModel.RData"
@@ -140,7 +139,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   #okay first of all I'm just going to borrow the "critical spacing" and
   #the "displacement" coefficients from the model data and then refit
   #adding some other coefficients.
-  
+
   ##As a starting move, we'll use the circle model to "inform" simpler
   ##models.  That is, make predictions using the interesting nonlinear
   ##term that was fit in the circle model, then play around with the
@@ -183,27 +182,12 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##Let's think about what that means. We've captures the slope of lines of constant target number.
   ##In the descriptive model, these slopes are determined by the term (content:I(1/spacing))
 
-  informed.model.descriptions <- adply(basic.informed.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <- as.list(row)
-    responses <- predict(model, type="response")
-    dataset <- model$data
-    dataset <- mutate(dataset, p=responses)
-    if ("n_cw" %in% names(model$data)) {
-      dataset <- mutate(dataset, p=responses, n_obs = n_ccw + n_cw,
-                        n_cw = n_obs * p, n_ccw = n_obs * (1 - p))
-    }
-    description <- descriptive_model(dataset)
-    quickdf(c(group, list(model=I(list(description)))))
-  })
-
-#  adply (comparo, function(x) coef(x$model.x[[1]]) se.)
-
   ##Here's a data frame of the coefficients of my "full circle" models
   circle.models <- data.frame(model=I(models), subject=names(models),
                               stringsAsFactors=FALSE)
 
+  dev.set(detail.dev)
   informed.models <- ldply(descriptive.models$subject, function(subj) {
-    print(subj)
     sub <- data.frame(subject=subj, stringsAsFactors=FALSE)
     subject.data <- match_df(segment, sub)
     bind[descriptive.model, informed.model, circle.model] <-
@@ -238,15 +222,19 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     predict_from_model_frame(informed.models,
                              fold=TRUE, spindle=TRUE, collapse=TRUE)
   dev.set(plot.dev)
-  plot(plot.spacing %+% segment.folded.spindled.mutilated
+
+  plot((plot.spacing %+% segment.folded.spindled.mutilated)
        + prediction_layers(collapsed.predictions)
-       #       + labs (title="Exp. 1 model of displacement/spacing, offset by 'content'",
-       #        x=paste("spacing", sep="\n")
        + errorbars(segment.folded.spindled.mutilated)
-       + labs(title="Model fits (Experiment 1 model + global motion-energy)")
+       + labs(title="Model fits (Experiment 1 model + global motion-energy)",
+              x=paste("Spacing", sep="\n"))
        )
 
-  #TODO: fit a "combined" model to all subject data
+}
+
+
+combined_model <- function(dataset, orig.fmla) {
+
 }
 
 errorbars <- function(segment, x.axis="spacing") {
@@ -389,13 +377,6 @@ do_recast <- function(model) {
   #change, at least in the subject's better hemifield) and another
   #based on summation within the hemifield; and a third based on
   #"induced motion"
-  old_formula <- (
-    cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement) +
-    content + I(content * abs(content)) + I(1/spacing):content +
-    bias - 1)
-
-  if (!identical(unattr(model$formula), unattr(old_formula)))
-    stop("model formula has changed?")
 
   #now we've split "content" into "content_local" and
   #"content_global" so let's update to reflect what we think is
@@ -412,13 +393,10 @@ do_recast <- function(model) {
   #induced motion, but that's what I'll do. I'll relate it to the
   #"extent" (space covered) by the stimulus. This has some resonance
   #with thinking of it as a center-surround type of effect.
-  new_formula <-  (
-    cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement)
-    + content + I(content * abs(content)) #induced motion ?
-    + content_global # summation? in place of I(1/spacing:content)
-    + bias - 1)
+  new_formula <- update(model$formula, . ~ .
+                        - I(1/spacing:content)
+                        + content_global)
 
-  # (content/spacing)*(spacing*target_number_shown
   #Refit the model (this is still to the full-circle-data. Despite
   #splitting up the variables we should have the same result (so same
   #residual deviance etc.)
@@ -456,6 +434,19 @@ FALSE && {
         , family = binomial(link = logit.2asym(g = 0.025, lam = 0.025))
         , data = data)
   }
+
+  informed.model.descriptions <- adply(basic.informed.models, 1, function(row) {
+    bind[model=bind[model], ...=group] <- as.list(row)
+    responses <- predict(model, type="response")
+    dataset <- model$data
+    dataset <- mutate(dataset, p=responses)
+    if ("n_cw" %in% names(model$data)) {
+      dataset <- mutate(dataset, p=responses, n_obs = n_ccw + n_cw,
+                        n_cw = n_obs * p, n_ccw = n_obs * (1 - p))
+    }
+    description <- descriptive_model(dataset)
+    quickdf(c(group, list(model=I(list(description)))))
+  })
 
   informed.coefs <- adply(informed.model.descriptions, 1, function(row) {
     bind[model=bind[model], ...=group] <-as.list(row)
