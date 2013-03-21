@@ -1,0 +1,4 @@
+*.lyx diff=tex
+*.tex diff=tex
+*.lyx crlf
+*.tex crlf

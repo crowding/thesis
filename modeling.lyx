@@ -66,6 +66,10 @@ knitr
 \begin_body
 
 \begin_layout Section
+
+\change_inserted 232785317 1363640941
+
+\change_unchanged
 Model details and motivation
 \begin_inset CommandInset label
 LatexCommand label
@@ -163,7 +167,7 @@ For
  region, we expect signals from multiple elements to sum, so that the local
  motion signal is proportionate to the direction content of individual elements
  and inversely proportional to the spacing (since the number of elements
- near the integration field is inversely proportional to the spacing.) .
+ near the integration field is inversely proportional to the spacing.)
 \end_layout
 
 \begin_layout Standard
@@ -302,9 +306,6 @@ placement measurement and the biases due to short-range and long range motion
 For dX, we assume that envelope motion is computed by taking two successive
  noisy estimates of the position of a given element.
  The strength of the envelope motion estimate therefore has uncertainty
-\change_deleted 232785317 1354803234
- 
-\change_unchanged
  proportional to the uncertainty of the successive position estimates.
  The sensitivity to displacements, 
 \begin_inset Formula $\beta_{\Delta_{x}}$
@@ -312,7 +313,7 @@ For dX, we assume that envelope motion is computed by taking two successive
 
  will be inversely proportional to this uncertainty.
  We assume that as flanking elements come closer to the tracked element,
- the the visual sistem will be less able to isolate a single element to
+ the the visual system will be less able to isolate a single element to
  determine its position,, so the sensitivity to changes in position will
  collapse.
  We model this by making 
@@ -469,12 +470,8 @@ induced motion
  The influence of this process is generally repulsive; carrier motion outside
  the integration field biases observers towards perceiving the individual
  elements as moving in the opposite direction.
- 
-\change_inserted 232785317 1363251686
-However, this effect can have a nonlinearity, which (see Results).
- 
-\change_unchanged
-We modeled this using a function defined as: 
+ However, this effect can have a nonlinearity, which (see Results).
+ We modeled this using a function defined as: 
 \begin_inset Formula 
 \[
 M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),

@@ -17,8 +17,8 @@ if (!interactive()) {
 }
 
 ## @knitr density-load
-load("../modeling/data.Rdata")
-load("../modeling/slopeModel.RData")
+load("data.Rdata")
+load("slopeModel.RData")
 segment <- chain(  data
                  , subset(exp_type=="numdensity" & subject %in% names(models))
                  , do.rename(folding=TRUE)
@@ -45,7 +45,7 @@ unmatching <-
                   ))
  if (!empty(unmatching)) stop("unmatching data")
 
-##knitr index-plot
+## @knitr density-conditions
 #choose four examples to illustrate changes of number and of density.
 #lareg number/tight spacing
 #med number/narrow spacing

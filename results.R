@@ -108,6 +108,8 @@ print(ggplot(summation.increases.plotdata$bins)
       + displacement_scale
       + proportion_scale
       + content_color_scale
+      + labs(title="Carrier has more effect at reduced spacing",
+             color="Carrier\ndirection\ncontent")
       + aes(group=content)
       + geom_point(size=2)# + binom_pointrange()
       + ribbonf(summation.increases.plotdata$predictions)
@@ -115,7 +117,8 @@ print(ggplot(summation.increases.plotdata$bins)
       + facet_spacing_subject
       + coord_cartesian(xlim=c(-0.75, 0.75))
       + label_count(summation.increases.plotdata$bins,
-                    c("spacing", "subject")))
+                    c("spacing", "subject"))
+      + geom_hline(y=0, color="gray"))
 
 ## ----------------------------------------------------------------------
 ## @knitr results-induced-crossover
