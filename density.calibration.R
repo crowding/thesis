@@ -1,3 +1,45 @@
+## This file makes some overly ornate plots...
+
+library(ggplot2)
+library(plyr)
+library(grid)
+library(ptools)
+source("latexing.R")
+source("icons.R")
+source("scales.R")
+source("library.R")
+source("density.rawplot.R")
+setup_theme()
+
+datafile <- "data.Rdata"
+modelfile <- "slopeModel.RData"
+output <- "density.calibration.pdf"
+
+load(datafile)
+load(modelfile)
+cairo_pdf(output, onefile=TRUE)
+on.exit(dev.off, add=TRUE)
+
+segment <- chain(  data
+                 , subset(exp_type=="numdensity" & subject %in% names(models))
+                 , do.rename(folding=TRUE)
+                 )
+
+segment.config.vars <-
+  c("spacing", "target_number_shown", "target_number_all")
+segment.experiment.vars <-
+  c("subject", "displacement", "content", "eccentricity")
+configurations <- unique(segment[segment.config.vars])
+personalizations <- unique(segment[segment.experiment.vars])
+
+segment.rates <-
+  mkrates(  segment
+          , c(  segment.config.vars, segment.experiment.vars))
+segment.rates.sided <-
+  mkrates(  segment
+          , c(  segment.config.vars, segment.experiment.vars
+              , "side","eccentricity"))
+
 ## For this figure we describe a "configuration" from an
 ## experiment. First we have a spacing-series for a subject, showing a
 ## particular direction content, with a vertical intercept-line
@@ -30,7 +72,8 @@ calibration.dataset <- chain(
 
 get_model <- function(...) {
   index <- data.frame(...)
-  models[[index$subject]]
+  match_df(model.df, index,
+           on=(names(index) %^% names(model.df)))$model[[1]]
 }
 
 `%unless_empty%` <- function(a,b) if (empty(a)) b else a
@@ -54,7 +97,7 @@ calibration.data <-
                     spacing = unique(
                       (raw.calibration.data %unless_empty% segment.rates)
                       $spacing),
-                    bias=0))
+                    bias=1))
           , cbind(., predict(get_model(row), newdata=.,
                              type="response", se.fit=TRUE)))
       #now I also predict the spacing-dependent response for model stimuli.
@@ -123,5 +166,48 @@ calibration.plot <-
 }
 
 #let's have a colorbar for the line fits and a spa
+joinedplot <- function(...) {
+  cbind(ggplot_gtable(ggplot_build(segment.plot(..., x.axis="spacing"))),
+        ggplot_gtable(ggplot_build(segment.plot(..., x.axis="number"))),
+        size="first")
+}
 
-#plot fitted values corresponding to spacing
+combined_plot <- function(row, segment, full, full.predicted, ...) {
+  spacing_breaks <- sort(unique(segment$spacing))
+  spacing_range <- range(segment$spacing, full.predicted$spacing)
+  upper_plot <- calibration.plot(row=row, full=full, ...,
+                                 full.predicted=full.predicted,
+                                 spacing_breaks=spacing_breaks,
+                                 spacing_range=spacing_range)
+  lower_left_plot <- segment.plot(row, segment, x.axis="number",
+                                  spacing_breaks=spacing_breaks,
+                                  spacing_range=spacing_range)
+  lower_right_plot <- segment.plot(row, segment, x.axis="spacing")
+  lower_left_table <- ggplot_gtable(ggplot_build(lower_left_plot))
+  lower_right_table <- ggplot_gtable(ggplot_build(lower_right_plot))
+  lower_table <- cbind(lower_left_table, lower_right_table, size="first")
+  #now how to mismatched bind these...I need to insert a column to the left
+  #and stretch the middle
+  #move one of the legend grobs over...
+  upper_table <- ggplot_gtable(ggplot_build(upper_plot))
+  move_legend <- upper_table[3,5][[1]][[1]]
+  total_table <- chain(upper_table
+                       , gtable_filter("^[^g]")
+                       , gtable_add_grob(move_legend[,c(1,2,5)], 3, 5)
+                       , gtable_add_cols(unit(1, "null"), pos=1)
+                       , gtable_add_grob(move_legend[,c(1,4,5)], 3, 2)
+                       , gtable_add_cols(rep(unit(1, "null"), 5), pos=5)
+                       , `$<-`(., layout, mutate(.$layout, r=ifelse(l==5, r+5, r)))
+                       , rbind(lower_table, size="last")
+                       )
+  total_table
+}
+
+combined_plots <- lapply(calibration.data, splat(combined_plot))
+
+if (!interactive()) {
+  invisible(lapply(combined_plots, plot))
+} else {
+  plot(combined_plots[[5]])
+}
+NULL

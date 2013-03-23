@@ -78,7 +78,6 @@ configs <-
       + theme(legend.position="none"))
 
 ## @knitr spacing-data-plot
-
 segment.rates <-
   mkrates(  segment
           , c(  segment.config.vars, segment.experiment.vars))
@@ -101,71 +100,10 @@ mapply(rates=list(segment.rates, segment.rates.sided),
 # Compute a standard error bar over a nominal 50% rate.
 binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
-##before any more malarkey, let's make the basic graph I've been
-##showing people all along. It's complicated enough to need its own file.
-source("density.rawplot.R")
-
 ##Now illustrate these conjointly with the matching configurations...
-joinedplot <- function(...) {
-  cbind(ggplot_gtable(ggplot_build(segment.plot(..., x.axis="spacing"))),
-        ggplot_gtable(ggplot_build(segment.plot(..., x.axis="number"))),
-        size="first")
-}
 
-## @knitr density-selection
-## this illustrates how we selected data from the density experiment.
+## Here's 
 
-source("density.calibration.R")
-
-combined_plot <- function(row, segment, full, full.predicted, ...) {
-  spacing_breaks <- sort(unique(segment$spacing))
-  spacing_range <- range(segment$spacing, full.predicted$spacing)
-  upper_plot <- calibration.plot(row=row, full=full, ...,
-                                 full.predicted=full.predicted,
-                                 spacing_breaks=spacing_breaks,
-                                 spacing_range=spacing_range)
-  lower_left_plot <- segment.plot(row, segment, x.axis="number",
-                                  spacing_breaks=spacing_breaks,
-                                  spacing_range=spacing_range)
-  lower_right_plot <- segment.plot(row, segment, x.axis="spacing")
-  lower_left_table <- ggplot_gtable(ggplot_build(lower_left_plot))
-  lower_right_table <- ggplot_gtable(ggplot_build(lower_right_plot))
-  lower_table <- cbind(lower_left_table, lower_right_table, size="first")
-  #now how to mismatched bind these...I need to insert a column to the left
-  #and stretch the middle
-  #move one of the legend grobs over...
-  upper_table <- ggplot_gtable(ggplot_build(upper_plot))
-  move_legend <- upper_table[3,5][[1]][[1]]
-  total_table <- chain(upper_table
-                       , gtable_filter("^[^g]")
-                       , gtable_add_grob(move_legend[,c(1,2,5)], 3, 5)
-                       , gtable_add_cols(unit(1, "null"), pos=1)
-                       , gtable_add_grob(move_legend[,c(1,4,5)], 3, 2)
-                       , gtable_add_cols(rep(unit(1, "null"), 5), pos=5)
-                       , `$<-`(., layout, mutate(.$layout, r=ifelse(l==5, r+5, r)))
-                       , rbind(lower_table, size="last")
-                       )
-  total_table
-}
-
-## @knitr do-not-run
-
-combined_plots <- lapply(calibration.data, splat(combined_plot))
-
-if (!interactive()) {
-  lapply(combined_plots, plot)
-  dev.off()
-} else {
-  plot(combined_plots[[5]])
-}
-
-
-## @knitr do-not-run
-
-# I don't think I am moved by the "extent" data.
-# now what can we do with this data?
-
-#source("density.modeling.R")
 
 ##------------------------------------------------------------
 #below this line is old code that I_don't know right now

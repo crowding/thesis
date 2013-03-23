@@ -174,6 +174,17 @@ bin_along <- function(data, responsevar, predictvar,
   })
 }
 
+dlply_along <- function(.data, .variables, .fun=NULL, ...
+                        , .progress = "none", .inform = FALSE, .drop = TRUE
+                        , .parallel = FALSE, .paropts = NULL) {
+  split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
+  rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
+  llply(  .data=seq_len(length(split))
+        , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
+        , .progress = .progress, .inform = .inform
+        , .parallel = .parallel, .paropts = .paropts)
+}
+
 motion_energy_model <- function(model, energy) {
   model$motion.energy <- energy
   class(model) <- union("motion_energy_model", class(model))
