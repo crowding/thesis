@@ -137,6 +137,9 @@ labeler <- function(data) {
   })
 }
 
+zip <- function(l, collate=c) {
+  do.call("mapply", c(list(FUN=collate, SIMPLIFY=FALSE), l))
+}
 
 #' Try to bin values coming from staircase data into fewer
 #' values.

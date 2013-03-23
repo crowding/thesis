@@ -8,34 +8,22 @@
 ##and make it fold, just to show the model.
 
 ##collect the spacing data for each experiment, then collect model predictions.
-chain(
-  data,
-  subset(exp_type %in% c("spacing", "content")),
-  do.rename(folding=TRUE),
-  match_df(segment, on=c("subject", "content", "eccentricity")),
-  with(range(displacement)),
-  seq %call% c(., length=100),
-  # when we make model predictions form a non-folding model, we
-  # have to back have to back out the bias.  we do this by setting
-  # the "bias" parameter in prediction data to 0.
-  data.frame(displacement=., bias=0)
-  ) -> displacement.sampling
+displacement.sampling <- chain(data, do.rename,
+                               subset(select="displacement"),
+                               unique,
+                               mutate(bias=1))
 
 #collect predictions for all of these
 #!# bind[calibration.row, calibration.data, calibration.predictions] <-
 
 calibration.dataset <- chain(
-    data,
-    subset(exp_type %in% c("spacing", "content")),
-    do.rename(folding=TRUE),
-    mkrates(splits=c(
-              "displacement", "content", "spacing",
-              "target_number_all", "subject", "eccentricity")),
-    mutate(bias=0))
-
-zip <- function(l, collate=c) {
-  do.call("mapply", c(list(FUN=collate, SIMPLIFY=FALSE), l))
-}
+  data,
+  subset(exp_type %in% c("spacing", "content")),
+  do.rename(folding=TRUE),
+  mkrates(splits=c(
+            "displacement", "content", "spacing",
+            "target_number_all", "subject", "eccentricity")),
+  mutate(bias=0))
 
 #construct model predictions along each experiment condition
 #we are comparing "segment" data with earlier collected "calibration" data.

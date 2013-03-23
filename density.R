@@ -59,7 +59,7 @@ configs <-
                     , label=as.character(c(4, 3, 2, 1))
                     , color=rep(TRUE, 4)
                   )
-        , merge(configuations, all.y=TRUE)
+        , merge(configurations, all.y=TRUE)
         , mutate(eccentricity = 20/3))
 
 (ggplot(configs)
@@ -73,7 +73,7 @@ configs <-
       + scale_y_continuous("Element number")
       + labs(x="Element spacing (at 6.7\u0080 eccentricity)",
              y="Number of elements",
-             title="Stimulus configurations")
+             title="Stimulus set for Experiment 2")
       + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
       + theme(legend.position="none"))
 
@@ -86,8 +86,6 @@ segment.rates.sided <-
   mkrates(  segment
           , c(  segment.config.vars, segment.experiment.vars
               , "side","eccentricity"))
-
-
 
 #sanity check:
 #I think that in each experiment the number of trials is meant to be
@@ -114,7 +112,8 @@ joinedplot <- function(...) {
         size="first")
 }
 
-## @knitr segment-calibration-plot
+## @knitr density-selection
+## this illustrates how we selected data from the density experiment.
 
 source("density.calibration.R")
 

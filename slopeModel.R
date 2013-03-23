@@ -53,7 +53,7 @@ plotPredictions <- function(...) {
            geom_line(aes(y=fit)))
 }
 
-#perhaps make this go using predict_from_model_frame
+#perhaps make this go using predict_from_model.df
 plot_fit <- function(model, subject=model$data$subject[1],
                      style=c("binned", "bubble")) {
   style <- match.arg(style)
@@ -136,14 +136,14 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
     cat("fitting subject ", chunk$subject[1], "\n")
     gnm(formula, family=family, data=chunk)
   })
-  model.frame <- data.frame(model = I(models), subject=names(models))
+  model.df <- data.frame(model = I(models), subject=names(models))
 
-  save(model.frame, models, displacementTerm, formula, family,
+  save(model.df, models, displacementTerm, formula, family,
        plot.displacement, plot.content, plot.spacing, file=outfile)
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
-  (mapply %<<% model.frame)(function(model, subject) {
+  (mapply %<<% model.df)(function(model, subject) {
     cat("plotting subject ", as.character(subject), "\n")
     plot_fit(model)
     #tryCatch(plot_fit(model), error=function(x) warning(x))
@@ -152,7 +152,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   #how about some contour plots. Everyone hated these.
   cairo_pdf("contours.pdf", onefile=TRUE, family="MS Gothic")
-  (mapply %<<% model.frame)(function(model, subject) {
+  (mapply %<<% model.df)(function(model, subject) {
     cat("plotting contours for", as.character(subject), "\n")
     #plot_contours(model)
     tryCatch(plot_contours(model), error=function(x) warning(x))
@@ -277,11 +277,11 @@ plot_contours <- function(model) {
 
 }
 
-example_plots <- function(model.frame) {
+example_plots <- function(model.df) {
 
 }
 
-illustrative_plots <- function(model.frame) {
+illustrative_plots <- function(model.df) {
   #illustrate sensitivity changes with spacing...
 
   #we want an x-axis: spacing, a y-axis: sensitivity
@@ -443,11 +443,11 @@ FALSE && {
                         motion.energy)
   })
 
-  motion.energy.model.frame <-
+  motion.energy.model.df <-
     data.frame(model=I(motion.energy.models), subject=names(models))
   #compare the models by residual deviance (smaller is better)
   #Positive numbers are better here.
-  ddply(merge(model.frame, motion.energy.model.frame,
+  ddply(merge(model.df, motion.energy.model.df,
               by="subject", suffixes=c(".content", ".energy")), "subject",
         summarize, difference = (extractAIC(model.content[[1]])[[2]]
                                  - extractAIC(model.energy[[1]])[[2]]))
@@ -455,9 +455,9 @@ FALSE && {
   #well, that's weird, it made things worse according to the
   #AIC. You know what, maybe if I plot the fit it will shed some light.
   dev.set(2)
-  plot_fit(model.frame[["jb", "model"]], style="bubble")
+  plot_fit(model.df[["jb", "model"]], style="bubble")
   dev.set(3)
-  plot_fit(motion.energy.model.frame[["jb", "model"]], style="bubble")
+  plot_fit(motion.energy.model.df[["jb", "model"]], style="bubble")
 }
 
 run_as_command()
