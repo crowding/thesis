@@ -11,6 +11,52 @@ source("library.R")
 source("density.rawplot.R")
 setup_theme()
 
+#let's have a colorbar for the line fits and a spa
+joinedplot <- function(...) {
+  cbind(ggplot_gtable(ggplot_build(segment.plot(..., x.axis="spacing"))),
+        ggplot_gtable(ggplot_build(segment.plot(..., x.axis="number"))),
+        size="first")
+}
+
+combined_plot <- function(row, segment, full, full.predicted, ...) {
+  spacing_breaks <- sort(unique(segment$spacing))
+  spacing_range <- range(segment$spacing, full.predicted$spacing)
+  upper_plot <- calibration.plot(row=row, full=full, ...,
+                                 full.predicted=full.predicted,
+                                 spacing_breaks=spacing_breaks,
+                                 spacing_range=spacing_range)
+  lower_left_plot <- segment.plot(row, segment, x.axis="number",
+                                  spacing_breaks=spacing_breaks,
+                                  spacing_range=spacing_range)
+  lower_right_plot <- segment.plot(row, segment, x.axis="spacing")
+  lower_left_table <- ggplot_gtable(ggplot_build(lower_left_plot))
+  lower_right_table <- ggplot_gtable(ggplot_build(lower_right_plot))
+  lower_table <- cbind(lower_left_table, lower_right_table, size="first")
+  #now how to mismatched bind these...I need to insert a column to the left
+  #and stretch the middle
+  #move one of the legend grobs over...
+  upper_table <- ggplot_gtable(ggplot_build(upper_plot))
+  move_legend <- upper_table[3,5][[1]][[1]]
+  total_table <- chain(upper_table
+                       , gtable_filter("^[^g]")
+                       , gtable_add_grob(move_legend[,c(1,2,5)], 3, 5)
+                       , gtable_add_cols(unit(1, "null"), pos=1)
+                       , gtable_add_grob(move_legend[,c(1,4,5)], 3, 2)
+                       , gtable_add_cols(rep(unit(1, "null"), 5), pos=5)
+                       , `$<-`(., layout, mutate(.$layout, r=ifelse(l==5, r+5, r)))
+                       , rbind(lower_table, size="last")
+                       )
+  total_table
+}
+
+get_model <- function(...) {
+  index <- data.frame(...)
+  match_df(model.df, index,
+           on=(names(index) %^% names(model.df)))$model[[1]]
+}
+
+`%unless_empty%` <- function(a,b) if (empty(a)) b else a
+
 datafile <- "data.Rdata"
 modelfile <- "slopeModel.RData"
 output <- "density.calibration.pdf"
@@ -69,14 +115,6 @@ calibration.dataset <- chain(
 
 #construct model predictions along each experiment condition
 #we are comparing "segment" data with earlier collected "calibration" data.
-
-get_model <- function(...) {
-  index <- data.frame(...)
-  match_df(model.df, index,
-           on=(names(index) %^% names(model.df)))$model[[1]]
-}
-
-`%unless_empty%` <- function(a,b) if (empty(a)) b else a
 
 #each calibration plot needs experiment condition, raw matching data,
 #raw fitted data, calibration
@@ -165,43 +203,6 @@ calibration.plot <-
    + theme(legend.box="horizontal"))
 }
 
-#let's have a colorbar for the line fits and a spa
-joinedplot <- function(...) {
-  cbind(ggplot_gtable(ggplot_build(segment.plot(..., x.axis="spacing"))),
-        ggplot_gtable(ggplot_build(segment.plot(..., x.axis="number"))),
-        size="first")
-}
-
-combined_plot <- function(row, segment, full, full.predicted, ...) {
-  spacing_breaks <- sort(unique(segment$spacing))
-  spacing_range <- range(segment$spacing, full.predicted$spacing)
-  upper_plot <- calibration.plot(row=row, full=full, ...,
-                                 full.predicted=full.predicted,
-                                 spacing_breaks=spacing_breaks,
-                                 spacing_range=spacing_range)
-  lower_left_plot <- segment.plot(row, segment, x.axis="number",
-                                  spacing_breaks=spacing_breaks,
-                                  spacing_range=spacing_range)
-  lower_right_plot <- segment.plot(row, segment, x.axis="spacing")
-  lower_left_table <- ggplot_gtable(ggplot_build(lower_left_plot))
-  lower_right_table <- ggplot_gtable(ggplot_build(lower_right_plot))
-  lower_table <- cbind(lower_left_table, lower_right_table, size="first")
-  #now how to mismatched bind these...I need to insert a column to the left
-  #and stretch the middle
-  #move one of the legend grobs over...
-  upper_table <- ggplot_gtable(ggplot_build(upper_plot))
-  move_legend <- upper_table[3,5][[1]][[1]]
-  total_table <- chain(upper_table
-                       , gtable_filter("^[^g]")
-                       , gtable_add_grob(move_legend[,c(1,2,5)], 3, 5)
-                       , gtable_add_cols(unit(1, "null"), pos=1)
-                       , gtable_add_grob(move_legend[,c(1,4,5)], 3, 2)
-                       , gtable_add_cols(rep(unit(1, "null"), 5), pos=5)
-                       , `$<-`(., layout, mutate(.$layout, r=ifelse(l==5, r+5, r)))
-                       , rbind(lower_table, size="last")
-                       )
-  total_table
-}
 
 combined_plots <- lapply(calibration.data, splat(combined_plot))
 
