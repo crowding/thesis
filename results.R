@@ -52,16 +52,18 @@ spacing.collapse.plotdata <- ziprbind(Map(
   f = function(model, match_content) list(
     bins = bins <- chain(
       model$data,
-      subset(content == match_content), #but we really want to combine data and fold?
-      #subset(abs(content) == match_content),
-      # how to generate folded data from this binning function?
+      subset(abs(content) == match_content),
       bin_along_resid(model, ., "response",
-                      splits %-% "exp_type", "displacement", bins=4)),
-    #also refold these predictions?
-    predictions = makePredictions(model, bins, splits=splits %-% "exp_type"))))
+                      splits %-% "exp_type", "displacement",
+                      bins=6, fold=TRUE)),
+    predictions = (makePredictions(model, bins,
+                                   splits=splits %-% "exp_type", fold=TRUE)))))
 
 #this only includes half the available data (no folding) so the
 #scatter can be expected to be improved
+
+#this should just be two plots joined vis grid. Different values of
+#spacing, e.g.
 
 print(ggplot(shuffle(spacing.collapse.plotdata$bins))
       + displacement_scale
@@ -72,8 +74,7 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bins))
       + geom_point(size=3) # + binom_pointrange()
       + facet_grid(subject  ~ ., labeller=function(var, value) toupper(value))
       + no_grid
-      + labs(title=paste(sep="\n","Sensitivity collapses at smaller spacings",
-                   "*FIXME* half of data missing, add folded data"))
+      + labs(title=paste(sep="\n","Sensitivity collapses at smaller spacings"))
       + with_arg(inherit.aes=FALSE, show_guide=FALSE,
                  data=ddply(spacing.collapse.plotdata$bins,
                     c("subject", "content"),
@@ -100,7 +101,7 @@ summation.increases.plotdata <- ziprbind(Map(
       model$data
       , subset(exp_type == "content" & target_number_shown %in% targnum)
       , bin_along_resid(model, ., "response", splits, "displacement"))
-    predictions <- makePredictions(model, bins)
+    predictions <- makePredictions(model, bins, fold=TRUE)
     list(bins = bins, predictions = predictions)
   }))
 

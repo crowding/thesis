@@ -197,11 +197,13 @@ predict.motion_energy_model <- function(object, newdata=model$data, ...) {
 }
 
 bin_along_resid <-
-  function(model, data, responsevar, split, along, bins=6, restrict)
+  function(model, data, responsevar, split, along,
+           bins=6, restrict, fold=FALSE)
   UseMethod("bin_along_resid")
 
 bin_along_resid.motion_energy_model <-
-  function(model, data, responsevar, split, along, bins, restrict) {
+  function(model, data, responsevar, split, along,
+           bins=6, restrict, fold=FALSE) {
     if (is.missing(restrict) || is.null(restrict)) {
       restrict <- unique(model$motion.energy[[along]])
     }
@@ -210,33 +212,45 @@ bin_along_resid.motion_energy_model <-
 
 #bin observations, using an "average" that retains the Pearson
 #residual with respect to the model. Depending on your perspective
-#this may be a more "honest" depiction of the model's fit to the data.
-bin_along_resid.default <- function(model, data, responsevar, split, along, bins=6,
-                            restrict) {
+#this may be a more "honest" depiction of the model's fit to the data
+#than the literal average.
+bin_along_resid.default <- function(model, data, responsevar, split, along,
+                                    bins=6, restrict, fold=FALSE) {
+  # if we are binning "folded"
   missing.restrict <- missing(restrict)
   data$fit <- predict(model, newdata=data, type="response")
-  binned <- ddply_keeping_unique_cols(data, split, function(chunk) {
-    a <- chunk[[along]]
-    chunk$.bin <- floor((order(a) - 1)/length(a) * bins)
-    chunk$.pred <- predict(model, newdata=chunk, type="response")
-    chunk <- ddply(chunk, .(.bin), function(x) {
-      mean_along <- mean(x[[along]])
-      if (!missing.restrict) {
-        #actually we want to restrict to values that are observed...
-        restrict <- unique(data[[along]])
-        mean_along <- restrict[which.min(abs(mean_along - restrict))]
-      }
-      l <- structure(list(mean_along), names=along)
-      total_obs <- sum(x[[responsevar]])
-      total_pred <- sum(x$.pred)
-      total_var <- sum(x$.pred * (1-(x$.pred)))
-      pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
-      quickdf(c(l, list(n_obs = nrow(x), total_obs=total_obs, total_pred=total_pred,
-                        total_var = total_var, pearson_resid=pearson_resid)))
-    })
-  })
+  chain(
+    data,
+    mutate(., .pred=predict(model, newdata=., type="response")),
+    refold(fold),
+    mutate(.pred=ifelse(folded, 1-.pred, .pred)),
+    ddply_keeping_unique_cols(split, function(chunk) chain(
+      chunk,
+      mutate(.binvar=eval.quoted(as.quoted(along))[[1]],
+             .bin=floor((order(.binvar) - 1)/length(.binvar) * bins)),
+      ddply(".bin", function(x) {
+        mean_along <- mean(x$.binvar)
+        if (!missing.restrict) {
+          #actually we want to restrict to values that are observed...
+          restrict <- unique(data[[along]])
+          mean_along <- restrict[which.min(abs(mean_along - restrict))]
+        }
+        l <- structure(list(mean_along), names=along)
+        total_obs <- sum(x[[responsevar]])
+        total_pred <- sum(x$.pred)
+        total_var <- sum(x$.pred * (1-(x$.pred)))
+        pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
+        quickdf(c(l, list(n_obs = nrow(x), total_obs=total_obs,
+                          total_pred=total_pred, total_var=total_var,
+                          pearson_resid=pearson_resid)))
+      })))) -> binned
+  # if we are folding then we have to make a "folded" prediction
   binned$pred <- predict(model, newdata=binned, type="response")
-  #this can produce valuce slightly outside [0,1]
+  if (fold) {
+    pred2 <- 1-predict(model, newdata=fold_trials(binned, TRUE), type="response")
+    binned$pred <- (binned$pred + pred2) / 2
+  }
+  # this can produce valuce slightly outside [0,1]
   # this should produce identical Pearson residuals.
   binned <- mutate(binned,
                    p = (n_obs*pred + pearson_resid * sqrt(n_obs*(pred)*(1-pred)))/n_obs,
@@ -300,10 +314,8 @@ binom_se_upper <- function(n, p)
 binom_se_lower <- function(n, p)
   binom.confint(bound_prob(p)*n, n, methods="wilson", p=0.682)$lower
 
-refold <- function(data, fold=TRUE) {
-  fold.trial <- with(data, fold & ((content < 0)
-                                    | (content == 0 & displacement < 0)))
-
+fold_trials <- function(data, fold.trial) {
+  #fold.trial a vector of booleans to say which trials to fold.
   refold_me <- function(trials, fold) {
     #how to "fold" the motion energy calculation and other paired fields
     cw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_cw(.*)")
@@ -315,17 +327,24 @@ refold <- function(data, fold=TRUE) {
     lapply(diff_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
     trials
   }
-
   #p <- NA
   chain(data,
+        mutate(folded=(if (exists("folded"))
+                       xor(folded, fold.trial) else fold.trial)),
         #n_ccw and n_cw were already taken care of...
-        mutate_when_has(content = ifelse(fold.trial, -content, content)),
+        mutate_when_has(content = ifelse(folded, -content, content)),
         mutate_when_has(displacement =
-                          ifelse(fold.trial, -displacement, displacement)),
-        mutate_when_has(response = ifelse(fold.trial, !response, response)),
-        mutate_when_has(fit=ifelse(fold.trial, 1-fit, fit)),
-        mutate_when_has(p=ifelse(fold.trial, 1-p, p)),
+                          ifelse(folded, -displacement, displacement)),
+        mutate_when_has(response = ifelse(folded, !response, response)),
+        mutate_when_has(fit=ifelse(folded, 1-fit, fit)),
+        mutate_when_has(p=ifelse(folded, 1-p, p)),
         refold_me(fold.trial))
+}
+
+refold <- function(data, fold=TRUE) {
+  fold.trial <- with(data, fold & ((content < 0)
+                                    | (content == 0 & displacement < 0)))
+  fold_trials(data, fold.trial)
 }
 
 mkrates <- function(data,
@@ -341,7 +360,7 @@ mkrates <- function(data,
     nullcounter(data)
   } else {
     chain(data,
-           (if (keep) ddply_keeping_unique_cols else ddply)(splits, counter),
+          (if (keep) ddply_keeping_unique_cols else ddply)(splits, counter),
           arrange(desc(n)))
   }
 }

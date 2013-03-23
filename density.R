@@ -102,8 +102,6 @@ binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
 ##Now illustrate these conjointly with the matching configurations...
 
-## Here's 
-
 
 ##------------------------------------------------------------
 #below this line is old code that I_don't know right now

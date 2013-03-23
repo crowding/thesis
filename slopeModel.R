@@ -26,7 +26,8 @@ makePredictions <-
            splits=c("subject", "content", "exp_type", "target_number_all",
              "target_number_shown", "spacing", "eccentricity", "bias"),
            ordinate = "displacement",
-           ordinate.values = plot.displacement
+           ordinate.values = plot.displacement,
+           fold=FALSE
            ) {
     r <- range(data[ordinate])
     sampling <- merge(unique(data[splits]),
@@ -36,13 +37,24 @@ makePredictions <-
     #chunk up predictions... gnm has some O(n^2) memory usage bullshit going on
     #with making predictions on binary data, so predict 1000 trials at a time
     #(tested faster than 500 or 2000)
-    .nrow <- nrow(sampling); .chunksize <- 1000
-    sampling <- mutate(sampling,  .chunk=floor(seq_len(.nrow)/.chunksize))
-    pred <- ddply(sampling, ".chunk",
-                  function(chunk) {
-                    pred <- predict(model, newdata=chunk, type="response", se.fit=TRUE)
-                    cbind(chunk, pred[1:2])
-                  })
+    pred <- lapply(
+      if (fold) list(sampling, fold_trials(sampling, TRUE)) else list(sampling),
+      function(sampling) {
+        .nrow <- nrow(sampling); .chunksize <- 1000
+        sampling <- mutate(sampling, .chunk=floor(seq_len(.nrow)/.chunksize))
+        ddply(sampling, ".chunk",
+              function(chunk) {
+                pred <- predict(model, newdata=chunk,
+                                type="response", se.fit=TRUE)
+                cbind(chunk, pred[1:2])
+              })
+      })
+    out <- pred[[1]]
+    if(fold) {
+      out$fit <- (pred[[1]]$fit + (1-pred[[2]]$fit))/2
+      out$se.fit <- (pred[[1]]$se.fit + pred[[2]]$se.fit)/sqrt(2)
+      out
+    } else out
   }
 
 plotPredictions <- function(...) {
