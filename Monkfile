@@ -120,6 +120,12 @@
 --output --invisible writing/slopeModel.pdf slopeModel.pdf
 
 --command cd writing && Rscript
+--input --invisible writing/density.calibration.R density.calibration.R
+--input --invisible --match writing/data\.RData data.RData
+--input --invisible writing/slopeModel.RData slopeModel.RData
+--output --invisible writing/density.calibration.pdf density.calibration.pdf
+
+--command cd writing && Rscript
 --input --invisible --match writing/density.modeling.R density.modeling.R
 --input --invisible writing/slopemodel.RData density.modeling.RData
 --output --invisible writing/density.modeling.pdf density.modeling.pdf
