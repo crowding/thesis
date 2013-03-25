@@ -106,25 +106,30 @@ binom_se <- function(n, p) sqrt(p*(1-p)/n)
 # spacing-collapse and number-collapse. In the top of the figure there
 # should be a sample data set varying by spacing;
 
+density.prediction.displacement <- 0.1
+
+#using only a subset of the spacing values here, to be less busy.
 density.prediction.bins <- local({
   model <- models$nj
   chain(model$data,
-        subset(folded_displacement==-0.1 & folded_direction_content == 0.4),
-        bin_along_resid(model, ., "response", splits, "displacement"))
+        subset(abs(content) == 0.4 & target_number_shown %in% c(6, 9, 12, 16, 20, 24)),
+        bin_along_resid(model, ., "response", splits, "displacement", fold=TRUE))
 })
 
 density.prediction.curves <-
   makePredictions(models$nj, density.prediction.bins, fold=TRUE)
 
-print(ggplot(summation.increases.plotdata$bins)
+print(ggplot(density.prediction.bins)
       + displacement_scale
       + proportion_scale
       + spacing_color_scale
       + aes(group=spacing)
       + geom_point(size=2)
+      + ribbonf(density.prediction.curves)
       + no_grid
-      + coord_cartesial(xlim=c(-0.75, 0.75))
-      + geom_vline(x=-0.1, linetype="11"))
+      + coord_cartesian(xlim=c(-0.75, 0.75))
+      + geom_vline(x=-density.prediction.displacement, linetype="11"))
+
 ##------------------------------------------------------------
 #below this line is old code that I_don't know right now
 FALSE && {

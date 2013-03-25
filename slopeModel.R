@@ -30,6 +30,7 @@ makePredictions <-
            fold=FALSE
            ) {
     r <- range(data[ordinate])
+    if(fold) data <- refold(data, TRUE)
     sampling <- merge(unique(data[splits]),
                       quickdf(structure(list(ordinate.values),
                                         names=ordinate)),
@@ -38,6 +39,7 @@ makePredictions <-
     #with making predictions on binary data, so predict 1000 trials at a time
     #(tested faster than 500 or 2000)
     pred <- lapply(
+      # if folding we need to average left-fold and right-fold trials
       if (fold) list(sampling, fold_trials(sampling, TRUE)) else list(sampling),
       function(sampling) {
         .nrow <- nrow(sampling); .chunksize <- 1000
