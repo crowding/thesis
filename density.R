@@ -130,6 +130,8 @@ print(ggplot(density.prediction.bins)
       + coord_cartesian(xlim=c(-0.75, 0.75))
       + geom_vline(x=-density.prediction.displacement, linetype="11"))
 
+#combine this with the model predictions corresponding
+
 ##------------------------------------------------------------
 #below this line is old code that I_don't know right now
 FALSE && {

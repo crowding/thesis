@@ -263,6 +263,8 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
 
 shuffle <- function(df) df[sample(seq_len(nrow(df))),]
 
+wrap <- function(x, spacing) x - spacing*round(x/spacing)
+
 load2env <- function(file, env=new.env()) {
   load(file, envir=env)
   env
@@ -290,7 +292,7 @@ do.rename <- function(data, folding=TRUE) {
       target_spacing="spacing"
       )
   }
-  chain(rename(data, replacements),
+  chain(rename(data, replacements, warn_missing=FALSE),
         mutate(bias = if (folding) 0 else 1))
 }
 

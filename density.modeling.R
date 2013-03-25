@@ -51,8 +51,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
         , ddply("subject",
                 function(x) if ("numdensity" %in% x$exp_type) x else data.frame())
         # mutate the displacement to avoid wagon wheel (this will need done anyway)
-        , mutate(data, displacement=((displacement + (spacing/2))
-                                     %% spacing - (spacing/2)))
+        , mutate(data, displacement=wrap(displacement, spacing))
         ) -> data
 
   #ugh globals
@@ -90,17 +89,17 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   plot.basic <- (ggplot(segment.folded.spindled) + aes(y=p)
                  + axes.basic)
-
+  #
   plot.wrap <- list(facet_wrap(~label))
-
+  #
   by.number <- list(aes(x=target_number_shown, group=factor(spacing),
                         linetype=factor(spacing)),
                     geom_line())
-
+  #
   by.spacing <- list(  aes(x=spacing), labs(x="Spacing")
                      , geom_line(aes(  group = factor(target_number_shown)
                                      , color = factor(target_number_shown))))
-
+  #
   by.extent <- list(aes(x = extent,
                         group = factor(target_number_shown),
                         color = factor(target_number_shown),
@@ -112,13 +111,12 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   #plot with x-axis of target number, lines of constant spacing
   plot.number <- plot.basic + by.number + plot.wrap
-
+  #
   #plot with x-axis of target spacing, lines of constant number
   plot.spacing <- plot.basic + by.spacing + plot.wrap
-
+  #
   #plot with x-axis of "extent"
   plot.extent <- plot.basic + by.extent + plot.wrap
-
 
   ## Let's start by descriptively modeling the segment data. We see from
   ## the graphs that there is a response to changing spacing, and a
@@ -129,8 +127,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ## modeling content and displacement will result in an improverished
   ## model.  So what I'll There also isn't strong data for So what I'll
   ## do is
-
-  descriptive.models <- make_descriptive_models(segment)
 
   dev.set(plot.dev)
   plot(plot.spacing %+% segment.folded.spindled.mutilated
@@ -201,6 +197,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##Let's think about what that means. We've captures the slope of
   ##lines of constant target number.  In the descriptive model, these
   ##slopes are determined by the term (content:I(1/spacing))
+
+  descriptive.models <- make_descriptive_models(segment)
 
   dev.set(detail.dev)
   informed.models <- ldply(descriptive.models$subject, function(subj) {

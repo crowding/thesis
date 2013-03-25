@@ -120,8 +120,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
         , match_df(., subset(count(., "subject"), freq>2000), on="subject")
         # , attach_motion_energy(motion.energy)
         # mutate the displacement to avoid wagon wheel (this will need done anyway)
-        , mutate(data, displacement=((displacement + (spacing/2))
-                                     %% spacing - (spacing/2)))
+        , mutate(data, displacement=wrap(displacement, spacing))
         ) -> data
 
   #count trials in each condition. While keeping motion energy
