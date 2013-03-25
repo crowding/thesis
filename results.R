@@ -55,7 +55,7 @@ spacing.collapse.plotdata <- ziprbind(Map(
       subset(abs(content) == match_content),
       bin_along_resid(model, ., "response",
                       splits %-% "exp_type", "displacement",
-                      bins=6, fold=TRUE)),
+                      bins=8, fold=TRUE)),
     predictions = (makePredictions(model, bins,
                                    splits=splits %-% "exp_type", fold=TRUE)))))
 
@@ -104,6 +104,8 @@ summation.increases.plotdata <- ziprbind(Map(
     predictions <- makePredictions(model, bins, fold=TRUE)
     list(bins = bins, predictions = predictions)
   }))
+
+
 
 print(ggplot(summation.increases.plotdata$bins)
       + displacement_scale

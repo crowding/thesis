@@ -8,6 +8,7 @@ source("latexing.R")
 source("icons.R")
 source("scales.R")
 source("library.R")
+source("slopeModel.R")
 setup_theme()
 
 ## @knitr do-not-run
@@ -77,7 +78,7 @@ configs <-
       + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
       + theme(legend.position="none"))
 
-## @knitr spacing-data-plot
+## @knitr density-rates
 segment.rates <-
   mkrates(  segment
           , c(  segment.config.vars, segment.experiment.vars))
@@ -98,11 +99,32 @@ mapply(rates=list(segment.rates, segment.rates.sided),
 })
 
 # Compute a standard error bar over a nominal 50% rate.
+# I think this is bull though
 binom_se <- function(n, p) sqrt(p*(1-p)/n)
 
-##Now illustrate these conjointly with the matching configurations...
+# what we are going to do is look at predictions under conditions of
+# spacing-collapse and number-collapse. In the top of the figure there
+# should be a sample data set varying by spacing;
 
+density.prediction.bins <- local({
+  model <- models$nj
+  chain(model$data,
+        subset(folded_displacement==-0.1 & folded_direction_content == 0.4),
+        bin_along_resid(model, ., "response", splits, "displacement"))
+})
 
+density.prediction.curves <-
+  makePredictions(models$nj, density.prediction.bins, fold=TRUE)
+
+print(ggplot(summation.increases.plotdata$bins)
+      + displacement_scale
+      + proportion_scale
+      + spacing_color_scale
+      + aes(group=spacing)
+      + geom_point(size=2)
+      + no_grid
+      + coord_cartesial(xlim=c(-0.75, 0.75))
+      + geom_vline(x=-0.1, linetype="11"))
 ##------------------------------------------------------------
 #below this line is old code that I_don't know right now
 FALSE && {

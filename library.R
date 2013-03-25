@@ -373,10 +373,14 @@ ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
     u <- vapply(kept.columns, function(i)  length(unique(df[[i]])) <= 1, FALSE)
     if (any(!u)) kept.columns <<- kept.columns[names(u[u])]
   })
-  summary <- ddply(.data, .columns, .fun, ...)
-  kept.columns <- setdiff(kept.columns, names(summary))
-  extradata <- ddply(.data, .columns, `[`, 1,  kept.columns)
-  cbind(summary, extradata[names(extradata) %-% names(summary)])
+  summary <- dlply(.data, .columns, .fun, ...)
+  output.columns <- unique(c %()% lapply(summary, colnames))
+  kept.columns <- setdiff(kept.columns, output.columns)
+  extradata <- dlply(.data, .columns, `[`, 1,  kept.columns)
+  #shut up cbind warning...
+  extradata <- lapply(extradata, `rownames<-`, "")
+  summary <- Map(cbind, summary, extradata)
+  rbind.fill %()% summary
 }
 
 mkrates <- function(data,
