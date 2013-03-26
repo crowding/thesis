@@ -155,7 +155,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                               stringsAsFactors=FALSE)
 
   basic.informed.models <-
-  adply(circle.models, 1, function(row){
+  adply(circle.models, 1, function(row) {
     bind[model=bind[model], ...=group] <- as.list(row)
     #skip if there is not corresponding segment data
     if (empty(match_df(as.data.frame(group), segment, names(group))))
@@ -172,7 +172,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   dev.set(detail.dev)
   plot(plot.spacing
        + prediction_layers(predict_from_model_frame(basic.informed.models))
-       + labs(title="Exp. 1 model of displacement/spacing + offset by 'content'",
+       + labs(title="Predictions of spacing-causes-collapse model",
               x=paste("spacing", sep="\n",
                 "(ignore the stratification with target number, that is not in this model.",
                 "The point is that we got slope of response~spacing right without even trying)")
@@ -183,7 +183,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + prediction_layers(predict_from_model_frame(
          basic.informed.models, fold=TRUE, spindle=TRUE, collapse=TRUE))
        + errorbars(segment.folded.spindled.mutilated)
-       + labs(title="Exp 1 model, predictions for Exp. 2 + intercept",
+       + labs(title="Predictions of spacing-causes-collapse model",
               x=paste("Spacing", sep="\n")))
 
   ##That is really cool. this gets the slope with respect to "spacing"
@@ -290,7 +290,9 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     data,
     subset(exp_type %in% c("content", "spacing", "numdensity")),
     mutate(side=ifelse(exp_type %in% "numdensity", side, "all")))
-  
+
+  conbined.data <- mkrates(combined.data, splits %+% "side")
+
   #fit a "combined" model to all subject data
   combined.models <- adply(circle.models, 1, function(row) {
     bind[model=bind[model], ...=group] <- as.list(row)
@@ -314,6 +316,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   plot((plot.spacing %+% segment.folded.spindled)
        + prediction_layers(combined.predictions))
+
 }
 
 combined_model <- function(dataset, orig.model) {
@@ -321,7 +324,7 @@ combined_model <- function(dataset, orig.model) {
   dataset <- recast_data(dataset)
   fmla <- orig.model$formula
   fmla <- update(fmla, .~.
-                 - content:I(1/spacing) - content
+                 - content:I(1/spacing) - content + content_global
                  + content_local + content:factor(side))
   update(orig.model, formula=fmla, data=dataset, family=orig.model$family)
 }
@@ -418,11 +421,12 @@ make_descriptive_models <- function(segment) {
 }
 
 basic_inform_model <- function(model, newdata=model$data) {
-  pred <- predict(model, newdata=newdata, type="terms")
-  whichterm <- grep("displacementTerm", colnames(pred))
-  newdata$pred <- pred[,  whichterm] #rowSums(pred) #does this break earlier data?
+  offs <- predict(model, newdata=newdata, type="terms")
+  whichterm <- grep("displacementTerm", colnames(offs))
+  newdata$offs <- rowSums(offs[,whichterm, drop=FALSE])
+  #newdata$pred <- pred[,  whichterm] #rowSums(pred) #does this break earlier data?
   newfit <- glm(cbind(n_cw, n_ccw)
-                ~ offset(pred)
+                ~ offset(offs)
                 + content:factor(side) - 1
                 , data = newdata
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
@@ -433,11 +437,11 @@ number_inform_model <- function(model, newdata=model$data, number.factor=1) {
   #set number.factor to 2 if you think "number of targets in a hemifield"
   #is going to be more important than total number.
   newdata <- recast_data(newdata, number.factor=number.factor)
-  pred <- predict(num.model, newdata=newdata, type="terms")
-  whichterm <- grep("displacementTerm", colnames(pred))
-  newdata$pred <- pred[, whichterm]
+  offs <- predict(num.model, newdata=newdata, type="terms")
+  whichterm <- grep("displacementTerm", colnames(offs))
+  newdata$offs <- rowSums(offs[,whichterm, drop=FALSE])
   newfit <- glm(cbind(n_cw, n_ccw)
-                ~ offset(pred)
+                ~ offset(offs)
                 + content:factor(side) - 1
                 , data = newdata
                 , family=num.model$family)
@@ -450,26 +454,12 @@ numberize_model <- function(model, newdata=model$data) {
   new.terms <- terms(model)[-which.term]
   new.formula <- reformulate(labels(new.terms),
                              response="response", intercept=FALSE)
-  hemifield_factor = 2
   new.formula <-
     update(new.formula,
            . ~ . + displacementTerm(number_shown_as_spacing, displacement,
                                     start=c(cs=4, beta_dx=14)))
   new.model <- gnm(data=new.data, formula=new.formula,
                       family=model$family)
-}
-
-recast_data <- function(data, number.factor=1) {
-  mutate(data,
-         eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
-         target_number_shown = (if(!exists("target_number_shown"))
-                                round(2*pi*eccentricity/spacing) else
-                                target_number_shown),
-         target_number_all = target_number_shown,
-         content_global = content * target_number_shown,
-         content_local = content / spacing,
-         extent = spacing * target_number_shown,
-         number_shown_as_spacing = eccentricity*2*pi/(number.factor*target_number_shown))
 }
 
 do_recast <- function(model) {
@@ -607,3 +597,4 @@ FALSE && {
 }
 
 run_as_command()
+

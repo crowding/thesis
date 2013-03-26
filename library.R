@@ -42,6 +42,8 @@ nonlinearTerm <- function(..., start=NULL) {
   }
 }
 
+binom.fam <- binomial(link=logit.2asym(g=0.025, lam=0.025))
+
 predict_from_model_frame <- function(models, newdata,
                                      fold=TRUE, spindle=TRUE, collapse=FALSE) {
   ##take a data frame with a list of models, and the variables to
@@ -349,24 +351,6 @@ refold <- function(data, fold=TRUE) {
   fold_trials(data, fold.trial)
 }
 
-mkrates <- function(data,
-                    splits=c("displacement", "content",
-                             "spacing", "subject", "exp_type", "bias"),
-                    keep=TRUE) {
-  counter <- function(s) summarize(s,
-    n = length(response), p = mean(response),
-    n_cw = sum(response), n_ccw = sum(!response))
-  nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()),
-                                    n_cw=I(c()), n_ccw=I(c()))
-  if (nrow(data) == 0) {
-    nullcounter(data)
-  } else {
-    chain(data,
-          (if (keep) ddply_keeping_unique_cols else ddply)(splits, counter),
-          arrange(desc(n)))
-  }
-}
-
 #this is kind of ridiculously slow. Its main purpose it to carry
 #around motion energy values which are computed for each unique trial.
 ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
@@ -375,21 +359,16 @@ ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
     u <- vapply(kept.columns, function(i)  length(unique(df[[i]])) <= 1, FALSE)
     if (any(!u)) kept.columns <<- kept.columns[names(u[u])]
   })
-  summary <- dlply(.data, .columns, .fun, ...)
-  output.columns <- unique(c %()% lapply(summary, colnames))
-  kept.columns <- setdiff(kept.columns, output.columns)
-  extradata <- dlply(.data, .columns, `[`, 1,  kept.columns)
-  #shut up cbind warning...
-  extradata <- lapply(extradata, `rownames<-`, "")
-  summary <- Map(cbind, summary, extradata)
-  rbind.fill %()% summary
+  .columns <- c(as.quoted(.columns), as.quoted(kept.columns))
+  ddply(.data, .columns, .fun, ...)
 }
 
+#convert binary data into counted yes/no data
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type"), keep_unique=TRUE) {
   counter <- function(s) summarize(s,
-    n = length(response), p = mean(response),
+    n_obs = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
   nullcounter <- function(s) mutate(s, n=I(c()), p=I(c()),
                                     n_cw=I(c()), n_ccw=I(c()))
@@ -400,6 +379,39 @@ mkrates <- function(data,
           (if (keep_unique) ddply_keeping_unique_cols else ddply)(splits, counter),
           arrange(desc(n)))
   }
+}
+
+#undo mkrates, convert counted yes/no data into binary data.
+unmkrates <- function(data, keep.count.cols=FALSE) {
+  rows = inverse.rle(list(
+    lengths = if ("n_obs" %in% names(data)) data$n_obs else data$n,
+    values = seq_length(nrow(data))))
+  responses = inverse.rle(list(
+      lengths = rbind(n_cw, n_ccw),
+      values = replicate(c(TRUE,FALSE), nrow(data))))
+  data <- data[rows]
+  data$response <- values
+  if (keep_count_cols) {
+    mutate(data, n_cw = ifelse(response, 1, 0), n_ccw = ifelse(response, 0, 1),
+           n_obs=1, p=ifelse(response, 1, 0) )
+  } else {
+    data[c("n_cw", "n_ccw", "n", "p")] <- NULL
+  }
+  data
+}
+
+#compute columns for total "local" motion energy and total "global" motion energy
+recast_data <- function(data, number.factor=1) {
+  mutate(data,
+         eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
+         target_number_shown = (if(!exists("target_number_shown"))
+                                round(2*pi*eccentricity/spacing) else
+                                target_number_shown),
+         target_number_all = target_number_shown,
+         content_global = content * target_number_shown,
+         content_local = content / spacing,
+         extent = spacing * target_number_shown,
+         number_shown_as_spacing = eccentricity*2*pi/(number.factor*target_number_shown))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -416,21 +428,23 @@ ddply_along <-
            , .parallel = FALSE, .paropts = NULL) {
     split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
     rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
-    ldply(  .data=seq_len(length(split))
+    s <- as.list(seq_len(length(split)))
+    attributes(s) <- attributes(split)
+    class(s) <- c("split", "list")
+    ldply(  .data=s
           , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
           , .progress = .progress, .inform = .inform
           , .parallel = .parallel, .paropts = .paropts)
 }
 
 figure <- function(label, ...) {
-  #can't use R.devices because of name conflicts
-
-  ## if (devIsOpen(label)){
-  ##   devSet(label)
-  ## } else {
-  ## devNew(...)
-  ## devSetLabel(label=label)
-  ## }
+  #can't import R.devices because of name conflicts
+  if (R.devices:::devIsOpen(label)){
+    R.devices:::devSet(label)
+  } else {
+    R.devices:::devNew(...)
+    R.devices:::devSetLabel(label=label)
+  }
 }
 
 replace_extension <- function(filename, new_extension, append="") {
@@ -512,8 +526,3 @@ merge_check <- function(x, y, ..., by=intersect(names(x), names(y))) {
 key_check <- function(x, y, ..., by=intersect(names(x), names(y))) {
   sapply(by, function(col) length(unique(intersect(x[[col]], y[[col]]))))
 }
-
-## nrow(join(type="inner", trials[which(missed)[[1]],,drop=FALSE],
-##           menergy,
-##           by = intersect(names(trials), names(menergy))[1:4]
-##           ))
