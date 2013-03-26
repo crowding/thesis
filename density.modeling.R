@@ -1,7 +1,8 @@
 ##{{{ ---------- SETUP AND LOAD DATA -------------------------------------
 
 ## @knitr density-setup
-options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center = TRUE)
+options(width = 70, useFancyQuotes = FALSE, digits = 4,
+        lyx.graphics.center = TRUE)
 suppressPackageStartupMessages({
   library(ggplot2)
   library(plyr)
@@ -30,8 +31,10 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   if (interactive()) {
     dev.new()
     plot.dev <- dev.cur()
+    ggplot(mtcars) + aes(wt,mpg) + geom_point()
     dev.new()
     detail.dev <- dev.cur()
+    ggplot(mtcars) + aes(wt,mpg) + geom_point()
   } else {
     cairo_pdf(plotfile, onefile=TRUE)
     plot.dev <- dev.cur()
@@ -125,8 +128,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ## displacement and/or direction content; but for most subjects there
   ## is not the data in this experiment alone to distinguish them. So
   ## modeling content and displacement will result in an improverished
-  ## model.  So what I'll There also isn't strong data for So what I'll
-  ## do is
+  ## model.
 
   dev.set(plot.dev)
   plot(plot.spacing %+% segment.folded.spindled.mutilated
@@ -137,7 +139,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   #know that at wide spacings, there is no change in displacement
   #sensitivity with number of elements (no pooling,) then we expect the
   #relationship between displacement sensitivity and spacing to be
-  #unchanged. So let's extract the relationships to "critical spacing"
+  #unchanged. So let's extract the Rrelationships to "critical spacing"
   #and "displacement" from the slope model.
 
   #okay first of all I'm just going to borrow the "critical spacing" and
@@ -198,6 +200,48 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##lines of constant target number.  In the descriptive model, these
   ##slopes are determined by the term (content:I(1/spacing))
 
+  ## First let's compare this "spacing-causes-collapse" model to a "number-causes-collapse" model.
+  ##Rhetorically, we want to say that the data are more consistent
+  ##with a collapse with respect to spacing than they are with a
+  ##collapse of spacing with respect to number. So let's tweak the
+  ##models to respond to number rather than spacing (but otherwise
+  ##equal.)
+
+  ## What we will end up finding is that the spacing model based on
+  ## Experiment 1 predicts slope a lot better than the number model.
+
+  ##Let's pull the same trick, but pretend that it's elemnent number
+  ##that causes sensitivity collapse and not spacing. What should we
+  ##see?
+  number.informed.models <- adply(circle.models, 1, function(row) {
+    bind[model=bind[model], ...=group] <- as.list(row)
+    if (empty(match_df(as.data.frame(group), segment, names(group))))
+      return(data.frame())
+    newdata <- merge(group, segment)
+    newfit <- number_inform_model(model, newdata, number.factor=2)
+    quickdf(c(group, list(model=I(list(newfit)))))
+  })
+
+  dev.set(detail.dev)
+  plot(plot.spacing
+       + prediction_layers(predict_from_model_frame(number.informed.models))
+       + labs(title="Predictions from number-causes-collapse model", x="spacing"))
+
+  dev.set(plot.dev)
+  plot(plot.spacing %+% segment.folded.spindled.mutilated
+       + prediction_layers(predict_from_model_frame(
+         number.informed.models,
+         fold=TRUE, spindle=TRUE, collapse=TRUE))
+       + labs(title="Predictions of number-causes-collapse model")
+       + errorbars(segment.folded.spindled.mutilated))
+
+  ## Compare the predictions for NJ and PBM in particular versus the
+  ## spacing-causes-collapse predictions.
+
+  # Now let's try to expand the model to describe the data we really see.
+  ## This "descriptive models" is really a bit of data smoothing I'm
+  ## applying, just to show the. However, it may provide a basis for
+  ## comparing the number-model to the spacing-model as well.
   descriptive.models <- make_descriptive_models(segment)
 
   dev.set(detail.dev)
@@ -384,10 +428,38 @@ basic_inform_model <- function(model, newdata=model$data) {
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
 }
 
+number_inform_model <- function(model, newdata=model$data, number.factor=1) {
+  num.model <- numberize_model(model)
+  #set number.factor to 2 if you think "number of targets in a hemifield"
+  #is going to be more important than total number.
+  newdata <- recast_data(newdata, number.factor=number.factor)
+  pred <- predict(num.model, newdata=newdata, type="terms")
+  whichterm <- grep("displacementTerm", colnames(pred))
+  newdata$pred <- pred[, whichterm]
+  newfit <- glm(cbind(n_cw, n_ccw)
+                ~ offset(pred)
+                + content:factor(side) - 1
+                , data = newdata
+                , family=num.model$family)
+}
 
+numberize_model <- function(model, newdata=model$data) {
+  #requires a new column in the dataset "number_shown_as_spacing"
+  new.data <- recast_data(model$data)
+  which.term <- grep("displacementTerm", labels(terms(model)))
+  new.terms <- terms(model)[-which.term]
+  new.formula <- reformulate(labels(new.terms),
+                             response="response", intercept=FALSE)
+  hemifield_factor = 2
+  new.formula <-
+    update(new.formula,
+           . ~ . + displacementTerm(number_shown_as_spacing, displacement,
+                                    start=c(cs=4, beta_dx=14)))
+  new.model <- gnm(data=new.data, formula=new.formula,
+                      family=model$family)
+}
 
-
-recast_data <- function(data) {
+recast_data <- function(data, number.factor=1) {
   mutate(data,
          eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
          target_number_shown = (if(!exists("target_number_shown"))
@@ -396,7 +468,8 @@ recast_data <- function(data) {
          target_number_all = target_number_shown,
          content_global = content * target_number_shown,
          content_local = content / spacing,
-         extent = spacing * target_number_shown)
+         extent = spacing * target_number_shown,
+         number_shown_as_spacing = eccentricity*2*pi/(number.factor*target_number_shown))
 }
 
 do_recast <- function(model) {
