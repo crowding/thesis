@@ -89,19 +89,24 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                      , number_color_alt_scale[-1]
                      , theme(strip.text=element_text(size=8))
                      )
-
+  #
   plot.basic <- (ggplot(segment.folded.spindled) + aes(y=p)
                  + axes.basic)
   #
   plot.wrap <- list(facet_wrap(~label))
   #
-  by.number <- list(aes(x=target_number_shown, group=factor(spacing),
-                        linetype=factor(spacing)),
-                    geom_line())
+  by.number <- list(aes(x=target_number_shown),
+                    geom_line(aes(group=factor(spacing),
+                                  linetype=factor(spacing))),
+                    geom_point(aes(group=factor(spacing),
+                                  linetype=factor(spacing)), size=1))
   #
   by.spacing <- list(  aes(x=spacing), labs(x="Spacing")
                      , geom_line(aes(  group = factor(target_number_shown)
-                                     , color = factor(target_number_shown))))
+                                     , color = factor(target_number_shown)))
+                     , geom_point(aes( group = factor(target_number_shown),
+                                       color = factor(target_number_shown)),
+                                  size=1))
   #
   by.extent <- list(aes(x = extent,
                         group = factor(target_number_shown),
@@ -110,7 +115,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                     , geom_line(linetype=1)
                     , geom_line(aes(group = factor(spacing),
                                     linetype = factor(spacing)),
-                                color="black", fill="black"))
+                                color="black", fill="black")
+                    , geom_point(size=1))
 
   #plot with x-axis of target number, lines of constant spacing
   plot.number <- plot.basic + by.number + plot.wrap

@@ -93,7 +93,7 @@ collapse <- function(data) {
                              se.fit = sqrt(sum((se.fit^2)*n_obs)/sum(n_obs)))
     }
     args <- args %__% dots(n_ccw = sum(n_ccw), n_cw = sum(n_cw),
-                           n = sum(n), p = n_cw/n)
+                           n_obs = sum(n_obs), p = n_cw/n_obs)
   } else {
     if ("fit" %in% names(data)) {
       args <- args %__% dots(fit = mean(fit), se.fit = sqrt(mean(se.fit^2)))
