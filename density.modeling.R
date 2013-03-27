@@ -259,12 +259,12 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + prediction_layers(connect="number") + aes(y=fit)
        + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
 
-    if (interactive()) figure("source")
+    #if (interactive()) figure("source")
     plot(unfolded.prediction.plot
          + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
                   toupper(sub$subject))))
 
-    if(interactive()) figure("compare")
+    #if(interactive()) figure("compare")
     recast.model <- do_recast(circle.model)
     informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
     plot(unfolded.prediction.plot
@@ -285,48 +285,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + errorbars(segment.folded.spindled.mutilated)
        + labs(title="Model fits (Experiment 1 model + global motion-energy)",
               x=paste("Spacing", sep="\n")))
-
-  combined.data <- chain(
-    data,
-    subset(exp_type %in% c("content", "spacing", "numdensity")),
-    mutate(side=ifelse(exp_type %in% "numdensity", side, "all")))
-
-  conbined.data <- mkrates(combined.data, splits %+% "side")
-
-  #fit a "combined" model to all subject data
-  combined.models <- adply(circle.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <- as.list(row)
-    print(row$subject)
-    #pull in the old stuff and recase the data
-    dataset <-
-      match_df(combined.data, as.data.frame(group), on=names(group))
-    if (!any(dataset$exp_type == "numdensity")) return(data.frame())
-    cm <- combined_model(dataset, model)
-    quickdf(c(group, list(model=I(list(cm)))))
-  })
-
-  prediction.dataset <- chain(
-    c(segment.config.vars, segment.experiment.vars, "bias", "exp_type", "side"),
-    segment.trials[.],
-    unique,
-    recast_data)
-
-  combined.predictions <-
-    predict_from_model_frame(combined.models, newdata=prediction.dataset)
-
-  plot((plot.spacing %+% segment.folded.spindled)
-       + prediction_layers(combined.predictions))
-
-}
-
-combined_model <- function(dataset, orig.model) {
-  recast.model <- do_recast(orig.model)
-  dataset <- recast_data(dataset)
-  fmla <- orig.model$formula
-  fmla <- update(fmla, .~.
-                 - content:I(1/spacing) - content + content_global
-                 + content_local + content:factor(side))
-  update(orig.model, formula=fmla, data=dataset, family=orig.model$family)
 }
 
 errorbars <- function(segment, x.axis="spacing") {

@@ -87,16 +87,19 @@ collapse <- function(data) {
     segment.config.vars %v% segment.experiment.vars %-% c("displacement", "content"),
     summarize)
 
-  if ("n" %in% names(data)) {
+  if ("n_obs" %in% names(data)) {
     if ("fit" %in% names(data)) {
-      args <- args %__% dots(fit = mean(fit*n)/sum(n),
-                             se.fit = sqrt(sum((se.fit^2)*n)/sum(n)))
+      args <- args %__% dots(fit = mean(fit*n_obs)/sum(n_obs),
+                             se.fit = sqrt(sum((se.fit^2)*n_obs)/sum(n_obs)))
     }
     args <- args %__% dots(n_ccw = sum(n_ccw), n_cw = sum(n_cw),
                            n = sum(n), p = n_cw/n)
   } else {
-    if ("fit" %in% names(data))
+    if ("fit" %in% names(data)) {
       args <- args %__% dots(fit = mean(fit), se.fit = sqrt(mean(se.fit^2)))
+    } else {
+      stop("collapse has to have count data or prediction data")
+    }
   }
   ddply_keeping_unique_cols %()% args
 }
@@ -377,7 +380,7 @@ mkrates <- function(data,
   } else {
     chain(data,
           (if (keep_unique) ddply_keeping_unique_cols else ddply)(splits, counter),
-          arrange(desc(n)))
+          arrange(desc(n_obs)))
   }
 }
 
@@ -403,13 +406,16 @@ unmkrates <- function(data, keep.count.cols=FALSE) {
 #compute columns for total "local" motion energy and total "global" motion energy
 recast_data <- function(data, number.factor=1) {
   mutate(data,
-         eccentricity = if(!exists("eccentricity")) 20/3 else eccentricity,
+         eccentricity = if (!exists("eccentricity")) 20/3 else eccentricity,
          target_number_shown = (if(!exists("target_number_shown"))
                                 round(2*pi*eccentricity/spacing) else
                                 target_number_shown),
-         target_number_all = target_number_shown,
+         target_number_all = (if (!exists("target_number_all"))
+                              target_number_shown else
+                              target_number_all),
          content_global = content * target_number_shown,
          content_local = content / spacing,
+         full_circle = target_number_shown == target_number_all,
          extent = spacing * target_number_shown,
          number_shown_as_spacing = eccentricity*2*pi/(number.factor*target_number_shown))
 }
