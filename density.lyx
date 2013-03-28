@@ -138,6 +138,39 @@ status collapsed
 
 \begin_layout Plain Layout
 
+%density-externalize
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-externalize,cache=FALSE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+read_chunk("density.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
 %% 
 \backslash
 maxwidth has been defined in the preamble; see document settings
@@ -166,6 +199,9 @@ name "sec:results-number"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset ERT
 status collapsed
 
@@ -268,15 +304,34 @@ reference "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Another goal was to determine whether there were differences in performance
+ dependent on the location of the elements in the visual field.
+ This may give additional clues to the the nature of mechanisms underlying
+ the perception of motion direction.
+ Depending on which cortical areas are involved in generating a perception
+ of motion, we may see more or less interference between moving objects
+ For example, the numeric limit on object tracking appears to be independent
+ between left and right hemifields 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Alvarez:2005uq"
+
+\end_inset
+
+.
+ In contrast, if the reversal shares mechanisms with crowding effects, then
+ we might expect a lessened crowding effect for stimuli that span the horizontal
+ meridian (, but see...)
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-Illustrate this confounding, by plotting the same data in terms of element
- number and element spacing.
- So this data does not establish whether it is really spacing which determines
- the appearance of motion.
- 
+I don't find anything useful for crossing meridians.
+ Move to Discussion if at all.
 \end_layout
 
 \end_inset
@@ -284,10 +339,9 @@ Illustrate this confounding, by plotting the same data in terms of element
 
 \end_layout
 
-\begin_layout Standard
-There are a few overlapping reasons why we would wish to experimentally
- distinguish element spacing from element number.
- 
+\end_inset
+
+
 \begin_inset Note Note
 status open
 
@@ -297,7 +351,9 @@ This type of reasoning belongs in Discussion.
 
 \end_inset
 
-
+ There are a few overlapping reasons why we would wish to experimentally
+ distinguish element spacing from element number.
+ 
 \end_layout
 
 \begin_layout Enumerate
@@ -428,27 +484,6 @@ Therefore we wished to know whether the apparent reversal of the stimulus
 \end_layout
 
 \begin_layout Standard
-A secondary goal was to determine whether there were differences in performance
- dependent on the location of the elements in the visual field.
- This may give additional clues to the the nature of mechanisms underlying
- the perception of motion direction.
- Depending on which cortical areas are involved in generating a perception
- of motion, we may see more or less interference between moving objects
- For example, the numeric limit on object tracking appears to be independent
- between left and right hemifields 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Alvarez:2005uq"
-
-\end_inset
-
-.
- In contrast, if the reversal shares mechanisms with crowding effects, then
- we might expect a lessened effect for stimuli that span the horizontal
- meridian (, but see...)
-\end_layout
-
-\begin_layout Standard
 \begin_inset Note Note
 status open
 
@@ -522,7 +557,6 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
 \begin_inset Graphics
 	filename numdensity-stimulus.pdf
 
@@ -578,7 +612,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -689,6 +723,112 @@ reference "sec:results-number"
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "fig:density-conditions"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-predictions"
+
+\end_inset
+
+Alternative predictions for 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ We show a collection of psychometric functions, stratified by spacing,
+ that we collected in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+.
+ The vertical line indicates a value of spacing that was selected for this
+ subject to use in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ In the left column we show a prediction for how the proportion of responses
+ answering 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ for these stimuli should vary with the element spacing in Experiment 3,
+ all other parameters being equal.
+ This corresponds to the intercepts of each point in the upper graph through
+ the graph.
+ This prediction is based on the model fit to Experiment 1, presuming that
+ the decline in sensitivity seen by the is a function of element spacing.
+ In the right column, we show a prediction made similarly but presuming
+ that the decline in 
+\begin_inset Formula $\beta_{\Delta_{x}}$
+\end_inset
+
+ observed in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+ depends on element number.
+ The fit is clearly better for the model in which 
+\begin_inset Formula $\beta_{\Delta_{x}}$
+\end_inset
+
+ is a function of spacing rather than number.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(if we include two graphs in this figure) Note that the model is capable
+ of predicting two apparently different patterns of behavior; one in which.
+ The different patterns of behavior seen here are understood as products
+ of PBM's higher sensitivity to envelope displacement versus NJ's higher
+ sensitivity to total motion energy.
+\end_layout
 
 \end_inset
 
