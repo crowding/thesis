@@ -126,11 +126,17 @@
 --output --invisible writing/density.calibration.pdf density.calibration.pdf
 
 --command cd writing && Rscript
---input --invisible --match writing/density.modeling.R density.modeling.R
---input --invisible writing/slopemodel.RData density.modeling.RData
+--input --invisible writing/density\.modeling\.R density.modeling.R
+--input --invisible --match writing/slopeModel.RData slopeModel.RData
 --output --invisible writing/density.modeling.pdf density.modeling.pdf
 --output --invisible writing/density.modeling.detail.pdf density.modeling.detail.pdf
---output --invisible writing/density.modeling.RData density.modeling.detail.RData
+--output --invisible writing/density.modeling.RData density.modeling.RData
+
+--command cd writing && Rscript
+--input --invisible writing/combined.model.R combined.model.R
+--input --invisible --match writing/density.modeling.RData density.modeling.RData
+--output --invisible writing/combined.model.RData combined.model.RData
+--output --invisible writing/combined.model.pdf combined.model.pdf
 
 --command
 --input --match --invisible writing/.*
