@@ -65,13 +65,22 @@ predict_from_model_frame <- function(models, newdata,
         } else .)
 }
 
-predict_from_model <- function(model, newdata=model$data) {
+predict_from_model <- function(model, newdata=model$data, se.fit=TRUE) {
   #chunk prediction because predict.gnm does something odd
   newdata$.chunk <- floor(seq_len(nrow(newdata))/1000)
   ddply(newdata, ".chunk",
         function(chunk) {
-          pred <- predict(model, newdata=chunk, type="response", se.fit=TRUE)
-          cbind(chunk, pred[1:2], model=NA)
+          if (se.fit && tryCatch(error=function(x) FALSE, {
+                pred <- predict(model, newdata=chunk,
+                                type="response", se.fit=TRUE)
+                TRUE
+              })) {
+            cbind(chunk, pred[1:2], model=NA)
+          } else {
+            cbind(chunk
+                  , fit = predict(model, newdata=chunk, type="response")
+                  , se.fit = NA)
+          }
         })
 }
 
