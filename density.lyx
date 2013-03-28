@@ -1010,7 +1010,14 @@ reference "fig:density-conditions"
 The particular values of direction content and envelope motion were chosen
  for each subject based on preliminary findings of Experiment 1.
  This choice was made by the experimenter with the goal to select values
- that would elicit a useful effect of element spacing (see )
+ that would elicit a useful effect of element spacing (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-predictions"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Standard
@@ -1097,7 +1104,7 @@ reference "sec:results-number"
 \begin_layout Standard
 Since the strength of crowding is typically not uniform and varies between
  hemifields, we tested stimuli positioned in the left and right visual fields.
- Each session used an ewual number of stimuli left wand right, which alternated
+ Each session used an equal number of stimuli left wand right, which alternated
  in blocks of 100 to 200 trials.alternating in blocks of 
 \begin_inset Note Note
 status open
@@ -1155,7 +1162,7 @@ flanker
 \begin_inset Quotes erd
 \end_inset
 
- in thsis stimulus; all elements serve both roles.
+ in this stimulus; all elements serve both roles.
  This requires the stimulus to be distributed all the way around the visual
  field; or else hacks like our non-moving flanker.
  
@@ -1167,12 +1174,228 @@ flanker
 \end_layout
 
 \begin_layout Subsection
-Results
+Results 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Things look different to start out with, but recasting in terms of the model,
+ we will find that things are remarkable consistent between subjects.
+ NJ and PBM have the most leverage in this experiment, in different directions,
+ but consistent with the underlying core, so we will focus on them for examples.
 \end_layout
 
-\begin_layout Itemize
-Plot basic results (aggregated over different values of direction content
- tested;
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Of the subjects who had previously participated in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{length(unique(segment$subject))}
+\end_layout
+
+\end_inset
+
+ participated in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ Basic results are shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:segment-rates"
+
+\end_inset
+
+.
+ Each plot shows the rate at which subjects responded 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to a stimulus.
+ Some subjects were tested using more than one value of envelope displacement
+ and/or carrier direction content as in Figure 1, but results were qualitatively
+ similar between sessions so these are shown averaged.
+ Although there appear to be qualitative differences, there are also substantial
+ similarities.
+ For example, the responses of observer NJ appears to be determined 
+\begin_inset Quotes eld
+\end_inset
+
+by number,
+\begin_inset Quotes erd
+\end_inset
+
+ where the lines of constant spacing are relatively flat, but there is a
+ large effect of changing the element number.
+ By contrast, observer PBM appears to respond 
+\begin_inset Quotes eld
+\end_inset
+
+by spacing
+\begin_inset Quotes erd
+\end_inset
+
+, in that the lines traced by varying spacing while holding element number
+ constant appear to collapse onto each other.
+ Other subjects appear to have intermediate behaviors.
+ At first glance 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+editorializing....
+\end_layout
+
+\end_inset
+
+ it would appear that these subjects are using different rules to perform
+ the task, However, interpreting these responses in detail requires correlating
+ them with the measurements from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+; since the earlier experiment suggested more than one mechanism that could
+ contribute to an observer's perceived direction of motion, apparently different
+ patterns of response may be a result of differing strengths of contribution
+ of each respective mechanism.
+\end_layout
+
+\begin_layout Standard
+Despite apparent differences, the behavior of all subjects exhibits commonalitie
+s.
+ Each subject's rate of response changes progressively with different values
+ of spacing; changing element spacing while holding element number constant
+ has a similar magnitude of effect regardless what the number of elements
+ is.
+ The converse is also true; changing the number of elements while holding
+ spacing constant has consistent effects within each subject's data.
+\end_layout
+
+\begin_layout Subsubsection
+Agreement with results of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We asked how well the results from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+ could have been predicted by the model discussed in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+ and fit to data taken from Experiment 1.
+ To do this, we need to disambiguate the meaning of the coefficients 
+\begin_inset Formula $\beta_{\Delta_{x}}$
+\end_inset
+
+and 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+; these were described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+ as being functions of element spacing, but 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+ does not distinguish this possibility from the possibility of being a function
+ of element number.
+ We used the model fit by experiment 1 to form predictions for Experiment
+ 2 as follows; first we 
+\end_layout
+
+\begin_layout Standard
+Since 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+ does not establish how large the
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:segment-rates"
+
+\end_inset
+
+ Subjects' responses to stimuli that covary in terms of number and in density.
+ In each graph, the number of elements clockwise represents the 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
