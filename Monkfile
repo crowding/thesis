@@ -130,6 +130,7 @@
 --input --invisible writing/slopemodel.RData density.modeling.RData
 --output --invisible writing/density.modeling.pdf density.modeling.pdf
 --output --invisible writing/density.modeling.detail.pdf density.modeling.detail.pdf
+--output --invisible writing/density.modeling.RData density.modeling.detail.RData
 
 --command
 --input --match --invisible writing/.*

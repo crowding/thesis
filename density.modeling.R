@@ -22,19 +22,19 @@ datafile <- "data.RData"
 modelfile <- "slopeModel.RData"
 plotfile <- "density.modeling.pdf"
 detailfile <- "density.modeling.detail.pdf"
+savefile <- "density.modeling.RData"
 
 main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                  plotfile="density.modeling.pdf",
-                 detailfile = "density.modeling.detail.pdf") {
-
+                 detailfile = "density.modeling.detail.pdf",
+                 savefile = "density.modeling.RData",
+                 detailplots=!interactive()) {
   setup_theme()
   if (interactive()) {
     dev.new()
     plot.dev <- dev.cur()
-    ggplot(mtcars) + aes(wt,mpg) + geom_point()
     dev.new()
     detail.dev <- dev.cur()
-    ggplot(mtcars) + aes(wt,mpg) + geom_point()
   } else {
     cairo_pdf(plotfile, onefile=TRUE)
     plot.dev <- dev.cur()
@@ -122,7 +122,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   plot.number <- plot.basic + by.number + plot.wrap
   #
   #plot with x-axis of target spacing, lines of constant number
-  plot.spacing <- plot.basic + by.spacing + plot.wrap
+  plot.spacing <<- plot.basic + by.spacing + plot.wrap
   #
   #plot with x-axis of "extent"
   plot.extent <- plot.basic + by.extent + plot.wrap
@@ -249,7 +249,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ## applying, just to show the. However, it may provide a basis for
   ## comparing the number-model to the spacing-model as well.
   descriptive.models <- make_descriptive_models(segment)
-
   dev.set(detail.dev)
   informed.models <- ldply(descriptive.models$subject, function(subj) {
     sub <- data.frame(subject=subj, stringsAsFactors=FALSE)
@@ -257,27 +256,31 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     bind[descriptive.model, informed.model, circle.model] <-
       lapply(list(descriptive.models, basic.informed.models, circle.models),
              function(x) match_df(x, sub)[[1,"model"]])
-
+    #
     #here's the a plot of one subject's data without any folding and spindling
-    unfolded.prediction.plot <-
-      (ggplot(subset(predict_from_model(descriptive.model), content != 0))
-       + axes.basic + by.spacing
-       + prediction_layers(connect="number") + aes(y=fit)
-       + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
-
-    #if (interactive()) figure("source")
-    plot(unfolded.prediction.plot
-         + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
-                  toupper(sub$subject))))
-
+    if(detailplots) {
+      unfolded.prediction.plot <-
+        (ggplot(subset(predict_from_model(descriptive.model), content != 0))
+         + axes.basic + by.spacing
+         + prediction_layers(connect="number") + aes(y=fit)
+         + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
+      #
+      #if (interactive()) figure("source")
+      plot(unfolded.prediction.plot
+           + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
+                    toupper(sub$subject))))
+    }
+    #
     #if(interactive()) figure("compare")
     recast.model <- do_recast(circle.model)
     informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
-    plot(unfolded.prediction.plot
-         %+% subset(predict_from_model(informed.recast.model), content != 0)
-         + labs(title=paste0("Displacement model + global content",
-                  " sum, subject ", toupper(sub$subject))))
-
+    if(detailplots) {
+      plot(unfolded.prediction.plot
+           %+% subset(predict_from_model(informed.recast.model), content != 0)
+           + labs(title=paste0("Displacement model + global content",
+                    " sum, subject ", toupper(sub$subject))))
+    }
+    #
     data.frame(subject=subj, model=I(list(informed.recast.model)), row.names=subj)
   })
 
@@ -291,6 +294,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + errorbars(segment.folded.spindled.mutilated)
        + labs(title="Model fits (Experiment 1 model + global motion-energy)",
               x=paste("Spacing", sep="\n")))
+
+  save(file=savefile, list=ls())
 }
 
 errorbars <- function(segment, x.axis="spacing") {
@@ -301,8 +306,8 @@ errorbars <- function(segment, x.axis="spacing") {
                  number=target_number_shown,
                  spacing=spacing,
                  extent=extent)),
-        ymax = 0.5 + binom_se(min(n), 0.5),
-        ymin = 0.5 - binom_se(min(n), 0.5)) -> errorbar
+        ymax = 0.5 + binom_se(min(n_obs), 0.5),
+        ymin = 0.5 - binom_se(min(n_obs), 0.5)) -> errorbar
   with_arg(data = errorbar
            , inherit.aes = FALSE
            , mapping = aes(x = x, y = y, ymin = ymin, ymax = ymax)
@@ -557,8 +562,6 @@ FALSE && {
   ## }))
 
   ##merge(as.data.frame(desc.coef), as.data.frame(pred.coef), on="subject")
-
 }
 
 run_as_command()
-
