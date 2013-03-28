@@ -136,8 +136,8 @@ labeler <- function(data) {
             if ("content" %in% names(data))
               paste0("C=", format(content, digits=2)) else ""
             )},
-        content=mutate(data, label="Content %s", toupper(subject)),
-        spacing=mutate(data, label="Spacing %s", tpupper(subject)))
+        content = sprintf("Content %s", toupper(subject)),
+        spacing = sprintf("Spacing %s", toupper(subject)))
     })
   })
 }

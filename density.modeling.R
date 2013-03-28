@@ -57,19 +57,22 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
         , mutate(data, displacement=wrap(displacement, spacing))
         ) -> data
 
-  #ugh globals
+  #ugh! globals...
   models <<- models
   displacementTerm <<- displacementTerm
   #these are the columns which define each "experiment" (facet on the
   #unfolded graph)
-  segment.experiment.vars <<-
+  segment.experiment.vars <-
     c("subject", "displacement", "content", "eccentricity")
+  segment.experiment.vars <<- segment.experiment.vars
   #within an experiment these are the vars which separate each "stimulus
   #condition" (data point on the graph)
-  segment.config.vars <<-
+  segment.config.vars <-
     c("spacing", "target_number_shown", "target_number_all")
+  segment.config.vars <<- segment.config.vars
 
-  splits <<- c(segment.config.vars, segment.experiment.vars)
+  splits <- c(segment.config.vars, segment.experiment.vars)
+  splits <<- splits
 
   ##Aggregate data into counts of CW and CCW responses, with various
   ##levels of folding/spindling
@@ -122,7 +125,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   plot.number <- plot.basic + by.number + plot.wrap
   #
   #plot with x-axis of target spacing, lines of constant number
-  plot.spacing <<- plot.basic + by.spacing + plot.wrap
+  plot.spacing <- plot.basic + by.spacing + plot.wrap
+  pliot.spacing <<- plot.spacing
   #
   #plot with x-axis of "extent"
   plot.extent <- plot.basic + by.extent + plot.wrap
