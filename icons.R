@@ -1,5 +1,5 @@
 ## In this file we define some custom graphical objects for ggplot2.
-options(encoding="UTF-8")
+options(encoding = "UTF-8")
 library(plyr)
 library(grid)
 library(ggplot2)
@@ -17,7 +17,7 @@ identity_scale <- ggplot2:::identity_scale
 if (packageVersion("ggplot2") < package_version('0.9.4')) {
   e <- environment(ggplot2:::combine_elements)
   unlockBinding("combine_elements", e)
-  evalq(envir=e, {
+  evalq(envir = e, {
     combine_elements <- function(e1, e2) {
 
       # If e2 is NULL, nothing to inherit
@@ -58,26 +58,28 @@ if (packageVersion("ggplot2") < package_version('0.9.4')) {
 ## "weight" -- the thickness of the tickmarks.
 ## "color" and "fill" have their usual meanings.
 
-geom_numdensity <- function(mapping=NULL, data=NULL,
-                            stat="identity", position="identity", ...) {
-  GeomNumdensity$new(mapping=mapping, data=data,
-                     stat=stat, position=position, ...)
+geom_numdensity <- function(mapping = NULL, data = NULL,
+                            stat = "identity", position = "identity", ...) {
+  GeomNumdensity$new(mapping = mapping, data = data,
+                     stat = stat, position = position, ...)
 }
 
 GeomNumdensity <- proto(Geom, {
   objname <- "numdensity"
   default_stat <- function(.) StatIdentity
-  default_aes <- function(.) aes(  colour = "black", size=4, weight=0.5, linetype=1
-                                 , tick_in=1, tick_out = 2, alpha = NA, shape=16, fill=NA
-                                 , center = pi/2, eccentricity=1)
+  default_aes <- function(.)
+    aes(colour = "black", size = 4, weight = 0.5, linetype = 1, tick_in = 1,
+        tick_out = 2, alpha = NA, shape = 16, fill = NA, center = pi/2,
+        eccentricity = 1)
   required_aes <- c("x", "y", "spacing", "number")
 
   circles_and_ticks <- function(munched) {
     # legend defaults; use of "with" below will fall back on these for legends.
     x <- 0.5; y <- 0.5; spacing <- pi/9; number <- 3;
     tickmarked <- adply(  munched, 1, function(row) {
-      angles <- with(row, seq(  center - spacing/eccentricity/2 * (as.numeric(number) - 1)
-                              , by=spacing/eccentricity, length=as.numeric(number)))
+      angles <- with(row, seq(
+        center - spacing/eccentricity/2 * (as.numeric(number) - 1),
+        by=spacing/eccentricity, length=as.numeric(number)))
       with(row, data.frame(
                   begin.x = size/2 * cos(angles) * (size - tick_in) / size
                   , begin.y = size/2 * sin(angles) * (size - tick_in) / size
@@ -135,6 +137,14 @@ GeomNumdensity <- proto(Geom, {
           , children=circles_and_ticks(data)
           )
   }})
+
+## The Geom_envelope draws a Gabor function.
+geomGabor <- proto(Geom, {
+  objname <- "gabor"
+  default_stat <- function(.) StatIdentity
+  defaultAes <- function(.) aes( colour="black", width=4, height=5, linetype=1
+                                , center=pi/2, eccentricity=1)
+})
 
 ## here is a theme object for mixing different fonts using a fallback
 ## unicode symbols into the display of
@@ -308,10 +318,11 @@ element_grob.element_text_with_symbols <- function(
       rot = angle, ...
       )
   } else {
-    stringsplits = renderable_split(label, family, face, size, lineheight, fontcheck)
+    stringsplits <- renderable_split(label, family, face,
+                                     size, lineheight, fontcheck)
     stack <- stack %||% element$stack
-    offset.x = 0
-    offset.y = 0
+    offset.x <- 0
+    offset.y <- 0
 
     if (dim(stringsplits)[1] > 1) {
       #plot with multiple fonts in the same frame.  what we should do
@@ -355,10 +366,10 @@ element_grob.element_text_with_symbols <- function(
 
 
 unicode_demo <- function() {
-  curveleft = "\u21BA"
-  curveright = "\u21BB"
-  circleleft = "\u27F2"
-  circleright = "\u27F3"
+  curveleft <- "\u21BA"
+  curveright <- "\u21BB"
+  circleleft <- "\u27F2"
+  circleright <- "\u27F3"
 
   combine_arrows <- function(x, combine) {
     first <- which(!is.na(x))[1]
@@ -374,40 +385,40 @@ unicode_demo <- function() {
   }
 
   append_arrows <- function(x) {
-    combine_arrows(x, combine=function(x, y) paste(y, x, sep=""))
+    combine_arrows(x, combine = function(x, y) paste(y, x, sep = ""))
   }
 
   prepend_arrows <- function(x) {
-    combine_arrows(x, combine=function(x, y) paste(x, y, sep=" "))
+    combine_arrows(x, combine = function(x, y) paste(x, y, sep = " "))
   }
 
   newline_arrows <- function(x) {
-    combine_arrows(x, combine = function(x, y) paste(y, x, sep="\n"))
+    combine_arrows(x, combine = function(x, y) paste(y, x, sep = "\n"))
   }
 
   theme_set(theme_bw(12, "Myriad Pro"))
   theme_update(
     axis.title.x = element_text_with_symbols(
-      size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),
-      lineheight=list(c(0.9, 1.5)), stack="h")
+      size = list(c(12, 24)), family = list(c("Myriad Pro", "Apple Symbols")),
+      lineheight = list(c(0.9, 1.5)), stack = "h")
     , axis.title.y = element_text_with_symbols(
-        size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),
-        lineheight=list(c(0.9, 1.5)), angle=0, stack="v")
-    , axis.text.x = element_text(size=10, family="Apple Symbols", vjust=1)
-    , axis.text.y = element_text(size=10, family="Apple Symbols", hjust=1)
+        size = list(c(12, 24)), family = list(c("Myriad Pro", "Apple Symbols")),
+        lineheight = list(c(0.9, 1.5)), angle = 0, stack = "v")
+    , axis.text.x = element_text(size = 10, family = "Apple Symbols", vjust = 1)
+    , axis.text.y = element_text(size = 10, family = "Apple Symbols", hjust = 1)
     ## , axis.text.x = element_text_with_symbols(
-    ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
-    ##     angle=0, stack="v", vjust=1)
+    ##     size = list(c(10, 20)), family = list(c("Myriad Pro", "Apple Symbols")),
+    ##     angle = 0, stack = "v", vjust = 1)
     ## , axis.text.y = element_text_with_symbols(
-    ##     size=list(c(10, 20)), family=list(c("Myriad Pro", "Apple Symbols")),
-    ##     angle=0, stack="h", hjust=1)
+    ##     size = list(c(10, 20)), family = list(c("Myriad Pro", "Apple Symbols")),
+    ##     angle = 0, stack = "h", hjust = 1)
       )
-  (qplot(x=-10:10, y=(-10:10)^2, geom="line",
-         xlab="foo\u21BBbaz", ylab="abla\u21BAedio")
-   ## + scale_x_continuous(labels=append_arrows)
-   ## + scale_y_continuous(labels=prepend_arrows)
-   + scale_x_continuous(labels=newline_arrows)
-   + scale_y_continuous(labels=prepend_arrows)
+  (qplot(x = -10:10, y = (-10:10)^2, geom = "line",
+         xlab = "foo\u21BBbaz", ylab = "abla\u21BAedio")
+   ## + scale_x_continuous(labels = append_arrows)
+   ## + scale_y_continuous(labels = prepend_arrows)
+   + scale_x_continuous(labels = newline_arrows)
+   + scale_y_continuous(labels = prepend_arrows)
    )
 }
 
@@ -425,7 +436,7 @@ custom_geom_demo <- function() {
 
   load("../modeling/data.Rdata")
   load("../modeling/slopeModel.RData")
-  segment <- subset(data, exp_type=="numdensity" & subject %in% names(models))
+  segment <- subset(data, exp_type == "numdensity" & subject %in% names(models))
 
   #this just illustrates the combinations of number and density.
   configurations <- unique(segment[c("target_spacing", "target_number_shown")])
@@ -434,48 +445,48 @@ custom_geom_demo <- function() {
 
   ##For each personalization, collect the "segment" data to compare it against.
   alply(personalizations, 1,
-        mkchain(  match_df(segment, ., on=names(.))
-                , do.rename(folding=TRUE)
-                , mkrates(splits=c(
+        mkchain(  match_df(segment, ., on = names(.))
+                , do.rename(folding = TRUE)
+                , mkrates(splits = c(
                             "spacing", "content", "target_number_shown")))
         ) -> personalization.segment.data
 
   number_color_scale <-
-    c(  list(aes(  color=factor(target_number_shown)) )
-      , with_arg(  name="Element\nnumber"
-                 , palette=color_pal
-                 , labels=prettyprint
+    c(  list(aes(  color = factor(target_number_shown)) )
+      , with_arg(  name = "Element\nnumber"
+                 , palette = color_pal
+                 , labels = prettyprint
                  , discrete_scale("colour", "manual")
                  ))
   ##
   Map(alply(personalizations, 1, identity), personalization.segment.data,
-      f=function(row, data){
+      f = function(row, data){
         chain(data,
-              with(binom.confint(n_cw, n, method="wilson", conf.level=0.75)),
+              with(binom.confint(n_cw, n, method = "wilson", conf.level = 0.75)),
               cbind(data,.)) -> data
         rad <- 20/3
         (  ggplot(data)
-         + aes(x=spacing)
-         + aes(y=p, ymin=lower, ymax=upper)
-         + aes(spacing=spacing, number=factor(target_number_shown))
+         + aes(x = spacing)
+         + aes(y = p, ymin = lower, ymax = upper)
+         + aes(spacing = spacing, number = factor(target_number_shown))
          + continuous_scale("spacing", "spacing", identity,
-                            , rescaler=function(x, from) {
+                            , rescaler = function(x, from) {
                               rescale(x , from = from , to = from/rad)
                             }
-                            , name="Spacing")
+                            , name = "Spacing")
          + identity_scale(discrete_scale("number", "identity",
-                                         identity_pal(), name="Element\nnumber"))
+                                         identity_pal(), name = "Element\nnumber"))
          #       + geom_errorbar()
          + geom_numdensity()
          #      + spacing_texture_scale
          + proportion_scale
          + number_color_scale
-         + geom_line(aes(group=target_number_shown), show_guide=FALSE)
+         + geom_line(aes(group = target_number_shown), show_guide = FALSE)
          ## + facet_wrap( ~ subject)
-         + annotate(  "text", x=mean(range(data$spacing)), y=0
-                    , label=sprintf("%s, dx=%03f", toupper(row$subject)
+         + annotate(  "text", x = mean(range(data$spacing)), y = 0
+                    , label = sprintf("%s, dx=%03f", toupper(row$subject)
                         , row$folded_direction_content)
-                    , vjust=-0.5, size=6
+                    , vjust = -0.5, size = 6
                     )
          )}
       #make a gtable plotting it both ways...
