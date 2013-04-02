@@ -203,6 +203,51 @@ GeomGabor <- proto(Geom, {
   }
 })
 
+# a quiver geom. Quiver plots can also be done with geom_segment, but
+# these are different in that they are scales to physical units rather
+# than graph units.
+geom_quiver <- function(mapping = NULL, data = NULL, stat = "identity",
+                        position = "identity", arrow = NULL, lineend = "butt",
+                        na.rm = FALSE, ...) {
+  GeomQuiver$new(mapping = mapping, data = data, stat = stat,
+                 position = position, arrow = arrow, lineend = lineend,
+                 na.rm =  na.rm, ...)
+}
+
+GeomQuiver <- proto(Geom, {
+  objname <- "quiver"
+  default_state <- function(.) StatIdentity
+  default_aes <- function(.)
+    aes(scale=5, size=0.5, linetype=1, colour="black", alpha=NA,
+        xstart=0, ystart=0, arrow = NA)
+  required_aes <- c("x", "y", "xend", "yend")
+  guide_geom <- function(.) "quiver"
+
+  quiver_segments <- function(munched) {
+    x <- 0.5; y <- 0.5; scale <- 3
+    with(munched, segmentsGrob(
+      x0 = unit(x, "native") + unit(xbeg * scale, "mm"),
+      y0 = unit(y, "native") + unit(ybeg * scale, "mm"),
+      x1 = unit(x, "native") + unit(xend * scale, "mm"),
+      y1 = unit(y, "native") + unit(yend * scale, "mm"),
+      gp = gpar(cp = alpha(colour, alpha), lwd = size * .pt, lty = linetype,
+        lineend = lineend),
+      arrow = arrow
+      ))
+  }
+
+  draw <- function(., data, scales, coordinates, arrow = NULL,
+                   lineend = "butt", ...) {
+    munched <- coord_transcorm(coordinates, data, scales)
+    ggnames(.$my_name, quiver_segments(munched))
+  }
+
+  draw_legend <- function(., data, ...) {
+    data <- aesdefaults(data, .$default_aes(), list(...))
+    quiver_segments(data)
+  }
+})
+
 gaborDemo <- function() {
 
   #build some ways to depict "envelope" and "carrier" motion
