@@ -147,6 +147,7 @@ GeomNumdensity <- proto(Geom, {
 ## 'samples' the number of points along which to sample,
 ## 'freq' the frequency of the osciallation ( in sigma units )
 ## 'phase' the phase of the oscillation
+## 'center' shifts the envelope
 
 geom_gabor <- function(mapping=NULL, data=NULL,
                         stat="identity", position="identity", ...) {
@@ -158,8 +159,9 @@ GeomGabor <- proto(Geom, {
   objname <- "gabor"
   default_stat <- function(.) StatIdentity
   default_aes <- function(.)
-    aes(width = 5, height = 1, size = 1,
+    aes(width = 5, height = 5, size = 1,
         linetype = 1, sigma = 2, freq = 0, phase = 0,
+        center = 0,
         colour = "black", samples=30, alpha=NA)
   required_aes <- c("x", "y")
 
@@ -168,26 +170,23 @@ GeomGabor <- proto(Geom, {
     x <- 0.5; y <- 0.5
 
     .id <- 0
-    gabors <- adply(munched,
-                    1, function(x) {
-                      merge(
-                        mutate(x, .id = .id <<- .id + 1),
-                        with(x, data.frame(
-                          xx = seq(-sigma, sigma, length = samples),
-                          yy = (
-                            exp(-(seq(-sigma, sigma, length = samples)^2))
-                            * Re(exp(complex(
-                              imaginary = (phase
-                                           + freq * seq(-sigma, sigma,
-                                                        length = samples)))))))),
-                        by=c())
-                    })
+    gabors <- adply(
+      munched, 1, function(x) {
+        coo = with(x, seq(-sigma, sigma, length = samples))
+        merge(
+          mutate(x, .id = .id <<- .id + 1),
+          with(x, data.frame(
+            xx = coo/sigma,
+            yy = (exp(-(coo-center)^2)
+                  * Re(exp(complex(
+                    imaginary = (phase + freq * (coo - center)))))))),
+          by=c())
+      })
     with(gabors, polylineGrob(
-      x = unit(xx * width, "mm") + unit(x, "native"),
-      y = unit(yy * width, "mm") + unit(y, "native"),
+      x = unit(xx * width/2, "mm") + unit(x, "native"),
+      y = unit(yy * height/2, "mm") + unit(y, "native"),
       id = .id,
-      gp = (gpar(col = colour, fill=alpha(colour, alpha),
-                 lwd = size * .pt, lty=linetype))
+      gp = (gpar(col = alpha(colour, alpha), lwd = size * .pt, lty=linetype))
       ))
   }
 
@@ -196,7 +195,7 @@ GeomGabor <- proto(Geom, {
     ggname(.$my_name(), gabor_lines(munched))
   }
 
-  guide_geom <- function(.) ("numdensity")
+  guide_geom <- function(.) ("gabor")
 
   draw_legend <- function(., data, ...) {
     data <- aesdefaults(data, .$default_aes(), list(...))
@@ -205,10 +204,43 @@ GeomGabor <- proto(Geom, {
 })
 
 gaborDemo <- function() {
-  data <- data.frame(x=c(0, 0, 1, 1), y = c(0, 1, 0, 1),
-                     cycles=c(0, 0, 2, 2), phase=c(0, pi, 0, pi))
-  plot(ggplot(data) + aes(x, y, cycles=cycles, phase=phase) + geom_gabor())
+
+  #build some ways to depict "envelope" and "carrier" motion
+  chain(data.frame(#center.shift = c(pi/4, 0, -pi/4),
+                   envelope = c("left", "none", "right")),
+        merge(data.frame(#phase.shift = c(-1.5, 0, 1.5),
+                         carrier = c("left", "none", "right"))),
+        merge(data.frame(freq = c(0, 0, 3*pi/2),
+                         linetype=c("11", "11", "1"),
+                         phase = c(0, pi, 0))),
+#        merge(data.frame(shift.amt = seq(0, 1, length = 10))),
+        subset(ifelse(carrier != "none", freq != 0, TRUE)),
+        subset(ifelse(envelope != "none", freq == 0, TRUE))
+        ## mutate(center = center.shift * shift.amt,
+        ##        phase = phase + phase.shift * shift.amt,
+        ##        alpha = shift.amt)
+        ) -> carriers
+  plot(ggplot(carriers)
+       + aes(x = carrier, y = envelope, freq = freq, linetype = linetype,
+             group=freq, phase = phase)
+       + geom_gabor(sigma = 2, size = 0.5,
+                    width = 15, height = 15, samples = 50)
+       + theme_bw()
+       + theme(panel.grid.major = element_blank()
+               , panel.grid.minor = element_blank()))
+
+  data.frame(carrier=c("left", "none", "right"))
+
+
+  data <- merge(data.frame(freq=seq(0, 2*pi, length=5)),
+                data.frame(phase=seq(0, pi, length=4)))
+  plot(ggplot(data)
+       + aes(x=phase, y=freq, freq=freq, phase=phase)
+       + geom_gabor(size=0.5)
+       + scale_x_continuous(expand=c(0.5, 0)))
 }
+
+
 
 ## here is a theme object for mixing different fonts using a fallback
 ## unicode symbols into the display of
