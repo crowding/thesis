@@ -136,15 +136,79 @@ GeomNumdensity <- proto(Geom, {
               , lineend = "square")
           , children=circles_and_ticks(data)
           )
-  }})
+  }
+})
 
-## The Geom_envelope draws a Gabor function.
-geomGabor <- proto(Geom, {
+## The Geom_envelope draws a Gabor function, oriented horizontally.
+## Aesthetics:
+## 'sigma' how may sigmas the icon includes in either direction (default t0)
+## 'width', 'height' size of the Gabor icon, in mm
+## 'linetype', 'alpha', 'colour' as with geom_segment;
+## 'samples' the number of points along which to sample,
+## 'freq' the frequency of the osciallation ( in sigma units )
+## 'phase' the phase of the oscillation
+
+geom_gabor <- function(mapping=NULL, data=NULL,
+                        stat="identity", position="identity", ...) {
+  GeomGabor$new(mapping = mapping, data = data,
+                state = stat, position = position, ...)
+}
+
+GeomGabor <- proto(Geom, {
   objname <- "gabor"
   default_stat <- function(.) StatIdentity
-  defaultAes <- function(.) aes( colour="black", width=4, height=5, linetype=1
-                                , center=pi/2, eccentricity=1)
+  default_aes <- function(.)
+    aes(width = 5, height = 1, size = 1,
+        linetype = 1, sigma = 2, freq = 0, phase = 0,
+        colour = "black", samples=30, alpha=NA)
+  required_aes <- c("x", "y")
+
+  gabor_lines <- function(munched) {
+    # legend defaults; use of "with" below will fall back on these for legends.
+    x <- 0.5; y <- 0.5
+
+    .id <- 0
+    gabors <- adply(munched,
+                    1, function(x) {
+                      merge(
+                        mutate(x, .id = .id <<- .id + 1),
+                        with(x, data.frame(
+                          xx = seq(-sigma, sigma, length = samples),
+                          yy = (
+                            exp(-(seq(-sigma, sigma, length = samples)^2))
+                            * Re(exp(complex(
+                              imaginary = (phase
+                                           + freq * seq(-sigma, sigma,
+                                                        length = samples)))))))),
+                        by=c())
+                    })
+    with(gabors, polylineGrob(
+      x = unit(xx * width, "mm") + unit(x, "native"),
+      y = unit(yy * width, "mm") + unit(y, "native"),
+      id = .id,
+      gp = (gpar(col = colour, fill=alpha(colour, alpha),
+                 lwd = size * .pt, lty=linetype))
+      ))
+  }
+
+  draw <- function(., data, scales, coordinates, ...) {
+    munched <- coord_transform(coordinates, data, scales)
+    ggname(.$my_name(), gabor_lines(munched))
+  }
+
+  guide_geom <- function(.) ("numdensity")
+
+  draw_legend <- function(., data, ...) {
+    data <- aesdefaults(data, .$default_aes(), list(...))
+    gabor_lines(data)
+  }
 })
+
+gaborDemo <- function() {
+  data <- data.frame(x=c(0, 0, 1, 1), y = c(0, 1, 0, 1),
+                     cycles=c(0, 0, 2, 2), phase=c(0, pi, 0, pi))
+  plot(ggplot(data) + aes(x, y, cycles=cycles, phase=phase) + geom_gabor())
+}
 
 ## here is a theme object for mixing different fonts using a fallback
 ## unicode symbols into the display of
