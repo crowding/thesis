@@ -138,6 +138,11 @@
 --output --invisible writing/combined.model.RData combined.model.RData
 --output --invisible writing/combined.model.pdf combined.model.pdf && cd ..
 
+--command cd writing && Rscript
+--input --invisible --match writing/slopeModel.RData slopeModel.RData
+--input --invisible writing/motion_energy.csv motion_energy.csv
+--output --invisible writing/contours.pdf contours.pdf
+
 --command
 --input --match --invisible writing/.*
 --output --once --invisible --phony writing
