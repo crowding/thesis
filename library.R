@@ -246,8 +246,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
         mean_along <- mean(x$.binvar)
         if (!missing.restrict) {
           #actually we want to restrict to values that are observed...
-          restrict <- unique(data[[along]])
-          mean_along <- restrict[which.min(abs(mean_along - restrict))]
+          mean_along <- take_nearest(mean_along, data[[along]])
         }
         l <- structure(list(mean_along), names=along)
         total_obs <- sum(x[[responsevar]])
@@ -276,6 +275,9 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
 }
 
 shuffle <- function(df) df[sample(seq_len(nrow(df))),]
+
+sample.data.frame <- function(df, howmany=10, replace=FALSE, prob=NULL)
+  df[sample(seq_len(nrow(df)), howmany, replace, prob),]
 
 wrap <- function(x, spacing) x - spacing*round(x/spacing)
 
@@ -412,6 +414,13 @@ unmkrates <- function(data, keep.count.cols=FALSE) {
   data
 }
 
+take_nearest <- function(data, candidates) {
+  #coerce values to the "nearest" of a set of candidates.
+  restrict <- sort(unique(candidates))
+  breaks <- c(-Inf, restrict[1:(length(restrict)-1)] + diff(restrict)/2, Inf)
+  restrict[findInterval(data, breaks, rightmost.closed=TRUE)]
+}
+
 #compute columns for total "local" motion energy and total "global" motion energy
 recast_data <- function(data, number.factor=1) {
   mutate(data,
@@ -422,6 +431,8 @@ recast_data <- function(data, number.factor=1) {
          target_number_all = (if (!exists("target_number_all"))
                               target_number_shown else
                               target_number_all),
+         content_cw = if (exists("content_cw")) content_cw else (content + 1)/4,
+         content_ccw = if (exists("content_ccw")) content_ccw else (1 - content)/4,
          content_global = content * target_number_shown,
          content_local = content / spacing,
          full_circle = target_number_shown == target_number_all,
@@ -482,8 +493,6 @@ assert_finite <- function(x) {
 }
 
 motion_energy_calcs <- dots(
-  target_number_shown = (ifelse(is.na(target_number_shown),
-                                target_number_all, target_number_shown)),
   contrast_diff = assert_finite(
     sqrt(rowSums(data[c(cw_cols)] / target_number_shown))
     - sqrt(rowSums(data[c(ccw_cols)] / target_number_shown))),
@@ -540,4 +549,9 @@ merge_check <- function(x, y, ..., by=intersect(names(x), names(y))) {
 
 key_check <- function(x, y, ..., by=intersect(names(x), names(y))) {
   sapply(by, function(col) length(unique(intersect(x[[col]], y[[col]]))))
+}
+
+show_dup <- function(joined, which_dup = 1) {
+  dups <- which(duplicated(joined$left.check))
+  subset(joined, left.check %in% left.check[dups[which_dup]])
 }

@@ -14,6 +14,7 @@ theme_set(theme_bw())
 use_unicode=TRUE
 source("scales.R")
 source("library.R")
+source("slopeModel.R")
 
 infile <- "slopeModel.RData"
 grid <- "motion_energy.csv"
@@ -21,124 +22,112 @@ outfile <- "contours.pdf"
 
 main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
                  outfile = "contours.pdf") {
+
   load(infile)
   motion.energy <- add_energies(read.csv(grid))
 
-  bind[plot.displacement, plot.content, plot.spacing] <- (
+  bind[displacement.sampling, content.sampling, spacing.sampling] <- (
     chain(motion.energy, subset(grid==TRUE),
-          mutate(spacing=target_number_all * 2*pi/eccentricity),
+          mutate(spacing = eccentricity * 2 * pi / target_number_all),
           .[c("displacement", "content", "spacing")],
           lapply(unique), lapply(sort)))
-  plot.displacement <<- plot.displacement
-  plot.content <<- plot.content
-  plot.spacing <<- plot.spacing
+  displacement.sampling <<- displacement.sampling
+  content.sampling <<- content.sampling
+  spacing.sampling <<- spacing.sampling
 
   #how about some contour plots. Everyone hated these.
   if (!interactive()) {
     cairo_pdf(outfile, onefile=TRUE)
     on.exit(dev.off(), add=TRUE)
   }
-  (mapply %<<% model.df)(function(model, subject) {
-    cat("plotting contours for", as.character(subject), "\n")
-    #plot_contours(model)
-    tryCatch(plot_contours(model), error=function(x) warning(x))
-  })
 }
 
-plot_contours <- function(model) {
-  #make a contour plot with displacement on the x-axis and spacing on
-  #the y-axis.
+model <- subset(model.df, subject=="pbm")[[1, "model"]]
 
-  displacement_sampling <- expand.grid(
-                spacing = plot.spacing,
-                displacement = plot.displacement,
-                content = 0.1,
-                bias = 1
-                )
-  displacement_sampling$pred <-
-    predict(model, newdata=displacement_sampling, type="response")
+plot_contours <- function(model, motion.energy) {
+  # we want three contour plots along our three axes --
+  # spacing, displacement and direction content --
+  # maybe even put it in 3d with the other one.
 
-  print(ggplot(displacement_sampling)
-   + aes(x = displacement, y = spacing, z=pred)
-   + geom_vline(x=0, color="gray50", linetype="11", size=0.2)
-   + decision_contour
-   + displacement_scale_nopadding + y_nopadding
-   + no_grid
-   + annotate("text", label=toupper(model$data$subject[[1]]),
-              x=max(displacement_sampling$displacement),
-              y=min(displacement_sampling$spacing),
-              hjust=1.2, vjust=-0.5)
-   )
+  # we also need to bin from 3d into 2d showing residuals for each case.
+  # so we need to decide where the bins are placed...
 
-  #now to show the (trickier) relation of direction content to spacing
-  content_sampling <-
-    expand.grid(
-      spacing      = plot.spacing,
-      content      = plot.content,
-      displacement = 0,
-      subject = model$data$subject[[1]],
-      bias=1
-      )
-  content_sampling$pred <-
-    predict(model, newdata=content_sampling, type="response")
+  nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
+  # first, displacement versus spacing.
 
-  print(ggplot(content_sampling)
-        + aes(x = content, y = spacing, z = pred)
-        + geom_contour(size=0.2, color="gray70", breaks=seq(0,1,0.02))
+  wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
+  narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
+  
+  grids <- within(list(), {
+    displacement_spacing <- expand.grid(
+      spacing = spacing.sampling,
+      displacement = displacement.sampling,
+      content = 0)
+    spacing_content <- expand.grid(
+      spacing = spacing.sampling,
+      content = content.sampling,
+      displacement = 0)
+    content_displacement_wide <- expand.grid(
+      spacing = wide.spacing,
+      content = content.sampling,
+      displacement = displacement.sampling)
+    content_displacement_narrow <- expand.grid(
+      spacing = narrow.spacing,
+      content = content.sampling,
+      displacement = displacement.sampling)
+  })
+
+  #cook in additional fields that the model may need
+  #because matlab's idea of 20/3 is different from R's....
+  grids <- lapply(
+    grids,
+    mkchain(
+      mutate(
+        eccentricity = (
+          if (exists("eccentricity")) eccentricity else nominal.eccentricity),
+        bias = 1,
+        target_number_all = (
+          if (exists("target_number_shown")) target_number_all
+          else round(2*pi*eccentricity / spacing))),
+      recast_data,
+      attach_motion_energy(motion.energy),
+      mutate(., pred = predict(model, newdata=., type="response"))))
+
+  print(ggplot(grids$displacement_spacing)
+        + aes(x = displacement, y = spacing, z = pred)
         + decision_contour
-        + y_nopadding
-        + scale_x_continuous(name="Direction content",
-                             labels=newline_arrows, expand=c(0,0))
+        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
+        + displacement_scale_nopadding + y_nopadding
         + no_grid
         + annotate("text", label=toupper(model$data$subject[[1]]),
-                   x=max(content_sampling$content),
-                   y=min(content_sampling$spacing),
-                   hjust=1.2, vjust=-0.5))
+                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
 
-  #might be interesting to plot deviance over these coordinates. color
-  #coded deviance plot?
-
-  #uncertainty inside/outside
-  uncertainty_sampling <- expand.grid(
-    spacing = match_to(c(2, 3, 5, 10, 20), plot.spacing),
-        displacement = plot.displacement,
-        content = 0.1,
-        bias=1
-  )
-  pred <- predict(model, newdata=uncertainty_sampling,
-                  type="response", se.fit=TRUE)
-  uncertainty_sampling <- cbind(uncertainty_sampling, pred)
-
-  print(ggplot(uncertainty_sampling)
-   + displacement_scale
-   + spacing_texture_scale
-   + ribbon
-   + proportion_scale
-   + annotate("text", label=toupper(model$data$subject[[1]]),
-              x=max(uncertainty_sampling$displacement),
-              y=0,
-              hjust=1.2, vjust=-0.5)
-   + no_grid
-   + geom_vline(x=0, color="gray50", linetype="11", size=0.2)
-   )
-
-  content_sampling <-
-    expand.grid(
-      spacing = match_to(c(2, 3, 5, 10, 20), plot.spacing),
-      content = plot.content,
-      displacement = 0,
-      bias = 1)
-  pred = predict(model, newdata=content_sampling, type="response", se.fit=TRUE)
-  content_sampling <- cbind(content_sampling, pred)
-
-  print(ggplot(content_sampling)
-        + content_scale
-        + proportion_scale
-        + spacing_texture_scale
-        + ribbon
+  print(ggplot(grids$spacing_content)
+        + aes(x = content, y = spacing, z = pred)
+        + decision_contour
+        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
+        + content_scale_nopadding + y_nopadding
+        + no_grid
         + annotate("text", label=toupper(model$data$subject[[1]]),
-                   x=max(model$data$content),
-                   y=0,
-                   hjust=1.2, vjust=-0.5)
-        )
+                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
+
+  print(ggplot(grids$content_displacement_narrow)
+        + aes(x = content, y = displacement, z = pred)
+        + decision_contour
+        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
+        + content_scale_nopadding + y_nopadding
+        + no_grid
+        + annotate("text", label=toupper(model$data$subject[[1]]),
+                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
+
+  print(ggplot(grids$content_displacement_wide)
+        + aes(x = content, y = displacement, z = pred)
+        + decision_contour
+        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
+        + content_scale_nopadding + y_nopadding
+        + no_grid
+        + annotate("text", label=toupper(model$data$subject[[1]]),
+                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
+
+  #todo:_add "raw" (binned, munged) data, change colors, make 3d plot
 }

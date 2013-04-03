@@ -269,12 +269,14 @@ label_count <- function(data, group, countvar=n_obs)
     aes(label = sprintf("N = %d", .count)),
     x = -Inf, y = Inf, size=3, vjust = 1.5, hjust = -0.2)
 
-content_scale <- 
+content_scale <-
   list(aes(x=content),
        scale_x_continuous(name="Direction content (+CW)",
                           #labels=newline_arrows,
                           expand=c(0,0))
        )
+content_scale_nopadding <- content_scale
+content_scale_nopadding[[2]]$expand <- c(0,0)
 
 ribbon <- list(
             geom_ribbon(color="transparent", alpha=0.2,
