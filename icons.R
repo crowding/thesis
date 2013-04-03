@@ -208,38 +208,35 @@ GeomGabor <- proto(Geom, {
 # than graph units.
 geom_quiver <- function(mapping = NULL, data = NULL, stat = "identity",
                         position = "identity", arrow = NULL, lineend = "butt",
-                        na.rm = FALSE, ...) {
+                        length = 5, ...) {
   GeomQuiver$new(mapping = mapping, data = data, stat = stat,
                  position = position, arrow = arrow, lineend = lineend,
-                 na.rm =  na.rm, ...)
+                 length = length, ...)
 }
 
 GeomQuiver <- proto(Geom, {
   objname <- "quiver"
   default_state <- function(.) StatIdentity
   default_aes <- function(.)
-    aes(scale=5, size=0.5, linetype=1, colour="black", alpha=NA,
-        xstart=0, ystart=0, arrow = NA)
-  required_aes <- c("x", "y", "xend", "yend")
+    aes(length=5, size=0.5, linetype=1, colour="black", alpha=NA,
+        xstart=0, ystart=0)
+  required_aes <- c("x", "y", "xlen", "ylen")
   guide_geom <- function(.) "quiver"
-
-  quiver_segments <- function(munched) {
-    x <- 0.5; y <- 0.5; scale <- 3
-    with(munched, segmentsGrob(
-      x0 = unit(x, "native") + unit(xbeg * scale, "mm"),
-      y0 = unit(y, "native") + unit(ybeg * scale, "mm"),
-      x1 = unit(x, "native") + unit(xend * scale, "mm"),
-      y1 = unit(y, "native") + unit(yend * scale, "mm"),
-      gp = gpar(cp = alpha(colour, alpha), lwd = size * .pt, lty = linetype,
-        lineend = lineend),
-      arrow = arrow
-      ))
-  }
 
   draw <- function(., data, scales, coordinates, arrow = NULL,
                    lineend = "butt", ...) {
-    munched <- coord_transcorm(coordinates, data, scales)
-    ggnames(.$my_name, quiver_segments(munched))
+    x <- 0.5; y <- 0.5; length <- 3; lineend = "butt"
+    munched <- coord_transform(coordinates, data, scales)
+    segments <- with(munched, segmentsGrob(
+      x0 = unit(x, "native") + unit(xstart * length, "mm"),
+      y0 = unit(y, "native") + unit(ystart * length, "mm"),
+      x1 = unit(x, "native") + unit((xstart + xlen) * length, "mm"),
+      y1 = unit(y, "native") + unit((ystart + ylen) * length, "mm"),
+      gp = gpar(cp = alpha(colour, alpha), lwd = size * .pt,
+        lty = linetype, lineend = lineend),
+      arrow = arrow
+      ))
+    ggname(.$my_name(), segments)
   }
 
   draw_legend <- function(., data, ...) {
@@ -247,6 +244,18 @@ GeomQuiver <- proto(Geom, {
     quiver_segments(data)
   }
 })
+
+quiverDemo <- function() {
+
+  data <- chain(
+    expand.grid(x = seq(-5, 5, 0.25), y = seq(-5, 5, 0.25)),
+    mutate(dx = sin(y),
+           dy = cos(x))
+    )
+  (ggplot(data) + aes(x=x, y=y, xlen=dx, ylen=dy, xstart=-dx/2, ystart=-dy/2) +
+   geom_quiver(size=0.25, arrow=arrow(length=unit(1, "mm"))))
+
+}
 
 gaborDemo <- function() {
 
