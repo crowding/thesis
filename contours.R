@@ -27,15 +27,6 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
 
   motion.energy <- chain(grid, read.csv, add_energies)
 
-  bind[displacement.sampling, content.sampling, spacing.sampling] <- (
-    chain(motion.energy, subset(grid==TRUE),
-          mutate(spacing = eccentricity * 2 * pi / target_number_all),
-          .[c("displacement", "content", "spacing")],
-          lapply(unique), lapply(sort)))
-  displacement.sampling <<- displacement.sampling
-  content.sampling <<- content.sampling
-  spacing.sampling <<- spacing.sampling
-
   #how about some contour plots. Everyone hated these.
   if (!interactive()) {
     cairo_pdf(outfile, onefile=TRUE)
@@ -59,6 +50,21 @@ plot_contours <- function(model, motion.energy) {
 
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
   narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
+
+  is.motion.energy <- "motion_energy_models" %in% class(model)
+  if ("motion_energy_model" %in% class(model)) {
+    bind[displacement.sampling, content.sampling, spacing.sampling] <- (
+      chain(motion.energy, subset(grid==TRUE),
+            mutate(spacing = eccentricity * 2 * pi / target_number_all),
+            .[c("displacement", "content", "spacing")],
+            lapply(unique), lapply(sort)))
+  } else {
+    bind[displacement.sampling, content.sampling, spacing.sampling] <- (
+      chain(motion.energy, subset(grid==TRUE),
+            mutate(spacing = eccentricity * 2 * pi / target_number_all),
+            .[c("displacement", "content", "spacing")],
+            lapply(range), lapply(seq_range, length=50), lapply(sort)))
+  }
 
   grids <- within(list(), {
     displacement_spacing <- expand.grid(
@@ -91,7 +97,7 @@ plot_contours <- function(model, motion.energy) {
           if (exists("target_number_all")) target_number_all
           else round(2*pi*eccentricity / spacing))),
       recast_data,
-      attach_motion_energy(motion.energy),
+      if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = predict(model, newdata=., type="response"))))
 
   print(ggplot(grids$displacement_spacing)
