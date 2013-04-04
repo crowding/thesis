@@ -224,29 +224,35 @@ GeomQuiver <- proto(Geom, {
   guide_geom <- function(.) "quiver"
 
   draw <- function(., data, scales, coordinates, arrow = NULL,
-                   lineend = "butt", ...) {
-    x <- 0.5; y <- 0.5; length <- 3; lineend = "butt"
+                   lineend = "butt", linetype=1, ...) {
     munched <- coord_transform(coordinates, data, scales)
+    quiver_segments(.$my_name(), munched, linetype=linetype,
+                    lineend=lineend, arrow=arrow, ...)
+  }
+
+  quiver_segments <- function(name, munched, linetype=1,
+                              lineend="butt", arrow=NULL, ...) {
+    #these defaults apply when drawing guides
+    x <- 0.5; y <- 0.5; xlen <- 1; ylen <- 0; length <- 3; lineend = "butt"
     segments <- with(munched, segmentsGrob(
       x0 = unit(x, "native") + unit(xstart * length, "mm"),
       y0 = unit(y, "native") + unit(ystart * length, "mm"),
       x1 = unit(x, "native") + unit((xstart + xlen) * length, "mm"),
       y1 = unit(y, "native") + unit((ystart + ylen) * length, "mm"),
-      gp = gpar(cp = alpha(colour, alpha), lwd = size * .pt,
+      gp = gpar(col = alpha(colour, alpha), lwd = size * .pt,
         lty = linetype, lineend = lineend),
       arrow = arrow
       ))
-    ggname(.$my_name(), segments)
+    ggname(name, segments)
   }
 
   draw_legend <- function(., data, ...) {
     data <- aesdefaults(data, .$default_aes(), list(...))
-    quiver_segments(data)
+    quiver_segments(.$my_name(), data)
   }
 })
 
 quiverDemo <- function() {
-
   data <- chain(
     expand.grid(x = seq(-5, 5, 0.25), y = seq(-5, 5, 0.25)),
     mutate(dx = sin(y),
@@ -254,44 +260,42 @@ quiverDemo <- function() {
     )
   (ggplot(data) + aes(x=x, y=y, xlen=dx, ylen=dy, xstart=-dx/2, ystart=-dy/2) +
    geom_quiver(size=0.25, arrow=arrow(length=unit(1, "mm"))))
-
 }
 
-gaborDemo <- function() {
-
+iconsDemo <- function() {
   #build some ways to depict "envelope" and "carrier" motion
-  chain(data.frame(#center.shift = c(pi/4, 0, -pi/4),
-                   envelope = c("left", "none", "right")),
-        merge(data.frame(#phase.shift = c(-1.5, 0, 1.5),
-                         carrier = c("left", "none", "right"))),
+  chain(data.frame(envelope.shift = c(-1, 0, 1),
+                   envelope = c("left", "null", "right")),
+        merge(data.frame(phase.shift = c(-1, 0, 1),
+                         carrier = c("left", "null", "right"))),
         merge(data.frame(freq = c(0, 0, 3*pi/2),
                          linetype=c("11", "11", "1"),
                          phase = c(0, pi, 0))),
-#        merge(data.frame(shift.amt = seq(0, 1, length = 10))),
-        subset(ifelse(carrier != "none", freq != 0, TRUE)),
-        subset(ifelse(envelope != "none", freq == 0, TRUE))
-        ## mutate(center = center.shift * shift.amt,
-        ##        phase = phase + phase.shift * shift.amt,
-        ##        alpha = shift.amt)
+        subset(ifelse(carrier != "null", freq != 0, TRUE)),
+        subset(ifelse(envelope != "null", freq == 0, TRUE))
         ) -> carriers
+
+  chain(carriers,
+        mutate(xstart = envelope.shift - phase.shift/2,
+               xlen = phase.shift + envelope.shift),
+        subset(phase==0 & xlen != 0)) -> arrows
+
   plot(ggplot(carriers)
        + aes(x = carrier, y = envelope, freq = freq, linetype = linetype,
              group=freq, phase = phase)
        + geom_gabor(sigma = 2, size = 0.5,
-                    width = 15, height = 15, samples = 50)
+                    width = 15, height = 15, samples = 50, show_guide=FALSE)
+       + geom_quiver(data=arrows, aes(xlen = xlen, ylen=0, xstart=xstart),
+                     size=2, colour="white", lineend="square", linetype=1,
+                     arrow=arrow(length=unit(2, "mm")), show_guide=FALSE)
+       + geom_quiver(data=arrows, aes(xlen = xlen, ylen=0, xstart=xstart),
+                     size=1, colour="red", lineend="square", linetype=1,
+                     arrow=arrow(length=unit(2, "mm")),
+                     show_guide=FALSE)
        + theme_bw()
        + theme(panel.grid.major = element_blank()
-               , panel.grid.minor = element_blank()))
-
-  data.frame(carrier=c("left", "none", "right"))
-
-
-  data <- merge(data.frame(freq=seq(0, 2*pi, length=5)),
-                data.frame(phase=seq(0, pi, length=4)))
-  plot(ggplot(data)
-       + aes(x=phase, y=freq, freq=freq, phase=phase)
-       + geom_gabor(size=0.5)
-       + scale_x_continuous(expand=c(0.5, 0)))
+               , panel.grid.minor = element_blank(), aspect.ratio=1)
+       )
 }
 
 
