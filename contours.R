@@ -24,7 +24,6 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
                  outfile = "contours.pdf") {
 
   load(infile)
-
   motion.energy <- chain(grid, read.csv, add_energies)
 
   #how about some contour plots. Everyone hated these.
@@ -44,13 +43,10 @@ plot_contours <- function(model, motion.energy) {
   # we also need to bin from 3d into 2d showing residuals for each case.
   # so we need to decide where the bins are placed...
 
-  #because matlab's idea of 20/3 is different from R's....
+  #because 20/3 in the dataset is different form R's idea of 20/3....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
-  # first, displacement versus spacing.
 
-  wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
-  narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
-
+  # grid coordinates to sample on
   is.motion.energy <- "motion_energy_models" %in% class(model)
   if ("motion_energy_model" %in% class(model)) {
     bind[displacement.sampling, content.sampling, spacing.sampling] <- (
@@ -65,6 +61,9 @@ plot_contours <- function(model, motion.energy) {
             .[c("displacement", "content", "spacing")],
             lapply(range), lapply(seq_range, length=50), lapply(sort)))
   }
+
+  wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
+  narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
 
   grids <- within(list(), {
     displacement_spacing <- expand.grid(
@@ -84,6 +83,9 @@ plot_contours <- function(model, motion.energy) {
       content = content.sampling,
       displacement = displacement.sampling)
   })
+  xvars <- c("displacement", "spacing", "displacement", "displacement")
+  yvars <- c("spacing", "content", "content", "content")
+  zvar <- c("content", "displacement", "spacing", "spacing")
 
   #cook in additional fields that the model may need
   grids <- lapply(
@@ -99,6 +101,16 @@ plot_contours <- function(model, motion.energy) {
       recast_data,
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = predict(model, newdata=., type="response"))))
+
+  #compute contour polygons
+  ## lines <- Map(grid=grid, xvar=xvars, yvar=yvars, f = function() {
+  ##   cLines <- contourLines(x = grid[[xvar]], y = grid[[yvar]], grid$pred,
+  ##                          levels = seq(0, 1, 0.5))
+  ##   chain(cLines, lapply(as.data.frame), splat(rbind)(),
+  ##         rename(c(x = xvar, y = yvar)))
+  ## }) 
+  # we also need to show the actual data, for which we'll need to bin
+  # along the other variable....
 
   print(ggplot(grids$displacement_spacing)
         + aes(x = displacement, y = spacing, z = pred)
@@ -136,6 +148,4 @@ plot_contours <- function(model, motion.energy) {
         + annotate("text", label=toupper(model$data$subject[[1]]),
                    x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
 
-  #todo:_add "raw" (binned, munged) data, change colors, make 3d plot,
-  #put plots on table,
 }

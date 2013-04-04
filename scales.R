@@ -132,8 +132,11 @@ decision_color_scale <-
 
 decision_contour <-
   list(
-    geom_contour(aes(color=..level..), breaks = seq(0,1,length=11)),
-    decision_color_scale
+    geom_raster(aes(fill=pred), interpolate=TRUE),
+    stat_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, color="white"),
+    stat_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, linetype=2, color="black"),
+    scale_fill_gradientn("Responses CW", colours=c("black", "white"),
+                         values=c(0,1), breaks = seq(0.1, 0.9, 0.2))
     )
 
 no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
