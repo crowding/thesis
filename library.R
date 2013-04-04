@@ -509,6 +509,9 @@ add_energies <- function(data, drop=TRUE) {
   ccw_cols <- grep("(.*)_ccw\\.\\d$", names(data), value=TRUE)
   channel_cols <- grep("\\.\\d*$", names(data), value=TRUE)
   chain(data,
+        mutate(target_number_shown = (
+          ifelse(is.na(target_number_shown),
+                 target_number_all, target_number_shown)))
         (here(mutate) %<<% motion_energy_calcs)(),
         drop_columns(c(cw_cols, ccw_cols, "total_e")),
         rename(c(abs_displacement="displacement",

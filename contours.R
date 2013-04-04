@@ -24,7 +24,8 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
                  outfile = "contours.pdf") {
 
   load(infile)
-  motion.energy <- add_energies(read.csv(grid))
+
+  motion.energy <- chain(grid, read.csv, add_energies)
 
   bind[displacement.sampling, content.sampling, spacing.sampling] <- (
     chain(motion.energy, subset(grid==TRUE),
@@ -42,7 +43,7 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
   }
 }
 
-model <- subset(model.df, subject=="pbm")[[1, "model"]]
+if (exists("model.df")) model <- subset(model.df, subject=="pbm")[[1, "model"]]
 
 plot_contours <- function(model, motion.energy) {
   # we want three contour plots along our three axes --
@@ -52,12 +53,13 @@ plot_contours <- function(model, motion.energy) {
   # we also need to bin from 3d into 2d showing residuals for each case.
   # so we need to decide where the bins are placed...
 
+  #because matlab's idea of 20/3 is different from R's....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
   # first, displacement versus spacing.
 
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
   narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
-  
+
   grids <- within(list(), {
     displacement_spacing <- expand.grid(
       spacing = spacing.sampling,
@@ -78,7 +80,6 @@ plot_contours <- function(model, motion.energy) {
   })
 
   #cook in additional fields that the model may need
-  #because matlab's idea of 20/3 is different from R's....
   grids <- lapply(
     grids,
     mkchain(
@@ -87,7 +88,7 @@ plot_contours <- function(model, motion.energy) {
           if (exists("eccentricity")) eccentricity else nominal.eccentricity),
         bias = 1,
         target_number_all = (
-          if (exists("target_number_shown")) target_number_all
+          if (exists("target_number_all")) target_number_all
           else round(2*pi*eccentricity / spacing))),
       recast_data,
       attach_motion_energy(motion.energy),
@@ -129,5 +130,6 @@ plot_contours <- function(model, motion.energy) {
         + annotate("text", label=toupper(model$data$subject[[1]]),
                    x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
 
-  #todo:_add "raw" (binned, munged) data, change colors, make 3d plot
+  #todo:_add "raw" (binned, munged) data, change colors, make 3d plot,
+  #put plots on table,
 }
