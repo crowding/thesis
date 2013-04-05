@@ -65,27 +65,36 @@ plot_contours <- function(model, motion.energy) {
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
   narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
 
-  grids <- within(list(), {
-    displacement_spacing <- expand.grid(
+  grids <- list(
+    displacement_spacing = expand.grid(
       spacing = spacing.sampling,
       displacement = displacement.sampling,
-      content = 0)
-    spacing_content <- expand.grid(
+      content = 0),
+    spacing_content = expand.grid(
       spacing = spacing.sampling,
       content = content.sampling,
-      displacement = 0)
-    content_displacement_wide <- expand.grid(
+      displacement = 0),
+    content_displacement_wide = expand.grid(
       spacing = wide.spacing,
       content = content.sampling,
-      displacement = displacement.sampling)
-    content_displacement_narrow <- expand.grid(
+      displacement = displacement.sampling),
+    content_displacement_narrow = expand.grid(
       spacing = narrow.spacing,
       content = content.sampling,
       displacement = displacement.sampling)
-  })
+    )
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
-  zvar <- c("content", "displacement", "spacing", "spacing")
+  othervars <- c("content", "displacement", "spacing", "spacing")
+
+  xscales <- list(displacement_scale_nopadding,
+                  spacing_scale_x_nopadding,
+                  displacement_scale_nopadding,
+                  displacement_scale_nopadding)
+  yscales <- list(spacing_scale_y_nopadding,
+               content_scale_y_nopadding,
+               content_scale_y_nopadding,
+               content_scale_y_nopadding)
 
   #cook in additional fields that the model may need
   grids <- lapply(
@@ -108,44 +117,22 @@ plot_contours <- function(model, motion.energy) {
   ##                          levels = seq(0, 1, 0.5))
   ##   chain(cLines, lapply(as.data.frame), splat(rbind)(),
   ##         rename(c(x = xvar, y = yvar)))
-  ## }) 
+  ## })
+
   # we also need to show the actual data, for which we'll need to bin
-  # along the other variable....
+  # along the missing variable.
 
-  print(ggplot(grids$displacement_spacing)
-        + aes(x = displacement, y = spacing, z = pred)
-        + decision_contour
-        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
-        + displacement_scale_nopadding + y_nopadding
-        + no_grid
-        + annotate("text", label=toupper(model$data$subject[[1]]),
-                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
-
-  print(ggplot(grids$spacing_content)
-        + aes(x = content, y = spacing, z = pred)
-        + decision_contour
-        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
-        + content_scale_nopadding + y_nopadding
-        + no_grid
-        + annotate("text", label=toupper(model$data$subject[[1]]),
-                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
-
-  print(ggplot(grids$content_displacement_narrow)
-        + aes(x = content, y = displacement, z = pred)
-        + decision_contour
-        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
-        + content_scale_nopadding + y_nopadding
-        + no_grid
-        + annotate("text", label=toupper(model$data$subject[[1]]),
-                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
-
-  print(ggplot(grids$content_displacement_wide)
-        + aes(x = content, y = displacement, z = pred)
-        + decision_contour
-        + geom_vline(x = 0, color = "gray50", linetype = "11", size = 0.2)
-        + content_scale_nopadding + y_nopadding
-        + no_grid
-        + annotate("text", label=toupper(model$data$subject[[1]]),
-                   x=Inf, y=-Inf, hjust=1.2, vjust=-0.5))
+  for (i in 2:5) if (!(i %in% dev.list())) dev.new()
+  invisible(Map(data=grids, xscale=xscales, yscale = yscales, fig=2:5,
+                xvar = xvars, yvar = yvars, othervar = othervars,
+                f = function(data, xscale, yscale, fig, xvar, yvar, othervar) {
+                  dev.set(fig)
+                  ##we also need "actual data" binned along the missing
+                  ##variable. Snap to grid lines...
+                  print(ggplot(data)
+                        + xscale + yscale
+                        + decision_contour
+                        + no_grid)
+                }))
 
 }

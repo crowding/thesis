@@ -274,6 +274,28 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
   binned
 }
 
+##calculate the residual along multiple bins...
+bin_to_grid <- function(model, grid, data=model$data, coords) {
+  # The proble, is that  to the grid we need to
+  
+  for (i in as.quoted(coords)) {
+    
+  }
+}
+
+grid_resid <- function(model, data, split) {
+  ddply(data, split, function(x) {
+    x$fit <- predict(model, newdata=data, type="response")
+    total_obs <- sum(x[[responsevar]])
+    total_pred <- sum(x$.pred)
+    total_var <- sum(x$.pred * (1-(x$.pred)))
+    pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
+    quickdf(c(l, list(n_obs = nrow(x), total_obs=total_obs,
+                      total_pred=total_pred, total_var=total_var,
+                      pearson_resid=pearson_resid)))
+  })
+}
+
 shuffle <- function(df) df[sample(seq_len(nrow(df))),]
 
 sample.data.frame <- function(df, howmany=10, replace=FALSE, prob=NULL)

@@ -132,9 +132,10 @@ decision_color_scale <-
 
 decision_contour <-
   list(
-    geom_raster(aes(fill=pred), interpolate=TRUE),
-    stat_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, color="white"),
-    stat_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, linetype=2, color="black"),
+    aes(z = pred, fill = pred),
+    geom_raster(interpolate=TRUE),
+    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, color="white"),
+    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, linetype=2, color="black"),
     scale_fill_gradientn("Responses CW", colours=c("black", "white"),
                          values=c(0,1), breaks = seq(0.1, 0.9, 0.2))
     )
@@ -231,11 +232,35 @@ spacing_texture_scale <-
        }, labels=prettyprint)
        )
 
+spacing_scale_x_nopadding <-
+  list( aes(x=spacing),
+       scale_x_continuous(name="Spacing", expand=c(0,0)
+#                          , labels=newline_arrows
+                          ))
+
+spacing_scale_y_nopadding <-
+  list( aes(y=spacing),
+       scale_y_continuous(name="Spacing", expand=c(0,0)
+#                          , labels=newline_arrows
+                          ))
+
 content_color_scale <-
   c(
     list(aes(color=factor(content),
              fill=factor(content))),
-    with_arg(name=if (use_unicode) "" else "$C$",
+    with_arg(name="Carrier\nStrength",
+             palette=color_pal,
+             labels=append_arrows,
+             discrete_scale("fill", "manual"),
+             discrete_scale("colour", "manual")
+             )
+    )
+
+content_color_scale <-
+  c(
+    list(aes(color=factor(content),
+             fill=factor(content))),
+    with_arg(name="Carrier\nStrength",
              palette=color_pal,
              labels=append_arrows,
              discrete_scale("fill", "manual"),
@@ -251,7 +276,7 @@ energy_palette <- gradient_n_pal(
 energy.colors <- function(n) energy_palette(seq(0, 1, length=n))
 
 content_scale_continuous_waterline <-
-  scale_color_gradientn("Direction\ncontent",
+  scale_color_gradientn("Carrier\nStrength",
                         colours=c("#00DDDD", "blue", "black", "red", "#DDDD00"),
                         values=c(0, 0.4999,0.5,0.5001,1), limits=c(-1,1),
                         labels=append_arrows
@@ -274,12 +299,18 @@ label_count <- function(data, group, countvar=n_obs)
 
 content_scale <-
   list(aes(x=content),
-       scale_x_continuous(name="Direction content (+CW)",
+       scale_x_continuous("Carrier\nStrength",
                           #labels=newline_arrows,
                           expand=c(0,0))
        )
 content_scale_nopadding <- content_scale
 content_scale_nopadding[[2]]$expand <- c(0,0)
+
+content_scale_y_nopadding <-
+  list( aes(y=content),
+       scale_y_continuous(name="Carrier strength", expand=c(0,0)
+                          #, labels=newline_arrows
+                          ))
 
 ribbon <- list(
             geom_ribbon(color="transparent", alpha=0.2,
