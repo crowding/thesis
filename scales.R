@@ -132,7 +132,6 @@ decision_color_scale <-
 decision_contour <-
   list(
     aes(z = pred, fill = pred),
-    geom_raster(interpolate=TRUE),
     geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, color="white", alpha=0.5),
     geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, linetype="11", color="black", alpha=0.5),
     scale_fill_gradientn("Responses CW", colours=c("black", "white"),

@@ -49,17 +49,24 @@ plot_contours <- function(model, motion.energy) {
   # grid coordinates to sample on
   is.motion.energy <- "motion_energy_models" %in% class(model)
   if ("motion_energy_model" %in% class(model)) {
+    ##in motion energy models we can only evaluate stimuli whose
+    ##motion energies have been precomputed
     bind[displacement.sampling, content.sampling, spacing.sampling] <- (
       chain(motion.energy, subset(grid==TRUE),
             mutate(spacing = eccentricity * 2 * pi / target_number_all),
             .[c("displacement", "content", "spacing")],
             lapply(unique), lapply(sort)))
+    ##geom_tile since we are not guaranteed even spacing. Is there a
+    ##way to draw this interpolated?
+    geom <- geom_tile()
   } else {
     bind[displacement.sampling, content.sampling, spacing.sampling] <- (
       chain(motion.energy, subset(grid==TRUE),
             mutate(spacing = eccentricity * 2 * pi / target_number_all),
             .[c("displacement", "content", "spacing")],
             lapply(range), lapply(seq_range, length=50), lapply(sort)))
+    #why doesn't interpolate seem to have an effect?
+    geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
   }
 
   content.bins <- unique(round_any(content.sampling, 0.2))
@@ -151,6 +158,7 @@ plot_contours <- function(model, motion.energy) {
         + xscale + yscale
         + decision_contour
         + no_grid
+        + geom
         + geom_point(data=binned_data, shape=21, color="blue",
                      aes(size=n_obs, fill=bound_prob(p)))
         + anno
@@ -162,7 +170,7 @@ plot_contours <- function(model, motion.energy) {
       ggplot_gtable(ggplot_build(the.plot))
     })
 
-  #Stuff four plots in one.extract the legend grob from on of the plots, and stitch the rest together.
+  #Stuff four plots in one, using the legend from one of them.
   gt <- chain(
     gtable(widths = unit.c(unit(c(1,1), "null"), gtable_width(plot.tables[[1]][,5])),
            heights = unit.c(unit(1, "lines"), unit(c(1, 1), "null"))),
