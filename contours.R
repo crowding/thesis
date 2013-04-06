@@ -123,16 +123,20 @@ plot_contours <- function(model, motion.energy) {
   # along the missing variable.
 
   for (i in 2:5) if (!(i %in% dev.list())) dev.new()
-  invisible(Map(data=grids, xscale=xscales, yscale = yscales, fig=2:5,
+  invisible(Map(grid=grids, xscale=xscales, yscale = yscales, fig=2:5,
                 xvar = xvars, yvar = yvars, othervar = othervars,
-                f = function(data, xscale, yscale, fig, xvar, yvar, othervar) {
+                f = function(grid, xscale, yscale, fig, xvar, yvar, othervar) {
                   dev.set(fig)
-                  ##we also need "actual data" binned along the missing
-                  ##variable. Snap to grid lines...
-                  print(ggplot(data)
+                  ##we also need "actual data" binned along the
+                  ##missing variable. This function snaps the data to
+                  ##grid lines, while computing an "average" that
+                  ##preserves the residual.
+                  binned_data <- bin_grid_resid(model, grid, coords=c(xvar, yvar))
+                  print(ggplot(grid)
                         + xscale + yscale
                         + decision_contour
                         + no_grid)
                 }))
 
+  #let's also make a 3d plot...
 }

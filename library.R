@@ -274,26 +274,53 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
   binned
 }
 
-##calculate the residual along multiple bins...
-bin_to_grid <- function(model, grid, data=model$data, coords) {
-  # The proble, is that  to the grid we need to
-  
-  for (i in as.quoted(coords)) {
-    
+##Given some high dimensional data and a grid to reduce it to, do the
+##reduction by preserving the residual.
+bin_grid_resid <- function(model, grid, data=model$data, coords) {
+  #Before forcing data onto the grid, calculate residuals from the model
+  data$.bin.pred <- predict(model, newdata=data, type="response")
+  data <- mutate(data,
+                 .bin.total_n = if (exists("n_obs")) n_obs else 1,
+                 .bin.total_yes = if (exists("n_obs")) n_ccw else response,
+                 .bin.total_var = (.bin.pred * (1-.bin.pred)) * .bin.total_n,
+                 .bin.total_pred = .bin.pred * .bin.total_n,
+                 .bin.total_resid = .bin.total_yes - .bin.total_pred)
+  grid$.bin.pred <- predict(model, newdata=grid, type="response")
+
+  #select grid bins for each data point. Assumes grid is rectilinear(enough).
+  coordcols <- paste0(coords, ".coord.", seq_along(coords))
+  for (i in seq_along(coords)) {
+    data[coordcols[[i]]] <-
+      take_nearest(data[[coords[[i]]]], grid[[coords[[i]]]])
   }
+
+  #Map data onto the grid, ensuring that everything matches...
+  data$.bin.right_check <- seq_len(nrow(data))
+  gridded <- merge(grid, suffix(data, ".data"),
+                   by.x = coords,
+                   by.y = paste0(coordcols, ".data"))
+  stopifnot(data$.bin.right_check.data %in% gridded)
+  sumcols <- grep("\\.bin", colnames(gridded), value=TRUE) %-% ".bin.pred"
+  gridded <- ddply(gridded, coords, function(chunk) {
+    data.frame(pred=chunk$.bin.pred[[1]], lapply(chunk[sumcols], sum))
+  })
+
+  gridded <- mutate(
+    gridded,
+    pearson_resid = (.bin.total_resid.data)/sqrt(.bin.total_var.data),
+    n_obs = .bin.total_n.data,
+    p = (n_obs*pred
+         + pearson_resid * sqrt(n_obs*pred*(1-pred)))/n_obs,
+    .new_resid = n_obs*(p - pred)/sqrt(n_obs*(pred)*(1-pred)),
+    )
+  #assert that the residual is the same.
+  stopifnot(with(gridded, abs(.new_resid - pearson_resid) <= 0.01))
+  drop_columns(gridded, grep("^\\.", names(gridded), value=TRUE))
 }
 
-grid_resid <- function(model, data, split) {
-  ddply(data, split, function(x) {
-    x$fit <- predict(model, newdata=data, type="response")
-    total_obs <- sum(x[[responsevar]])
-    total_pred <- sum(x$.pred)
-    total_var <- sum(x$.pred * (1-(x$.pred)))
-    pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
-    quickdf(c(l, list(n_obs = nrow(x), total_obs=total_obs,
-                      total_pred=total_pred, total_var=total_var,
-                      pearson_resid=pearson_resid)))
-  })
+suffix <- function(df, suffix) {
+  names(df) <- paste0(names(df), suffix)
+  df
 }
 
 shuffle <- function(df) df[sample(seq_len(nrow(df))),]
