@@ -94,7 +94,6 @@ plot_contours <- function(model, motion.energy) {
 
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
-
   xscales <- list(displacement_scale_nopadding,
                   spacing_scale_x_nopadding,
                   displacement_scale_nopadding,
@@ -108,8 +107,8 @@ plot_contours <- function(model, motion.energy) {
   filters <- list(
     identity,
     identity,
-    subset %<<% dots(spacing < spacing.threshold),
-    subset %<<% dots(spacing >= spacing.threshold))
+    subset %<<% dots(spacing >= spacing.threshold),
+    subset %<<% dots(spacing < spacing.threshold))
 
   annotations <- with_arg(
     x=Inf, y=-Inf, geom="text", vjust=-0.5, hjust=1.05, size=3,
@@ -136,50 +135,47 @@ plot_contours <- function(model, motion.energy) {
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = predict(model, newdata=., type="response"))))
 
-  #compute contour polygons
-  ## lines <- Map(grid=grid, xvar=xvars, yvar=yvars, f = function() {
-  ##   cLines <- contourLines(x = grid[[xvar]], y = grid[[yvar]], grid$pred,
-  ##                          levels = seq(0, 1, 0.5))
-  ##   chain(cLines, lapply(as.data.frame), splat(rbind)(),
-  ##         rename(c(x = xvar, y = yvar)))
-  ## })
+  subject <- unique(model$data$subject)
+  plot.tables <- Map(
+    grid=grids, bin=bins, xscale=xscales, yscale = yscales, fig=2:5,
+    xvar=xvars, yvar=yvars, anno=annotations, filt=filters,
+    f = function(grid, bin, xscale, yscale, fig, xvar, yvar, anno, filt) {
+      ##we also need "actual data" binned along the
+      ##missing variable. This function snaps the data to
+      ##grid lines, while computing an "average" that
+      ##preserves the residual.
+      binned_data <- bin_grid_resid(
+        model, bin, data=filt(model$data), coords=c(xvar, yvar))
+      the.plot <- (
+        ggplot(grid)
+        + xscale + yscale
+        + decision_contour
+        + no_grid
+        + geom_point(data=binned_data, shape=21, color="blue",
+                     aes(size=n_obs, fill=bound_prob(p)))
+        + anno
+        + scale_size_area("N", breaks=c(20, 50, 100, 200, 500))
+        + labs(title="foo"
+               ## , title=sprintf(
+               ##   "Model fit and data for subject %s", toupper(subject))
+               ))
+      ggplot_gtable(ggplot_build(the.plot))
+    })
 
-  # we also need to show the actual data, for which we'll need to bin
-  # along the missing variable.
+  #Stuff four plots in one.extract the legend grob from on of the plots, and stitch the rest together.
+  gt <- chain(
+    gtable(widths = unit.c(unit(c(1,1), "null"), gtable_width(plot.tables[[1]][,5])),
+           heights = unit.c(unit(1, "lines"), unit(c(1, 1), "null"))),
+    gtable_add_grob(plot.tables[[2]][-1:-2,-5], 2, 1),
+    gtable_add_grob(plot.tables[[3]][-1:-2,-5], 2, 2),
+    gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
+    gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
+    gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
 
-  if (interactive()) for (i in 2:5) if (!(i %in% dev.list())) dev.new()
-
-  invisible(Map(grid=grids, bin = bins, xscale=xscales, yscale = yscales,
-                fig=2:5, xvar = xvars, yvar = yvars, anno = annotations,
-                filter = filters,
-                f = function(grid, bin, xscale, yscale, fig,
-                  xvar, yvar, anno, filter) {
-                  dev.set(fig)
-                  ##we also need "actual data" binned along the
-                  ##missing variable. This function snaps the data to
-                  ##grid lines, while computing an "average" that
-                  ##preserves the residual.
-                  binned_data <- bin_grid_resid(
-                    model, bin, data=filter(model$data), coords=c(xvar, yvar))
-                  print(ggplot(grid)
-                        + xscale + yscale
-                        + decision_contour
-                        + no_grid
-                        + geom_point(data=binned_data, shape=21,
-                                     aes(size=n_obs,
-                                         fill=bound_prob(p)), color="blue")
-                        + scale_size_area("N", breaks = c(20, 50, 100, 200, 500))
-                        ## + scale_color_gradientn("Responses CW", values = c(0,1),
-                        ##                         colours=c("black", "white"))
-                        + anno
-                        )
-                }))
-
-  #TODO: split the small spacings and large spacings out.
-  #TODO: organize all those plots into a table.
+  grid.newpage()
+  grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.
   library(rgl)
-
 
 }
