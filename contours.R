@@ -62,27 +62,36 @@ plot_contours <- function(model, motion.energy) {
             lapply(range), lapply(seq_range, length=50), lapply(sort)))
   }
 
+  content.bins <- unique(round_any(content.sampling, 0.2))
+  displacement.bins <- unique(round_any(content.sampling, 0.1))
+  spacing.bins <- unique(round_any(spacing.sampling, 2))
+
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
   narrow.spacing <- take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
 
-  grids <- list(
-    displacement_spacing = expand.grid(
-      spacing = spacing.sampling,
-      displacement = displacement.sampling,
-      content = 0),
-    spacing_content = expand.grid(
-      spacing = spacing.sampling,
-      content = content.sampling,
-      displacement = 0),
-    content_displacement_wide = expand.grid(
-      spacing = wide.spacing,
-      content = content.sampling,
-      displacement = displacement.sampling),
-    content_displacement_narrow = expand.grid(
-      spacing = narrow.spacing,
-      content = content.sampling,
-      displacement = displacement.sampling)
-    )
+  bind[grids, bins] <- Map(
+    spacing = list(spacing.sampling, spacing.bins),
+    displacement = list(displacement.sampling, displacement.bins),
+    content = list(content.sampling, content.bins),
+    fun(list(
+      displacement_spacing = expand.grid(
+        spacing = spacing,
+        displacement = displacement,
+        content = 0),
+      spacing_content = expand.grid(
+        spacing = spacing,
+        content = content,
+        displacement = 0),
+      content_displacement_wide = expand.grid(
+        spacing = wide.spacing,
+        content = content,
+        displacement = displacement),
+      content_displacement_narrow = expand.grid(
+        spacing = narrow.spacing,
+        content = content,
+        displacement = displacement)
+      )))
+
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
   othervars <- c("content", "displacement", "spacing", "spacing")
@@ -97,8 +106,8 @@ plot_contours <- function(model, motion.energy) {
                content_scale_y_nopadding)
 
   #cook in additional fields that the model may need
-  grids <- lapply(
-    grids,
+  bind[grids, bins] <- lapply(
+    list(grids, bins), lapply,
     mkchain(
       mutate(
         eccentricity = (
@@ -123,15 +132,15 @@ plot_contours <- function(model, motion.energy) {
   # along the missing variable.
 
   for (i in 2:5) if (!(i %in% dev.list())) dev.new()
-  invisible(Map(grid=grids, xscale=xscales, yscale = yscales, fig=2:5,
-                xvar = xvars, yvar = yvars, othervar = othervars,
-                f = function(grid, xscale, yscale, fig, xvar, yvar, othervar) {
+  invisible(Map(grid=grids, bin = bins, xscale=xscales, yscale = yscales,
+                fig=2:5, xvar = xvars, yvar = yvars,
+                f = function(grid, bin, xscale, yscale, fig, xvar, yvar) {
                   dev.set(fig)
                   ##we also need "actual data" binned along the
                   ##missing variable. This function snaps the data to
                   ##grid lines, while computing an "average" that
                   ##preserves the residual.
-                  binned_data <- bin_grid_resid(model, grid, coords=c(xvar, yvar))
+                  binned_data <- bin_grid_resid(model, bin, coords=c(xvar, yvar))
                   print(ggplot(grid)
                         + xscale + yscale
                         + decision_contour
@@ -139,7 +148,7 @@ plot_contours <- function(model, motion.energy) {
                         + geom_point(data=binned_data, shape=21,
                                      aes(size=n_obs,
                                          fill=bound_prob(p)), color="blue")
-                        + scale_size_area("N", breaks = c(20, 50, 100, 200))
+                        + scale_size_area("N", breaks = c(20, 50, 100, 200, 500))
                         ## + scale_color_gradientn("Responses CW", values = c(0,1),
                         ##                         colours=c("black", "white"))
                         )

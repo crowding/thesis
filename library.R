@@ -225,9 +225,9 @@ bin_along_resid.motion_energy_model <-
   }
 
 #bin observations, using an "average" that retains the Pearson
-#residual with respect to the model. Depending on your perspective
-#this may be a more "honest" depiction of the model's fit to the data
-#than the literal average.
+#residual with respect to the model. The intention is to bin towards
+#values that can be plotted on top of the model fit and can be used to
+#visually assess model fit.
 bin_along_resid.default <- function(model, data, responsevar, split, along,
                                     bins=6, restrict, fold=FALSE) {
   # if we are binning "folded"
