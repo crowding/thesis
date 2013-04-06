@@ -153,7 +153,7 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 displacement_scale <-
   list( aes(x=displacement),
        scale_x_continuous(
-         paste0(if (use_unicode) " \u0394x" else "$\\Delta x$", "(Envelope, +CW)")
+         paste0("Envelope motion")
 #                          , labels=newline_arrows
                           ))
 displacement_scale_nopadding <- displacement_scale

@@ -94,7 +94,6 @@ plot_contours <- function(model, motion.energy) {
 
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
-  othervars <- c("content", "displacement", "spacing", "spacing")
 
   xscales <- list(displacement_scale_nopadding,
                   spacing_scale_x_nopadding,
@@ -104,6 +103,23 @@ plot_contours <- function(model, motion.energy) {
                content_scale_y_nopadding,
                content_scale_y_nopadding,
                content_scale_y_nopadding)
+
+  spacing.threshold <- 4.5
+  filters <- list(
+    identity,
+    identity,
+    subset %<<% dots(spacing < spacing.threshold),
+    subset %<<% dots(spacing >= spacing.threshold))
+
+  annotations <- with_arg(
+    x=Inf, y=-Inf, geom="text", vjust=-0.5, hjust=1.05, size=3,
+    color="gray50",
+    annotate(label="Carrier = 0"),
+    annotate(label="Envelope = 0"),
+    annotate(label=sprintf("Spacing = %.2g \n(binning >= %.2g)",
+               wide.spacing, spacing.threshold)),
+    annotate(label=sprintf("Spacing = %.2g \n(binning < %.2g)",
+               narrow.spacing, spacing.threshold)))
 
   #cook in additional fields that the model may need
   bind[grids, bins] <- lapply(
@@ -131,16 +147,20 @@ plot_contours <- function(model, motion.energy) {
   # we also need to show the actual data, for which we'll need to bin
   # along the missing variable.
 
-  for (i in 2:5) if (!(i %in% dev.list())) dev.new()
+  if (interactive()) for (i in 2:5) if (!(i %in% dev.list())) dev.new()
+
   invisible(Map(grid=grids, bin = bins, xscale=xscales, yscale = yscales,
-                fig=2:5, xvar = xvars, yvar = yvars,
-                f = function(grid, bin, xscale, yscale, fig, xvar, yvar) {
+                fig=2:5, xvar = xvars, yvar = yvars, anno = annotations,
+                filter = filters,
+                f = function(grid, bin, xscale, yscale, fig,
+                  xvar, yvar, anno, filter) {
                   dev.set(fig)
                   ##we also need "actual data" binned along the
                   ##missing variable. This function snaps the data to
                   ##grid lines, while computing an "average" that
                   ##preserves the residual.
-                  binned_data <- bin_grid_resid(model, bin, coords=c(xvar, yvar))
+                  binned_data <- bin_grid_resid(
+                    model, bin, data=filter(model$data), coords=c(xvar, yvar))
                   print(ggplot(grid)
                         + xscale + yscale
                         + decision_contour
@@ -151,8 +171,15 @@ plot_contours <- function(model, motion.energy) {
                         + scale_size_area("N", breaks = c(20, 50, 100, 200, 500))
                         ## + scale_color_gradientn("Responses CW", values = c(0,1),
                         ##                         colours=c("black", "white"))
+                        + anno
                         )
                 }))
 
-  #let's also make a 3d plot...
+  #TODO: split the small spacings and large spacings out.
+  #TODO: organize all those plots into a table.
+
+  #let's also make a 3d plot to serve as a key.
+  library(rgl)
+
+
 }
