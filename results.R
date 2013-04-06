@@ -39,10 +39,6 @@ mutateModelData <- function(models, ...)
 cbind_predictions <- function(dataset, model, ...)
   cbind(dataset, predict(model, newdata=dataset, ...))
 
-ziprbind <- function(l, collector=rbind.fill) Map %<<% dots(f=collector) %()% l
-
-bound_prob <- function(x) pmax(pmin(x, 1), 0)
-
 ## ----------------------------------------------------------------------
 ## @knitr results-spacing-collapse
 

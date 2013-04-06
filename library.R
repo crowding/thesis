@@ -374,6 +374,10 @@ mutate_when_has <- function(data, columns=dots_names(...), ...) {
   }
 }
 
+ziprbind <- function(l, collector=rbind.fill) Map %<<% dots(f=collector) %()% l
+
+bound_prob <- function(x) pmax(pmin(x, 1), 0)
+
 library(binom)
 binom_se <- function(n, p) sqrt(p*(1-p)/n)
 binom_se_upper <- function(n, p)

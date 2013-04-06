@@ -63,7 +63,7 @@ plot_contours <- function(model, motion.energy) {
   }
 
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
-  narrow.spacing <-take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
+  narrow.spacing <- take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
 
   grids <- list(
     displacement_spacing = expand.grid(
@@ -135,7 +135,14 @@ plot_contours <- function(model, motion.energy) {
                   print(ggplot(grid)
                         + xscale + yscale
                         + decision_contour
-                        + no_grid)
+                        + no_grid
+                        + geom_point(data=binned_data, shape=21,
+                                     aes(size=n_obs,
+                                         fill=bound_prob(p)), color="blue")
+                        + scale_size_area("N", breaks = c(20, 50, 100, 200))
+                        ## + scale_color_gradientn("Responses CW", values = c(0,1),
+                        ##                         colours=c("black", "white"))
+                        )
                 }))
 
   #let's also make a 3d plot...

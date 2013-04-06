@@ -118,7 +118,6 @@ balloon <- list(geom_point(aes(size=n))
                                         identity, name="Spacing")))
 }
 
-
 decision_color_scale <-
   continuous_scale(name="Responses CW", "colour", "color_m",
                    gradient_n_pal(colours = (
@@ -130,14 +129,21 @@ decision_color_scale <-
                                   values = c(0, 0.4, 0.5, 0.6, 1)),
                    guide="legend", breaks=seq(0,1,0.1), labels=append_arrows)
 
+bw_fill_color_scale <-
+  continuous_scale(name="Responses CW", c("colour", "fill"), "color_m",
+                   gradient_n_pal(colours = c("black", "white"),
+                                  values = c(0, 1)),
+                   guide="legend", breaks=seq(0.1,0.9,0.2), labels=append_arrows)
+
 decision_contour <-
   list(
     aes(z = pred, fill = pred),
     geom_raster(interpolate=TRUE),
     geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, color="white", alpha=0.5),
     geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, linetype="11", color="black", alpha=0.5),
-    scale_fill_gradientn("Responses CW", colours=c("black", "white"),
-                         values=c(0,1), breaks = seq(0.1, 0.9, 0.2))
+    bw_fill_color_scale
+    ## scale_fill_gradientn("Responses CW", colours=c("black", "white"),
+    ##                      values=c(0,1), breaks = seq(0.1, 0.9, 0.2))
     )
 
 no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
