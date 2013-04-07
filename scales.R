@@ -143,7 +143,7 @@ no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous()
 no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
 
 displacement_scale <-
-  list( aes(x=displacement),
+  list( aes(x=displacement),...=
        scale_x_continuous(
          paste0("Envelope motion")
 #                          , labels=newline_arrows

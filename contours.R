@@ -8,6 +8,9 @@ suppressPackageStartupMessages({
   library(psyphy)
   library(gnm)
   library(grid)
+  library(rgl)
+  library(fields)
+  library(reshape2)
 })
 
 theme_set(theme_bw())
@@ -170,7 +173,7 @@ plot_contours <- function(model, motion.energy) {
       ggplot_gtable(ggplot_build(the.plot))
     })
 
-  #Stuff four plots in one, using the legend from one of them.
+   #Stuff four plots in one, using the legend from one of them.
   gt <- chain(
     gtable(widths = unit.c(unit(c(1,1), "null"), gtable_width(plot.tables[[1]][,5])),
            heights = unit.c(unit(1, "lines"), unit(c(1, 1), "null"))),
@@ -184,6 +187,57 @@ plot_contours <- function(model, motion.energy) {
   grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.
-  library(rgl)
+  plots.3d(model=model, grids=grids, bins=bins)
+}
 
+plots.3d <- function(model, grids, bins) {
+  open3d(windowRect=c(0L, 44L, 897L, 772L))
+  on.exit(rgl.close(), add=TRUE)
+  bind[x, y, z, value] <- zip(lapply(grids, matrixify), collate=list)
+
+  rgl.clear()
+  bg3d(color="gray80")
+  par3d(scale=c(4, 6, 1.5))
+  #turn out data frames into matrices...
+  Map(x=x, y=y, z=z, value=value, function(x, y, z, value) {
+    colors = hsv(s=0,v=bound_prob(value))
+    surface3d(x, y, z, color=colors, lit=FALSE)
+    s = dim(x)
+    indices <- cbind(c(1, s[1], s[1], 1, 1), c(1, 1, s[2], s[2], 1))
+    lines3d(x[indices], y[indices], z[indices], color="blue", lit=FALSE)
+    clines <- contourLines(z=value, levels=seq(0.1,0.9,0.2))
+    lapply(clines, splat(function(level, xi, yi) {
+      obj <- list(x = seq(0, 1, length=nrow(x)), y=seq(0, 1, length=ncol(y)))
+      lineX <- interp.surface(c(obj, list(z=x)), cbind(xi, yi))
+      lineY <- interp.surface(c(obj, list(z=y)), cbind(xi, yi))
+      lineZ <- interp.surface(c(obj, list(z=z)), cbind(xi, yi))
+      lines3d(lineX, lineY, lineZ, color="blue", lit=FALSE)
+    }))
+  })
+  #axes3d(c("x--", "y--", "z-+"))
+  axis3d("x--", nticks=5, expand=1)
+  axis3d("y++", expand=1)
+  axis3d("z-+", expand=1)
+  mtext3d("Envelope motion", "x--", 1, at=1.5)
+  mtext3d("Carrier strength", 'y++', 1, at=-1.5)
+  mtext3d("Spacing", 'z-+', 3, at=15)
+  view3d(130, 15, 40, 1)
+
+  #rgl.postscript("plot.pdf", fmt="pdf")
+  
+  ##maybe we want to compute the PSE surface...
+}
+
+matrixify <- function(grid) {
+  lapply(c("displacement", "content", "spacing", "pred"),
+         function(var) {
+           drop.dims(acast(grid, displacement ~ content ~ spacing,
+                           value.var = var))
+         })
+}
+
+drop.dims <- function(a) {
+  `[` %()% (dots(a)
+            %__% replicate(length(dim(a)), missing_value())
+            %__% list(drop=TRUE))
 }
