@@ -230,9 +230,21 @@ spacing_texture_scale <-
        }, labels=prettyprint)
        )
 
+spacing_scale_x <-
+  list( aes(x=spacing),
+       scale_x_continuous(name="Spacing"
+#                          , labels=newline_arrows
+                          ))
+
 spacing_scale_x_nopadding <-
   list( aes(x=spacing),
        scale_x_continuous(name="Spacing", expand=c(0,0)
+#                          , labels=newline_arrows
+                          ))
+
+spacing_scale_y <-
+  list( aes(y=spacing),
+       scale_y_continuous(name="Spacing"
 #                          , labels=newline_arrows
                           ))
 
@@ -303,6 +315,11 @@ content_scale <-
        )
 content_scale_nopadding <- content_scale
 content_scale_nopadding[[2]]$expand <- c(0,0)
+
+content_scale_y <-
+  list( aes(y=content), scale_y_continuous(name="Carrier strength"
+                          #, labels=newline_arrows
+                          ))
 
 content_scale_y_nopadding <-
   list( aes(y=content),

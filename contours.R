@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   library(rgl)
   library(fields)
   library(reshape2)
+  library(gtable)
 })
 
 theme_set(theme_bw())
@@ -24,21 +25,32 @@ grid <- "motion_energy.csv"
 outfile <- "contours.pdf"
 
 main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
-                 outfile = "contours.pdf") {
+                 outlist = "contours/contours.list") {
 
   load(infile)
   motion.energy <- chain(grid, read.csv, add_energies)
 
-  #how about some contour plots. Everyone hated these.
-  if (!interactive()) {
-    cairo_pdf(outfile, onefile=TRUE)
+  outlist.conn <- file(outlist, "w")
+  on.exit(close(outlist.conn), add=TRUE)
+
+  #since our 3d plots can't plot directly into a multipage PDF, we'll
+  #have to list separate files
+  (Map %<<% model.df)(f = function(model, subject, ...) {
+    subject <- as.character(subject)
+    cat("plotting subject ", subject, "\n")
+    pdf(pdf.file <- replace_extension(outlist, "pdf",
+                                     paste0("_", subject, "_2d")))
     on.exit(dev.off(), add=TRUE)
-  }
+    open3d(windowRect=c(100L, 100L, 1024L, 512L))
+    on.exit(rgl.close(), add=TRUE)
+    plot_contours(motion.energy=motion.energy, model=model, subject=subject, ...)
+    rgl.postscript(rgl.file <- replace_extension(outlist, "pdf",
+                                                 paste0("_", subject, "_3d")))
+    writeLines(c(pdf.file, rgl.file), outlist.conn)
+  })
 }
 
-if (exists("model.df")) model <- subset(model.df, subject=="pbm")[[1, "model"]]
-
-plot_contours <- function(model, motion.energy) {
+plot_contours <- function(model, subject, motion.energy, outlist, ...) {
   # we want three contour plots along our three axes --
   # spacing, displacement and direction content --
   # maybe even put it in 3d with the other one.
@@ -54,21 +66,15 @@ plot_contours <- function(model, motion.energy) {
   if ("motion_energy_model" %in% class(model)) {
     ##in motion energy models we can only evaluate stimuli whose
     ##motion energies have been precomputed
-    bind[displacement.sampling, content.sampling, spacing.sampling] <- (
-      chain(motion.energy, subset(grid==TRUE),
-            mutate(spacing = eccentricity * 2 * pi / target_number_all),
-            .[c("displacement", "content", "spacing")],
-            lapply(unique), lapply(sort)))
-    ##geom_tile since we are not guaranteed even spacing. Is there a
+    stop("extract sampling form motion energy limited to range of stimuli")
+    ##Use geom_tile since we are not guaranteed even spacing. Is there a
     ##way to draw this interpolated?
     geom <- geom_tile()
   } else {
     bind[displacement.sampling, content.sampling, spacing.sampling] <- (
-      chain(motion.energy, subset(grid==TRUE),
-            mutate(spacing = eccentricity * 2 * pi / target_number_all),
+      chain(model$data,
             .[c("displacement", "content", "spacing")],
             lapply(range), lapply(seq_range, length=50), lapply(sort)))
-    #why doesn't interpolate seem to have an effect?
     geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
   }
 
@@ -104,30 +110,30 @@ plot_contours <- function(model, motion.energy) {
 
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
-  xscales <- list(displacement_scale_nopadding,
-                  spacing_scale_x_nopadding,
-                  displacement_scale_nopadding,
-                  displacement_scale_nopadding)
-  yscales <- list(spacing_scale_y_nopadding,
-               content_scale_y_nopadding,
-               content_scale_y_nopadding,
-               content_scale_y_nopadding)
+  xscales <- list(displacement_scale,
+                  spacing_scale_x,
+                  displacement_scale,
+                  displacement_scale)
+  yscales <- list(spacing_scale_y,
+               content_scale_y,
+               content_scale_y,
+               content_scale_y)
 
   spacing.threshold <- 4.5
   filters <- list(
     identity,
     identity,
-    subset %<<% dots(spacing >= spacing.threshold),
-    subset %<<% dots(spacing < spacing.threshold))
+    here(subset) %<<% dots(spacing >= spacing.threshold),
+    here(subset) %<<% dots(spacing < spacing.threshold))
 
   annotations <- with_arg(
-    x=Inf, y=-Inf, geom="text", vjust=-0.5, hjust=1.05, size=3,
+    x=Inf, y=Inf, geom="text", vjust=1, hjust=1.2, size=3,
     color="gray50",
-    annotate(label="Carrier = 0"),
-    annotate(label="Envelope = 0"),
-    annotate(label=sprintf("Spacing = %.2g \n(binning >= %.2g)",
+    annotate(label="\nCarrier = 0"),
+    annotate(label="\nEnvelope = 0"),
+    annotate(label=sprintf("\nSpacing = %.2g \n(binning >= %.2g)",
                wide.spacing, spacing.threshold)),
-    annotate(label=sprintf("Spacing = %.2g \n(binning < %.2g)",
+    annotate(label=sprintf("\nSpacing = %.2g \n(binning < %.2g)",
                narrow.spacing, spacing.threshold)))
 
   #cook in additional fields that the model may need
@@ -145,7 +151,6 @@ plot_contours <- function(model, motion.energy) {
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = predict(model, newdata=., type="response"))))
 
-  subject <- unique(model$data$subject)
   plot.tables <- Map(
     grid=grids, bin=bins, xscale=xscales, yscale = yscales, fig=2:5,
     xvar=xvars, yvar=yvars, anno=annotations, filt=filters,
@@ -159,73 +164,73 @@ plot_contours <- function(model, motion.energy) {
       the.plot <- (
         ggplot(grid)
         + xscale + yscale
-        + decision_contour
         + no_grid
         + geom
+        + decision_contour
         + geom_point(data=binned_data, shape=21, color="blue",
                      aes(size=n_obs, fill=bound_prob(p)))
         + anno
         + scale_size_area("N", breaks=c(20, 50, 100, 200, 500))
-        + labs(title="foo"
-               ## , title=sprintf(
-               ##   "Model fit and data for subject %s", toupper(subject))
-               ))
+        + theme(panel.border=element_blank())
+        + labs(title="foo"))
       ggplot_gtable(ggplot_build(the.plot))
     })
 
-   #Stuff four plots in one, using the legend from one of them.
+  #Stuff four plots in one, using the legend from one of them.
+  titleGrob <- textGrob(label=sprintf("Subject %s", toupper(subject)),
+                        gp=gpar(fontsize=18))
   gt <- chain(
-    gtable(widths = unit.c(unit(c(1,1), "null"), gtable_width(plot.tables[[1]][,5])),
-           heights = unit.c(unit(1, "lines"), unit(c(1, 1), "null"))),
+    gtable(widths = (unit.c(unit(c(1,1), "null"),
+                            gtable_width(plot.tables[[1]][,5]))),
+           heights = (unit.c(2 * grobHeight(titleGrob),
+                             unit(c(1, 1), "null")))),
+    gtable_add_grob(titleGrob, 1, 1, 1, 2),
     gtable_add_grob(plot.tables[[2]][-1:-2,-5], 2, 1),
     gtable_add_grob(plot.tables[[3]][-1:-2,-5], 2, 2),
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
-
   grid.newpage()
   grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.
-  plots.3d(model=model, grids=grids, bins=bins)
+  plot_3d_grids(model=model, grids=grids, bins=bins)
 }
 
-plots.3d <- function(model, grids, bins) {
-  open3d(windowRect=c(0L, 44L, 897L, 772L))
-  on.exit(rgl.close(), add=TRUE)
+plot_3d_grids <- function(model, grids, ...) {
+  #turn data frames in "grids" into matrices for plotting
   bind[x, y, z, value] <- zip(lapply(grids, matrixify), collate=list)
-
   rgl.clear()
   bg3d(color="gray80")
-  par3d(scale=c(4, 6, 1.5))
-  #turn out data frames into matrices...
+  par3d(scale=c(10, 6, 1.5))
+  view3d(130, 15, 40, 1)
+  #For each plane...
   Map(x=x, y=y, z=z, value=value, function(x, y, z, value) {
+    #draw the colormapped plane
     colors = hsv(s=0,v=bound_prob(value))
     surface3d(x, y, z, color=colors, lit=FALSE)
-    s = dim(x)
-    indices <- cbind(c(1, s[1], s[1], 1, 1), c(1, 1, s[2], s[2], 1))
-    lines3d(x[indices], y[indices], z[indices], color="blue", lit=FALSE)
+    #compute and draw contour lines on the surface
     clines <- contourLines(z=value, levels=seq(0.1,0.9,0.2))
     lapply(clines, splat(function(level, xi, yi) {
       obj <- list(x = seq(0, 1, length=nrow(x)), y=seq(0, 1, length=ncol(y)))
       lineX <- interp.surface(c(obj, list(z=x)), cbind(xi, yi))
       lineY <- interp.surface(c(obj, list(z=y)), cbind(xi, yi))
       lineZ <- interp.surface(c(obj, list(z=z)), cbind(xi, yi))
-      lines3d(lineX, lineY, lineZ, color="blue", lit=FALSE)
+      lines3d(lineX, lineY, lineZ, color="blue", lit=FALSE, lwd=0.5)
     }))
+    #and outline the edges of the plane
+    s = dim(x)
+    indices <- cbind(c(1, s[1], s[1], 1, 1), c(1, 1, s[2], s[2], 1))
+    lines3d(x[indices], y[indices], z[indices], color="gray50", lit=FALSE)
   })
-  #axes3d(c("x--", "y--", "z-+"))
+  #add axes
   axis3d("x--", nticks=5, expand=1)
   axis3d("y++", expand=1)
   axis3d("z-+", expand=1)
-  mtext3d("Envelope motion", "x--", 1, at=1.5)
-  mtext3d("Carrier strength", 'y++', 1, at=-1.5)
+  mtext3d("Envelope motion", "x--", 1, at=0.4, adj=1.2)
+  mtext3d("Carrier strength", 'y++', 1, at=-1.5, adj=0)
   mtext3d("Spacing", 'z-+', 3, at=15)
-  view3d(130, 15, 40, 1)
-
-  #rgl.postscript("plot.pdf", fmt="pdf")
-  
-  ##maybe we want to compute the PSE surface...
+  ##maybe we want to compute null (PSE) surface...
 }
 
 matrixify <- function(grid) {
@@ -240,4 +245,13 @@ drop.dims <- function(a) {
   `[` %()% (dots(a)
             %__% replicate(length(dim(a)), missing_value())
             %__% list(drop=TRUE))
+}
+
+#too slow to use...
+rgl.grob <- function(...) {
+  the.postscript <- tempfile(fileext=".eps")
+  rgl.postscript(the.postscript)
+  the.xml <- tempfile(fileext=".xml")
+  PostScriptTrace(file=the.postscript, outfilename=the.xml)
+  pictureGrob(readPicture(the.xml))
 }
