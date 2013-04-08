@@ -155,7 +155,7 @@
 #--input --match writing/contours/contours.*\.pdf
 #--once --output writing/contours/all_contours.pdf
 
---command --once cd writing && pdfjoin
+--command --once cd writing && pdfjoin %--rotateoversize 'false'
 %--outfile --output --invisible writing/contours/all_contours.pdf contours/all_contours.pdf
 "$$( " 
 "cat"

@@ -41,7 +41,7 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
     pdf(pdf.file <- replace_extension(outlist, "pdf",
                                       paste0("_", subject, "_2d")))
     on.exit(dev.off(), add=TRUE)
-    open3d(windowRect=c(100L, 100L, 1024L, 512L))
+    open3d(windowRect=c(100L, 100L, 768L, 512L))
     on.exit(rgl.close(), add=TRUE)
     plot_contours(motion.energy=motion.energy, model=model, subject=subject, ...)
     rgl.postscript(
@@ -63,6 +63,8 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
   #because 20/3 in the dataset is different form R's idea of 20/3....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
 
+
+  roundings <- c(0.2, 0.2, 2)
   # id coordinates to sample on
   is.motion.energy <- "motion_energy_models" %in% class(model)
   if ("motion_energy_model" %in% class(model)) {
@@ -76,13 +78,16 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
     bind[displacement.sampling, content.sampling, spacing.sampling] <- (
       chain(model$data,
             .[c("displacement", "content", "spacing")],
-            lapply(range), lapply(seq_range, length=50), lapply(sort)))
+            lapply(range),
+            Map(f=round_any, roundings),
+            Map(f=function(x,r) x+c(-0.49*r, 0.49*r), roundings),
+            lapply(seq_range, length=50), lapply(sort)))
     geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
   }
 
-  content.bins <- unique(round_any(content.sampling, 0.2))
-  displacement.bins <- unique(round_any(displacement.sampling, 0.2))
-  spacing.bins <- unique(round_any(spacing.sampling, 2))
+  content.bins <- unique(round_any(content.sampling, roundings[[1]]))
+  displacement.bins <- unique(round_any(displacement.sampling, roundings[[2]]))
+  spacing.bins <- unique(round_any(spacing.sampling, roundings[[3]]))
 
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
   narrow.spacing <- take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
@@ -112,14 +117,14 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
 
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
-  xscales <- list(displacement_scale,
-                  spacing_scale_x,
-                  displacement_scale,
-                  displacement_scale)
-  yscales <- list(spacing_scale_y,
-               content_scale_y,
-               content_scale_y,
-               content_scale_y)
+  xscales <- list(displacement_scale_nopadding,
+                  spacing_scale_x_nopadding,
+                  displacement_scale_nopadding,
+                  displacement_scale_nopadding)
+  yscales <- list(spacing_scale_y_nopadding,
+               content_scale_y_nopadding,
+               content_scale_y_nopadding,
+               content_scale_y_nopadding)
 
   spacing.threshold <- 4.5
   filters <- list(
@@ -129,13 +134,13 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
     here(subset) %<<% dots(spacing < spacing.threshold))
 
   annotations <- with_arg(
-    x=Inf, y=Inf, geom="text", vjust=1, hjust=1.2, size=3,
+    x=Inf, y=Inf, geom="text", vjust=1.3, hjust=1.2, size=3,
     color="gray50",
-    annotate(label="\nCarrier = 0"),
-    annotate(label="\nEnvelope = 0"),
-    annotate(label=sprintf("\nSpacing = %.2g \n(binning >= %.2g)",
+    annotate(label="Carrier = 0"),
+    annotate(label="Envelope = 0"),
+    annotate(label=sprintf("Spacing = %.2g \n(binning >= %.2g)",
                wide.spacing, spacing.threshold)),
-    annotate(label=sprintf("\nSpacing = %.2g \n(binning < %.2g)",
+    annotate(label=sprintf("Spacing = %.2g \n(binning < %.2g)",
                narrow.spacing, spacing.threshold)))
 
   #cook in additional fields that the model may need
@@ -173,7 +178,6 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
                      aes(size=n_obs, fill=bound_prob(p)))
         + anno
         + scale_size_area("N", breaks=c(20, 50, 100, 200, 500))
-        + theme(panel.border=element_blank())
         + labs(title="foo"))
       ggplot_gtable(ggplot_build(the.plot))
     })
@@ -203,7 +207,7 @@ plot_3d_grids <- function(model, grids, ...) {
   bind[x, y, z, value] <- zip(lapply(grids, matrixify), collate=list)
   rgl.clear()
   bg3d(color="gray80")
-  par3d(scale=c(10, 6, 1.5))
+  par3d(scale=c(6, 6, 1.5))
   view3d(130, 15, 40, 1)
   #For each plane...
   Map(x=x, y=y, z=z, value=value, function(x, y, z, value) {
@@ -228,7 +232,7 @@ plot_3d_grids <- function(model, grids, ...) {
   axis3d("x--", nticks=5, expand=1)
   axis3d("y++", expand=1)
   axis3d("z-+", expand=1)
-  mtext3d("Envelope motion", "x--", 1, at=0.4, adj=1.2)
+  mtext3d("Envelope motion", "x--", 0, at=par3d()$bbox[[2]], adj=1.2)
   mtext3d("Carrier strength", 'y++', 1, at=-1.5, adj=0)
   mtext3d("Spacing", 'z-+', 3, at=15)
   ##maybe we want to compute null (PSE) surface...

@@ -232,6 +232,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
                                     bins=6, restrict, fold=FALSE) {
   # if we are binning "folded"
   missing.restrict <- missing(restrict)
+  data <- unmkrates(data)
   data$fit <- predict(model, newdata=data, type="response")
   chain(
     data,
@@ -281,7 +282,7 @@ bin_grid_resid <- function(model, grid, data=model$data, coords) {
   data$.bin.pred <- predict(model, newdata=data, type="response")
   data <- mutate(data,
                  .bin.total_n = if (exists("n_obs")) n_obs else 1,
-                 .bin.total_yes = if (exists("n_obs")) n_ccw else response,
+                 .bin.total_yes = if (exists("n_obs")) n_cw else response,
                  .bin.total_var = (.bin.pred * (1-.bin.pred)) * .bin.total_n,
                  .bin.total_pred = .bin.pred * .bin.total_n,
                  .bin.total_resid = .bin.total_yes - .bin.total_pred)
@@ -430,10 +431,33 @@ ddply_keeping_unique_cols <- function(.data, .columns, .fun, ...) {
   ddply(.data, .columns, .fun, ...)
 }
 
+is_rates <- function(data,
+                     splits=c("displacement", "content",
+                       "spacing", "subject", "exp_type")) {
+  if ("n_obs" %in% names(data)) {
+    if ((all(data$n_obs == 1))) {
+      if (all(count(data, splits)$freq == 1)) {
+        stop("can't tell if rate-formatted or not....")
+      } else {
+        return(FALSE)
+      }
+    } else {
+      if (all(count(data, splits)$freq == 1)) {
+        return(TRUE)
+      } else {
+        stop("can't tell if rate-formatted or not....")
+      }
+    }
+  } else {
+    return(FALSE)
+  }
+}
+
 #convert binary data into counted yes/no data
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type"), keep_unique=TRUE) {
+  if (is_rates(data, splits)) return(data)
   counter <- function(s) summarize(s,
     n_obs = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
@@ -450,19 +474,20 @@ mkrates <- function(data,
 
 #undo mkrates, convert counted yes/no data into binary data.
 unmkrates <- function(data, keep.count.cols=FALSE) {
+  if (!is_rates(data)) return(data)
   rows = inverse.rle(list(
     lengths = if ("n_obs" %in% names(data)) data$n_obs else data$n,
-    values = seq_length(nrow(data))))
+    values = seq_len(nrow(data))))
   responses = inverse.rle(list(
-      lengths = rbind(n_cw, n_ccw),
-      values = replicate(c(TRUE,FALSE), nrow(data))))
-  data <- data[rows]
-  data$response <- values
-  if (keep_count_cols) {
+      lengths = rbind(data$n_cw, data$n_ccw),
+      values = replicate(nrow(data), c(TRUE,FALSE))))
+  data <- data[rows,]
+  data$response <- responses
+  if (keep.count.cols) {
     mutate(data, n_cw = ifelse(response, 1, 0), n_ccw = ifelse(response, 0, 1),
            n_obs=1, p=ifelse(response, 1, 0) )
   } else {
-    data[c("n_cw", "n_ccw", "n", "p")] <- NULL
+    data[c("n_cw", "n_ccw", "n", "p")] <- list()
   }
   data
 }

@@ -102,7 +102,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   load(infile, envir = e <- new.env())
   motion.energy <- add_energies(read.csv(grid))
-  
+
   bind[plot.displacement, plot.content, plot.spacing] <- (
     chain(motion.energy, subset(grid==TRUE),
           mutate(spacing=target_number_all * 2*pi/eccentricity),
@@ -125,6 +125,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
 
   #count trials in each condition. While keeping motion energy
   #information, this kills speed. Might do binning instead.
+  rates <- mkrates(data)
 
   #Our model has one term nonlinear in the spacing-dependent
   #sensitivity to displacement and to direction content.
@@ -132,7 +133,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   displacementTerm <<- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
                        ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
 
-  formula <- (  response
+  formula <- (  cbind(n_cw, n_ccw)
               ~ displacementTerm(spacing, displacement,
                                  start=c(cs=4, beta_dx=14))
               + content
@@ -145,7 +146,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   family <- binomial(link=logit.2asym(g=0.025, lam=0.025))
 
   #fit models to each subject.
-  models <- dlply(data, "subject", function(chunk) {
+  models <- dlply(rates, "subject", function(chunk) {
     cat("fitting subject ", chunk$subject[1], "\n")
     gnm(formula, family=family, data=chunk)
   })
@@ -155,7 +156,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
        plot.displacement, plot.content, plot.spacing, file=outfile)
 
   #plot the models
-  cairo_pdf(plot, onefile=TRUE, family="MS Gothic")
+  cairo_pdf(plot, onefile=TRUE)
   (mapply %<<% model.df)(function(model, subject) {
     cat("plotting subject ", as.character(subject), "\n")
     plot_fit(model)
