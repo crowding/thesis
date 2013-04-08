@@ -139,10 +139,26 @@
 --output --invisible writing/combined.model.pdf combined.model.pdf && cd ..
 
 --command cd writing && Rscript
+--input --invisible writing/contours.R contours.R
 --input --invisible --match writing/slopeModel.RData slopeModel.RData
 --input --invisible writing/motion_energy.csv motion_energy.csv
---output --invisible writing/contours.pdf contours.pdf
+--output --invisible --mkdir --listing writing/contours/contours.list contours/contours.list
 
---command
---input --match --invisible writing/.*
---output --once --invisible --phony writing
+
+##this don't work: it multiply generates contours.list
+#--command --once pdfjoin 
+#--once --output writing/contours/all_contours.pdf
+#--input --listing --match writing/contours/contours.list
+
+##this also don't work: it doesn't match
+#--command --once pdfjoin 
+#--input --match writing/contours/contours.*\.pdf
+#--once --output writing/contours/all_contours.pdf
+
+--command --once cd writing && pdfjoin
+%--outfile --output --invisible writing/contours/all_contours.pdf contours/all_contours.pdf
+"$$( " 
+"cat"
+--input --match --invisible writing/contours/contours.list contours/contours.list
+")"
+

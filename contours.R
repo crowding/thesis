@@ -35,19 +35,21 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
 
   #since our 3d plots can't plot directly into a multipage PDF, we'll
   #have to list separate files
-  (Map %<<% model.df)(f = function(model, subject, ...) {
+  (Map %<<% model.df)(f = function(model, subject, ...) tryCatch({
     subject <- as.character(subject)
     cat("plotting subject ", subject, "\n")
     pdf(pdf.file <- replace_extension(outlist, "pdf",
-                                     paste0("_", subject, "_2d")))
+                                      paste0("_", subject, "_2d")))
     on.exit(dev.off(), add=TRUE)
     open3d(windowRect=c(100L, 100L, 1024L, 512L))
     on.exit(rgl.close(), add=TRUE)
     plot_contours(motion.energy=motion.energy, model=model, subject=subject, ...)
-    rgl.postscript(rgl.file <- replace_extension(outlist, "pdf",
-                                                 paste0("_", subject, "_3d")))
+    rgl.postscript(
+      fmt="pdf",
+      (rgl.file <- replace_extension(outlist, "pdf",
+                                      paste0("_", subject, "_3d"))))
     writeLines(c(pdf.file, rgl.file), outlist.conn)
-  })
+  }, error=warning))
 }
 
 plot_contours <- function(model, subject, motion.energy, outlist, ...) {
@@ -61,7 +63,7 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
   #because 20/3 in the dataset is different form R's idea of 20/3....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
 
-  # grid coordinates to sample on
+  # id coordinates to sample on
   is.motion.energy <- "motion_energy_models" %in% class(model)
   if ("motion_energy_model" %in% class(model)) {
     ##in motion energy models we can only evaluate stimuli whose
@@ -79,7 +81,7 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
   }
 
   content.bins <- unique(round_any(content.sampling, 0.2))
-  displacement.bins <- unique(round_any(content.sampling, 0.1))
+  displacement.bins <- unique(round_any(displacement.sampling, 0.2))
   spacing.bins <- unique(round_any(spacing.sampling, 2))
 
   wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
@@ -190,7 +192,6 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
-  grid.newpage()
   grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.
@@ -255,3 +256,5 @@ rgl.grob <- function(...) {
   PostScriptTrace(file=the.postscript, outfilename=the.xml)
   pictureGrob(readPicture(the.xml))
 }
+
+run_as_command()
