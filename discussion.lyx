@@ -25,6 +25,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -32,7 +33,7 @@
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -61,6 +62,192 @@
 
 \begin_layout Section
 Discussion
+\end_layout
+
+\begin_layout Subsection
+Distinguishing between types of motion stimuli and types of motion mechanisms.
+\end_layout
+
+\begin_layout Standard
+In the history of visual science there have been many observations that
+ there are multiple mechanisms, or more generally aspects, involved in the
+ perception of visual motion.
+ Different stimuli and parameterizations have been invented to characterize
+ these aspects, with the either advocating or rejecting some particular
+ boundary between a simple or low-level aspect and a more complicated or
+ higher-level aspect.
+ 
+\end_layout
+
+\begin_layout Standard
+There have been multiple strategies employed to draw distinctions between
+ motion systems.
+ One strategy is to construct a stimulus that can be controlled along some
+ variable, such as a continuous spatial or temporal parameter of the stimulus.
+ For example, varying the length of displacement is used to distinguish
+ long-range from short-range motion, and varying the stimulus asynchrony
+ serves to distinguish phi from beta motion.
+ Here the boundary between motion mechanisms is associated with a qualitative
+ change in the appearance or psychometric measure as a function of the controlle
+d variable.
+\end_layout
+
+\begin_layout Standard
+A second strategy starts with stimuli that are 
+\emph on
+a priori
+\emph default
+ distinguished, usually in accordance with a particular hypothesis about
+ the functioning of at least one of the motion mechanisms.
+ We may compare stimuli designed to drive that mechanism with stimuli that
+ are designed to isolate that mechanism (but which still contain 
+\begin_inset Quotes eld
+\end_inset
+
+motion
+\begin_inset Quotes erd
+\end_inset
+
+ in some sense.) For example, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Chubb:1988kx"
+
+\end_inset
+
+ designed 
+\begin_inset Quotes eld
+\end_inset
+
+drift balanced
+\begin_inset Quotes erd
+\end_inset
+
+ motion, with the aim of identifying mechanisms that could compute motion
+ on .
+ Here again, the strategy is to seek a qualitative change between some measure
+ that can be used to characterize both systems, and use this qualitative
+ change (or its lack) to argue for against a distinction between motion
+ mechanisms.
+\end_layout
+
+\begin_layout Standard
+Our approach in this work is somewhat of a hybrid, in that while we do construct
+ out stimulus with a low-level and high-level mechanism in mind, corresponding
+ to the carrier and envelope motions we described, we do not presume that
+ any of our stimuli isolates one mechanism; rather we parameterize both
+ aspects of the stimulus and seek to identify how these two aspects of the
+ stimulus, both of which we declare to be 
+\begin_inset Quotes eld
+\end_inset
+
+motion
+\begin_inset Quotes erd
+\end_inset
+
+ in some sense, elicit qualitative or quantitative differences in perception.
+\end_layout
+
+\begin_layout Subsubsection
+Phi versus beta 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Sekuler:1996gy"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Steinman:2000ap"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Perhaps the earliest observation of multiple aspects of visual motion was
+ due to 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Wertheimer:1912aa,Wertheimer:2012aa"
+
+\end_inset
+
+ .
+ In these experiments
+\end_layout
+
+\begin_layout Subsubsection
+Fourier and non-Fourier motion
+\end_layout
+
+\begin_layout Standard
+The distinction between Fourier and non-Fourier motion is tue to 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Chubb:1988kx"
+
+\end_inset
+
+observing that existing explanations of motion mechanisms could be characterized
+ in terms of calculating motion from Fourier components, that some motion
+ mechanisms could mme explained by filtering in the designed 
+\begin_inset Quotes eld
+\end_inset
+
+drift balanced
+\begin_inset Quotes erd
+\end_inset
+
+ motion stimuli that contained no Fourier motion
+\end_layout
+
+\begin_layout Subsubsection
+Short range and long range motion
+\end_layout
+
+\begin_layout Standard
+Synecdoches and reification in the interpretation of stimulus-driven motion
+ distinctions.
+\end_layout
+
+\begin_layout Subsubsection
+Reification of boundaries, synecdoches, and other confusions.
+\end_layout
+
+\begin_layout Subsubsection
+Our motion mechanisms are not 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ versus 
+\begin_inset Quotes eld
+\end_inset
+
+global,
+\begin_inset Quotes erd
+\end_inset
+
+ or if it is, then it is the other way around from what you think
+\end_layout
+
+\begin_layout Subsection
+An interpretation of motion sensing in terms of processing with limited
+ input
+\end_layout
+
+\begin_layout Subsection
+The interactions of different motion-sensing systems in motion perception
+\end_layout
+
+\begin_layout Standard
+We have seen that, and have determined that the 
 \end_layout
 
 \begin_layout Standard
@@ -497,6 +684,17 @@ The APA class has a hardcoded bibliography style (apacite).
  So whatever you chose below in the BibTeX setting as a bibliography style,
  it will be ignored.
 \end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/peter/bibdesk/bibliography"
+options "apalike"
 
 \end_inset
 
