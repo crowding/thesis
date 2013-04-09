@@ -76,24 +76,24 @@ In the history of visual science there have been many observations that
  these aspects, with the either advocating or rejecting some particular
  boundary between a simple or low-level aspect and a more complicated or
  higher-level aspect.
+ There have been multiple strategies employed to draw distinctions between
+ motion systems.
  
 \end_layout
 
 \begin_layout Standard
-There have been multiple strategies employed to draw distinctions between
- motion systems.
- One strategy is to construct a stimulus that can be controlled along some
+One strategy is to construct a stimulus that can be controlled along some
  variable, such as a continuous spatial or temporal parameter of the stimulus.
  For example, varying the length of displacement is used to distinguish
- long-range from short-range motion, and varying the stimulus asynchrony
- serves to distinguish phi from beta motion.
- Here the boundary between motion mechanisms is associated with a qualitative
- change in the appearance or psychometric measure as a function of the controlle
-d variable.
+ long-range from short-range motion [cite], and varying the stimulus asynchrony
+ serves to distinguish phi from beta motion [cite, or cite below].
+ Here the boundary delineating motion mechanisms is associated with a qualitativ
+e change in the appearance, or some response measure, as a function of the
+ controlled variable.
 \end_layout
 
 \begin_layout Standard
-A second strategy starts with stimuli that are 
+A second strategy begins with stimuli that are 
 \emph on
 a priori
 \emph default
@@ -129,23 +129,83 @@ drift balanced
  that can be used to characterize both systems, and use this qualitative
  change (or its lack) to argue for against a distinction between motion
  mechanisms.
+ Since the stimuli used in this approach are distinguished by kind rather
+ than by parameterization, extra care is required to distinguish qualitatively
+ different responses to two kinds of stimuli from merely less or more effective
+ responses from one mechanism.
+ However, if this approach succeeds in effectively nulling one motion mechanism
+ so that the other carries the perception, large quantitative differences
+ can indeed be shown.
 \end_layout
 
 \begin_layout Standard
-Our approach in this work is somewhat of a hybrid, in that while we do construct
- out stimulus with a low-level and high-level mechanism in mind, corresponding
- to the carrier and envelope motions we described, we do not presume that
- any of our stimuli isolates one mechanism; rather we parameterize both
- aspects of the stimulus and seek to identify how these two aspects of the
- stimulus, both of which we declare to be 
+Our approach in this work is somewhat of a hybrid of the above approaches.
+ Similarly to the second approach, we have constructed our stimuli with
+ a low-level and a high-level mechanism in mind, corresponding to the carrier
+ strength and envelope motions, and we hope that adjustments to carrier
+ or envelope effect changes in the response of the the low-level and high-level
+ mechanisms respectively.
+ However, more like the first strategy, we prefer to let the differences
+ between motion mechanisms 
 \begin_inset Quotes eld
 \end_inset
 
-motion
+fall out
 \begin_inset Quotes erd
 \end_inset
 
- in some sense, elicit qualitative or quantitative differences in perception.
+ as we continuously vary stimulus parameters.
+ What we have observed is that the sensitivity to envelope motion increases
+ as the spacing between objects increases spacing, while the sensitivity
+ to carrier strength decreases.
+ We propose that this illustrates a difference between the operation of
+ two mechanisms of motion perception, except, though we have not attempted
+ to null the stimulus to either mechanism.
+\end_layout
+
+\begin_layout Standard
+We do not attempt to construct stimuli with the aim of isolating or providing
+ null input to any mechanism; rather we consider all motion mechanisms to
+ be active for all of our stimuli.
+ Recall Helmholtz's 
+\begin_inset CommandInset citation
+LatexCommand citeyearpar
+key "Helmholtz:1925bv"
+
+\end_inset
+
+ observation that 
+\begin_inset Quotes eld
+\end_inset
+
+Black is a real sensation, even if it is produced by entire absence of light.
+ The sensation of black is different from the lack of all sensation.
+\begin_inset Quotes erd
+\end_inset
+
+ We posit that the same applies to motion as applies to color.
+ A stationary object, or an object with nulled motion, is distinctly different
+ from the absence of an object.
+\end_layout
+
+\begin_layout Standard
+So, for instance, we do not consider second-order motion stimuli to be absent
+ of first-order content; rather they contain first order content that is
+ consistent with a non-moving object.
+ In fact all second-order motion stimuli contain considerably more flicker
+ than would a stationary object, even if the flicker lacks direction as
+ far as first-order mechanisms are concerned.
+\end_layout
+
+\begin_layout Standard
+Each scheme for exploring has effectively picked a different boundary along
+ which to cleave the lower-level aspect of motion perception from the higher-lev
+el aspect.
+ Interestingly they appear to differ in where the delineation is to defined:
+ in the space of sensation, the space of stimulus configuration, to a delineatio
+n between mechanisms.
+ There are differences and commonalities between all the approaches, and
+ we consider how our project relates to each.
 \end_layout
 
 \begin_layout Subsubsection
@@ -167,7 +227,18 @@ key "Steinman:2000ap"
 \end_layout
 
 \begin_layout Standard
-Perhaps the earliest observation of multiple aspects of visual motion was
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This is, uniquely, and perhaps presciently, a distinction based on sensation
+ i.e.
+ phenomonology!
+\end_layout
+
+\end_inset
+
+ Perhaps the earliest observation of multiple aspects of visual motion was
  due to 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -176,7 +247,7 @@ key "Wertheimer:1912aa,Wertheimer:2012aa"
 \end_inset
 
  .
- In these experiments
+ In these experiments, 
 \end_layout
 
 \begin_layout Subsubsection
@@ -184,6 +255,15 @@ Fourier and non-Fourier motion
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This is a distinction based on an aspect of the stimulus...
+\end_layout
+
+\end_inset
+
 The distinction between Fourier and non-Fourier motion is tue to 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -208,16 +288,120 @@ drift balanced
 Short range and long range motion
 \end_layout
 
+\begin_layout Paragraph
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+This is a stimulus-parameter-based delineation.
+ The danger is reification into mechanism -- there is not a specifically
+ long-range mechanism, just a mechamism that is more effective at long displacem
+ents BUT IS ACTIVE AND PARTICIPATES AT ALL DISPLACEMENTS
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+First and second order motion
+\end_layout
+
 \begin_layout Standard
-Synecdoches and reification in the interpretation of stimulus-driven motion
- distinctions.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+THis is a distinction based on mechanism.
+ Chubb and Sperling 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
-Reification of boundaries, synecdoches, and other confusions.
+Reification of boundaries across domains, synecdoches, and other confusions.
+\end_layout
+
+\begin_layout Paragraph
+Apparent motion 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+is a bullshit term
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An example of the reification of a phenomenological distinction backward
+ into is with the term 
+\begin_inset Quotes eld
+\end_inset
+
+apparent motion.
+\begin_inset Quotes erd
+\end_inset
+
+ In contemporary usage this tem is used to refer to a particular class of
+ motion stimuli, that of discretely sampled motion stimuli, and more particularl
+y stimuli that translate in discrete jumps.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Chubb:1988kx"
+
+\end_inset
+
+ designed 
+\begin_inset Quotes eld
+\end_inset
+
+drift-balanced apparent motion
+\begin_inset Quotes erd
+\end_inset
+
+ stimuli.
+ Now, the contemporary sense of 
+\begin_inset Quotes eld
+\end_inset
+
+apparent motion
+\begin_inset Quotes erd
+\end_inset
+
+ as a stimulus that translates in discrete jumps is not consistent with
+ Chubb and Sperling's usage, as by design their drift-balanced stimuli has
+ no correlation between successive frames that could be described as translation
+; rather 
+\end_layout
+
+\begin_layout Paragraph
+Local and global 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+isa bullshit term -- in the domain of our experiment
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 Our motion mechanisms are not 
 \begin_inset Quotes eld
 \end_inset
@@ -234,7 +418,12 @@ global,
 \begin_inset Quotes erd
 \end_inset
 
- or if it is, then it is the other way around from what you think
+ or if they are, then it is the other way around from what you think
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -244,6 +433,40 @@ An interpretation of motion sensing in terms of processing with limited
 
 \begin_layout Subsection
 The interactions of different motion-sensing systems in motion perception
+\end_layout
+
+\begin_layout Subsection
+The physiology of lower- and higher- order motion perception
+\end_layout
+
+\begin_layout Subsubsection
+Higher order motion is not in MT, probably not in MST, but MT does seem
+ ripe for out 
+\begin_inset Quotes eld
+\end_inset
+
+summation
+\begin_inset Quotes erd
+\end_inset
+
+ process
+\end_layout
+
+\begin_layout Paragraph
+Cast 
+\begin_inset Quotes eld
+\end_inset
+
+availability of information as parameterized
+\begin_inset Quotes erd
+\end_inset
+
+ as the constraining factor
+\end_layout
+
+\begin_layout Paragraph
+(interaction of cortical constraints on the organization of information;
+ crowding constrains object localization and MT constrains motion localization.)
 \end_layout
 
 \begin_layout Standard
