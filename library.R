@@ -199,6 +199,23 @@ dlply_along <- function(.data, .variables, .fun=NULL, ...
         , .parallel = .parallel, .paropts = .paropts)
 }
 
+folding_predict <- function(model, newdata=model$data, ..., fold=FALSE) {
+  pred <- predict(model, newdata=newdata, ...)
+  if(fold) {
+    pred2 <- 1 - predict(model, newdata=fold_trials(newdata, TRUE),
+                         ...)
+    switch(class(pred),
+           list = Map(a=pred, b=pred2, n = names(pred), f=function(a, b, n) {
+             switch(n,
+                    se.fit = a + b / 2 / sqrt(2),
+                    a + b / 2)
+           }),
+           pred)
+  } else {
+    pred
+  }
+}
+
 motion_energy_model <- function(model, energy) {
   model$motion.energy <- energy
   class(model) <- union("motion_energy_model", class(model))
@@ -259,11 +276,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
                           pearson_resid=pearson_resid)))
       })))) -> binned
   # if we are folding then we have to make a "folded" prediction
-  binned$pred <- predict(model, newdata=binned, type="response")
-  if (fold) {
-    pred2 <- 1-predict(model, newdata=fold_trials(binned, TRUE), type="response")
-    binned$pred <- (binned$pred + pred2) / 2
-  }
+  binned$pred <- folding_predict(model, newdata=binned, type="response")
   # this can produce valuce slightly outside [0,1]
   # this should produce identical Pearson residuals.
   binned <- mutate(binned,
@@ -277,7 +290,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
 
 ##Given some high dimensional data and a grid to reduce it to, do the
 ##reduction by preserving the residual.
-bin_grid_resid <- function(model, grid, data=model$data, coords) {
+bin_grid_resid <- function(model, grid, data=model$data, coords, fold=FALSE) {
   #Before forcing data onto the grid, calculate residuals from the model
   data$.bin.pred <- predict(model, newdata=data, type="response")
   data <- mutate(data,
@@ -287,6 +300,9 @@ bin_grid_resid <- function(model, grid, data=model$data, coords) {
                  .bin.total_pred = .bin.pred * .bin.total_n,
                  .bin.total_resid = .bin.total_yes - .bin.total_pred)
   grid$.bin.pred <- predict(model, newdata=grid, type="response")
+
+  #at this point, we can refold if necessary.
+  grid <- refold(grid, fold=fold)
 
   #select grid bins for each data point. Assumes grid is rectilinear(enough).
   coordcols <- paste0(coords, ".coord.", seq_along(coords))
@@ -368,11 +384,13 @@ str_match_matching <- function(...) {
 }
 
 mutate_when_has <- function(data, columns=dots_names(...), ...) {
-  if (all(columns %in% names(data))) {
-    evalq(function(...) mutate(...), parent.frame())(data, ...)
-  } else {
-    data
+  stopifnot(is.data.frame(data) || is.list(data) || is.environment(data))
+  cols <- list_quote(...)
+  for (col in names(cols)) {
+    if (col %in% names(data))
+    data[[col]] <- eval(cols[[col]], data, parent.frame())
   }
+  data
 }
 
 ziprbind <- function(l, collector=rbind.fill) Map %<<% dots(f=collector) %()% l
@@ -404,12 +422,20 @@ fold_trials <- function(data, fold.trial) {
         mutate(folded=(if (exists("folded"))
                        xor(folded, fold.trial) else fold.trial)),
         #n_ccw and n_cw were already taken care of...
-        mutate_when_has(content = ifelse(folded, -content, content)),
-        mutate_when_has(displacement =
-                          ifelse(folded, -displacement, displacement)),
-        mutate_when_has(response = ifelse(folded, !response, response)),
-        mutate_when_has(fit=ifelse(folded, 1-fit, fit)),
-        mutate_when_has(p=ifelse(folded, 1-p, p)),
+        mutate_when_has(
+          content = ifelse(folded, -content, content),
+          displacement = (ifelse(folded, -displacement, displacement)),
+          response = ifelse(folded, !response, response),
+          fit = ifelse(folded, 1-fit, fit),
+          p = ifelse(folded, 1-p, p),
+          .bin.total_yes = ifelse(
+            folded, .bin.total_n - .bin.total_yes, .bin.total_yes),
+          .bin.total_pred = ifelse(
+            folded, .bin.total_n - .bin.total_pred, .bin.total_pred),
+          .bin.total_resid = ifelse(
+            folded, -.bin.total_resid, .bin.total_resid),
+          .bin.pred = ifelse(
+            folded, 1-.bin.pred, .bin.pred)),
         refold_me(fold.trial))
 }
 

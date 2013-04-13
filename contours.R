@@ -25,8 +25,10 @@ grid <- "motion_energy.csv"
 outfile <- "contours.pdf"
 
 main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
-                 outlist = "contours/contours.list") {
-
+                 outlist = "contours/contours.list", fold=c(FALSE, TRUE),
+                 dev.fun=pdf) {
+  out <- match.fun(dev.fun)
+  fold <- if(is.logical(fold)) fold[[1]] else match.arg(fold)
   load(infile)
   motion.energy <- chain(grid, read.csv, add_energies)
 
@@ -38,12 +40,13 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
   (Map %<<% model.df)(f = function(model, subject, ...) tryCatch({
     subject <- as.character(subject)
     cat("plotting subject ", subject, "\n")
-    pdf(pdf.file <- replace_extension(outlist, "pdf",
+    dev.fun(pdf.file <- replace_extension(outlist, "pdf",
                                       paste0("_", subject, "_2d")))
     on.exit(dev.off(), add=TRUE)
     open3d(windowRect=c(100L, 100L, 768L, 512L))
     on.exit(rgl.close(), add=TRUE)
-    plot_contours(motion.energy=motion.energy, model=model, subject=subject, ...)
+    plot_contours(motion.energy=motion.energy, model=model, subject=subject,
+                  fold=fold, ...)
     rgl.postscript(
       fmt="pdf",
       (rgl.file <- replace_extension(outlist, "pdf",
@@ -52,7 +55,8 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
   }, error=warning))
 }
 
-plot_contours <- function(model, subject, motion.energy, outlist, ...) {
+plot_contours <- function(model, subject, motion.energy, outlist,
+                          fold=FALSE, ...) {
   # we want three contour plots along our three axes --
   # spacing, displacement and direction content --
   # maybe even put it in 3d with the other one.
@@ -62,7 +66,6 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
 
   #because 20/3 in the dataset is different form R's idea of 20/3....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
-
 
   roundings <- c(0.2, 0.2, 2)
   # id coordinates to sample on
@@ -75,22 +78,25 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
     ##way to draw this interpolated?
     geom <- geom_tile()
   } else {
-    bind[displacement.sampling, content.sampling, spacing.sampling] <- (
-      chain(model$data,
-            .[c("displacement", "content", "spacing")],
-            lapply(range),
-            Map(f=round_any, roundings),
-            Map(f=function(x,r) x+c(-0.49*r, 0.49*r), roundings),
-            lapply(seq_range, length=50), lapply(sort)))
+    bind[displacement.sampling, content.sampling, spacing.sampling] <- chain(
+      model$data,
+      .[c("displacement", "content", "spacing")],
+      lapply(range),
+      Map(f=round_any, roundings),
+      Map(f=pmax, list(-Inf, if(fold) 0 else -Inf, -Inf)),
+      Map(f=function(x,r) x+c(-0.50*r, 0.50*r), roundings),
+      lapply(seq_range, length=50), lapply(sort))
+    bind[content.bins, displacement.bins, spacing.bins] <- chain(
+      model$data,
+      refold(fold=fold),
+      .[c("displacement", "content", "spacing")],
+      Map(f=round_any, roundings),
+      lapply(unique))
     geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
   }
 
-  content.bins <- unique(round_any(content.sampling, roundings[[1]]))
-  displacement.bins <- unique(round_any(displacement.sampling, roundings[[2]]))
-  spacing.bins <- unique(round_any(spacing.sampling, roundings[[3]]))
-
-  wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, spacing.sampling)
-  narrow.spacing <- take_nearest(2*pi*nominal.eccentricity/20 , spacing.sampling)
+  wide.spacing <- take_nearest(2*pi*nominal.eccentricity/6, model$data$spacing)
+  narrow.spacing <- take_nearest(2*pi*nominal.eccentricity/20, model$data$spacing)
 
   bind[grids, bins] <- Map(
     spacing = list(spacing.sampling, spacing.bins),
@@ -138,9 +144,9 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
     color="gray50",
     annotate(label="Carrier = 0"),
     annotate(label="Envelope = 0"),
-    annotate(label=sprintf("Spacing = %.2g \n(binning >= %.2g)",
+    annotate(label=sprintf("Spacing = %.2g \n(using trials >= %.2g)",
                wide.spacing, spacing.threshold)),
-    annotate(label=sprintf("Spacing = %.2g \n(binning < %.2g)",
+    annotate(label=sprintf("Spacing = %.2g \n(using trials < %.2g)",
                narrow.spacing, spacing.threshold)))
 
   #cook in additional fields that the model may need
@@ -156,9 +162,9 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
           else round(2*pi*eccentricity / spacing))),
       recast_data,
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
-      mutate(., pred = predict(model, newdata=., type="response"))))
+      mutate(., pred = folding_predict(model, newdata=., type="response", fold=fold))))
 
-  plot.tables <- Map(
+    plot.tables <- Map(
     grid=grids, bin=bins, xscale=xscales, yscale = yscales, fig=2:5,
     xvar=xvars, yvar=yvars, anno=annotations, filt=filters,
     f = function(grid, bin, xscale, yscale, fig, xvar, yvar, anno, filt) {
@@ -167,7 +173,7 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
       ##grid lines, while computing an "average" that
       ##preserves the residual.
       binned_data <- bin_grid_resid(
-        model, bin, data=filt(model$data), coords=c(xvar, yvar))
+        model, bin, data=filt(model$data), coords=c(xvar, yvar), fold=fold)
       the.plot <- (
         ggplot(grid)
         + xscale + yscale
@@ -202,7 +208,7 @@ plot_contours <- function(model, subject, motion.energy, outlist, ...) {
   plot_3d_grids(model=model, grids=grids, bins=bins)
 }
 
-plot_3d_grids <- function(model, grids, ...) {
+plot_3d_grids <- function(model, grids, fold=FALSE, ...) {
   #turn data frames in "grids" into matrices for plotting
   bind[x, y, z, value] <- zip(lapply(grids, matrixify), collate=list)
   rgl.clear()

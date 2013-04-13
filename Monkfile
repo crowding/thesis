@@ -144,6 +144,13 @@
 --input --invisible writing/motion_energy.csv motion_energy.csv
 --output --invisible --mkdir --listing writing/contours/contours.list contours/contours.list
 
+--command cd writing && Rscript
+--input --invisible writing/contours.R contours.R
+--input --invisible --match writing/slopeModel.RData slopeModel.RData
+--input --invisible writing/motion_energy.csv motion_energy.csv
+--output --invisible --mkdir --listing writing/contours/contours_folded.list contours/contours_folded.list
+TRUE # with folding
+
 
 ##this don't work: it multiply generates contours.list
 #--command --once pdfjoin 
@@ -160,5 +167,12 @@
 "$$( " 
 "cat"
 --input --match --invisible writing/contours/contours.list contours/contours.list
+")"
+
+--command --once cd writing && pdfjoin %--rotateoversize 'false'
+%--outfile --output --invisible writing/contours/all_contours_folded.pdf contours/all_contours_folded.pdf
+"$$( " 
+"cat"
+--input --match --invisible writing/contours/contours_folded.list contours/contours_folded.list
 ")"
 
