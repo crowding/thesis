@@ -40,6 +40,66 @@ if (packageVersion("ggplot2") < package_version('0.9.4')) {
   })
 }
 
+## A circle geom (that allows better control over line weight and fill
+## than geom_point...)
+geom_circle <- function(mapping=NULL, data=NULL,
+                        stat="identity", position="identity", ...) {
+  GeomCircle$new(mapping = mapping, data = data,
+                 stat = stat, position = position, ...)
+}
+
+GeomCircle <- proto(Geom, {
+  objname <- "circle"
+  default_stat <- function(.) StatIdentity
+  default_aes <- function(.)
+    aes(colour = "black", fill=NA, size = 4, weight = 0.5, linetype = 1,
+        alpha = NA, shape = 16, fill = NA)
+  required_aes <- c("x", "y")
+
+  draw <- function(., data, scales, coordinates, ...) {
+    munched <- coord_transform(coordinates, data, scales)
+    ggname(.$my_name(), circles_grob(munched))
+  }
+
+  circles_grob <- function(munched) {
+    x <- 0.5; y <- 0.5
+    with(munched,
+         circleGrob(
+             x = unit(x, "native"), y = unit(y, "native")
+           , r = unit(size/2, "mm")
+           , gp = gpar(
+               col = alpha(munched$colour, munched$alpha)
+               , fill = alpha(munched$fill, munched$alpha)
+               , lwd = weight * .pt
+               , lty = linetype)))
+  }
+
+  guide_geom <- function(.) "circle"
+
+  draw_legend <- function(., data, ...) {
+    #draw the legend symbol...
+    data <- aesdefaults(data, .$default_aes(), list(...))
+    circles_grob(data)
+  }
+})
+
+demo_circle <- function() {
+
+  circles <- expand.grid(
+    a=1:5,
+    b=1:5,
+    c=1:5,
+    d=1:5,
+    e=1:5
+    )
+  (ggplot(circles)
+   + aes(x=a, y=b, color=c, fill=d, size=a, linetype=factor(b))
+   + facet_grid(c ~ d)
+   + geom_circle())
+
+}
+
+
 ## 
 
 ## The "numdensity" geom draws a circle with some evenly spaced
