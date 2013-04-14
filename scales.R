@@ -103,7 +103,7 @@ facet_spacing_rows <-
 facet_spacing_subject <-
   facet_grid(spacing ~ subject, labeller=facet_labeller)
 
-balloon <- list(geom_point(aes(size=n))
+balloon <- list(geom_point(aes(size=n_obs))
                 , scale_size_area()
                 )
 

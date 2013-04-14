@@ -8,6 +8,7 @@ suppressPackageStartupMessages({
   library(plyr)
   library(grid)
   library(gnm)
+  library(glm2)
   library(binom)
   library(psyphy)
   library(ptools)
@@ -126,7 +127,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   #
   #plot with x-axis of target spacing, lines of constant number
   plot.spacing <- plot.basic + by.spacing + plot.wrap
-  pliot.spacing <<- plot.spacing
+  plot.spacing <<- plot.spacing
   #
   #plot with x-axis of "extent"
   plot.extent <- plot.basic + by.extent + plot.wrap
@@ -359,25 +360,64 @@ prediction_layers <- function(data, connect = c("number","spacing"))  {
 }
 
 descriptive_model <- function(dataset) {
-  formula <- (  cbind(n_cw, n_ccw) ~
-              content:target_number_shown
-              + content:I(1/spacing)
-              + content:factor(side)
-              + factor(side) - 1)
+  formula <- (  cbind(n_cw, n_ccw)
+              ~ content:I(1/spacing)
+              - 1)
   #Some of our subjects were tested at multiple
   #displacements/contents, others not. So teh
   #displacement/content coefficient only makes sense to include
   #if the data support it:
+  #cat("descriptive model", unique(dataset$subject), "\n")
   update.if <- function(formula, update.formula) {
     updated <- update(formula, update.formula)
     m <- model.matrix(updated, dataset)
-    if (qr(m)$rank == ncol(m)) updated else formula
+    # cat(as.character(update.formula),
+    #     kappa(model.matrix(formula, dataset)), '->', kappa(m), "\n")
+    if (qr(m)$rank == ncol(m) && kappa(m) < 100) updated else formula
   }
+  formula <- update.if(formula, . ~ . + content:target_number_shown)
+  formula <- update.if(formula, . ~ . + factor(side))
+  formula <- update.if(formula, . ~ . + content:factor(side))
   formula <- update.if(formula, . ~ . + displacement)
   formula <- update.if(formula, . ~ . + content)
-  glm(formula,
-      family=binomial(link=logit.2asym(g=0.025, lam=0.025)),
-      data=dataset)
+  model <- suppress_matching_warnings(
+    "truncated",
+    glm2(
+      formula,
+      family=binomial(link=logit #logit.2asym(g=0.025, lam=0.025)
+        ),
+      data=dataset,
+      start=descriptive_starting_values(formula, dataset)
+      , maxit=100
+#      , trace=TRUE
+      ))
+  model
+}
+
+suppress_matching_warnings <- function(pattern, expr)  {
+  withCallingHandlers(
+    {
+      expr
+    },
+    warning=function(w) {
+      if (isTRUE(grepl(pattern, conditionMessage(w)))) {
+        invokeRestart("muffleWarning")
+      } else {
+        warning(w)
+        invokeRestart("muffleWarning")
+      }
+    })
+}
+
+descriptive_starting_values <- function(formula, dataset) {
+  names <- colnames(model.matrix(formula, dataset))
+  vapply(names, switch, 0,
+         "content:target_number_shown" = 0,
+         "content:displacement" = 0,
+         "displacement" = 10,
+         "content" = -4,
+         "content:I(1/spacing)" = -10,
+         0)
 }
 
 make_descriptive_models <- function(segment) {
@@ -424,9 +464,8 @@ numberize_model <- function(model, newdata=model$data) {
   #requires a new column in the dataset "number_shown_as_spacing"
   new.data <- recast_data(model$data)
   which.term <- grep("displacementTerm", labels(terms(model)))
-  new.terms <- terms(model)[-which.term]
-  new.formula <- reformulate(labels(new.terms),
-                             response="response", intercept=FALSE)
+  new.terms <- drop.terms(terms(model), which.term, keep.response=TRUE)
+  new.formula <- formula(new.terms)
   new.formula <-
     update(new.formula,
            . ~ . + displacementTerm(number_shown_as_spacing, displacement,
@@ -478,13 +517,23 @@ do_recast <- function(model) {
 inform_model <- function(model, newdata=model$data) {
   pred <- predict(model, newdata=newdata, type="terms")
   newdata$pred <- rowSums(pred) #does this break earlier data?
-  newfit <- glm(cbind(n_cw, n_ccw)
-                ~ offset(pred)
-                + content:factor(side)
-                + content_global
-                , data = newdata
-                , family = binomial(link=logit.2asym(g=0.025, lam=0.025))
-                )
+  formula <- (cbind(n_cw, n_ccw)
+                   ~ offset(pred)
+                   + content:factor(side)                   + content_global
+                   )
+  newfit <- glm2(formula
+                 , data = newdata
+                 , family = binomial(link=logit #logit.2asym(g=0.025, lam=0.025)
+                     )
+                 , start = inform_model_start(formula, newdata)
+                 )
+}
+
+inform_model_start <- function(formula, dataset) {
+  names <- colnames(model.matrix(formula, dataset))
+  vapply(names, switch, 0,
+#         "content:factor(side)left" = 40,  "content:factor(side)right" = 40,
+         0)
 }
 
 

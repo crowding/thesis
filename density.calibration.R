@@ -4,6 +4,7 @@ library(ggplot2)
 library(plyr)
 library(grid)
 library(ptools)
+library(psyphy)
 source("latexing.R")
 source("icons.R")
 source("scales.R")
@@ -32,7 +33,7 @@ calibration.plot <-
     (ggplot(full)
      + proportion_scale + displacement_scale
      + aes(color=spacing, fill=spacing, group=spacing)
-     + geom_point(aes(size=n), show_guide=FALSE)
+     + geom_point(aes(size=n_obs), show_guide=FALSE)
      + scale_size_area()
      + with_arg(name="Spacing",
                 trans=log_trans(),

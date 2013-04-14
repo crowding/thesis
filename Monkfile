@@ -127,6 +127,7 @@
 
 --command cd writing && Rscript
 --input --invisible writing/density\.modeling\.R density.modeling.R
+--input --invisible writing/data.RData data.RData
 --input --invisible --match writing/slopeModel.RData slopeModel.RData
 --output --invisible writing/density.modeling.pdf density.modeling.pdf
 --output --invisible writing/density.modeling.detail.pdf density.modeling.detail.pdf
@@ -142,7 +143,7 @@
 --input --invisible writing/contours.R contours.R
 --input --invisible --match writing/slopeModel.RData slopeModel.RData
 --input --invisible writing/motion_energy.csv motion_energy.csv
---output --invisible --mkdir --listing writing/contours/contours.list contours/contours.list
+--output --invisible --mkdir --listing writing/contours/contours.list contours/contours.list FALSE
 
 --command cd writing && Rscript
 --input --invisible writing/contours.R contours.R
