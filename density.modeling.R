@@ -30,6 +30,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                  detailfile = "density.modeling.detail.pdf",
                  savefile = "density.modeling.RData",
                  detailplots=!interactive()) {
+
   setup_theme()
   if (interactive()) {
     dev.new()
@@ -246,6 +247,16 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + labs(title="Predictions of number-causes-collapse model")
        + errorbars(segment.folded.spindled.mutilated))
 
+  dev.set(detail.dev)
+  plot(plot.extent %+% segment.folded.spindled.mutilated
+       + prediction_layers(predict_from_model_frame(
+         basic.informed.models,
+         fold=TRUE, spindle=TRUE, collapse=TRUE))
+       + labs(title=paste0("Extent plot. note increasing spacing/number\n",
+                "effects at larger extents?\n",
+                "(predictions are from spacing-causes-collapse model)"))
+       + errorbars(segment.folded.spindled.mutilated))
+
   ## Compare the predictions for NJ and PBM in particular versus the
   ## spacing-causes-collapse predictions.
 
@@ -263,28 +274,24 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
              function(x) match_df(x, sub)[[1,"model"]])
     #
     #here's the a plot of one subject's data without any folding and spindling
-    if(detailplots) {
-      unfolded.prediction.plot <-
-        (ggplot(subset(predict_from_model(descriptive.model), content != 0))
-         + axes.basic + by.spacing
-         + prediction_layers(connect="number") + aes(y=fit)
-         + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
-      #
-      #if (interactive()) figure("source")
-      plot(unfolded.prediction.plot
-           + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
-                    toupper(sub$subject))))
-    }
+    unfolded.prediction.plot <-
+      (ggplot(subset(predict_from_model(descriptive.model), content != 0))
+       + axes.basic + by.spacing
+       + prediction_layers(connect="number") + aes(y=fit)
+       + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
+    #
+    #if (interactive()) figure("source")
+    plot(unfolded.prediction.plot
+         + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
+                  toupper(sub$subject))))
     #
     #if(interactive()) figure("compare")
     recast.model <- do_recast(circle.model)
     informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
-    if(detailplots) {
-      plot(unfolded.prediction.plot
-           %+% subset(predict_from_model(informed.recast.model), content != 0)
-           + labs(title=paste0("Displacement model + global content",
-                    " sum, subject ", toupper(sub$subject))))
-    }
+    plot(unfolded.prediction.plot
+         %+% subset(predict_from_model(informed.recast.model), content != 0)
+         + labs(title=paste0("Displacement model + global content",
+                  " sum, subject ", toupper(sub$subject))))
     #
     data.frame(subject=subj, model=I(list(informed.recast.model)), row.names=subj)
   })
@@ -325,7 +332,7 @@ errorbars <- function(segment, x.axis="spacing") {
 ## uh, "spindle" collapsing stimuli presented in different
 ## hemifields. Averaging foldings and hemifields is useful for
 ## plotting but not as good for modeling. "fold" collapses CW and CCW
-## direction contents.  "spindle" collapses stimulus locations.
+## direction contents.  "spindle" collapses stimulus locaions.
 extract_segment <- function(df, fold=FALSE, spindle=FALSE, collapse=FALSE,
                             count=TRUE)
   chain(df,
@@ -396,9 +403,7 @@ descriptive_model <- function(dataset) {
 
 suppress_matching_warnings <- function(pattern, expr)  {
   withCallingHandlers(
-    {
-      expr
-    },
+    expr,
     warning=function(w) {
       if (isTRUE(grepl(pattern, conditionMessage(w)))) {
         invokeRestart("muffleWarning")
@@ -415,8 +420,10 @@ descriptive_starting_values <- function(formula, dataset) {
          "content:target_number_shown" = 0,
          "content:displacement" = 0,
          "displacement" = 10,
-         "content" = -4,
-         "content:I(1/spacing)" = -10,
+         "content" =
+           if (unique(dataset$subject) == "pbm") 0 else -4,
+         "content:I(1/spacing)" =
+           if (unique(dataset$subject) == "pbm") 10 else -10,
          0)
 }
 
@@ -521,18 +528,27 @@ inform_model <- function(model, newdata=model$data) {
                    ~ offset(pred)
                    + content:factor(side)                   + content_global
                    )
-  newfit <- glm2(formula
-                 , data = newdata
-                 , family = binomial(link=logit #logit.2asym(g=0.025, lam=0.025)
-                     )
-                 , start = inform_model_start(formula, newdata)
-                 )
+  suppress_matching_warnings(
+    "truncate",
+    newfit <- glm2(
+      formula
+      , data = newdata
+      , family = binomial(link=logit #logit.2asym(g=0.025, lam=0.025)
+          )
+#      , start = inform_model_start(formula, newdata)
+#      , trace=TRUE
+      ))
 }
 
 inform_model_start <- function(formula, dataset) {
+  content_factor <- switch(unique(dataset$subject),
+                           pbm=10, 0)
   names <- colnames(model.matrix(formula, dataset))
   vapply(names, switch, 0,
-#         "content:factor(side)left" = 40,  "content:factor(side)right" = 40,
+         "content:factor(side)left" = content_factor,
+         "content:factor(side)right" = content_factor,
+         "content:factor(side)bottom" = content_factor,
+         "content:factor(side)top" = content_factor,
          0)
 }
 
