@@ -1,0 +1,3 @@
+[submodule "monk"]
+	path = monk
+	url = git@github.com:crowding/monk.git
