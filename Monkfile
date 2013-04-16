@@ -120,11 +120,15 @@ TRUE # with folding
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
---input --match --listing contours/contours.list
+'$$(' cat --input --match --listing contours/contours.list ')'
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours_folded.pdf
---input --match --listing contours/contours_folded.list
+'$$(' cat --input --match --listing contours/contours_folded.list ')'
 
 --command --invisible --input --match .*\.pdf
 --output --phony --invisible --once pdf
+
+--command lyx --input --match (.*)\.lyx
+--output {0}.pdf
+--phony --invisible --once pdf

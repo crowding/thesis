@@ -1,5 +1,6 @@
 library(ptools)
 library(plyr)
+library(psyphy)
 library(R.devices)
 source("library.R")
 source("scales.R")
