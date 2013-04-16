@@ -71,7 +71,7 @@ calibration.plot <-
               )
      + theme(legend.box="horizontal"))
   }
-
+ 
 combined_plot <- function(row, segment, full, full.predicted, ...) {
   spacing_breaks <- sort(unique(segment$spacing))
   spacing_range <- range(segment$spacing, full.predicted$spacing)

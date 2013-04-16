@@ -26,7 +26,7 @@ makePredictions <-
            splits=c("subject", "content", "exp_type", "target_number_all",
              "target_number_shown", "spacing", "eccentricity", "bias"),
            ordinate = "displacement",
-           ordinate.values = plot.displacement,
+           ordinate.values = sample.displacement,
            fold=FALSE
            ) {
     r <- range(data[ordinate])
@@ -42,6 +42,7 @@ makePredictions <-
       # if folding we need to average left-fold and right-fold trials
       if (fold) list(sampling, fold_trials(sampling, TRUE)) else list(sampling),
       function(sampling) {
+        sampling <- recast_data(sampling)
         .nrow <- nrow(sampling); .chunksize <- 1000
         sampling <- mutate(sampling, .chunk=floor(seq_len(.nrow)/.chunksize))
         ddply(sampling, ".chunk",
@@ -69,9 +70,9 @@ plotPredictions <- function(...) {
 
 #perhaps make this go using predict_from_model.df
 plot_fit <- function(model, subject=model$data$subject[1],
-                     style=c("binned", "bubble")) {
+                     style=c("bubble", "binned"), fold=TRUE, data=model$data) {
   style <- match.arg(style)
-  subdata <- match_df(model$data,
+  subdata <- match_df(data,
                       data.frame(subject=subject, stringsAsFactors=FALSE),
                       on="subject")
   switch(style, bubble = {
@@ -85,7 +86,7 @@ plot_fit <- function(model, subject=model$data$subject[1],
          + proportion_scale
          + content_color_scale
          + facet_spacing_experiment
-         + plotPredictions(model)
+         + plotPredictions(model, data=data, fold=fold)
          + geom_point()
          + (switch(style, bubble=balloon, binned=geom_point()))
          + labs(title = "Data and model fits for subject " %++% subject)
@@ -103,14 +104,14 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   load(infile, envir = e <- new.env())
   motion.energy <- add_energies(read.csv(grid))
 
-  bind[plot.displacement, plot.content, plot.spacing] <- (
+  bind[sample.displacement, sample.content, sample.spacing] <- (
     chain(motion.energy, subset(grid==TRUE),
           mutate(spacing=target_number_all * 2*pi/eccentricity),
           .[c("displacement", "content", "spacing")],
           lapply(unique), lapply(sort)))
-  plot.displacement <<- plot.displacement
-  plot.content <<- plot.content
-  plot.spacing <<- plot.spacing
+  sample.displacement <<- sample.displacement
+  sample.content <<- sample.content
+  sample.spacing <<- sample.spacing
 
   #use only subjects whose number of trials exceed 2000
   chain(e$data
@@ -153,7 +154,7 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   model.df <- data.frame(model = I(models), subject=names(models))
 
   save(model.df, models, displacementTerm, formula, family,
-       plot.displacement, plot.content, plot.spacing, file=outfile)
+       sample.displacement, sample.content, sample.spacing, file=outfile)
 
   #plot the models
   cairo_pdf(plot, onefile=TRUE)

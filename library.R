@@ -383,14 +383,24 @@ str_match_matching <- function(...) {
   x[!is.na(x[,1]), , drop=FALSE]
 }
 
-mutate_when_has <- function(data, columns=dots_names(...), ...) {
-  stopifnot(is.data.frame(data) || is.list(data) || is.environment(data))
+mutate_when_has <- function(.data, ...) {
+  stopifnot(is.data.frame(.data) || is.list(.data) || is.environment(.data))
   cols <- list_quote(...)
   for (col in names(cols)) {
-    if (col %in% names(data))
-    data[[col]] <- eval(cols[[col]], data, parent.frame())
+    if (col %in% names(.data))
+    .data[[col]] <- eval(cols[[col]], .data, parent.frame())
   }
-  data
+  .data
+}
+
+mutate_when_missing <- function(.data, ...) {
+  stopifnot(is.data.frame(.data) || is.list(.data) || is.environment(.data))
+  cols <- list_quote(...)
+  for(col in names(cols)) {
+    if (!col %in% names(.data))
+      .data[[col]] <- eval(cols[[col]], .data, parent.frame())
+  }
+  .data
 }
 
 ziprbind <- function(l, collector=rbind.fill) Map %<<% dots(f=collector) %()% l
@@ -527,21 +537,21 @@ take_nearest <- function(data, candidates) {
 
 #compute columns for total "local" motion energy and total "global" motion energy
 recast_data <- function(data, number.factor=1) {
-  mutate(data,
-         eccentricity = if (!exists("eccentricity")) 20/3 else eccentricity,
-         target_number_shown = (if(!exists("target_number_shown"))
-                                round(2*pi*eccentricity/spacing) else
-                                target_number_shown),
-         target_number_all = (if (!exists("target_number_all"))
-                              target_number_shown else
-                              target_number_all),
-         content_cw = if (exists("content_cw")) content_cw else (content + 1)/4,
-         content_ccw = if (exists("content_ccw")) content_ccw else (1 - content)/4,
-         content_global = content * target_number_shown,
-         content_local = content / spacing,
-         full_circle = target_number_shown == target_number_all,
-         extent = spacing * target_number_shown,
-         number_shown_as_spacing = eccentricity*2*pi/(number.factor*target_number_shown))
+  chain(data,
+        mutate_when_missing(
+          eccentricity = 20/3,
+          target_number_shown = round(2*pi*eccentricity/spacing),
+          target_number_all = target_number_shown,
+          content_cw = (content+1/4),
+          content_ccw = (1 - content)/4,
+          side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
+        mutate(
+          content_global = content * target_number_shown,
+          content_local = content / spacing,
+          full_circle = target_number_shown == target_number_all,
+          extent = spacing * target_number_shown,
+          number_shown_as_spacing = (eccentricity*2*pi/
+                                     (number.factor*target_number_shown))))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)

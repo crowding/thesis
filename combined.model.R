@@ -3,9 +3,12 @@ library(ptools)
 library(plyr)
 library(ggplot2)
 library(gnm)
-source("density.modeling.R")
 source("library.R")
+source("slopeModel.R")
+source("density.modeling.R")
 setup_theme()
+
+use_folding <- TRUE
 
 options(width=130)
 infile <- "density.modeling.RData"
@@ -46,7 +49,7 @@ fit_combined_model <- function(dataset, relweight=segment.weight) {
            + content + I(content * abs(content))
            + bias:side - 1
            )
-  fmla <- update(fmla.base, formula.additions[[1]])
+  fmla <- update(fmla.base, formula.additions[[2]])
   gnm(  formula=fmla, data=dataset, family=binom.fam
       , weights=with(dataset, ifelse(full_circle, 1, relweight))
       )
@@ -70,10 +73,30 @@ fit_combined_models <- function(combined.data) {
     })
 }
 
+infile <- "density.modeling.RData"
+infile2 <- "slopeModel.RData"
+infile3 <- "motion_energy.csv"
+outfile <- "combined.model.RData"
+plotfile <- "combined.model.pdf"
+
 main <- function(infile="density.modeling.RData",
-                           outfile="combined.model.RData",
-                           plotfile="combined.model.pdf") {
+                 infile2="slopeModel.RData",
+                 infile3="motion_energy.csv",
+                 outfile="combined.model.RData",
+                 plotfile="combined.model.pdf") {
+
+  load(infile2)
   load(infile)
+
+  motion.energy <- add_energies(read.csv(grid))
+  bind[sample.displacement, sample.content, sample.spacing] <- (
+    chain(motion.energy, subset(grid==TRUE),
+          mutate(spacing=target_number_all * 2*pi/eccentricity),
+          .[c("displacement", "content", "spacing")],
+          lapply(unique), lapply(sort)))
+  sample.displacement <<- sample.displacement
+  sample.content <<- sample.content
+  sample.spacing <<- sample.spacing
 
   if (interactive()) {
     while(length(dev.list()) < 3) dev.new()
@@ -104,7 +127,8 @@ main <- function(infile="density.modeling.RData",
   print(coefs)
 
   prediction.dataset <- chain(
-    c(segment.config.vars, segment.experiment.vars, "bias", "exp_type", "full_circle", "side"),
+    c(segment.config.vars, segment.experiment.vars,
+      "bias", "exp_type", "full_circle", "side"),
     subset(combined.data, exp_type=="numdensity", select=.),
     unique,
     recast_data)
@@ -113,6 +137,7 @@ main <- function(infile="density.modeling.RData",
     predict_from_model_frame(combined.models,
                              newdata=prediction.dataset)
 
+  #plot.spacing et al come from density.modeling.RData
   dev.set(2)
   plot((plot.spacing %+% segment.folded.spindled)
         + prediction_layers(combined.predictions))
@@ -122,6 +147,15 @@ main <- function(infile="density.modeling.RData",
           combined.models,
           newdata=prediction.dataset,
           fold=TRUE, spindle=TRUE, collapse=TRUE))))
+
+  # to this we add plotting the slopeModel results...
+  alply(combined.models, 1, function(chunk) {
+    bind[model=bind[model], ...=group] <- as.list(chunk)
+    fulldata <- subset(model$data, full_circle==TRUE)
+    plot_fit(model, data = fulldata, fold = use_folding)
+  })
+
+  model <- combined.models[[1,"model"]]
 
   save(file=outfile, list=ls())
 }
@@ -148,6 +182,4 @@ FALSE && {
 #let's make a prediction on all of it...
 
 #there needs to be a "fudge factor" I think... for full curcle versus
-#simple circle.  because global sum only goes over a hemifield.
-
-main()
+#simple circle.  because global sum only goes over a hemifield?
