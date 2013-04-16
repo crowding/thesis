@@ -1,179 +1,130 @@
-#gather up all .csv files except those already gathered.
---command cp
---input --match '.*(?<!writing)/([^/]*)\.csv$'
---output 'writing/{0}.csv'
-
-#gather raw trial data and put them in CSV files
---command            Rscript
---input              make_csv.R
---input --match      'collections/(.*)\.list'
-                     discrimination.sqlite
---input --invisible  discrimination.sqlite.DONE
---output             writing/{0}_trials.csv
---input              motion_energy.mat
-
-#collect the motion energy data in another file (as it has a grid)
---command            Rscript
---input mat2csv.R
---input --match (motion_energy)\.mat
---output writing/{0}.csv
-
 #make a few plots relevant to motion ehergy
 --command Rscript
---input writing/motion_energy_plot.R
+--input motion_energy_plot.R
 --input --match motion_energy\.csv
 --output motion_energy.pdf
 
-#plot threshold values
---command            --once ./runmatlab
---input --invisible  writing/plotThresholds.m
---once               "\"addpath('writing');\" plotThresholds"
---input --match      'writing/.*_series_calculations.csv'
---output --invisible writing/plotThresholds.fig
-
 #type "make figures" to try to refresh the figures
---command --input --invisible --match '.*\.fig$'
---output --invisible --phony figures
+#--command --input --invisible --match '.*\.fig$'
+#--output --invisible --phony figures
 
 #matlab stuff requires we unpack all the data into a matlab file.
---command --once ./runmatlab --once "\"addpath('writing');\" unpack"
---input --invisible --once writing/unpack.m
---input --match writing/(.*_trials\.csv)$
---output --invisible --once writing/data.mat
+--command --once runmatlab --once unpack
+--input --invisible --once unpack.m
+--input --match (.*_trials\.csv)$
+--output --invisible --once data.mat
 
 #might as well unpack into an R data file.
---command --once cd --once writing --once && --once Rscript
---once --input --invisible writing/unpack.R --once unpack.R
---output --invisible --once writing/data.RData --once data.RData
---input --match --invisible writing/(.*_trials\.csv) {0}
+--command --once Rscript
+--input --once --invisible unpack.R
+--output --once data.RData
+--input --match --invisible (.*_trials\.csv) {0}
 
 #the model-fitting function
-#--command ./runmatlab "\"addpath('writing'); MeilstrupBoyntonModel\""
-#--input --invisible writing/MeilstrupBoyntonModel.m
-#--input --invisible --match "writing/data\.mat"
-#--output --invisible writing/modelResults.mat
+#--command ./runmatlab MeilstrupBoyntonModel
+#--input --invisible MeilstrupBoyntonModel.m
+#--input --invisible --match data\.mat"
+#--output --invisible modelResults.mat
 
-#and let's start translating this to R also.
---command --once Rscript --input writing/MeilstrupBoyntonModel.R
---input --match 'writing/data\.Rd'
---output --once writing/result.Rd
---output --invisible writing/modelResults.mat
-
-#and let's start translating this to R also.
---command --once Rscript --input writing/MeilstrupBoyntonModel.R
---input --match 'writing/data\.Rd'
---output --once writing/result.Rd
 
 #fit all the models
---command ./runmatlab --once "\"addpath('writing'); fitAll\""
---input --invisible writing/fitAll.m
---input --match 'writing/data\.mat'
---output 'writing/fits.mat'
+--command ./runmatlab --once "fitAll"
+--input --invisible fitAll.m
+--input --match data\.mat
+--output fits.mat
 
 #plot all the fits
 #
-#TODO: --intermediate does not respect --listing files
-#appropriately. Furthermore multiple outputs inappropriately result in
-#multiple commands issued from Make. THis results in a bunch of
-#repeated commands...
---command --once ./runmatlab --once "\"addpath('writing'); plotFits\""
---input --invisible writing/plotFits.m
---input --match 'writing/fits\.mat'
---output --listing --intermediate 'writing/fit_plots.list'
+--command --once ./runmatlab --once plotFits
+--input --invisible plotFits.m
+--input --match fits\.mat
+--output --listing --intermediate fit_plots.list
 
 #bundle them all into a multipage PDF
 --command --once pdfjoin
 --once %--outfile
---once --output 'writing/fits_{0}.pdf'
---input --match 'writing/fit_(.*)_.*\.pdf$'
+--once --output fits_{0}.pdf
+--input --match fit_(.*)_.*\.pdf$
 --invisible --phony --once figures
 
 #make diagnostic figures? #WHY_IS_THIS_ALWAYS_RUNNING
-# --command ./runmatlab "\"addpath('writing'); makeDiagnostics\""
-# --input --match 'writing/fits\.mat'
-# --output --listing 'writing/diagnosticPlots.pdf'
+# --command ./runmatlab "makeDiagnostics"
+# --input --match 'fits\.mat'
+# --output --listing 'diagnosticPlots.pdf'
 # --invisible --phony --once figures
 
-#and bundle them
---command --once pdfjoin
---once %--outfile
---once --output 'writing/residuals_{0}_plots.pdf'
---input --match 'writing/residual_(.*)_.*\.pdf$'
---invisible --phony --once figures
-
-#grab our motion energy demo movie
---command cp
---input --match (deltax\.mov)
---output writing/energy/{0}
+#and bundle them #these are outputs of makeDiagnostics
+# --command --once pdfjoin
+# --once %--outfile
+# --once --output 'residuals_{0}_plots.pdf'
+# --input --match 'residual_(.*)_.*\.pdf$'
+# --invisible --phony --once --output figures
 
 #make our motion energy graphs
---command cd writing && Rscript
---input --invisible writing/motion_energy_plot.R motion_energy_plot.R
---input --invisible --match writing/motion_energy\.csv motion_energy.csv
---output --listing --invisible writing/energy/motion_energy_plot.list energy/motion_energy_plot.list && cd ..
+--command Rscript
+--input motion_energy_plot.R
+--input --match motion_energy.csv
+--output --listing --mkdir energy/motion_energy_plot.list
 
---command cd writing && Rscript
---input --invisible writing/slopeModel.R slopeModel.R
---input --invisible --match writing/data\.RData data.RData
---input --invisible writing/motion_energy.csv motion_energy.csv
---output --invisible writing/slopeModel.RData slopeModel.RData
---output --invisible writing/slopeModel.pdf slopeModel.pdf && cd ..
+--command Rscript
+--input slopeModel.R
+--input --match data.RData
+--input motion_energy.csv
+--output slopeModel.RData
+--output slopeModel.pdf
 
---command cd writing && Rscript
---input --invisible writing/density.calibration.R density.calibration.R
---input --invisible --match writing/data\.RData data.RData
---input --invisible writing/slopeModel.RData slopeModel.RData
---output --invisible writing/density.calibration.pdf density.calibration.pdf && cd ..
+--command Rscript
+--input density.calibration.R
+--input --match data.RData
+--input slopeModel.RData
+--output density.calibration.pdf
 
---command cd writing && Rscript
---input --invisible writing/density\.modeling\.R density.modeling.R
---input --invisible writing/data.RData data.RData
---input --invisible --match writing/slopeModel.RData slopeModel.RData
---output --invisible writing/density.modeling.pdf density.modeling.pdf
---output --invisible writing/density.modeling.detail.pdf density.modeling.detail.pdf
---output --invisible writing/density.modeling.RData density.modeling.RData && cd ..
+--command Rscript
+--input --match density.modeling.R
+--input data.RData
+--input slopeModel.RData
+--output density.modeling.pdf
+--output density.modeling.detail.pdf
+--output density.modeling.RData
 
---command cd writing && Rscript
---input --invisible writing/combined.model.R combined.model.R
---input --invisible --match writing/density.modeling.RData density.modeling.RData
---output --invisible writing/combined.model.RData combined.model.RData
---output --invisible writing/combined.model.pdf combined.model.pdf && cd ..
+--command Rscript
+--input combined.model.R
+--input --match slopeModel\.RData
+--input density.modeling.RData
+--input motion_energy.csv
+--output combined.model.RData
+--output combined.model.pdf
 
---command cd writing && Rscript
---input --invisible writing/contours.R contours.R
---input --invisible --match writing/slopeModel.RData slopeModel.RData
---input --invisible writing/motion_energy.csv motion_energy.csv
---output --invisible --mkdir --listing writing/contours/contours.list contours/contours.list FALSE
+--command Rscript
+--input contours.R
+--input --match slopeModel\.RData
+--input motion_energy.csv
+--output --mkdir --listing contours/contours.list FALSE
 
---command cd writing && Rscript
---input --invisible writing/contours.R contours.R
---input --invisible --match writing/slopeModel.RData slopeModel.RData
---input --invisible writing/motion_energy.csv motion_energy.csv
---output --invisible --mkdir --listing writing/contours/contours_folded.list contours/contours_folded.list
+--command Rscript
+--input contours.R
+--input --match slopeModel.RData
+--input motion_energy.csv
+--output --mkdir --listing contours/contours_folded.list
 TRUE # with folding
 
-
 ##this don't work: it multiply generates contours.list
-#--command --once pdfjoin 
-#--once --output writing/contours/all_contours.pdf
-#--input --listing --match writing/contours/contours.list
+#--command --once pdfjoin
+#--once --output contours/all_contours.pdf
+#--input --listing --match contours/contours.list
 
 ##this also don't work: it doesn't match
-#--command --once pdfjoin 
-#--input --match writing/contours/contours.*\.pdf
-#--once --output writing/contours/all_contours.pdf
+#--command --once pdfjoin
+#--input --match contours/contours.*\.pdf
+#--once --output contours/all_contours.pdf
 
---command --once cd writing && pdfjoin %--rotateoversize 'false'
-%--outfile --output --invisible writing/contours/all_contours.pdf contours/all_contours.pdf
-"$$( " 
-"cat"
---input --match --invisible writing/contours/contours.list contours/contours.list
-")"
+--command pdfjoin %--rotateoversize 'false'
+%--outfile --output contours/all_contours.pdf
+--input --match --listing contours/contours.list
 
---command --once cd writing && pdfjoin %--rotateoversize 'false'
-%--outfile --output --invisible writing/contours/all_contours_folded.pdf contours/all_contours_folded.pdf
-"$$( " 
-"cat"
---input --match --invisible writing/contours/contours_folded.list contours/contours_folded.list
-")"
+--command pdfjoin %--rotateoversize 'false'
+%--outfile --output contours/all_contours_folded.pdf
+--input --match --listing contours/contours_folded.list
 
+--command --invisible --input --match .*\.pdf
+--output --phony --invisible --once pdf
