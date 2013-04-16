@@ -4,7 +4,7 @@
 \begin_header
 \textclass article
 \use_default_options true
-\master master.lyx
+\master _master.lyx
 \begin_modules
 knitr
 \end_modules

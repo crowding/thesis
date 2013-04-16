@@ -1,5 +1,7 @@
 FILES := $(filter-out $(MAKEFILE_LIST),$(shell git ls-tree --name-only HEAD .))
 
+LYX := /Applications/LyX.app/Contents/MacOS/lyx
+
 all: $(MAKEFILE_LIST) figures pdf
 
 monk.makefile: monk/monk.py Monkfile

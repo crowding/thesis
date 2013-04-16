@@ -6,7 +6,7 @@
 
 #type "make figures" to try to refresh the figures
 #--command --input --invisible --match '.*\.fig$'
-#--output --invisible --phony figures
+#--invisible --phony figures
 
 #matlab stuff requires we unpack all the data into a matlab file.
 --command --once runmatlab --once unpack
@@ -58,7 +58,7 @@
 # --once %--outfile
 # --once --output 'residuals_{0}_plots.pdf'
 # --input --match 'residual_(.*)_.*\.pdf$'
-# --invisible --phony --once --output figures
+# --invisible --phony --once figures
 
 #make our motion energy graphs
 --command Rscript
@@ -126,9 +126,6 @@ TRUE # with folding
 %--outfile --output contours/all_contours_folded.pdf
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
 
---command --invisible --input --match .*\.pdf
---output --phony --invisible --once pdf
-
---command lyx --input --match (.*)\.lyx
---output {0}.pdf
+--command '$(LYX)' %-e pdf2 --input --match ([^_].*)\.lyx
+--output --invisible {0}.pdf
 --phony --invisible --once pdf
