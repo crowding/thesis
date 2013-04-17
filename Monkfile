@@ -62,7 +62,7 @@
 
 #make our motion energy graphs
 --command Rscript
---input motion_energy_plot.R
+--input motion_energy_plot.R$
 --input --match motion_energy.csv
 --output --listing --mkdir energy/motion_energy_plot.list
 
@@ -74,13 +74,13 @@
 --output slopeModel.pdf
 
 --command Rscript
---input density.calibration.R
+--input density.calibration.R$
 --input --match data.RData
 --input slopeModel.RData
 --output density.calibration.pdf
 
 --command Rscript
---input --match density.modeling.R
+--input --match "density.modeling.R$"
 --input data.RData
 --input slopeModel.RData
 --output density.modeling.pdf
@@ -96,14 +96,14 @@
 --output combined.model.pdf
 
 --command Rscript
---input contours.R
---input --match slopeModel\.RData
+--input contours.R$
+--input --match slopeModel\.RData$
 --input motion_energy.csv
 --output --mkdir --listing contours/contours.list FALSE
 
 --command Rscript
---input contours.R
---input --match slopeModel.RData
+--input contours.R$
+--input --match slopeModel.RData$
 --input motion_energy.csv
 --output --mkdir --listing contours/contours_folded.list
 TRUE # with folding

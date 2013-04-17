@@ -70,16 +70,16 @@ plotPredictions <- function(...) {
 
 #perhaps make this go using predict_from_model.df
 plot_fit <- function(model, subject=model$data$subject[1],
-                     style=c("bubble", "binned"), fold=TRUE, data=model$data) {
+                     style=c("bubble", "binned"), fold=FALSE, data=model$data) {
   style <- match.arg(style)
   subdata <- match_df(data,
                       data.frame(subject=subject, stringsAsFactors=FALSE),
                       on="subject")
   switch(style, bubble = {
-    plotdata <- mkrates(subdata)
+    plotdata <- mkrates(refold(subdata, fold=fold))
   }, binned = {
     plotdata <- bin_along_resid(model, subdata,
-                                "response", splits, "displacement")
+                                "response", splits, "displacement", fold=fold)
   })
   print((ggplot(plotdata)
          + displacement_scale
@@ -92,6 +92,12 @@ plot_fit <- function(model, subject=model$data$subject[1],
          + labs(title = "Data and model fits for subject " %++% subject)
          ))
 }
+
+#Our model has one term nonlinear in the spacing-dependent
+#sensitivity to displacement and to direction content.
+#This defines the response to displacement.
+displacementTerm <<- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
+                      ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
 
 infile <- "data.Rdata"
 grid <- "motion_energy.csv"
@@ -127,12 +133,6 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   #count trials in each condition. While keeping motion energy
   #information, this kills speed. Might do binning instead.
   rates <- mkrates(data)
-
-  #Our model has one term nonlinear in the spacing-dependent
-  #sensitivity to displacement and to direction content.
-  #This defines the response to displacement.
-  displacementTerm <<- (nonlinearTerm(cs, beta_dx)(spacing, displacement)
-                       ((2 - 2/(1+exp(-cs/spacing))) * beta_dx * displacement))
 
   formula <- (  cbind(n_cw, n_ccw)
               ~ displacementTerm(spacing, displacement,

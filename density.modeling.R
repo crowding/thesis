@@ -18,6 +18,7 @@ suppressPackageStartupMessages({
 #source("icons.R")
 source("scales.R")
 source("library.R")
+source("slopeModel.R")
 
 datafile <- "data.RData"
 modelfile <- "slopeModel.RData"
@@ -47,7 +48,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   on.exit(dev.off(detail.dev), add=TRUE)
 
   bind[data=data, ...=] <- as.list(load2env(datafile))
-  bind[models=models, displacementTerm = displacementTerm, ...=] <- as.list(load2env(modelfile))
+  bind[models=models, ...=] <- as.list(load2env(modelfile))
 
   #replicate the data mutation from slopeModel.R
   chain(data
@@ -61,7 +62,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   #ugh! globals...
   models <<- models
-  displacementTerm <<- displacementTerm
   #these are the columns which define each "experiment" (facet on the
   #unfolded graph)
   segment.experiment.vars <-
