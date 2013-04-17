@@ -156,8 +156,6 @@ main <- function(infile="density.modeling.RData",
     plot_fit(model, data = fulldata, fold = use_folding)
   })
 
-  model <- combined.models[[1,"model"]]
-
   save(file=outfile, list=ls())
 }
 

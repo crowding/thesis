@@ -473,7 +473,7 @@ is_rates <- function(data,
   if ("n_obs" %in% names(data)) {
     if ((all(data$n_obs == 1))) {
       if (all(count(data, splits)$freq == 1)) {
-        stop("can't tell if rate-formatted or not....")
+        return(NA) #stop("can't tell if rate-formatted or not....")
       } else {
         return(FALSE)
       }
@@ -481,7 +481,7 @@ is_rates <- function(data,
       if (all(count(data, splits)$freq == 1)) {
         return(TRUE)
       } else {
-        stop("can't tell if rate-formatted or not....")
+       return(NA) #stop("can't tell if rate-formatted or not....")
       }
     }
   } else {
@@ -493,7 +493,12 @@ is_rates <- function(data,
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type"), keep_unique=TRUE) {
-  if (is_rates(data, splits)) return(data)
+  is <- is_rates(data, splits)
+  if (is.na(is)) {
+    data <- unmkrates(data)
+  } else if (is) {
+    return(data)
+  }
   counter <- function(s) summarize(s,
     n_obs = length(response), p = mean(response),
     n_cw = sum(response), n_ccw = sum(!response))
@@ -510,7 +515,12 @@ mkrates <- function(data,
 
 #undo mkrates, convert counted yes/no data into binary data.
 unmkrates <- function(data, keep.count.cols=FALSE) {
-  if (!is_rates(data)) return(data)
+  is <- is_rates(data, splits)
+  if (!is.na(is)) {
+    if (!is) {
+      return(data)
+    }
+  }
   rows = inverse.rle(list(
     lengths = if ("n_obs" %in% names(data)) data$n_obs else data$n,
     values = seq_len(nrow(data))))

@@ -26,6 +26,16 @@ plotfile <- "density.modeling.pdf"
 detailfile <- "density.modeling.detail.pdf"
 savefile <- "density.modeling.RData"
 
+#these are the columns which define each "experiment" (facet on the
+#unfolded graph)
+segment.experiment.vars <-
+  c("subject", "displacement", "content", "eccentricity")
+#within an experiment these are the vars which separate each "stimulus
+#condition" (data point on the graph)
+segment.config.vars <-
+  c("spacing", "target_number_shown", "target_number_all")
+splits <- c(segment.config.vars, segment.experiment.vars)
+
 main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                  plotfile="density.modeling.pdf",
                  detailfile = "density.modeling.detail.pdf",
@@ -62,19 +72,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   #ugh! globals...
   models <<- models
-  #these are the columns which define each "experiment" (facet on the
-  #unfolded graph)
-  segment.experiment.vars <-
-    c("subject", "displacement", "content", "eccentricity")
-  segment.experiment.vars <<- segment.experiment.vars
-  #within an experiment these are the vars which separate each "stimulus
-  #condition" (data point on the graph)
-  segment.config.vars <-
-    c("spacing", "target_number_shown", "target_number_all")
-  segment.config.vars <<- segment.config.vars
-
-  splits <- c(segment.config.vars, segment.experiment.vars)
-  splits <<- splits
 
   ##Aggregate data into counts of CW and CCW responses, with various
   ##levels of folding/spindling

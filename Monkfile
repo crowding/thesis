@@ -95,18 +95,17 @@
 --output combined.model.RData
 --output combined.model.pdf
 
---command Rscript
---input contours.R$
+--command Rscript # without folding
+--input contours.R
 --input --match slopeModel\.RData$
 --input motion_energy.csv
 --output --mkdir --listing contours/contours.list FALSE
 
---command Rscript
---input contours.R$
+--command Rscript # with folding
+--input contours.R
 --input --match slopeModel.RData$
 --input motion_energy.csv
---output --mkdir --listing contours/contours_folded.list
-TRUE # with folding
+--output --mkdir --listing contours/contours_folded.list TRUE
 
 ##this don't work: it multiply generates contours.list
 #--command --once pdfjoin
