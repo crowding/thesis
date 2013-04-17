@@ -148,7 +148,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-read_chunk("density.R")
+read_chunk("density_weave.R")
 \end_layout
 
 \begin_layout Plain Layout
@@ -1273,7 +1273,8 @@ editorializing....
 \end_inset
 
  it would appear that these subjects are using different rules to perform
- the task, However, interpreting these responses in detail requires correlating
+ the task.
+ However, interpreting these patterns of behavior in detail requires correlating
  them with the measurements from 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1282,9 +1283,9 @@ reference "sec:results-basic"
 \end_inset
 
 ; since the earlier experiment suggested more than one mechanism that could
- contribute to an observer's perceived direction of motion, apparently different
- patterns of response may be a result of differing strengths of contribution
- of each respective mechanism.
+ contribute to an observer's perceived direction of motion, what appear
+ to be different patterns of response may be a result of differing strengths
+ of contribution of each respective mechanism.
 \end_layout
 
 \begin_layout Standard

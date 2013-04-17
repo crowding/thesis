@@ -149,7 +149,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-read_chunk("results.R")
+read_chunk("results_knit.R")
 \end_layout
 
 \begin_layout Plain Layout
