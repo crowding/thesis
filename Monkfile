@@ -125,8 +125,8 @@
 %--outfile --output contours/all_contours_folded.pdf
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
 
---command '$(LYX)' %-e pdf2 --input --match ([^_].*)\.lyx
---output --invisible {0}.pdf
---phony --invisible --once pdf
+#--command '$(LYX)' %-e pdf2 --input --match ([^_].*)\.lyx
+#--output --invisible {0}.pdf
+#--phony --invisible --once pdf
 
---command --input --match --invisible '(.*)_weave.R$' --output {0}.pdf
+#--command --input --match --invisible '(.*)_weave.R$' --output {0}.pdf

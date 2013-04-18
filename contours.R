@@ -224,12 +224,12 @@ plot_3d_grids <- function(model, grids, fold=FALSE, ...) {
   rgl.clear()
   bg3d(color="gray80")
   par3d(scale=c(6, 6, 1.5))
-  view3d(130, 15, 40, 1)
+  view3d(220, 20, 45, 1)
   #For each plane...
   Map(x=x, y=y, z=z, value=value, function(x, y, z, value) {
     #draw the colormapped plane
-    colors = hsv(s=0,v=bound_prob(value))
-    surface3d(x, y, z, color=colors, lit=FALSE)
+    colors = gradient_n_pal(decision_colors, decision_values)(value)
+    surface3d(-x, y, z, color=colors, lit=FALSE)
     #compute and draw contour lines on the surface
     clines <- contourLines(z=value, levels=seq(0.1,0.9,0.2))
     lapply(clines, splat(function(level, xi, yi) {
@@ -237,20 +237,24 @@ plot_3d_grids <- function(model, grids, fold=FALSE, ...) {
       lineX <- interp.surface(c(obj, list(z=x)), cbind(xi, yi))
       lineY <- interp.surface(c(obj, list(z=y)), cbind(xi, yi))
       lineZ <- interp.surface(c(obj, list(z=z)), cbind(xi, yi))
-      lines3d(lineX, lineY, lineZ, color="blue", lit=FALSE, lwd=0.5)
+      lines3d(-lineX, lineY, lineZ, color="#DDDD00", lit=FALSE, lwd=0.5)
     }))
     #and outline the edges of the plane
     s = dim(x)
     indices <- cbind(c(1, s[1], s[1], 1, 1), c(1, 1, s[2], s[2], 1))
-    lines3d(x[indices], y[indices], z[indices], color="gray50", lit=FALSE)
+    lines3d(-x[indices], y[indices], z[indices], color="gray50", lit=FALSE)
   })
   #add axes
-  axis3d("x--", nticks=5, expand=1)
-  axis3d("y++", expand=1)
-  axis3d("z-+", expand=1)
-  mtext3d("Envelope motion", "x--", 0, at=par3d()$bbox[[2]], adj=1.2)
-  mtext3d("Carrier strength", 'y++', 1, at=-1.5, adj=0)
-  mtext3d("Spacing", 'z-+', 3, at=15)
+  xat <- chain(par3d("bbox"), .[1:2], pretty(3), .[c(-1, -length(.))])
+  axis3d("x--", at=xat, labels=as.character(-xat), expand=1)
+  yat <- chain(par3d("bbox"), .[3:4], pretty(3), .[c(-1, -length(.))])
+  axis3d("y-+", expand=1, at=yat)
+  zat <- chain(par3d("bbox"), .[5:6], pretty(3), .[c(-1, -length(.))])
+  axis3d("z++", expand=1, at=zat)
+
+  mtext3d("Envelope motion", "x--", 0, at=xat[[1]], adj=-0.2)
+  mtext3d("Carrier strength", 'y-+', 2, at=yat[1] - 0.5, adj=0.5)
+  mtext3d("Spacing", 'z++', 3, at=10)
   ##maybe we want to compute null (PSE) surface...
 }
 
@@ -266,15 +270,6 @@ drop.dims <- function(a) {
   `[` %()% (dots(a)
             %__% replicate(length(dim(a)), missing_value())
             %__% list(drop=TRUE))
-}
-
-#too slow to use...
-rgl.grob <- function(...) {
-  the.postscript <- tempfile(fileext=".eps")
-  rgl.postscript(the.postscript)
-  the.xml <- tempfile(fileext=".xml")
-  PostScriptTrace(file=the.postscript, outfilename=the.xml)
-  pictureGrob(readPicture(the.xml))
 }
 
 run_as_command()

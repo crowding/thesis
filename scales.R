@@ -128,7 +128,8 @@ LMStoXYZ = function(lms) {
                  .0030, -.0136, .9834), nrow=3, byrow=TRUE), lms)
 }
 col2RGB <- function(col) RGB(t(col2rgb(col)) / 255)
-grayRamp <- as(col2RGB(c("gray20", "gray80")), "XYZ")
+
+grayRamp <- as(col2RGB(c("gray10", "gray75")), "XYZ")
 yellowtint <- coords(as(XYZ(t(LMStoXYZ(c(0,0,-1)))), "RGB"))
 bluetint <- coords(as(XYZ(t(LMStoXYZ(c(0,0,1)))), "RGB"))
 greentint <- coords(as(XYZ(t(LMStoXYZ(c(-1,1,0)))), "RGB"))
@@ -142,12 +143,12 @@ pushRGB <- function(colors, direction) {
   lower.headroom2 <- aaply(coo, 1, `+`, direction)
   upper.headroom1 <- (1-coo)
   upper.headroom2 <- aaply(1-coo, 1, `-`, direction)
-  howmuch <- function(a, b) a/(b-a)
+  howmuch <- function(a, b) a/(a-b)
   scale <- c(howmuch(lower.headroom1, lower.headroom2),
              howmuch(upper.headroom1, upper.headroom2))
   scale <- min(scale[is.finite(scale) & scale >= 0])
-  print(scale)
-  RGB(aaply(coo, 1, `+`, direction * scale))
+  RGB(matrix(pmax(0, pmin(1,aaply(coo, 1, `+`, direction * scale))),
+             ncol=3))
 }
 yellowish <- hex(pushRGB(grayRamp, yellowtint))
 reddish <- hex(pushRGB(grayRamp, redtint))
@@ -166,13 +167,16 @@ decision_color_scale <-
                                   values = c(0, 0.4, 0.5, 0.6, 1)),
                    guide="legend", breaks=seq(0,1,0.1), labels=append_arrows)
 
+decision_colors <- c(bluish, rev(reddish))
+decision_values <- c(0, 0.4999, 0.5001, 1)
+
 decision_contour <-
   list(
     aes(z = pred, fill = pred),
     geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, color="white", alpha=0.5),
     geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, linetype="11", color="black", alpha=0.5),
-    scale_fill_gradientn("Responses CW", colours=c(bluish, rev(reddish)),
-                         values=c(0, 0.4999, 0.5001, 1),
+    scale_fill_gradientn("Responses CW", colours=decision_colors,
+                         values=decision_values,
                          breaks = seq(0.1, 0.9, 0.2))
     )
 
