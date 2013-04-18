@@ -211,7 +211,6 @@ plot_contours <- function(model, subject, motion.energy, outlist,
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
-  grid.newpage()
   grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.

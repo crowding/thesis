@@ -1,6 +1,6 @@
 ## ----------------------------------------------------------------------
 ## @knitr results-libraries
-source("slopeModel.R", chdir=TRUE)
+source("slopeModel.R")
 source("latexing.R")
 theme_set(theme_bw(10))
 #in this file I define pretty scales.
@@ -10,7 +10,9 @@ pdf.options(encoding='ISOLatin2.enc')
 #options(encoding="native.enc")=
 
 ## @knitr do-not-run
-cairo_pdf("results_plots.pdf", onefile=TRUE)
+if (!interactive()) {
+  cairo_pdf(commandArgs(trailingOnly=TRUE)[1], onefile=TRUE)
+}
 
 ## ----------------------------------------------------------------------
 ## @knitr results-loadData
@@ -172,8 +174,8 @@ sensitivity.free.models <- lapply(models, function(m) {
   toDrop <- grep("displacementTerm", l)
   sensitivity.term.label <<- l[toDrop]
   length(toDrop) == 1 || stop("no")
-  dropped <- drop.terms(terms(m), toDrop, keep.response=FALSE)
-  f <- reformulate(labels(dropped), response="response", intercept=FALSE)
+  dropped <- drop.terms(terms(m), toDrop, keep.response=TRUE)
+  f <- formula(dropped)
   f <- update(f, . ~ . + displacement:factor(spacing))
   environment(f) <- environment(m$formula)
   glm(formula=f, data=m$data, family=m$family)
@@ -218,9 +220,11 @@ whichTerm <- ""
 summation.free.models <- lapply(models, function(m) {
   ofs <- predict(m, type="terms")
   dat <- mutate(m$data, ofs=ofs[, whichTerm <<- grep("displacementTerm", colnames(ofs))])
+  f <- drop.terms(terms(m), 1:length(terms(m)), keep.response=TRUE)
+  f <- update(f, . ~ . + offset(ofs) + content:factor(spacing) +
+              I(content * abs(content)) - 1 + bias)
   glm(family=m$family, data=dat,
-      formula = (response ~ offset(ofs) + content:factor(spacing) +
-                 I(content * abs(content)) - 1 + bias))
+      formula = f)
 })
 
 #The next step is to extract coefs and
@@ -362,23 +366,8 @@ plotBiasAtSpacing <- function(spacing) {
 print(plotBiasAtSpacing(spacing=10))
 ##I think the 2nd order plot is totally fine for my purposes.
 
-## @knite results-sensitivity-modeling
-
-
-
-## @knitr results-example-effect
-
-## Next, maybe we can make some surface plots etc.
-
-
-## @knitr results-example-effect
-
-
-
-
 ## Now make a graph to justify the claim that sensitivity declines with spacing.
 ## do it by altering the formula to remove the displacement term....
-
 
 ## @knitr results-summation-models
 ##The other thing I_want to do now is look at the behavior at short ranges.

@@ -7,14 +7,13 @@ library(ptools)
 source("latexing.R")
 source("icons.R")
 source("scales.R")
-source("library.R")
 source("slopeModel.R")
+source("library.R")
 setup_theme()
 
 ## @knitr do-not-run
 if (!interactive()) {
-  cairo_pdf("density1.pdf", onefile=TRUE)
-  #on.exit(dev.off(), add=TRUE)
+  cairo_pdf(commandArgs(trailingOnly=TRUE)[1], onefile=TRUE)
 }
 
 ## @knitr density-load

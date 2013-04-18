@@ -74,7 +74,7 @@
 --output slopeModel.pdf
 
 --command Rscript
---input density.calibration.R$
+--input density.calibration.R
 --input --match data.RData
 --input slopeModel.RData
 --output density.calibration.pdf
@@ -107,16 +107,6 @@
 --input motion_energy.csv
 --output --mkdir --listing contours/contours_folded.list TRUE
 
-##this don't work: it multiply generates contours.list
-#--command --once pdfjoin
-#--once --output contours/all_contours.pdf
-#--input --listing --match contours/contours.list
-
-##this also don't work: it doesn't match
-#--command --once pdfjoin
-#--input --match contours/contours.*\.pdf
-#--once --output contours/all_contours.pdf
-
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
 '$$(' cat --input --match --listing contours/contours.list ')'
@@ -127,6 +117,10 @@
 
 #--command '$(LYX)' %-e pdf2 --input --match ([^_].*)\.lyx
 #--output --invisible {0}.pdf
-#--phony --invisible --once pdf
 
 #--command --input --match --invisible '(.*)_weave.R$' --output {0}.pdf
+
+--command Rscript --input --match '(.*)_weave.R$' --output {0}_plots.pdf
+
+--command --invisible --match --input .*\.pdf 
+--phony --output --invisible pdf
