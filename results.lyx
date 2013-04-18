@@ -76,12 +76,12 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset Flex Sweave Options
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
 cache=TRUE,encoding="UTF-8",fig.width=7,fig.height=4,dev="cairo_pdf",dev.args=list(
-pointsize=10, family="MS Gothic"),tidy=FALSE,out.width="1.0
+pointsize=10),tidy=FALSE,out.width="1.0
 \backslash
 
 \backslash
@@ -135,7 +135,7 @@ pdf.options("encoding")
 
 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -149,7 +149,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-read_chunk("results_knit.R")
+read_chunk("results_weave.R")
 \end_layout
 
 \begin_layout Plain Layout
@@ -165,7 +165,7 @@ read_chunk("results_knit.R")
 
 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -190,7 +190,7 @@ status collapsed
 
 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -215,7 +215,7 @@ status collapsed
 
 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -246,7 +246,7 @@ Motivation
 \end_layout
 
 \begin_layout Subsection
-Methods
+Methodsse
 \end_layout
 
 \begin_layout Itemize
@@ -282,22 +282,6 @@ Results
 \end_layout
 
 \begin_layout Itemize
-Show graphs of psychometric functions collected for two subjects.
- Find an honest way of 
-\begin_inset Quotes eld
-\end_inset
-
-binning
-\begin_inset Quotes erd
-\end_inset
-
- the data points to ~6-8 per function so that there are not a cloud of varying
- size points.
- Model fit curves should be included and based on the full model.
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
 Show two subjects for 
 \begin_inset Quotes eld
 \end_inset
@@ -311,6 +295,7 @@ spacing
  at short spacings.
 \end_layout
 
+\begin_deeper
 \begin_layout Itemize
 \begin_inset Float figure
 wide false
@@ -319,7 +304,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -383,7 +368,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -392,8 +377,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<results-summation-increases,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fi
-g.height=5>>=
+<<results-summation-increases,echo=FALSE,cache=TRUE,warning=FALSE,results="hide"
+,fig.width=6,fig.height=5>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -515,7 +500,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-%results-spacing-sensitivity
+%results-spacing-sensitivity
 \end_layout
 
 \begin_layout Plain Layout
@@ -573,7 +558,7 @@ reference "fig:results-spacing-collapse"
 \end_inset
 
 .
- Data points are obtained by re-fitting the model while allowing sensitivity
+ Data points are obtained by re-fitting the model while allowing sensitivity
  to vary freely for each value of spacing, while other aspects of the model
  are unmodified.
  The vertical axis shows the value of the coefficient, 
@@ -584,7 +569,8 @@ reference "fig:results-spacing-collapse"
 \begin_inset Formula $S$
 \end_inset
 
-. Curves show the prediction of the complete model.
+.
+ Curves show the prediction of the complete model.
 \end_layout
 
 \end_inset
@@ -666,7 +652,7 @@ reference "fig:results-summation-increases"
 
 \end_inset
 
- The sensitivity to carrier direction content increases at smaller spacings.
+ The sensitivity to carrier direction content increases at smaller spacings.
  The horizontal axis shows how the model coefficient 
 \begin_inset Formula $M_{s}(s)$
 \end_inset
@@ -686,7 +672,7 @@ reference "fig:results-summation-increases"
 \end_inset
 
 ) varies as a function of spacing.
- Points are obtained by letting this coefficient vary freely; curves indicate
+ Points are obtained by letting this coefficient vary freely; curves indicate
  model predictions.
 \end_layout
 

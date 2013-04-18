@@ -115,12 +115,15 @@
 %--outfile --output contours/all_contours_folded.pdf
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
 
-#--command '$(LYX)' %-e pdf2 --input --match ([^_].*)\.lyx
+#--command '$(LYX)' %-e pdf4 --input --match ([^_].*)\.lyx
 #--output --invisible {0}.pdf
 
-#--command --input --match --invisible '(.*)_weave.R$' --output {0}.pdf
+--command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
+--output --invisible {0}.tex
+
+--command xelatex %-halt-on-error %-interaction=nonstopmode
+--input --match ([^_].*)\.tex --output --invisible {0}.pdf
+--phony --invisible pdf
 
 --command Rscript --input --match '(.*)_weave.R$' --output {0}_plots.pdf
-
---command --invisible --match --input .*\.pdf 
---phony --output --invisible pdf
+--phony --invisible pdf

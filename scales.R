@@ -304,19 +304,7 @@ content_color_scale <-
              fill=factor(content))),
     with_arg(name="Carrier\nStrength",
              palette=color_pal,
-             labels=append_arrows,
-             discrete_scale("fill", "manual"),
-             discrete_scale("colour", "manual")
-             )
-    )
-
-content_color_scale <-
-  c(
-    list(aes(color=factor(content),
-             fill=factor(content))),
-    with_arg(name="Carrier\nStrength",
-             palette=color_pal,
-             labels=append_arrows,
+#             labels=append_arrows,
              discrete_scale("fill", "manual"),
              discrete_scale("colour", "manual")
              )

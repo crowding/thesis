@@ -15,6 +15,7 @@ if (!interactive()) {
 }
 
 ## ----------------------------------------------------------------------
+
 ## @knitr results-loadData
 load("slopeModel.RData")
 motion.energy <- read.csv("motion_energy.csv")
@@ -25,6 +26,7 @@ bind[plot.displacement, plot.content, plot.spacing] <- (
         lapply(unique), lapply(sort)))
 
 ## ----------------------------------------------------------------------
+
 ## @knitr results-functions
 #first make models with the linear induced motion
 buildModel <- function(modelList, update.arg) {
