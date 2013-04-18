@@ -118,6 +118,43 @@ balloon <- list(geom_point(aes(size=n_obs))
                                         identity, name="Spacing")))
 }
 
+
+
+#mess with color scales.....
+library(colorspace)
+LMStoXYZ = function(lms) {
+  solve(matrix(c(.7328, .4296, -0.1624,
+                 -.7036, 1.6975, .0061,
+                 .0030, -.0136, .9834), nrow=3, byrow=TRUE), lms)
+}
+col2RGB <- function(col) RGB(t(col2rgb(col)) / 255)
+grayRamp <- as(col2RGB(c("gray20", "gray80")), "XYZ")
+yellowtint <- coords(as(XYZ(t(LMStoXYZ(c(0,0,-1)))), "RGB"))
+bluetint <- coords(as(XYZ(t(LMStoXYZ(c(0,0,1)))), "RGB"))
+greentint <- coords(as(XYZ(t(LMStoXYZ(c(-1,1,0)))), "RGB"))
+redtint <- coords(as(XYZ(t(LMStoXYZ(c(1,-1,0)))), "RGB"))
+pushRGB <- function(colors, direction) {
+  #adjust some colors to a direction, pushing as far as display will allow.
+  #do this in RGB_space because
+  #RGB is a linear space (unlike sRGB) where [0,1] bounds the gamut
+  coo <- coords(as(colors, "RGB"))
+  lower.headroom1 <- coo
+  lower.headroom2 <- aaply(coo, 1, `+`, direction)
+  upper.headroom1 <- (1-coo)
+  upper.headroom2 <- aaply(1-coo, 1, `-`, direction)
+  howmuch <- function(a, b) a/(b-a)
+  scale <- c(howmuch(lower.headroom1, lower.headroom2),
+             howmuch(upper.headroom1, upper.headroom2))
+  scale <- min(scale[is.finite(scale) & scale >= 0])
+  print(scale)
+  RGB(aaply(coo, 1, `+`, direction * scale))
+}
+yellowish <- hex(pushRGB(grayRamp, yellowtint))
+reddish <- hex(pushRGB(grayRamp, redtint))
+greenish <- hex(pushRGB(grayRamp, greentint))
+bluish <- hex(pushRGB(grayRamp, bluetint))
+grayish <- hex(grayRamp)
+
 decision_color_scale <-
   continuous_scale(name="Responses CW", "colour", "color_m",
                    gradient_n_pal(colours = (
@@ -132,11 +169,14 @@ decision_color_scale <-
 decision_contour <-
   list(
     aes(z = pred, fill = pred),
-    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, color="white", alpha=0.5),
-    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.25, linetype="11", color="black", alpha=0.5),
-    scale_fill_gradientn("Responses CW", colours=c("black", "white"),
-                         values=c(0,1), breaks = seq(0.1, 0.9, 0.2))
+    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, color="white", alpha=0.5),
+    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, linetype="11", color="black", alpha=0.5),
+    scale_fill_gradientn("Responses CW", colours=c(bluish, rev(reddish)),
+                         values=c(0, 0.4999, 0.5001, 1),
+                         breaks = seq(0.1, 0.9, 0.2))
     )
+
+
 
 no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
 #no_padding <- list(scale_x_continuous(expand=c(0,0)), scale_y_continuous(expand=c(0,0)))

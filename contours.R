@@ -17,16 +17,20 @@ suppressPackageStartupMessages({
 theme_set(theme_bw())
 use_unicode=TRUE
 source("scales.R")
+source("icons.R")
 source("library.R")
 source("slopeModel.R")
 
 infile <- "slopeModel.RData"
 grid <- "motion_energy.csv"
-outfile <- "contours.pdf"
+outlist <- "contours/contours.list"
+fold <- TRUE
+dev.fun <- dev.new
 
 main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
                  outlist = "contours/contours.list", fold=c(FALSE, TRUE),
                  dev.fun=pdf) {
+
   out <- match.fun(dev.fun)
   fold <- if(is.logical(fold)) fold[[1]] else match.arg(fold)
   load(infile)
@@ -37,7 +41,10 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
 
   #since our 3d plots can't plot directly into a multipage PDF, we'll
   #have to list separate files
+  bind[model=bind[model], subject, ...=] <- as.list(model.df[1,])
+
   (Map %<<% model.df)(f = function(model, subject, ...) tryCatch({
+
     subject <- as.character(subject)
     cat("plotting subject ", subject, "\n")
     dev.fun(pdf.file <- replace_extension(outlist, "pdf",
@@ -141,7 +148,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
 
   annotations <- with_arg(
     x=Inf, y=Inf, geom="text", vjust=1.3, hjust=1.2, size=3,
-    color="gray50",
+    color="black",
     annotate(label="Carrier = 0"),
     annotate(label="Envelope = 0"),
     annotate(label=sprintf("Spacing = %.2g \n(using trials >= %.2g)",
@@ -180,14 +187,16 @@ plot_contours <- function(model, subject, motion.energy, outlist,
         + no_grid
         + geom
         + decision_contour
-        + geom_point(data=binned_data, shape=21, color="blue",
-                     aes(size=n_obs, fill=bound_prob(p)))
+        + geom_circle(data=binned_data, linetype="12", color="white", weight=0.35,
+                      aes(size=n_obs, fill=bound_prob(p)))
         + anno
         + scale_size_area("N", breaks=c(20, 50, 100, 200, 500))
-        + labs(title="foo"))
+        + labs(title="foo")
+        + guides(size=guide_legend("N",
+                   override.aes=list(colour="black"))))
       ggplot_gtable(ggplot_build(the.plot))
     })
-
+  #
   #Stuff four plots in one, using the legend from one of them.
   titleGrob <- textGrob(label=sprintf("Subject %s", toupper(subject)),
                         gp=gpar(fontsize=18))
@@ -202,6 +211,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
+  grid.newpage()
   grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.

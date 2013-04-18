@@ -63,15 +63,17 @@ GeomCircle <- proto(Geom, {
 
   circles_grob <- function(munched) {
     x <- 0.5; y <- 0.5
-    with(munched,
-         circleGrob(
+    with(munched
+         , circleGrob(
              x = unit(x, "native"), y = unit(y, "native")
            , r = unit(size/2, "mm")
            , gp = gpar(
                col = alpha(munched$colour, munched$alpha)
                , fill = alpha(munched$fill, munched$alpha)
                , lwd = weight * .pt
-               , lty = linetype)))
+               , lty = linetype
+               , lineend = "butt"
+               )))
   }
 
   guide_geom <- function(.) "circle"
