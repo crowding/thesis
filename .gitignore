@@ -20,6 +20,11 @@
 *.log
 *.map
 *.pygen
+*.tex
+Rfigs
+*.fdb_latexmk
+*.fls
+tags
 \#*
 .\#*
 monk.makefile
