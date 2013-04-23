@@ -76,7 +76,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset Flex Sweave Options
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -91,51 +91,8 @@ textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
 \end_inset
 
 
-\begin_inset Note Note
+\begin_inset ERT
 status collapsed
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-<<wat>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-options("encoding")
-\end_layout
-
-\begin_layout Plain Layout
-
-pdf.options("encoding")
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status open
 
 \begin_layout Plain Layout
 
@@ -165,7 +122,7 @@ read_chunk("results_weave.R")
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -190,7 +147,7 @@ status open
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -215,7 +172,7 @@ status open
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -241,12 +198,20 @@ status open
 
 \end_layout
 
-\begin_layout Itemize
-Motivation
+\begin_layout Standard
+We investigated the effect of spacing on the sensitivity to both carrier
+ and envelope motion,
 \end_layout
 
 \begin_layout Subsection
-Methodsse
+Methods
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-methods"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
@@ -254,11 +219,7 @@ Describe any methods specific to Experiment 1 (as opposed to general methods)
 \end_layout
 
 \begin_layout Itemize
-Participation
-\end_layout
-
-\begin_layout Itemize
-Stimulus selection
+All stimuli are
 \end_layout
 
 \begin_deeper
@@ -273,7 +234,10 @@ Staircase procedure
 
 \begin_deeper
 \begin_layout Itemize
-Interleaved 2up-1down staircases for each psychometric function.
+For each session we chose a set of carrier strengths and spacings, and collected
+ psychometric functions for each setting, with the abscissa of each function
+ being the envelope motion.
+ These psychometric functions were 
 \end_layout
 
 \end_deeper
@@ -530,24 +494,7 @@ name "fig:results-spacing-sensitivity"
 
 \end_inset
 
-
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-(higher-level look at 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-induced-crossover"
-
-\end_inset
-
-).
-\end_layout
-
-\end_inset
-
- Sensitivity to displacement collapses as spacing decreases.
+Sensitivity to displacement collapses as spacing decreases.
  In each subplot, the horizontal axis denotes spacing, while the vertical
  axis measures sensitivity to direction content (corresponding to the slopes
  of the psychometric functions shown in 
@@ -628,31 +575,7 @@ name "fig:results-spacing-summation"
 
 \end_inset
 
- 
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-(higher-level look at 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-induced-crossover"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-summation-increases"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
- The sensitivity to carrier direction content increases at smaller spacings.
+The sensitivity to carrier direction content increases at smaller spacings.
  The horizontal axis shows how the model coefficient 
 \begin_inset Formula $M_{s}(s)$
 \end_inset
