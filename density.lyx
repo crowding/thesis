@@ -86,17 +86,50 @@ knitr
 
 \begin_layout Standard
 \begin_inset Flex Sweave Options
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-prefix.string=Rfigs/,echo=F,results="hide",cache=TRUE,external=TRUEcache=TRUE,enc
-oding="UTF-8",fig.width=7,fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10,
- family="MS Gothic"),tidy=FALSE,out.width="1.0
+fig.path="Rfigs/",echo=FALSE,results="hide",cache=TRUE,external=TRUE,encoding="UT
+F-8",fig.width=7,fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10,family="My
+riad Pro"),fig.ext="pdf",tidy=FALSE,out.width="1.0
 \backslash
 
 \backslash
 textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-externalize
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-externalize,cache=FALSE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+read_chunk("density_weave.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -138,17 +171,12 @@ status collapsed
 
 \begin_layout Plain Layout
 
-%density-externalize
+%density-load
 \end_layout
 
 \begin_layout Plain Layout
 
-<<density-externalize,cache=FALSE,echo=FALSE,results="hide">>=
-\end_layout
-
-\begin_layout Plain Layout
-
-read_chunk("density_weave.R")
+<<density-load>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -158,6 +186,54 @@ read_chunk("density_weave.R")
 
 \begin_layout Plain Layout
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%segment-setup-old
+\end_layout
+
+\begin_layout Plain Layout
+
+<<segment-setup-old>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%segment-properties
+\end_layout
+
+\begin_layout Plain Layout
+
+<<segment-properties>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
 \end_layout
 
 \end_inset
@@ -591,7 +667,7 @@ degree$
 
 \end_inset
 
- away from the nearest moving element at its closest approach.
+ away from the nearest moving elements at their closest approach.
 \end_layout
 
 \end_inset
@@ -621,7 +697,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<density-conditions,fig=TRUE,width=4,height=4>>=
+<<density-conditions,fig=TRUE,fig.width=4,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -744,10 +820,6 @@ reference "fig:density-conditions"
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
@@ -1028,25 +1100,13 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-%density-discretion
-\end_layout
 
-\begin_layout Plain Layout
-
-<<density-discretion,fig=TRUE,width=4,height=4>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
+\backslash
+missingfigure{graph here}
 \end_layout
 
 \end_inset
@@ -1390,10 +1450,6 @@ name "fig:segment-rates"
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -1415,47 +1471,11 @@ status collapsed
 
 \begin_layout Plain Layout
 
-pipe(segment.trials
-\end_layout
-
-\begin_layout Plain Layout
-
-     , subset(responseTime >= 0.4 & responseTime <= 0.9)
-\end_layout
-
-\begin_layout Plain Layout
-
-     , ddply(c("subject","trial.extra.nTargets"
-\end_layout
-
-\begin_layout Plain Layout
-
-               , "trial.extra.nVisibleTargets","motionCondition"
-\end_layout
-
-\begin_layout Plain Layout
-
-               , "trial.extra.side")
-\end_layout
-
-\begin_layout Plain Layout
-
-             , summarize, correct=mean(correct), n = length(correct)
-\end_layout
-
-\begin_layout Plain Layout
-
-             , spacing = mean(2*pi*trial.extra.r / trial.extra.nTargets))
-\end_layout
-
-\begin_layout Plain Layout
-
-     ) -> segment.rates
-\end_layout
-
-\begin_layout Plain Layout
-
 @
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -1475,74 +1495,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<segment-colormap,fig=T,width=6,height=3>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-(ggplot(subset(segment.rates, motionCondition == "incongruent"))
-\end_layout
-
-\begin_layout Plain Layout
-
- + aes(factor(spacing), factor(trial.extra.nVisibleTargets), fill=correct)
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_point()
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_tile()
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_fill_gradient("Prop.
- long-range")
-\end_layout
-
-\begin_layout Plain Layout
-
- + facet_grid(subject ~ trial.extra.side)
-\end_layout
-
-\begin_layout Plain Layout
-
- + opts(aspect.ratio=1,
-\end_layout
-
-\begin_layout Plain Layout
-
-        axis.text.x = theme_text(angle=45))
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_x_discrete("Spacing (deg.)", 
-\end_layout
-
-\begin_layout Plain Layout
-
-                    formatter=function(x) format(as.numeric(x),digits=2))
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_y_discrete("No.
- moving elements")
-\end_layout
-
-\begin_layout Plain Layout
-
- ) -> segment.colormap
-\end_layout
-
-\begin_layout Plain Layout
-
-print(segment.colormap)
+<<segment-colormap,fig=T,fig.width=6,fig.height=3>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1597,75 +1550,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<segment-by-spacing,width=6,height=2>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-(ggplot(subset(segment.rates, motionCondition == "incongruent"))
-\end_layout
-
-\begin_layout Plain Layout
-
- + aes(spacing, correct, color=factor(trial.extra.nVisibleTargets))
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_point()
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_line()
-\end_layout
-
-\begin_layout Plain Layout
-
- + facet_grid(subject ~ trial.extra.side)
-\end_layout
-
-\begin_layout Plain Layout
-
- + opts(aspect.ratio=1)
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_x_continuous("Element spacing (deg)", breaks=c(2,3,4,5), labels=c(2,3,4
-,5))
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_y_continuous("Prop.
- long-range", formatter=latex.percent)
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_color_hue("No.
-\backslash
-
-\backslash
-
-\backslash
-
-\backslash
-moving
-\backslash
-
-\backslash
-
-\backslash
-
-\backslash
-elements")
-\end_layout
-
-\begin_layout Plain Layout
-
- ) -> segment.by.spacing
+<<segment-by-spacing>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1689,67 +1574,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<segment-by-elements,width=6,height=2>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-(ggplot(subset(segment.rates, motionCondition == "incongruent"))
-\end_layout
-
-\begin_layout Plain Layout
-
- + aes(trial.extra.nVisibleTargets, correct, color=factor(spacing))
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_point()
-\end_layout
-
-\begin_layout Plain Layout
-
- + geom_line()
-\end_layout
-
-\begin_layout Plain Layout
-
- + facet_grid(subject ~ trial.extra.side)
-\end_layout
-
-\begin_layout Plain Layout
-
- + opts(aspect.ratio=1)
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_x_continuous("No.
- moving elements", breaks=3:8,labels=3:8)
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_y_continuous("Prop.
- long-range", formatter=latex.percent)
-\end_layout
-
-\begin_layout Plain Layout
-
- + scale_color_hue("Element
-\backslash
-
-\backslash
-
-\backslash
-
-\backslash
-spacing",formatter=function(x) format(as.numeric(x), digits=2))
-\end_layout
-
-\begin_layout Plain Layout
-
- ) -> segment.by.elements
+<<segment-by-elements>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1764,7 +1589,7 @@ spacing",formatter=function(x) format(as.numeric(x), digits=2))
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -1773,27 +1598,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<segment-dualplots,fig=T,width=6,height=4>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-vp <- viewport(x=0,y=1, height=0.5, width=1, just=c("left", "top"))
-\end_layout
-
-\begin_layout Plain Layout
-
-print(segment.by.spacing, vp=vp)
-\end_layout
-
-\begin_layout Plain Layout
-
-vp <- viewport(x=0, y=0, height=0.5, just=c("left", "bottom"))
-\end_layout
-
-\begin_layout Plain Layout
-
-print(segment.by.elements, vp=vp) 
+<<segment-dualplots,fig=TRUE,fig.width=6,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout

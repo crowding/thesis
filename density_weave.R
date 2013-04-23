@@ -1,4 +1,5 @@
 ## @knitr density-setup
+opts_knit$set(stop_on_error=2L)
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
 library(ggplot2)
 library(plyr)
@@ -45,13 +46,40 @@ unmatching <-
                   ))
  if (!empty(unmatching)) stop("unmatching data")
 
+## @knitr segment-setup-old
+prefixing_assign <- function(prefix, env, frame=parent.frame()) {
+  e <- as.environment(env)
+  n <- ls(e)
+  n2 <- paste0(prefix, n)
+  invisible(Map(assign, n2, lapply(n, get, e), MoreArgs=list(envir=frame)))
+}
+
+prefixing_assign('segment.', within(list(),{
+  load("../pools/Segment.Rdata")
+  mutate(  trials
+         , flanker.span=abs(trial.extra.flanker1Angle - trial.extra.flanker2Angle)
+         ##unfortunately I screwed up the definition of
+         ##"top" and "bottom" in experiment code so I must
+         ##swap them here
+         , trial.extra.side=`levels<-`(
+             factor(trial.extra.side)
+             , c('top','left','right','bottom'))
+         , spacing = 2*pi*trial.extra.r / trial.extra.nTargets
+         ) -> trials
+  ##some of this data was captured using variable flanker distances,
+  ##which I decided against. Select only the trials using a minimum
+  ##flanker spacing...
+  trials <- subset(trials,
+                   abs(trial.extra.max_extent - trial.extra.min_extent) < .0001)
+}))
+
 ## @knitr density-conditions
 #choose four examples to illustrate changes of number and of density.
 #lareg number/tight spacing
 #med number/narrow spacing
 #med number/wide spacing
 #small number/wide spacing
-configs <-
+ configs <-
   chain(  configurations
         , summarize(  spacing = sort(unique(spacing))[c(2, 2, 5, 5)]
                     , target_number_shown =
@@ -94,7 +122,7 @@ mapply(rates=list(segment.rates, segment.rates.sided),
        extra = list(c(), "side"), function(rates, extra) {
   all(unlist(dlply(  rates
                    , c(segment.experiment.vars, extra)
-                   , mkchain(`$`(n), range, diff))) <= 2) || stop("oops")
+                   , mkchain(`$`(n_obs), range, diff))) <= 2) || stop("oops")
 })
 
 # Compute a standard error bar over a nominal 50% rate.
@@ -130,34 +158,6 @@ print(ggplot(density.prediction.bins)
       + geom_vline(x=-density.prediction.displacement, linetype="11"))
 
 #combine this with the model predictions corresponding
-
-## @knitr segment-setup-old
-
-prefixing_assign <- function(prefix, env, frame=parent.frame()) {
-  e <- as.environment(env)
-  n <- ls(e)
-  n2 <- paste0(prefix, n)
-  invisible(Map(assign, n2, lapply(n, get, e), MoreArgs=list(envir=frame)))
-}
-
-prefixing_assign('segment.', within(list(),{
-  load("../pools/Segment.Rdata")
-  mutate(  trials
-         , flanker.span=abs(trial.extra.flanker1Angle - trial.extra.flanker2Angle)
-         ##unfortunately I screwed up the definition of
-         ##"top" and "bottom" in experiment code so I must
-         ##swap them here
-         , trial.extra.side=`levels<-`(
-             factor(trial.extra.side)
-             , c('top','left','right','bottom'))
-         , spacing = 2*pi*trial.extra.r / trial.extra.nTargets
-         ) -> trials
-  ##some of this data was captured using variable flanker distances,
-  ##which I decided against. Select only the trials using a minimum
-  ##flanker spacing...
-  trials <- subset(trials,
-                   abs(trial.extra.max_extent - trial.extra.min_extent) < .0001)
-}))
 
 ## @knitr segment-properties
 segment.properties <- with(segment.trials,within(list(),{
@@ -247,8 +247,6 @@ print(segment.colormap)
  + scale_y_continuous("Prop. long-range")
  + scale_color_hue("No.\\\\moving\\\\elements")
  ) -> segment.by.spacing
-plot(segment.by.spacing)
-
 
 ## @knitr segment-by-elements
 (ggplot(subset(segment.rates, motionCondition == "incongruent"))
@@ -261,7 +259,6 @@ plot(segment.by.spacing)
  + scale_y_continuous("Prop. long-range")
  + scale_color_hue("Element\\\\spacing", labels=function(x) format(as.numeric(x), digits=2))
  ) -> segment.by.elements
-plot(segment.by.elements)
 
 
 ## @knitr segment-dualplots

@@ -45,7 +45,7 @@ replace_arrows <- function(x) {
 
 setup_theme <- function(base_size=theme_get()$text$size) {
 #  if (interactive()) base_size <- 16
-  theme_set(theme_bw(base_size, "Myriad Pro"))
+  theme_set(theme_bw(base_size))
   theme_update(
     ## axis.title.x = element_text_with_symbols(
     ##   size=list(c(12, 24)), family=list(c("Myriad Pro", "Apple Symbols")),

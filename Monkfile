@@ -118,7 +118,14 @@
 #--command '$(LYX)' %-e pdf4 --input --match ([^_].*)\.lyx
 #--output --invisible {0}.pdf
 
---command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
+--command '$(LYX)' %-e knitr --input --match ([^_].*)\.lyx
+--output --invisible {0}.Rnw
+
+#--command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
+#--output --invisible {0}.tex
+
+--command Rscript %-e "\"library(knitr); knit('{0}.Rnw')\""
+--input --invisible --match ([^_].*)\.Rnw
 --output --invisible {0}.tex
 
 --command --invisible --input --match (.*)_weave.R$
