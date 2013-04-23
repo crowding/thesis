@@ -121,6 +121,9 @@
 --command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
 --output --invisible {0}.tex
 
+--command --invisible --input --match (.*)_weave.R$
+--output --invisible {0}.tex
+
 --command xelatex %-halt-on-error %-interaction=nonstopmode
 --input --match ([^_].*)\.tex --output --invisible {0}.pdf
 --phony --invisible pdf

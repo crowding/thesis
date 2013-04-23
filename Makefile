@@ -1,5 +1,7 @@
 FILES := $(filter-out $(MAKEFILE_LIST),$(shell git ls-tree --name-only HEAD .))
 
+.DELETE_ON_ERROR:
+
 LYX := /Applications/LyX.app/Contents/MacOS/lyx
 
 monk.makefile: monk/monk.py Monkfile
