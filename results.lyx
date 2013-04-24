@@ -75,6 +75,29 @@ name "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
+The demonstrations in
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:singles"
+
+\end_inset
+
+ seem to suggest that the perceived reversal of motion direction is a function
+ not only of carrier strength of individual elements but of a spacing-dependent
+ interaction between nearby elements.
+ We explored this spatial interaction by examining the interactions between
+ local and global motion as a function of both the distance between elements
+ and the carrier strength.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Flex Sweave Options
 status collapsed
 
@@ -200,7 +223,7 @@ status collapsed
 
 \begin_layout Standard
 We investigated the effect of spacing on the sensitivity to both carrier
- and envelope motion,
+ and envelope motion, using
 \end_layout
 
 \begin_layout Subsection
@@ -214,33 +237,37 @@ name "sub:results-methods"
 
 \end_layout
 
-\begin_layout Itemize
-Describe any methods specific to Experiment 1 (as opposed to general methods)
+\begin_layout Standard
+Stimuli for these experiments were all presented at a fixed eccentricity
+ of XXX and used a complete circle of evenly spaced elements.
+ For each session we chose a set of carrier strengths and spacings, and
+ collected psychometric functions for each member of the set, with the abscissa
+ of each function being the envelope motion.
+ We generally used two types of sessions.
+ One type was focused on the effect of spacing, and tested several spacings
+ at a single carrier strength.
+ chosen based on preliminary data from that subject.).
+ Another type was focused on the effect of carrier strength, and tested
+ a fixed set of carrier strengths (0.1, 0.2, 0.4 and 1.0), at two values of
+ spacing.
+ The particular values of spacing and direction content employed were selected
+ based on preliminary sessions with that subject.
+ There may be some adaptation when a single carrier strength or limited
+ sets of spacings were used for an entire session.
+ However, we find that a single model fits the both datasets adequately,
+ so we pool the data from both types of experiments and present them together
+ here.
+ As described above in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:methods-staircase"
+
+\end_inset
+
+, we used an interleaved staircase procedure to collect psychometric functions,
+ with the staircase varying the speed of the envelope motion.
 \end_layout
 
-\begin_layout Itemize
-All stimuli are
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-two types of stimulus sets used (varying direction content, varying spacing)
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-Staircase procedure
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-For each session we chose a set of carrier strengths and spacings, and collected
- psychometric functions for each setting, with the abscissa of each function
- being the envelope motion.
- These psychometric functions were 
-\end_layout
-
-\end_deeper
 \begin_layout Subsection
 Results
 \end_layout
