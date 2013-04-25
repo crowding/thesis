@@ -75,40 +75,55 @@ name "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
-The demonstrations in
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:wheels"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:singles"
-
-\end_inset
-
- seem to suggest that the perceived reversal of motion direction is a function
- not only of carrier strength of individual elements but of a spacing-dependent
- interaction between nearby elements.
- We explored this spatial interaction by examining the interactions between
- local and global motion as a function of both the distance between elements
- and the carrier strength.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex Sweave Options
-status collapsed
+\begin_inset ERT
+status open
 
 \begin_layout Plain Layout
 
-cache=TRUE,encoding="UTF-8",fig.width=7,fig.height=4,dev="cairo_pdf",dev.args=list(
-pointsize=10),tidy=FALSE,out.width="1.0
+%knitr options
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-options,include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,encoding="UTF-8",fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
 \backslash
 
 \backslash
-textwidth",messages="hide",autodep=TRUE,external=TRUE,results="hide",echo=FALSE
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE,stop_on_error=2L)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -222,8 +237,26 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-We investigated the effect of spacing on the sensitivity to both carrier
- and envelope motion, using
+The demonstrations in
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:wheels"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "mov:singles"
+
+\end_inset
+
+ seem to suggest that the perceived reversal of motion direction is a function
+ not only of carrier strength of individual elements but of a spacing-dependent
+ interaction between nearby elements.
+ We explored this spatial interaction by examining the interactions between
+ local and global motion as a function of both the distance between elements
+ and the carrier strength.
 \end_layout
 
 \begin_layout Subsection
@@ -238,12 +271,64 @@ name "sub:results-methods"
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-numbers
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-numbers>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Stimuli for these experiments were all presented at a fixed eccentricity
- of XXX and used a complete circle of evenly spaced elements.
+ of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(results.eccentricity,digits=2)}^
+\backslash
+circ$
+\end_layout
+
+\end_inset
+
+ and used a complete circle of evenly spaced elements.
  For each session we chose a set of carrier strengths and spacings, and
  collected psychometric functions for each member of the set, with the abscissa
  of each function being the envelope motion.
- We generally used two types of sessions.
+ As described above in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:methods-staircase"
+
+\end_inset
+
+, we used an interleaved staircase procedure to collect psychometric functions,
+ with the staircase varying the speed of the envelope motion.
+ There were two general types of sessions.
  One type was focused on the effect of spacing, and tested several spacings
  at a single carrier strength.
  chosen based on preliminary data from that subject.).
@@ -257,37 +342,110 @@ Stimuli for these experiments were all presented at a fixed eccentricity
  However, we find that a single model fits the both datasets adequately,
  so we pool the data from both types of experiments and present them together
  here.
- As described above in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:methods-staircase"
-
-\end_inset
-
-, we used an interleaved staircase procedure to collect psychometric functions,
- with the staircase varying the speed of the envelope motion.
+ 
 \end_layout
 
 \begin_layout Subsection
 Results
 \end_layout
 
-\begin_layout Itemize
-Show two subjects for 
+\begin_layout Standard
+We first compare individual psychometric functions that illustrate the effects
+ of spacing, carrier strength and envelope displacement.
+ There are three qualitative effects that we wish to point out before combining
+ them all into a unified presentation of the model.
+\end_layout
+
+\begin_layout Subsubsection
+Sensitivity to displacement reduces at smaller spacings
+\end_layout
+
+\begin_layout Standard
+One effect of changing spacing is to change the observers' sensitivity to
+ envelope motion.
+ Consider the psychometric function whose domain is the envelope motion
+ (spatial distance between stations, or 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ and range is the probability of the observer responding 
 \begin_inset Quotes eld
 \end_inset
 
-spacing
+clockwise
 \begin_inset Quotes erd
 \end_inset
 
- experiments.
- These should illustrate that sensitivity to displacement (slope) collapses
- at short spacings.
+ to that stimulus.W e consistently find that when the spacing between elements
+ is reduced, the slope of the An example of this is shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-collapse"
+
+\end_inset
+
+.
+ The curves in that figure reflect an overall fit of the model described
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+, while the points reflect the observed responses at a particular carrier
+ strength, spacing, and direction content.
+ The points on the graph are scaled according to the number of trials completed
+ with those stimulus configurations.
+ Therefore we would expect larger points to lie closer to the model fit,
+ while smaller points have more uncertainty and may be expected to lie farther
+ from the model fit.
+ In the extreme, a particular stimulus configuration might only be visited
+ once while the staircase moves past it; these smallest points will lie
+ on either 
+\begin_inset Formula $P(clockwise)=1$
+\end_inset
+
+ or 0.
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
+\begin_layout Standard
+We consistently observe that reducing the spacing between elements also
+ reduces the slope of the psychometric functions.
+ Thus, when elements are more closely packed together, it appears to be
+ more difficult for observers to discriminate the direction of envelope
+ motion.
+ Nearby elements thus interfere with the ability to discriminate changes
+ in elements position.
+ Note that in this experiment, reducing the spacing between elements correspondi
+ngly increases the number of elements in the scene.
+ So we also rule out the possibility that envelope motion is globally pooled
+ among elements, at least for this task and stimuli; if pooling of envelope
+ motion occurred, we would observe the opposite effect on the slopes of
+ the psychometric functions.
+\end_layout
+
+\begin_layout Standard
+We should also note that the values of 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ tested are substantially smaller than half the inter-element spacing, so
+ that of spatial aliasing explaining additional uncertainty in motion direction.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+If the 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
@@ -304,8 +462,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<results-spacing-collapse,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.he
-ight=5>>=
+<<results-spacing-collapse,fig.width=6,fig.height=3>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -333,12 +490,25 @@ name "fig:results-spacing-collapse"
 \end_inset
 
  Effect of spacing on sensitivity to direction content.
- Psychometric functions of displacement are shown for three example subjects.
- In each graph, direction content is held constant, and different curves
- show the responses as different spacings.
- The consistent effect of reducing spacing is to reduce the slope of the
- psychometric function, indicating that nearby elements with subjects' ability
- to discriminate an element's change in position.
+ Psychometric functions of envelope motion are shown for three example subjects.
+ For each observer two curves are shown, each at a different spacing; carrier
+ strength is unchanged.
+ The effect of reducing spacing is to reduce the slope of the psychometric
+ function, indicating that nearby elements interfere with observers' ability
+ to detect an element's change in position.
+ Curved lines show model fits, while dots show observed data; the size of
+ each dot corresponds to the number of trials observed by the staircase
+ procedure at that displacement.
+ The curves plot fits from the overall model as described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+, which was fit to a much larger set of data than is shown here (so we expect
+ individual curves may not fit ideally to the small subset of data shown
+ here)
 \end_layout
 
 \end_inset
@@ -351,7 +521,7 @@ name "fig:results-spacing-collapse"
 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
@@ -368,8 +538,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<results-summation-increases,echo=FALSE,cache=TRUE,warning=FALSE,results="hide"
-,fig.width=6,fig.height=5>>=
+<<results-summation-increases,warning=FALSE,fig.width=6,fig.height=5>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -397,11 +566,14 @@ name "fig:results-summation-increases"
 \end_inset
 
 Reducing spacing increases the effect of direction content.
- Here two sets of psychometric functions are shown, the upper set taken
- at short spacing and the right set taken at wide spacing.
+ Here two pairs of psychometric functions are shown for each subject, the
+ upper set taken at narrow spacing and the right set taken at wide spacing.
  In each set, the different colored curves and data points correspond to
  different strengths of carrier direction content.
- In addition to the 
+ At the smaller value of spacing, the effect of changing direction content,
+ as measured by int intercepts of the fitted lines with the axis, is increased
+ at narrow spacing.
+ 
 \end_layout
 
 \end_inset
@@ -422,7 +594,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -459,14 +631,8 @@ name "fig:results-induced-crossover"
 
 \end_inset
 
-The effect of carrier direction content changes from assimilative at high
- densities to repulsive at larger target spacings.
- Here data from three subjects are shown.
- For each subject a single strength of direction content is used, one counterclo
-ckwise (negative) and one clockwise (positive).
- The vertical axis represents the proportion of trials during which the
- subject responded clockwise.
- Data points plotted are binned averages.
+Weak values of carrier strength cause repulsion; observers are biased against
+ responding to the
 \end_layout
 
 \end_inset
@@ -479,6 +645,7 @@ ckwise (negative) and one clockwise (positive).
 
 \end_layout
 
+\begin_deeper
 \begin_layout Itemize
 \begin_inset Float figure
 wide false

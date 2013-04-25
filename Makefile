@@ -1,4 +1,4 @@
-FILES := $(filter-out $(MAKEFILE_LIST),$(shell git ls-tree --name-only HEAD .))
+FILES := $(filter-out $(MAKEFILE_LIST),$(shell git ls-files --cached))
 
 .DELETE_ON_ERROR:
 

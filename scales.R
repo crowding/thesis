@@ -104,7 +104,7 @@ facet_spacing_subject <-
   facet_grid(spacing ~ subject, labeller=facet_labeller)
 
 balloon <- list(geom_point(aes(size=n_obs))
-                , scale_size_area()
+                , scale_size_area("N")
                 )
 
  if (exists("geom_numdensity")) {
@@ -189,9 +189,10 @@ no_grid <- theme(panel.grid.major=element_blank(), panel.grid.minor=element_blan
 displacement_scale <-
   list( aes(x=displacement),...=
        scale_x_continuous(
-         paste0("Envelope motion")
+         paste0("Envelope motion") # (\u0394x)
 #                          , labels=newline_arrows
-                          ))
+#         , labels=function(x) sprintf("%s\u00B0", x)
+         ))
 displacement_scale_nopadding <- displacement_scale
 displacement_scale_nopadding[[2]]$expand <- c(0,0)
 y_nopadding <- scale_y_continuous(expand = c(0,0))
@@ -261,7 +262,7 @@ spacing_color_scale <-
              fill=factor(spacing))),
     with_arg(name="Spacing",
              palette=color_pal,
-             labels=prettyprint,
+             labels=function(x)sprintf("%0.2f", as.numeric(x)), #\u00B0
              discrete_scale("fill", "manual"),
              discrete_scale("colour", "manual")
              )

@@ -27,7 +27,7 @@ bind[plot.displacement, plot.content, plot.spacing] <- (
 
 ## ----------------------------------------------------------------------
 
-## @knitr results-functions
+#results-functions
 #first make models with the linear induced motion
 buildModel <- function(modelList, update.arg) {
   update.arg <- substitute(update.arg)
@@ -44,52 +44,60 @@ cbind_predictions <- function(dataset, model, ...)
   cbind(dataset, predict(model, newdata=dataset, ...))
 
 ## ----------------------------------------------------------------------
+## @knitr results-numbers
+
+results.eccentricity <- chain(
+  model.df$model, lapply(function(x) x$data$eccentricity),
+  do.call(what=c), unique)
+
+## ----------------------------------------------------------------------
 ## @knitr results-spacing-collapse
 
 spacing.collapse.plotdata <- ziprbind(Map(
-  model = list(models$pbm, models$cj),
-  match_content = c(0.15, 0.4),
-  f = function(model, match_content) list(
-    bins = bins <- chain(
+  model = list(models$pbm, models$cj, models$jb),
+  match_content = c(0.15, 0.4, 0.2),
+  match_number = list(c(4, 20)
+    ),
+  f = function(model, match_content, match_number) list(
+    bubbles = bubbles <- chain(
       model$data,
       subset(abs(content) == match_content),
-      bin_along_resid(model, ., "response",
-                      splits %-% "exp_type", "displacement",
-                      bins=8, fold=TRUE)),
-    predictions = (makePredictions(model, bins,
+      subset(target_number_all %in% match_number),
+      refold(fold=TRUE),
+      mkrates),
+    predictions = (makePredictions(model, bubbles,
                                    splits=splits %-% "exp_type", fold=TRUE)))))
 
-#this only includes half the available data (no folding) so the
-#scatter can be expected to be improved
-
-#this should just be two plots joined vis grid. Different values of
-#spacing, e.g.
-
-print(ggplot(shuffle(spacing.collapse.plotdata$bins))
+print(ggplot(shuffle(spacing.collapse.plotdata$bubbles))
       + displacement_scale
       + proportion_scale
+      + coord_cartesian(xlim=c(-0.6, 0.6))
       + spacing_color_scale
       + aes(group=spacing)
       + ribbonf(spacing.collapse.plotdata$predictions)
-      + geom_point(size=3) # + binom_pointrange()
-      + facet_grid(subject  ~ ., labeller=function(var, value) toupper(value))
+      + balloon
+      # + geom_point(size=3)
+      # + binom_pointrange()
+      + facet_grid( ~ subject,
+                   labeller=function(var, value) sprintf("Observer %s", toupper(value)))
       + no_grid
-      + labs(title=paste(sep="\n","Sensitivity collapses at smaller spacings"))
+      + theme(aspect.ratio=1)
+      + labs(title=paste(sep="\n","Sensitivity to envelope motion collapses at smaller spacings"))
+      + theme(plot.title=element_text(size=rel(1.0)),
+              strip.background=element_rect(colour=NA, fill="gray90"))
       + with_arg(inherit.aes=FALSE, show_guide=FALSE,
-                 data=ddply(spacing.collapse.plotdata$bins,
+                 data=ddply(spacing.collapse.plotdata$bubbles,
                     c("subject", "content"),
                    summarize, content = content[1], n_obs = sum(n_obs)),
                  geom_text(aes(
-                   label = sprintf("direction content = %0.2g", content)),
+                   label = sprintf("C = %0.2g", content)),
                              x=Inf, y=-Inf, size=3, vjust=-0.5, hjust=1.05),
                  geom_text(aes(
                    label = sprintf("N = %d", n_obs),
-                   x = -Inf, y = Inf, size=3, vjust = 1.5, hjust = -0.2))))
+                   x = -Inf, y = Inf, size = 6, vjust = 1.5, hjust = -0.2)))
+        )
 
-## The error bars are ugly with the trials spread over so many spacings...
-## I wonder if there's a way to bin over displacement and spacing at
-## all the direction contents, projecting it onto one direction
-## content? That is sort of massive cheating though.
+## The alternative to ths point cloud is to use binning, as commented out
 
 ## ----------------------------------------------------------------------
 ## @knitr results-summation-increases

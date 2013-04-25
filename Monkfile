@@ -126,10 +126,10 @@
 
 --command Rscript %-e "\"library(knitr); knit('{0}.Rnw')\""
 --input --invisible --match ([^_].*)\.Rnw
---output --invisible {0}.tex
+--output --invisible --once {0}.tex
 
---command --invisible --input --match (.*)_weave.R$
---output --invisible {0}.tex
+--command --invisible --input --match (.*)_weave\.R$
+--output --invisible --once {0}.tex
 
 --command latexmk %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match ([^_].*)\.tex --output --invisible {0}.pdf
