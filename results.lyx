@@ -76,7 +76,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -453,7 +453,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -529,7 +529,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -570,10 +570,10 @@ Reducing spacing increases the effect of direction content.
  upper set taken at narrow spacing and the right set taken at wide spacing.
  In each set, the different colored curves and data points correspond to
  different strengths of carrier direction content.
- At the smaller value of spacing, the effect of changing direction content,
- as measured by int intercepts of the fitted lines with the axis, is increased
- at narrow spacing.
- 
+ Independently of the effect on sensitivity to envelope motion, smaller
+ values of spacing show larger responses to changes in carrier strength.
+ We also see that weaker carrier strengths are repulsive when targets at
+ wide spacings; the psychometric functions at the weakest carrier strengths
 \end_layout
 
 \end_inset

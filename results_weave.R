@@ -101,35 +101,44 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bubbles))
 
 ## ----------------------------------------------------------------------
 ## @knitr results-summation-increases
+
 summation.increases.plotdata <- ziprbind(Map(
-  model = models[c("cj","pbm")],
+  model = models[c("nj","ns","pbm")],
   targnum = list(c(20, 5)),
-  f = function(model, targnum) {
-    bins <- chain(
+  strength = list(c(0.1, 0.4)),
+  f = function(model, targnum, strength) {
+    bubbles <- chain(
       model$data
-      , subset(exp_type == "content" & target_number_shown %in% targnum)
-      , bin_along_resid(model, ., "response", splits, "displacement"))
-    predictions <- makePredictions(model, bins, fold=TRUE)
-    list(bins = bins, predictions = predictions)
+      , refold(fold=TRUE)
+      , subset((exp_type == "content")
+               & (target_number_shown %in% targnum)
+               & (content %in% strength))
+      , mkrates)
+    predictions <- makePredictions(model, bubbles, fold=TRUE)
+    list(bubbles = bubbles, predictions = predictions)
   }))
 
-
-
-print(ggplot(summation.increases.plotdata$bins)
+print(ggplot(summation.increases.plotdata$bubbles)
+      + geom_hline(y=0.5, color="gray")
+      + geom_vline(x=0, color="gray")
       + displacement_scale
       + proportion_scale
+      + balloon
       + content_color_scale
-      + labs(title="Carrier has more effect at reduced spacing",
-             color="Carrier\ndirection\ncontent")
+      + labs(title="Carrier strength has more effect at reduced spacing",
+             color="Carrier\nstrength")
       + aes(group=content)
-      + geom_point(size=2)# + binom_pointrange()
+      #+ geom_point(size=2)# + binom_pointrange()
       + ribbonf(summation.increases.plotdata$predictions)
       + no_grid
+      + theme(plot.title=element_text(size=rel(1.0)),
+              strip.background=element_rect(colour=NA, fill="gray90"))
       + facet_spacing_subject
-      + coord_cartesian(xlim=c(-0.75, 0.75))
-      + label_count(summation.increases.plotdata$bins,
-                    c("spacing", "subject"))
-      + geom_hline(y=0, color="gray"))
+      + coord_cartesian(xlim=c(-0.35, 0.35))
+      + label_count(summation.increases.plotdata$bubbles,
+                    c("spacing", "subject"),
+                    size=2)
+      )
 
 ## ----------------------------------------------------------------------
 ## @knitr results-induced-crossover
@@ -140,6 +149,8 @@ spacing.crossover.plotdata <- ziprbind(Map(
     bins <- chain(
       model$data
       , subset((exp_type=="spacing") & (abs(content) == match_content))
+      , refold(fold=TRUE),
+      , mkrates,
       , bin_along_resid(model, ., "response", splits, "displacement"))
     predictions <- makePredictions(model, bins)
     list(bins=bins, predictions=predictions)
@@ -151,7 +162,6 @@ spacing.crossover.plotdata <- ziprbind(Map(
 #latex + unicode that actually works.
 #plot example data from subject JB
 suppressWarnings(
-
   print(
     ggplot(spacing.crossover.plotdata$bins)
     + displacement_scale

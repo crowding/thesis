@@ -83,13 +83,12 @@ proportion_scale <-
 
 facet_labeller <- function(v, value)
   switch(v,
-         subject= sprintf("Subject %s", toupper(value)),
+         subject= sprintf("Observer %s", toupper(value)),
          spacing = paste(
-             "$"[!use_unicode],
-             "S = ",
-             format(value, digits=2),
-             if(use_unicode) "\u0080" else "^\\circ",
-             "$"[!use_unicode], sep=""),
+           "$"[!use_unicode],
+           sprintf("Spacing = %.02f", value),
+           #if(use_unicode) "\u0080" else "^\\circ",
+           "$"[!use_unicode], sep=""),
          exp_type = paste(as.character(value), "experiment"))
 
 facet_spacing_experiment <-
@@ -332,13 +331,14 @@ displacement_scale_continuous_waterline <-
                         labels=append_arrows
                         )
 
-label_count <- function(data, group, countvar=n_obs)
+label_count <- function(data, group, countvar=n_obs,
+                        x = -Inf, y = Inf, size=3, vjust = 1.5, hjust = -0.2)
   geom_text(data=eval(bquote(ddply(
               data, group, summarize,
               .count=sum(.(substitute(countvar)))))),
     inherit.aes=FALSE, show_guide=FALSE,
     aes(label = sprintf("N = %d", .count)),
-    x = -Inf, y = Inf, size=3, vjust = 1.5, hjust = -0.2)
+    x = x, y = y, size= size, vjust = vjust, hjust = hjust)
 
 content_scale <-
   list(aes(x=content),
