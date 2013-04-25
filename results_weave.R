@@ -132,55 +132,14 @@ print(ggplot(summation.increases.plotdata$bubbles)
       + ribbonf(summation.increases.plotdata$predictions)
       + no_grid
       + theme(plot.title=element_text(size=rel(1.0)),
-              strip.background=element_rect(colour=NA, fill="gray90"))
+              strip.background=element_rect(colour=NA, fill="gray90"),
+              aspect.ratio=1)
       + facet_spacing_subject
       + coord_cartesian(xlim=c(-0.35, 0.35))
       + label_count(summation.increases.plotdata$bubbles,
                     c("spacing", "subject"),
-                    size=2)
+                    size=3, y=-Inf, x=-Inf)
       )
-
-## ----------------------------------------------------------------------
-## @knitr results-induced-crossover
-spacing.crossover.plotdata <- ziprbind(Map(
-  model=list(models$jb, models$nj, models$pbm),
-  match_content=c(1.0, 0.4, 0.15),
-  f=function(model, match_content) {
-    bins <- chain(
-      model$data
-      , subset((exp_type=="spacing") & (abs(content) == match_content))
-      , refold(fold=TRUE),
-      , mkrates,
-      , bin_along_resid(model, ., "response", splits, "displacement"))
-    predictions <- makePredictions(model, bins)
-    list(bins=bins, predictions=predictions)
-  }))
-
-#the suppressWarnings is ther because of stupid encoding things and
-#the way that knitr chokes if it doesn't everything about the
-#encoding. Gah, someone give me a reproducible example. for knitr +
-#latex + unicode that actually works.
-#plot example data from subject JB
-suppressWarnings(
-  print(
-    ggplot(spacing.crossover.plotdata$bins)
-    + displacement_scale
-    + blank_proportion_scale
-    + content_color_scale
-    + with_arg(data=spacing.crossover.plotdata$predictions,
-               geom_ribbon(color="transparent", alpha=0.2,
-                           aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
-               geom_line(aes(y=fit)))
-    + geom_point(size=2)
-    + facet_spacing_subject
-    + no_grid
-    + labs(title=paste0("Carrier motion assimilates at narrow spacing, ",
-             "repels at wide spacing\n(rows indicate spacing)"),
-           y="Proportion CW responses" )
-    + coord_cartesian(xlim=c(-1.1,1.1))
-    )
-
-  )
 
 ## ----------------------------------------------------------------------
 ## @knitr results-spacing-sensitivity
