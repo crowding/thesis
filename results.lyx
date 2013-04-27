@@ -814,15 +814,294 @@ have to qualify this because they can be combined given longer viewing durations
 \end_layout
 
 \begin_layout Subsection
-Model presentations
+Model and data overview and visualizations
 \end_layout
 
 \begin_layout Standard
 Our experiment relates three parameters -- carrier strength, envelope motion
  and spacing -- to a fourth variable, the motion perceived by the observer.
  At this point, having given examples illustrating some of the effects that
- a model must capture, we attempt to present an overview of how the model
- relates to data.
+ a model should capture, we attempt to present an overview both of the entire
+ dataset, and how the model fits that data.
+ Afterwards we will examing particular features of the model and evaluate
+ their fit to the data.
+\end_layout
+
+\begin_layout Standard
+This experiment observed the effect on perceived motion of three stimulus
+ parameters (spacing, envelope motion, and carrier strength.) We can visualize
+ those variables as forming a three-dimensional configuration space.
+ As a function of these three variables, we model the proportion of responses
+ on one direction or the other.
+\end_layout
+
+\begin_layout Standard
+In 
+\end_layout
+
+\begin_layout Standard
+These graphs display the models fitted to each subject's data, while showing
+ locations at which data was sampled.
+ The model has three primary variables (spacing, envelope motion, and carrier
+ strength) which we are concerned with; these variables can be considered
+ to form a three-dimensional stimulus configuration space.
+ The combination of these three variables determines the likelihood with
+ which the observer will respond "clockwise" or "counterclockwise" to the
+ given stimulus.
+ Here we show the model's predictions over four planar sections through
+ this three-dimensional space.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="1">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%results-colormap-3d
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%results-colormap-2d
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-colormap-2d,fig.width=6, fig.height=5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Data and model responses for observer JB.
+ Upper: the three stimulus parameters relevant to this experiment, spacing
+ 
+\begin_inset Formula $S$
+\end_inset
+
+, envelope motion 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+, and carrier strength 
+\begin_inset Formula $C$
+\end_inset
+
+, are placed along three axes.
+ The color scale represents the response predicted by our model.
+ Red shades indicate responses agreeing with the direction of carrier motion
+ (of which only positive values are shown) and blue shades indicate values
+ disagreeing with the direction of carrier motion.
+ In both cases the luminance depends the difference between the response
+ probability and 0.5, with response probabilities further from 0.5 colored
+ with darker, more saturated values.
+ Yellow contour lines are placed at response probabilities of 0.1, 0.3, 0.5,
+ 0.7 and 0.9.
+ Lower: the same four planes plotted in the upper figure are pulled out
+ into two-dimensional plots.
+ The color scale and contour placement are the same as in the upper figure.
+ Circles represent observers' recorded responses at the same.
+ Each circle represents the subset of trials falling nearest that point.
+ Upper left: we plot the response probability as a function of carrier strength
+ and spacing, with envelope motion fixed to zero.
+ Circles collect trials with all envelope motions.
+ Lower left: we show the response probability as a function of envelope
+ motion : We plot the two plots in the right column that a Shading inside
+ circles depends on the residual between the model prediction and observed
+ data.
+ for the trials falling within that bin.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The upper figure shows a perspective view of the three dimensions discussed,
+ with four planar sections shown.
+ Data from one observer is shown; the complete set of illustrations for
+ all observers is shown in an appendix.
+ The color scale maps response probabilities to luminance with darker and
+ more saturated hues mapped to response probabilities that are further from
+ 0.5.
+ Additionally color os mapped to the sign of the response probability, with
+ blue shades representing points where the modeled observer tended to respond
+ counterclockwise (i.e.
+ against the direction of carrier motion) and red hues representing points
+ where the response favors the direction of carrier motion.
+ Four planes are illustrated within this space.
+ These planes are the same as the subplots shown in the lower half of the
+ figure.
+\end_layout
+
+\begin_layout Standard
+Each panel in the lower figure shows the model's predictions as a function
+ of two of the three variables, leaving the other fixed; the value of the
+ fixed variable is noted in the upper right corner of each panel.
+ The shading represents the models' estimated probability of responding
+ "clockwise" for that stimulus, with white representing a probability of
+ 1 and black representing a probability of zero.
+ Dotted contour lines are drawn at probabilities of 0.1, 0.3, 0.5, 0.7, and
+ 0.9.
+ From upper right counterclockwise, we show how (a) model responses vary
+ as a function of spacing and carrier strength, for stimuli with zero envelope
+ motion, (b) as a function of spacing and envelope movement, for stimuli
+ with zero carrier motion, (c) as a function of envelope motion and carrier
+ strength, for stimuli with a fixed, narrower spacing, and (d) as a function
+ of envelope motion and carrier strength (similarly to (c)), for stimuli
+ with a fixed, wider spacing.
+\end_layout
+
+\begin_layout Standard
+The lower figure also depicts the observer's responses.
+ Circles plotted have shading determined by the observer's recorded responses,
+ and each circle's area corresponds to the number of trials represented
+ by that circle.
+ The shading within the circle represents an average of the observers' responses
+ at the stimulus parameters where the circle is drawn.
+ Any difference between the shading inside the circle and that of the background
+ indicates a residual between the model and the subset of observed data
+ falling closest to that circle.
+ The area of the circles scales in proportion to the number of trials represente
+d.
+ 
+\end_layout
+
+\begin_layout Standard
+Note that the shading within each circle is not simply the arithmetic mean
+ of observers' responses, but is based on the mean and we need to base the
+ plot on residuals rather than the mean for a number of reasons.
+ One is that the actual stimulus parameters of the trials are scattered
+ through the 3-d space outlined in the upper figure, and the underlying
+ response probability depends on all three dimensions.
+ Each circle collects the subset of trials that lie closest to it, but the
+ underlying response probabilities we are trying to model still differ over
+ that subset.
+ In the upper left figure the points collected under one circle at a particular
+ value of displacement can take any value in the unseen dimension (envelope
+ motion); and with reverence to the other plots we see that at a particular
+ spacing and carrier strength, the response is expected to vary as a function
+ of envelope motion.
+ Observing a response probability of 0.5, for instance, means different things
+ depending on if the model predicts 0.2 (the model undershoots) or 0.8 (the
+ model overshoots).
+ Therefore we base the plot on the difference between model and observation
+ rather than taking the mean of the raw observations.
+\end_layout
+
+\begin_layout Standard
+Another reason is that the data are not evenly sampled throughout the stimulus
+ configuration space.
+ For example, in the upper left plot, each circle represents a number of
+ trials that occur over a number of different envelope motions; because
+ a staircase procedure was used, the set of envelope motion values that
+ was collected differs for each circle.
+ If each staircase procedure converged well, using the arithmetic mean would
+ plot a probability close to 0.5 for all circles in the upper left graph;
+ but this would not be useful for assessing the model fit or the behavior
+ of the observer.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We wanted to be 
+\begin_inset Quotes eld
+\end_inset
+
+crystal clear
+\begin_inset Quotes erd
+\end_inset
+
+ about why this can't be a raw average.
+ I hope this is clear.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+The shading used inside the circles should be interpretable against the
+ background, so we compute the shade by asking 
+\begin_inset Quotes eld
+\end_inset
+
+what response probability for the particular stimulus at which the circle
+ is centered would give the same Pearson residual as we actually observe
+ for these trials at this sample size.
+\begin_inset Quotes erd
+\end_inset
+
+ If the model fits exactly, the interior of each circle will match the exterior.
+ If the shade differs, it indicates that we observed more clockwise or countercl
+ockwise responses than the model predicts, depending on the direction of
+ the difference.
 \end_layout
 
 \begin_layout Subsection
