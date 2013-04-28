@@ -2,33 +2,32 @@
 --command Rscript
 --input motion_energy_plot.R
 --input --match motion_energy\.csv
---output motion_energy.pdf
+--output motion_energy_plot.pdf
 
 #type "make figures" to try to refresh the figures
 #--command --input --invisible --match '.*\.fig$'
 #--invisible --phony figures
 
 #matlab stuff requires we unpack all the data into a matlab file.
---command --once runmatlab --once unpack
+--command --once ./runmatlab --input --invisible runmatlab --once unpack
 --input --invisible --once unpack.m
 --input --match (.*_trials\.csv)$
 --output --invisible --once data.mat
 
 #might as well unpack into an R data file.
 --command --once Rscript
---input --once --invisible unpack.R
+--input --once unpack.R
 --output --once data.RData
---input --match --invisible (.*_trials\.csv) {0}
+--input --match (.*_trials\.csv)
 
 #the model-fitting function
-#--command ./runmatlab MeilstrupBoyntonModel
+#--command ./runmatlab --input --invisible runmatlab MeilstrupBoyntonModel
 #--input --invisible MeilstrupBoyntonModel.m
 #--input --invisible --match data\.mat"
 #--output --invisible modelResults.mat
 
-
 #fit all the models
---command ./runmatlab --once "fitAll"
+--command ./runmatlab --input --invisible runmatlab --once "fitAll"
 --input --invisible fitAll.m
 --input --match data\.mat
 --output fits.mat
@@ -132,8 +131,18 @@
 --output --invisible --once {0}.tex
 
 --command latexmk %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
---input --match ([^_].*)\.tex --output --invisible {0}.pdf
+--input --match ([^_].*)\.tex$
+--input --listing --invisible {0}.in
+--output --invisible {0}.pdf
+--output --invisible {0}.fls
 --phony --invisible pdf
+
+--command grep '^INPUT' --match --input (.*)\.fls
+| cut %-d "' '" %-f 2- > --output {0}.in
+
+--command grep '^OUTPUT' --match --input (.*)\.fls
+| cut %-d "' '" %-f 2- > --output {0}.prod
 
 --command Rscript --input --match '(.*)_weave.R$' --output {0}_plots.pdf
 --phony --invisible pdf
+ 

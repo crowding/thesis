@@ -96,12 +96,55 @@ name "sec:methods"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex Sweave Options
+\begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
 
-fig.width=6,fig.height=4,dev="tikz",tidy=FALSE,cache=TRUE
+%knitr options
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-options,include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,encoding="UTF-8",fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE,stop_on_error=2L)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -487,7 +530,7 @@ name "sub:methods-stimuli"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -1053,15 +1096,6 @@ status open
 
 \begin_layout Plain Layout
 \align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="1">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -1069,18 +1103,8 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{4in}{sample-stimuli.mov}
+includemovie[poster,repeat]{4in}{4in}{demo_stimuli.mov}
 \end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
 
 \end_inset
 

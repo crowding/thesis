@@ -24,6 +24,7 @@ segment <- chain(  data
                  , subset(exp_type=="numdensity" & subject %in% names(models))
                  , do.rename(folding=TRUE)
                  )
+load("numbers.RData")
 
 #this just illustrates the combinations of number and density.
 segment.config.vars <-
@@ -45,33 +46,6 @@ unmatching <-
                   , subset(is.na(.a.x) | is.na(.a.y))
                   ))
  if (!empty(unmatching)) stop("unmatching data")
-
-## @knitr segment-setup-old
-prefixing_assign <- function(prefix, env, frame=parent.frame()) {
-  e <- as.environment(env)
-  n <- ls(e)
-  n2 <- paste0(prefix, n)
-  invisible(Map(assign, n2, lapply(n, get, e), MoreArgs=list(envir=frame)))
-}
-
-prefixing_assign('segment.', within(list(),{
-  load("../pools/Segment.Rdata")
-  mutate(  trials
-         , flanker.span=abs(trial.extra.flanker1Angle - trial.extra.flanker2Angle)
-         ##unfortunately I screwed up the definition of
-         ##"top" and "bottom" in experiment code so I must
-         ##swap them here
-         , trial.extra.side=`levels<-`(
-             factor(trial.extra.side)
-             , c('top','left','right','bottom'))
-         , spacing = 2*pi*trial.extra.r / trial.extra.nTargets
-         ) -> trials
-  ##some of this data was captured using variable flanker distances,
-  ##which I decided against. Select only the trials using a minimum
-  ##flanker spacing...
-  trials <- subset(trials,
-                   abs(trial.extra.max_extent - trial.extra.min_extent) < .0001)
-}))
 
 ## @knitr density-conditions
 #choose four examples to illustrate changes of number and of density.
@@ -158,26 +132,6 @@ print(ggplot(density.prediction.bins)
       + geom_vline(x=-density.prediction.displacement, linetype="11"))
 
 #combine this with the model predictions corresponding
-
-## @knitr segment-properties
-segment.properties <- with(segment.trials,within(list(),{
-  ecc <- unique(trial.extra.r)
-  min.flanker.angle <- min(flanker.span)
-  max.flanker.angle <- max(flanker.span)
-  min.distance <- unique(trial.extra.min_distance * trial.extra.r)
-  tested <- mutate(unique(data.frame(trial.extra.nTargets,
-                                     trial.extra.nVisibleTargets,
-                                     trial.extra.r
-                                     )),
-                   spacing = 2*pi*trial.extra.r / trial.extra.nTargets,
-                   radians = 2*pi/trial.extra.nTargets)
-  tested <- merge(tested,
-                  data.frame(trial.extra.nTargets=(c(12,21,15,15)),
-                             trial.extra.nVisibleTargets = c(5,5,3,6),
-                             selected=T),
-                  all.x=T)
-  tested <- mutate(tested, !is.na(selected))
-}))
 
 source("density.calibration.R")
 

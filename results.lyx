@@ -76,7 +76,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -823,7 +823,7 @@ Our experiment relates three parameters -- carrier strength, envelope motion
  At this point, having given examples illustrating some of the effects that
  a model should capture, we attempt to present an overview both of the entire
  dataset, and how the model fits that data.
- Afterwards we will examing particular features of the model and evaluate
+ Afterwards we will examine particular features of the model and evaluate
  their fit to the data.
 \end_layout
 
@@ -833,10 +833,6 @@ This experiment observed the effect on perceived motion of three stimulus
  those variables as forming a three-dimensional configuration space.
  As a function of these three variables, we model the proportion of responses
  on one direction or the other.
-\end_layout
-
-\begin_layout Standard
-In 
 \end_layout
 
 \begin_layout Standard
@@ -868,17 +864,10 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-%results-colormap-3d
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
+\begin_inset Graphics
+	filename contours/contours_folded_nj_3d.pdf
+	display false
+	clip
 
 \end_inset
 
@@ -893,27 +882,10 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-%results-colormap-2d
-\end_layout
-
-\begin_layout Plain Layout
-
-<<results-colormap-2d,fig.width=6, fig.height=5>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
+\begin_inset Graphics
+	filename contours/contours_nj_2d.pdf
+	display false
+	clip
 
 \end_inset
 
@@ -931,6 +903,12 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-contours"
+
+\end_inset
+
 Data and model responses for observer JB.
  Upper: the three stimulus parameters relevant to this experiment, spacing
  
@@ -964,9 +942,10 @@ Data and model responses for observer JB.
  and spacing, with envelope motion fixed to zero.
  Circles collect trials with all envelope motions.
  Lower left: we show the response probability as a function of envelope
- motion : We plot the two plots in the right column that a Shading inside
- circles depends on the residual between the model prediction and observed
- data.
+ motion and carrier strength for two different values of spacing.
+ Shaded circles are based on from two different models We plot the two plots
+ in the right column that a inside circles depends on the residual between
+ the model prediction and observed data.
  for the trials falling within that bin.
 \end_layout
 
@@ -1092,9 +1071,9 @@ The shading used inside the circles should be interpretable against the
 \begin_inset Quotes eld
 \end_inset
 
-what response probability for the particular stimulus at which the circle
- is centered would give the same Pearson residual as we actually observe
- for these trials at this sample size.
+what response probability for the configuration at which the circle is centered
+ would give the same Pearson residual as we actually observe for these trials
+ at this sample size.
 \begin_inset Quotes erd
 \end_inset
 
