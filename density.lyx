@@ -208,34 +208,6 @@ status collapsed
 
 \begin_layout Plain Layout
 
-%density-load
-\end_layout
-
-\begin_layout Plain Layout
-
-<<density-load>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
 %% 
 \backslash
 maxwidth has been defined in the preamble; see document settings
@@ -277,7 +249,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<density-load,cache=TRUE,echo=FALSE,results="hide">>
+<<density-load,cache=TRUE,echo=FALSE,results="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -686,7 +658,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<density-conditions,fig=TRUE,fig.width=4,fig.height=4>>=
+<<density-conditions,fig.width=4,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -922,7 +894,7 @@ status collapsed
 
 
 \backslash
-Sexpr{sprintf("%.2f",segment.properties$segment.ecc)}
+Sexpr{sprintf("%.2f",numbers$segment.ecc)}
 \end_layout
 
 \end_inset
@@ -1483,7 +1455,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<segment-colormap,fig=T,fig.width=6,fig.height=3>>=
+<<segment-colormap,fig.width=6,fig.height=3>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1586,7 +1558,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<segment-dualplots,fig=TRUE,fig.width=6,fig.height=4>>=
+<<segment-dualplots,fig.width=6,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout

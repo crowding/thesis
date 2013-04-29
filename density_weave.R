@@ -25,12 +25,14 @@ segment <- chain(  data
                  , do.rename(folding=TRUE)
                  )
 load("numbers.RData")
+load("density.modeling.RData")
 
 #this just illustrates the combinations of number and density.
 segment.config.vars <-
   c("spacing", "target_number_shown", "target_number_all")
 segment.experiment.vars <-
   c("subject", "displacement", "content", "eccentricity")
+segment.splits <- c(segment.config.vars, segment.experiment.vars)
 configurations <- unique(segment[segment.config.vars])
 personalizations <- unique(segment[segment.experiment.vars])
 
@@ -166,21 +168,20 @@ print(segment.conditions)
 
 ## @knitr segment-rates
 chain(segment.trials
-      , subset(responseTime >= 0.4 & responseTime <= 0.9)
-      , ddply(c("subject","trial.extra.nTargets"
-                , "trial.extra.nVisibleTargets","motionCondition"
-                , "trial.extra.side")
-              , summarize, correct=mean(correct), n = length(correct)
-              , spacing = mean(2*pi*trial.extra.r / trial.extra.nTargets))
+      , refold(fold=TRUE)
+#      , subset(responseTime >= 0.4 & responseTime <= 0.9)
+      , ddply_keeping_unique_cols(
+        c(segment.splits, "side"), summarize,
+        correct=mean(response), n = length(correct))
       ) -> segment.rates
 
 ## @knitr segment-colormap
-(ggplot(subset(segment.rates, motionCondition == "incongruent"))
- + aes(factor(spacing), factor(trial.extra.nVisibleTargets), fill=correct)
+(ggplot(subset(segment.rates))
+ + aes(factor(spacing), factor(target_number_shown), fill=correct)
  + geom_point()
  + geom_tile()
  + scale_fill_gradient("Prop. long-range")
- + facet_grid(subject ~ trial.extra.side)
+ + facet_grid(subject ~ side)
  + theme(aspect.ratio = 1,
          axis.text.x = element_text(angle=45))
  + scale_x_discrete("Spacing (deg.)",
@@ -191,11 +192,11 @@ print(segment.colormap)
 
 
 ## @knitr segment-by-spacing
-(ggplot(subset(segment.rates, motionCondition == "incongruent"))
- + aes(spacing, correct, color=factor(trial.extra.nVisibleTargets))
+(ggplot(subset(segment.rates))
+ + aes(spacing, correct, color=factor(target_number_shown))
  + geom_point()
  + geom_line()
- + facet_grid(subject ~ trial.extra.side)
+ + facet_grid(subject ~ side)
  + theme(aspect.ratio=1)
  + scale_x_continuous("Element spacing (deg)", breaks=c(2,3,4,5), labels=c(2,3,4,5))
  + scale_y_continuous("Prop. long-range")
@@ -203,11 +204,11 @@ print(segment.colormap)
  ) -> segment.by.spacing
 
 ## @knitr segment-by-elements
-(ggplot(subset(segment.rates, motionCondition == "incongruent"))
- + aes(trial.extra.nVisibleTargets, correct, color=factor(spacing))
+(ggplot(subset(segment.rates))
+ + aes(target_number_shown, correct, color=factor(spacing))
  + geom_point()
  + geom_line()
- + facet_grid(subject ~ trial.extra.side)
+ + facet_grid(subject ~ side)
  + theme(aspect.ratio=1)
  + scale_x_continuous("No. moving elements", breaks=3:8,labels=3:8)
  + scale_y_continuous("Prop. long-range")

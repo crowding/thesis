@@ -123,7 +123,7 @@
 #--command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
 #--output --invisible {0}.tex
 
---command Rscript %-e "\"library(knitr); knit('{0}.Rnw')\""
+--command Rscript %-e "\"library(knitr); knit('{0}.Rnw', '{0}.tex')\""
 --input --invisible --match ([^_].*)\.Rnw
 --output --invisible --once {0}.tex
 

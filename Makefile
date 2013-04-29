@@ -12,4 +12,4 @@ include monk.makefile
 clean:
 	git clean -dfx
 
-all: $(MAKEFILE_LIST) figures pdf
+all: $(MAKEFILE_LIST) figures pdf latex
