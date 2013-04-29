@@ -21,6 +21,8 @@
 *.map
 *.pygen
 *.tex
+*.in
+*.prod
 Rfigs
 *.fdb_latexmk
 *.fls

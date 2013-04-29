@@ -132,10 +132,11 @@
 
 --command latexmk %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match ([^_].*)\.tex$
---input --listing --invisible {0}.in
+#--input --listing --invisible {0}.in
 --output --invisible {0}.pdf
 --output --invisible {0}.fls
---phony --invisible pdf
+--phony --invisible latex
+--invisible --input intermediate_pdf
 
 --command grep '^INPUT' --match --input (.*)\.fls
 | cut %-d "' '" %-f 2- > --output {0}.in
@@ -145,4 +146,14 @@
 
 --command Rscript --input --match '(.*)_weave.R$' --output {0}_plots.pdf
 --phony --invisible pdf
- 
+
+#compile graffle figures...
+--command osascript --input og-export.applescript 
+$(abspath --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
+$(abspath --output {0}.pdf ) pdf
+--phony --invisible graffles 
+--phony --invisible intermediate_pdf
+
+#model.graffle includes some "inset" files as insets
+--command --output --invisible --once model.pdf
+--input --invisible --match inset_.*\.pdf
