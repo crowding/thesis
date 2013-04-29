@@ -76,7 +76,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -815,6 +815,13 @@ have to qualify this because they can be combined given longer viewing durations
 
 \begin_layout Subsection
 Model and data overview and visualizations
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-contours"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -855,63 +862,29 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="1">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename contours/contours_folded_nj_3d.pdf
 	display false
+	height 4in
 	clip
 
 \end_inset
 
 
 \end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename contours/contours_nj_2d.pdf
-	display false
-	clip
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
 \begin_inset Caption
 
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:results-contours"
+name "fig:results-3d"
 
 \end_inset
 
-Data and model responses for observer JB.
- Upper: the three stimulus parameters relevant to this experiment, spacing
- 
+A three-dimensional representation of the model fit for one observer (NJ).
+ the three stimulus parameters relevant to this experiment, spacing 
 \begin_inset Formula $S$
 \end_inset
 
@@ -926,31 +899,22 @@ Data and model responses for observer JB.
 , are placed along three axes.
  The color scale represents the response predicted by our model.
  Red shades indicate responses agreeing with the direction of carrier motion
- (of which only positive values are shown) and blue shades indicate values
- disagreeing with the direction of carrier motion.
+ (of the vertical axis shows only positive values) and blue shades indicate
+ values where the model's fitted response probability disagrees with the
+ direction of carrier motion.
  In both cases the luminance depends the difference between the response
  probability and 0.5, with response probabilities further from 0.5 colored
  with darker, more saturated values.
  Yellow contour lines are placed at response probabilities of 0.1, 0.3, 0.5,
  0.7 and 0.9.
- Lower: the same four planes plotted in the upper figure are pulled out
- into two-dimensional plots.
- The color scale and contour placement are the same as in the upper figure.
- Circles represent observers' recorded responses at the same.
- Each circle represents the subset of trials falling nearest that point.
- Upper left: we plot the response probability as a function of carrier strength
- and spacing, with envelope motion fixed to zero.
- Circles collect trials with all envelope motions.
- Lower left: we show the response probability as a function of envelope
- motion and carrier strength for two different values of spacing.
- Shaded circles are based on from two different models We plot the two plots
- in the right column that a inside circles depends on the residual between
- the model prediction and observed data.
- for the trials falling within that bin.
 \end_layout
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -960,8 +924,97 @@ Data and model responses for observer JB.
 \end_layout
 
 \begin_layout Standard
-The upper figure shows a perspective view of the three dimensions discussed,
- with four planar sections shown.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename contours/contours_folded_nj_2d.pdf
+	display false
+	width 100text%
+	clip
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-contours"
+
+\end_inset
+
+Data and model responses for observer NJ.
+ The four plots shown correspond to the four planes shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:results-3d"
+
+\end_inset
+
+; color scale and contour line placement are the same.
+ Circles represent observers' recorded responses near a particular stimulus.
+ The shading of each circle depends on the residual between the recorded
+ responses and the model prediction for that set of stimuli; an identical
+ shade inside the circle as outside indicates no residual.
+ Each circle represents the subset of trials falling nearest that point.
+ 
+\noun on
+Upper left
+\noun default
+: we plot the response probability as a function of carrier strength and
+ spacing, with envelope motion fixed to zero.
+ Circles collect trials with all envelope motions.
+ 
+\noun on
+Lower left
+\noun default
+: we show the response probability as a function of envelope motion and
+ spacing, for stimuli with no carrier strength (i.e.
+ counterphase) 
+\noun on
+Upper right 
+\noun default
+and 
+\noun on
+lower right
+\noun default
+: We plot the fitted model response as a function of carrier spacing and
+ strength, for two different values of spacing (indicated;) the upper left
+ plot is taken at a relatively wider spacing while the lower left plot is
+ taken at a relatively narrower spacing.
+ In plotting the shaded circles indicating residuals, the upper left plot
+ shows that the Trials are divided between these plots to show residuals.
+ The two plots on the left show all trials in the residuals.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Model figure construction
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-3d"
+
+\end_inset
+
+ shows a perspective view of the three dimensions discussed, with four planar
+ sections shown.
  Data from one observer is shown; the complete set of illustrations for
  all observers is shown in an appendix.
  The color scale maps response probabilities to luminance with darker and
@@ -1025,11 +1078,11 @@ Note that the shading within each circle is not simply the arithmetic mean
  motion); and with reverence to the other plots we see that at a particular
  spacing and carrier strength, the response is expected to vary as a function
  of envelope motion.
- Observing a response probability of 0.5, for instance, means different things
- depending on if the model predicts 0.2 (the model undershoots) or 0.8 (the
- model overshoots).
- Therefore we base the plot on the difference between model and observation
- rather than taking the mean of the raw observations.
+ Observing a response probability of 0.5 for some particular stimulus, means
+ different things depending on if the model predicts 0.2 (the model undershoots)
+ or 0.8 (the model overshoots); Therefore we base the plot on the difference
+ between model and observation rather than taking the mean of the raw observatio
+ns.
 \end_layout
 
 \begin_layout Standard
@@ -1083,14 +1136,114 @@ ockwise responses than the model predicts, depending on the direction of
  the difference.
 \end_layout
 
+\begin_layout Subsubsection
+Model figure
+\end_layout
+
+\begin_layout Standard
+The four plots in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:results-contours"
+
+\end_inset
+
+ illustrate each of the effects with have discussed with respect to carrier
+ strength, direction content, and spacing.
+ The lower left plot shows how the observer's response varies for stimuli
+ with no carrier motion (i.e.
+ all elements flicker in counterphase.) The horizontal axis measures the
+ degree of carrier motion used in the stimulus, while the vertical axis
+ measures the inter-element spacing.
+ When there is no carrier motion, observers tend to report clockwise apparent
+ motion for envelope motions that are clockwise, and vice versa.
+ This is reflected by the right half of the graph taking values > 0.5(in
+ red) and the left half of the graph taking values less than 0.5 (in blue).
+ (Because the data are folded, this graph only shows circles where 
+\begin_inset Formula $\Delta x>0$
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+this is a subtlety to the folding: if you're going to fold so that carrier
+ motion is always nonnegative, what do you do when carrier motion is exactly
+ zero? If you're trying to eliminate a bias term, the answer is that you
+ fold those trials over to positive envelope motion.
+ I think I will re-draw these data with carrier motion=epsilon though to
+ eliminate the graphical confusion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The effect captured by the lower left plot is that sensitivity to envelope
+ motion (graphically, how fast the transition is, in the horizontal direction,
+ from deep blue to deep red.).
+ In our model this spacing-dependent sensitivity is described by the function
+ 
+\begin_inset Formula $\beta_{\Delta x}(S)$
+\end_inset
+
+ and is controlled by the sensitivity parameter 
+\begin_inset Formula $\beta_{0}$
+\end_inset
+
+and the 
+\begin_inset Quotes eld
+\end_inset
+
+critical spacing
+\begin_inset Quotes erd
+\end_inset
+
+ parameter 
+\begin_inset Formula $S_{C}$
+\end_inset
+
+.
+ The data that is observed, whose residuals are plotted in circles tend
+ to concur with this behavior.
+ Note that at smaller spacings, data has been collected over a wider range
+ of envelope motions than at the largest spacings.
+ This is a result of using the interleaved staircase procedure which will
+ step over a wider range when the sensitivity is larger.
+ Note that even at the smallest spacings most data has been collected with
+ envelope step sizes quite a bit less than 0.5; so that inherent ambiguity
+ with forming correspondences between element appearances (i.e.
+ the wagon wheel illusion) should not contribute to the lessening of sensitivity.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Crowding is a kind of source confusion, but it's inherent to the system
+ and not the stimulus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Analysis of model fits
 \end_layout
 
 \begin_layout Standard
-In this section we further reduce the model fits presented in two- and three-dim
-ensions into one-dimensional plots showing each of the major features of
- our model.
+We have described three separate effects: a reduction in the sensitivity
+ to envelope motion as inter-element spacings reduce, a concurrent increase
+ in the sensitivity to carrier strength, and an independent repulsion that
+ is dependent on the carrier strength.
+ In this section we attempt to measure and demonstrate each of these features
+ independently.
+ In each case we will show how the
 \end_layout
 
 \begin_layout Standard

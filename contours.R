@@ -29,7 +29,7 @@ dev.fun <- dev.new
 
 main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
                  outlist = "contours/contours.list", fold=c(FALSE, TRUE),
-                 dev.fun=pdf) {
+                 dev.fun= cairo_pdf %<<% dots(width=8, height=6)) {
 
   out <- match.fun(dev.fun)
   fold <- if(is.logical(fold)) fold[[1]] else match.arg(fold)
@@ -42,7 +42,8 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
   #since our 3d plots can't plot directly into a multipage PDF, we'll
   #have to list separate files
   bind[model=bind[model], subject, ...=] <- as.list(model.df[1,])
-
+  open3d(windowRect=c(100L, 100L, 768L, 512L))
+  on.exit(rgl.close(), add=TRUE)
   (Map %<<% model.df)(f = function(model, subject, ...) tryCatch({
 
     subject <- as.character(subject)
@@ -50,8 +51,6 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
     dev.fun(pdf.file <- replace_extension(outlist, "pdf",
                                       paste0("_", subject, "_2d")))
     on.exit(dev.off(), add=TRUE)
-    open3d(windowRect=c(100L, 100L, 768L, 512L))
-    on.exit(rgl.close(), add=TRUE)
     plot_contours(motion.energy=motion.energy, model=model, subject=subject,
                   fold=fold, ...)
     rgl.postscript(
@@ -193,12 +192,13 @@ plot_contours <- function(model, subject, motion.energy, outlist,
         + scale_size_area("N", breaks=c(20, 50, 100, 200, 500))
         + labs(title="foo")
         + guides(size=guide_legend("N",
-                   override.aes=list(colour="black"))))
+                   override.aes=list(colour="black")))
+        + theme(aspect.ratio=1))
       ggplot_gtable(ggplot_build(the.plot))
     })
   #
   #Stuff four plots in one, using the legend from one of them.
-  titleGrob <- textGrob(label=sprintf("Subject %s", toupper(subject)),
+  titleGrob <- textGrob(label=sprintf("Observer %s", toupper(subject)),
                         gp=gpar(fontsize=18))
   gt <- chain(
     gtable(widths = (unit.c(unit(c(1,1), "null"),
