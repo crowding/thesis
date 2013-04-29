@@ -1,0 +1,389 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Model fits and data for all observers
+\end_layout
+
+\begin_layout Standard
+In this section we show the complete collection of fitted models and for
+ all observers.
+ The plots are formatted identically to those presented earlier in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-contours"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%setup
+\end_layout
+
+\begin_layout Plain Layout
+
+<<setup, echo=FALSE, results="hide", cache=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+library(stringr)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ptools)
+\end_layout
+
+\begin_layout Plain Layout
+
+knit_engines$set(quote=function(options) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  (function(var="str", code, ...) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    assign(var, code, envir=globalenv())
+\end_layout
+
+\begin_layout Plain Layout
+
+  }) %()% options
+\end_layout
+
+\begin_layout Plain Layout
+
+  NULL
+\end_layout
+
+\begin_layout Plain Layout
+
+})
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%data
+\end_layout
+
+\begin_layout Plain Layout
+
+<<data, cache=TRUE, echo=FALSE, results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("slopeModel.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%contour-quote
+\end_layout
+
+\begin_layout Plain Layout
+
+<<contour-quote, engine="quote", echo=FALSE, results="hide", var="contour_templa
+te", cache=FALSE>>=
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename contours/contours_folded_observername_3d.pdf
+	display false
+	height 3in
+	clip
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:3d-observername"
+
+\end_inset
+
+Perspective view of fitted model for observer OBSERVERNAME.
+ Format of the plot is identical to 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:results-3d"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename contours/contours_folded_observername_2d.pdf
+	display false
+	width 100text%
+	clip
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:2d-observername"
+
+\end_inset
+
+Model fits and summary of data for observer OBSERVERNAME.
+ The format of the plot is the same as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end quote
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<<all-contours, echo=FALSE, results="asis", cache=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+chain(as.character(model.df$subject),
+\end_layout
+
+\begin_layout Plain Layout
+
+      lapply(function(name) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        chain(contour_template,
+\end_layout
+
+\begin_layout Plain Layout
+
+              str_replace_all(fixed("observername"), name),
+\end_layout
+
+\begin_layout Plain Layout
+
+              str_replace_all(fixed("OBSERVERNAME"), toupper(name)))
+\end_layout
+
+\begin_layout Plain Layout
+
+      }),
+\end_layout
+
+\begin_layout Plain Layout
+
+      paste(collapse="
+\backslash
+n
+\backslash
+n")
+\end_layout
+
+\begin_layout Plain Layout
+
+      )
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
