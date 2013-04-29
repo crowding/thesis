@@ -37,6 +37,6 @@ while getopts ":hb:v:e:l:" flag; do
 done
 
 #kqwait comes from https://github.com/sschober/kqwait
-while kqwait $( $list ); do
-    ( $build ) && ( $view ) || ( $error )
+while ( $build ) && ( $view ) || ( $error ); do
+    kqwait $( $list )
 done
