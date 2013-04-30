@@ -1,5 +1,6 @@
 library(scales)
 library(ggplot2)
+library(colorspace)
 
 if ( !exists("use_unicode") || use_unicode) {
   curveleft = "\u21BA"
@@ -121,6 +122,8 @@ balloon <- list(geom_point(aes(size=n_obs))
 
 #mess with color scales.....
 library(colorspace)
+
+#convert cone-space to color space
 LMStoXYZ = function(lms) {
   solve(matrix(c(.7328, .4296, -0.1624,
                  -.7036, 1.6975, .0061,
@@ -172,11 +175,13 @@ decision_values <- c(0, 0.4999, 0.5001, 1)
 decision_contour <-
   list(
     aes(z = pred, fill = pred),
-    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, color="white", alpha=0.5),
-    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, linetype="11", color="black", alpha=0.5),
+#    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, color="white", alpha=0.5),
+    geom_contour(breaks=seq(0.1, 0.9, 0.2), size=0.35, linetype="11", color="#FFFF00"),
     scale_fill_gradientn("Responses CW", colours=decision_colors,
                          values=decision_values,
-                         breaks = seq(0.1, 0.9, 0.2))
+                         breaks = seq(0.1, 0.9, 0.2),
+                         rescale=function(x,...) x,
+                         oob=squish)
     )
 
 

@@ -27,9 +27,13 @@ outlist <- "contours/contours.list"
 fold <- TRUE
 dev.fun <- dev.new
 
+noop <- function(...) NULL
+
 main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
                  outlist = "contours/contours.list", fold=c(FALSE, TRUE),
-                 dev.fun= cairo_pdf %<<% dots(width=8, height=6)) {
+                 dev.fun = (if(interactive()) noop
+                            else cairo_pdf %<<% dots(width=8, height=6)),
+                 devoff = (if (interactive()) noop else dev.off)) {
 
   out <- match.fun(dev.fun)
   fold <- if(is.logical(fold)) fold[[1]] else match.arg(fold)
@@ -50,7 +54,7 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
     cat("plotting subject ", subject, "\n")
     dev.fun(pdf.file <- replace_extension(outlist, "pdf",
                                       paste0("_", subject, "_2d")))
-    on.exit(dev.off(), add=TRUE)
+    on.exit(devoff(), add=TRUE)
     plot_contours(motion.energy=motion.energy, model=model, subject=subject,
                   fold=fold, ...)
     rgl.postscript(
@@ -73,7 +77,10 @@ plot_contours <- function(model, subject, motion.energy, outlist,
   #because 20/3 in the dataset is different form R's idea of 20/3....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
 
-  roundings <- c(0.2, 0.2, 2)
+  #we decied where to sample the displacement
+  roundings <- c(0.2, 0.1, 2)
+  offsets <- c(0.1, 0, 0) #modifies the roundings
+  #e.g. round displacement to -0.3, -0.1, 0.1, 0.3, ...
   # id coordinates to sample on
   is.motion.energy <- "motion_energy_models" %in% class(model)
   if ("motion_energy_model" %in% class(model)) {
@@ -92,12 +99,14 @@ plot_contours <- function(model, subject, motion.energy, outlist,
       Map(f=pmax, list(-Inf, if(fold) 0 else -Inf, -Inf)),
       Map(f=function(x,r) x+c(-0.50*r, 0.50*r), roundings),
       lapply(seq_range, length=51), lapply(sort))
-   bind[content.bins, displacement.bins, spacing.bins] <- chain(
-      model$data,
-      refold(fold=fold),
-      .[c("content", "displacement", "spacing")],
-      Map(f=round_any, roundings),
-      lapply(unique))
+   bind[displacement.bins, content.bins, spacing.bins] <- chain(
+     model$data,
+     refold(fold=fold),
+     .[c("displacement",  "content", "spacing")],
+     Map(f=`-`, offsets),
+     Map(f=round_any, roundings),
+     Map(f=`+`, offsets),
+     lapply(unique))
     geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
   }
 
@@ -108,14 +117,19 @@ plot_contours <- function(model, subject, motion.energy, outlist,
     spacing = list(spacing.sampling, spacing.bins),
     displacement = list(displacement.sampling, displacement.bins),
     content = list(content.sampling, content.bins),
+    bin=c(FALSE, TRUE),
     fun(list(
       displacement_spacing = expand.grid(
         spacing = spacing,
-        displacement = displacement,
-        content = .Machine$double.xmin), # to avoid folding on displacement
+        displacement = if(fold & bin) {
+          displacement[displacement != 0]
+        } else displacement,
+        content = 10*.Machine$double.xmin), # to avoid folding on displacement
       spacing_content = expand.grid(
         spacing = spacing,
-        content = content,
+        content = if(fold & bin) {
+          content[content != 0]
+        } else content, #would be nonsensical to bin to 0 with folding here
         displacement = 0),
       content_displacement_wide = expand.grid(
         spacing = wide.spacing,
@@ -170,6 +184,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = folding_predict(model, newdata=., type="response", fold=fold))))
 
+
   plot.tables <- Map(
     grid=grids, bin=bins, xscale=xscales, yscale = yscales, fig=2:5,
     xvar=xvars, yvar=yvars, anno=annotations, filt=filters,
@@ -211,7 +226,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
-  grid.draw(gt)
+  plot(gt)
 
   #let's also make a 3d plot to serve as a key.
   plot_3d_grids(model=model, grids=grids, bins=bins)
