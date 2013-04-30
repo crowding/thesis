@@ -96,37 +96,29 @@ status open
 
 \begin_layout Plain Layout
 
-library(stringr)
-\end_layout
-
-\begin_layout Plain Layout
-
-library(ptools)
-\end_layout
-
-\begin_layout Plain Layout
-
 knit_engines$set(quote=function(options) {
 \end_layout
 
 \begin_layout Plain Layout
 
-  (function(var="str", code, ...) {
+  do.call(args=options, function(var="str", code, ...) {
 \end_layout
 
 \begin_layout Plain Layout
 
-    assign(var, code, envir=globalenv())
+    assign(var, paste(collapse="
+\backslash
+n", code), envir=globalenv())
 \end_layout
 
 \begin_layout Plain Layout
 
-  }) %()% options
+  })
 \end_layout
 
 \begin_layout Plain Layout
 
-  NULL
+  return("")
 \end_layout
 
 \begin_layout Plain Layout
@@ -183,7 +175,7 @@ load("slopeModel.RData")
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -209,11 +201,15 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename contours/contours_folded_observername_3d.pdf
-	display false
-	height 3in
-	clip
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[height=3in]{contours/contours_folded_{{observer}}_3d.pdf}
+\end_layout
 
 \end_inset
 
@@ -223,11 +219,22 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:3d-observername"
+name "fig:all-contours-3d-{{observer}}"
 
 \end_inset
 
-Perspective view of fitted model for observer OBSERVERNAME.
+Perspective view of fitted model for observer 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{{toupper(observer)}}
+\end_layout
+
+\end_inset
+
+.
  Format of the plot is identical to 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -256,11 +263,17 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename contours/contours_folded_observername_2d.pdf
-	display false
-	width 100text%
-	clip
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=1.0
+\backslash
+textwidth]{contours/contours_folded_{{observer}}_2d.pdf}
+\end_layout
 
 \end_inset
 
@@ -270,11 +283,22 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:2d-observername"
+name "fig:all-contours-2d-{{observer}}"
 
 \end_inset
 
-Model fits and summary of data for observer OBSERVERNAME.
+Model fits and summary of data for observer 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{{toupper(observer)}}
+\end_layout
+
+\end_inset
+
+.
  The format of the plot is the same as 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -329,46 +353,36 @@ status open
 
 \begin_layout Plain Layout
 
-chain(as.character(model.df$subject),
-\end_layout
-
-\begin_layout Plain Layout
-
-      lapply(function(name) {
-\end_layout
-
-\begin_layout Plain Layout
-
-        chain(contour_template,
-\end_layout
-
-\begin_layout Plain Layout
-
-              str_replace_all(fixed("observername"), name),
-\end_layout
-
-\begin_layout Plain Layout
-
-              str_replace_all(fixed("OBSERVERNAME"), toupper(name)))
-\end_layout
-
-\begin_layout Plain Layout
-
-      }),
-\end_layout
-
-\begin_layout Plain Layout
-
-      paste(collapse="
+cat(paste(collapse="
 \backslash
 n
 \backslash
-n")
+n", vapply(
 \end_layout
 
 \begin_layout Plain Layout
 
-      )
+	    as.character(model.df$subject), function(observer) {
+\end_layout
+
+\begin_layout Plain Layout
+
+          observer <<- observer
+\end_layout
+
+\begin_layout Plain Layout
+
+          knit_expand(text=contour_template)
+\end_layout
+
+\begin_layout Plain Layout
+
+        }, ""
+\end_layout
+
+\begin_layout Plain Layout
+
+      )))
 \end_layout
 
 \begin_layout Plain Layout
