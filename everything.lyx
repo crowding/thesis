@@ -77,12 +77,12 @@ reference "sub:results-contours"
 
 \end_inset
 
-
+.
 \end_layout
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -91,7 +91,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<setup, echo=FALSE, results="hide", cache=FALSE>>=
+<<setup, echo=FALSE, results="hide", cache=FALSE, message=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -142,7 +142,7 @@ n", code), envir=globalenv())
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -175,7 +175,7 @@ load("slopeModel.RData")
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -194,6 +194,13 @@ te", cache=FALSE>>=
 \end_layout
 
 \begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -202,13 +209,13 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
 
 \backslash
-includegraphics[height=3in]{contours/contours_folded_{{observer}}_3d.pdf}
+includegraphics[height=2.5in]{contours/contours_folded_{{observer}}_3d.pdf}
 \end_layout
 
 \end_inset
@@ -264,7 +271,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -344,7 +351,7 @@ status collapsed
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 

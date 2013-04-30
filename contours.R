@@ -226,7 +226,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
-  plot(gt)
+  grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.
   plot_3d_grids(model=model, grids=grids, bins=bins)
@@ -266,9 +266,9 @@ plot_3d_grids <- function(model, grids, fold=FALSE, ...) {
   zat <- chain(par3d("bbox"), .[5:6], pretty(3), .[c(-1, -length(.))])
   axis3d("z++", expand=1, at=zat)
 
-  mtext3d("Envelope motion", "x--", 0, at=xat[[1]], adj=-0.2)
-  mtext3d("Carrier strength", 'y-+', 2, at=yat[1] - 0.5, adj=0.5)
-  mtext3d("Spacing", 'z++', 3, at=10)
+  mtext3d("Envelope motion", "x--", 0, at=xat[[1]]-0.3, adj=0.1)
+  mtext3d("Carrier strength", 'y-+', 2, at=yat[1] - 0.7, adj=0.3)
+  mtext3d("Spacing", 'z++', 4, at=10)
   ##maybe we want to compute null (PSE) surface...
 }
 
