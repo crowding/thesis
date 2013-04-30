@@ -204,14 +204,14 @@ folding_predict <- function(model, newdata=model$data, ..., fold=FALSE) {
   pred <- predict(model, newdata=newdata, ...)
   if(fold) {
     pred2 <- 1 - predict(model, newdata=fold_trials(newdata, TRUE),
-                         ...)
+                     ...)
     switch(class(pred),
            list = Map(a=pred, b=pred2, n = names(pred), f=function(a, b, n) {
              switch(n,
-                    se.fit = a + b / 2 / sqrt(2),
-                    a + b / 2)
+                    se.fit = (a + b) / 2 / sqrt(2),
+                    (a + b) / 2)
            }),
-           pred)
+           numeric=(pred+pred2)/2)
   } else {
     pred
   }

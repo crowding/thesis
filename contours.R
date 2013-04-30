@@ -91,11 +91,11 @@ plot_contours <- function(model, subject, motion.energy, outlist,
       Map(f=round_any, roundings),
       Map(f=pmax, list(-Inf, if(fold) 0 else -Inf, -Inf)),
       Map(f=function(x,r) x+c(-0.50*r, 0.50*r), roundings),
-      lapply(seq_range, length=50), lapply(sort))
-    bind[content.bins, displacement.bins, spacing.bins] <- chain(
+      lapply(seq_range, length=51), lapply(sort))
+   bind[content.bins, displacement.bins, spacing.bins] <- chain(
       model$data,
       refold(fold=fold),
-      .[c("displacement", "content", "spacing")],
+      .[c("content", "displacement", "spacing")],
       Map(f=round_any, roundings),
       lapply(unique))
     geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
@@ -112,7 +112,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
       displacement_spacing = expand.grid(
         spacing = spacing,
         displacement = displacement,
-        content = 0),
+        content = .Machine$double.xmin), # to avoid folding on displacement
       spacing_content = expand.grid(
         spacing = spacing,
         content = content,
@@ -170,7 +170,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = folding_predict(model, newdata=., type="response", fold=fold))))
 
-    plot.tables <- Map(
+  plot.tables <- Map(
     grid=grids, bin=bins, xscale=xscales, yscale = yscales, fig=2:5,
     xvar=xvars, yvar=yvars, anno=annotations, filt=filters,
     f = function(grid, bin, xscale, yscale, fig, xvar, yvar, anno, filt) {
