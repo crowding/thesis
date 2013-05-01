@@ -293,14 +293,14 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
 ##reduction by preserving the residual.
 bin_grid_resid <- function(model, grid, data=model$data, coords, fold=FALSE) {
   #Before forcing data onto the grid, calculate residuals from the model
-  data$.bin.pred <- predict(model, newdata=data, type="response")
+  data$.bin.pred <- folding_predict(fold=fold, model, newdata=data, type="response")
   data <- mutate(data,
                  .bin.total_n = if (exists("n_obs")) n_obs else 1,
                  .bin.total_yes = if (exists("n_obs")) n_cw else response,
                  .bin.total_var = (.bin.pred * (1-.bin.pred)) * .bin.total_n,
                  .bin.total_pred = .bin.pred * .bin.total_n,
                  .bin.total_resid = .bin.total_yes - .bin.total_pred)
-  grid$.bin.pred <- predict(model, newdata=grid, type="response")
+  grid$.bin.pred <- folding_predict(fold=fold, model, newdata=grid, type="response")
 
   #at this point, we can refold if necessary.
   grid <- refold(grid, fold=fold)

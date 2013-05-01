@@ -105,14 +105,17 @@
 --input --match slopeModel.RData$
 --input motion_energy.csv
 --output --mkdir --listing contours/contours_folded.list TRUE
+--phony --output --invisible intermediate_pdf
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
 '$$(' cat --input --match --listing contours/contours.list ')'
+#--phony --invisible intermediate_pdf
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours_folded.pdf
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
+#--phony --invisible intermediate_pdf
 
 #--command '$(LYX)' %-e pdf4 --input --match ([^_].*)\.lyx
 #--output --invisible {0}.pdf
