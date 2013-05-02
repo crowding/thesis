@@ -548,6 +548,13 @@ reference "sec:model"
 \begin_layout Subsubsection
 Sensitivity to carrier strength increases as spacing increases; carrier
  motion is repulsive at wide spacings
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-basic-summation"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1631,81 +1638,9 @@ We would like to distill out the distinct effects we see each into its own
 
 \begin_layout Subsubsection
 Lack of pooling across large distances
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%results-spacing-summation
-\end_layout
-
-\begin_layout Plain Layout
-
-<<results-spacing-summation,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.h
-eight=5>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:results-spacing-summation"
-
-\end_inset
-
-The sensitivity to carrier direction content increases at smaller spacings.
- The horizontal axis shows how the model coefficient 
-\begin_inset Formula $M_{s}(s)$
-\end_inset
-
- (essentially, the distance between psychometric functions seen in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-induced-crossover"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-summation-increases"
-
-\end_inset
-
-) varies as a function of spacing.
- Points are obtained by letting this coefficient vary freely; curves indicate
- model predictions.
-\end_layout
-
-\end_inset
-
-
-\end_layout
+name "sub:results-no-pooling"
 
 \end_inset
 
@@ -2117,11 +2052,63 @@ reference "fig:results-spacing-sensitivity"
 \end_inset
 
  for three observers (the entire set is shown in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:everything-sensitivity"
+
+\end_inset
+
+) The measurement we obtain for sensitivity to displacement here is somewhat
+ noisy, but we can see that the separately measured sensitivities generally
+ approach zero as spacing approaches zero.
+ As we illustrated in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-no-pooling"
+
+\end_inset
+
+, as spacings become large there is no general trend for sensitivities to
+ further increase.
+ So both general features we chose for our parameterization of 
+\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\end_inset
+
+ (an asymptote at large spacings, and collapses to zero at small spacings)
+ are consistent with the data.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+(how to say something more quantitative...
+ perhaps about how much deviance the parameterization eliminates vs.
+ no collapse vs.
+ this full model?)
 \end_layout
 
-\begin_layout Standard
-The measurement we obtain for sensitivity to displacement here is somewhat
- noisy, but overall results are that.
+\end_inset
+
+ As a side note, we see that for observer PBM (an author) the sensitivities
+ are much larger that for other subjects, while still showing the same kind
+ of collapse at narrow spacings.
+ We attribute this to overtraining relative to the na
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+"{
+\backslash
+i}
+\end_layout
+
+\end_inset
+
+ve observers.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -2130,69 +2117,24 @@ y to carrier direction content.
 \end_layout
 
 \begin_layout Standard
-Another feature of our model, as illustrated in is that the sensitivity
- to the motion energy due to the carrier component of the stimulus also
- increases as a funcvti both a local 
-\begin_inset Quotes eld
-\end_inset
-
-obligatory summation
-\begin_inset Quotes erd
-\end_inset
-
- and a global 
-\begin_inset Quotes eld
-\end_inset
-
-induced motion
-\begin_inset Quotes erd
-\end_inset
-
- process.
- We remove both the 
-\end_layout
-
-\begin_layout Itemize
-Again illustrate this model feature by allowing the model to fit separate
- coefficients for direction contant at closer spacings, plotted against
- model predictions.
-\end_layout
-
-\begin_layout Subsubsection
-At longer spacing, weak carrier direction content repels direction judgments.
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:results-repulsion"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The strength of repulsion described in the model by [coefficients] allows
- for the 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
-wide true
+wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-%results-jb-example
+%results-spacing-summation
 \end_layout
 
 \begin_layout Plain Layout
 
-<<results-jb-example,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.height=5
->>=
+<<results-spacing-summation,echo=FALSE,cache=TRUE,results="hide",fig.width=6,fig.h
+eight=5>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -2215,18 +2157,77 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:results-jb-example"
+name "fig:results-spacing-summation"
 
 \end_inset
 
-As element spacing changes, assimilation becomes repulsion.
- Here example data from observer JB is shown.
- JB was tested with a variety of carrier direction contents and spacings
- (one magnitude of direction content per session).
- Here, each subplot contains data from a single spacing, and the direction
- content is indicated by the color (with warm colors indicating clockwise
- carrier motion and cool colors indicating counterclockwise.) In each subplot
- the vertical axis measures the proportion of responses 
+The sensitivity to carrier direction content increases at smaller spacings.
+ The horizontal axis shows how the model coefficient 
+\begin_inset Formula $M_{s}(s)$
+\end_inset
+
+ (essentially, the distance between psychometric functions seen in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-crossover"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-summation-increases"
+
+\end_inset
+
+) varies as a function of spacing.
+ Points are obtained by letting this coefficient vary freely; curves indicate
+ model predictions.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+While the sensitivity to envelope decreases as flanking elements are brought
+ closer, the sensitivity to carrier motion increases at the same time.
+ We illustrate this using the same technique as the last section, by dropping
+ the term 
+\begin_inset Formula $M_{s}\left(S\right)$
+\end_inset
+
+ and including a term 
+\begin_inset Formula $\beta_{S}C$
+\end_inset
+
+ for each distinct value of spacing.
+ We also remove the repulsive term 
+\begin_inset Formula $\beta_{I_{a}}C$
+\end_inset
+
+ (as it is proportional to content and is this linearly dependent with the
+ new 
+\begin_inset Formula $\beta_{S}C$
+\end_inset
+
+ terms.) The other components of the model remain (including the nonlinear
+ component of repulsion 
+\begin_inset Formula $\beta_{I_{b}}C\left|C\right|$
+\end_inset
+
+) and are fitted in parallel.
+ The units of the derived measure 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ are interpretable as the change in log-odds of responding 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2234,31 +2235,42 @@ clockwise
 \begin_inset Quotes erd
 \end_inset
 
- to a given stimulus, while the size of each point indicates the number
- of trials collected for that stimulus.
- Curved lines show model fits to this data.
- Notably, observe that the effect of direction content reverses as spacing
- changes; as small spacings JB is biased to respond in the direction of
- carrier motion (in the graph, warm colors are displaced to the right of
- cool,) while at large spacings the opposite bias occurs.
- Other subjects also show spacing dependent reversals, as discussed in 
+ when the carrier strength changes from 0 to 1.
+ We show the results of this in 
 \begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:results-repulsion"
+LatexCommand nameref
+reference "fig:results-spacing-summation"
 
 \end_inset
 
 .
+ We generally find a very good fit to the sensitivity to carrier strength
+ being inversely proportional to the element spacing (or, equivalently,
+ to the number of elements.) Comparing
 \end_layout
+
+\begin_layout Subsubsection
+At longer spacing, weak carrier direction content repels direction judgments.
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-repulsion"
 
 \end_inset
 
 
 \end_layout
 
+\begin_layout Standard
+Another feature is visible in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:results-spacing-summation"
+
 \end_inset
 
-
+; the sensitivity to direction content at larger spacings is negative.
+ This is the repulsion effect we first pointed out in The strength of repulsion
+ described in the model by [coefficients] allows for the 
 \end_layout
 
 \begin_layout Standard

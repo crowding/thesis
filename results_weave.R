@@ -97,8 +97,6 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bubbles))
                    x = -Inf, y = Inf, size = 6, vjust = 1.5, hjust = -0.2)))
         )
 
-## The alternative to ths point cloud is to use binning, as commented out
-
 ## ----------------------------------------------------------------------
 ## @knitr results-summation-increases
 
@@ -187,6 +185,8 @@ sensitivity.plot.data <- rbind.fill %()% (
         cbind_predictions(model, type="terms", se.fit=TRUE),
         rename(structure(names=paste0(c("fit.", "se.fit."), sensitivity.term.label),
                          c("fit", "se.fit")))))))
+sensitivity.plot.data$observer <- chain(
+  sensitivity.plot.data$subject, toupper, paste("Observer", .))
 
 sensitivity.example.subjects <- c("jb", "pbm", "nj")
 
@@ -200,7 +200,7 @@ sensitivity_plot <- function(data=sensitivity.plot.data){
    + with_arg(data=subset(data, type=="curve"),
               geom_line(),
               geom_ribbon(alpha=0.1, aes(ymin=fit-se.fit, ymax=fit+se.fit)))
-   + facet_wrap(~subject, )
+   + facet_wrap(~ observer)
    + no_grid
    + spacing_scale_x
    + theme(aspect.ratio=1)
@@ -208,6 +208,16 @@ sensitivity_plot <- function(data=sensitivity.plot.data){
           y=expression(paste("Sentitivity ", beta[Delta*x])),
           size="N"))
 }
+
+fffff <- function(..., model, free.model) {
+  quickdf(list(...,
+               model.aic = extractAIC(model[[1]])[[2]],
+               model.deviance = deviance(model[[1]]),
+               free.model.aic = extractAIC(free.model[[1]])[[2]],
+               free.model.deviance = deviance(free.model[[1]])))
+}
+#not sure what this is good for...
+#mdply(sensitivity.models, fffff)
 
 save(file="sensitivity-plot.RData", sensitivity.plot.data, sensitivity_plot)
 
@@ -256,13 +266,15 @@ summation.plot.data <- rbind.fill %()% Map(
       mutate(fit=`fit.content:I(1/spacing)` + `fit.content`,
              se.fit=`se.fit.content:I(1/spacing)`)))
   })
+summation.plot.data$observer <- chain(
+  summation.plot.data$subject, toupper, paste("Observer", .))
 
 print(ggplot(subset(summation.plot.data, type=="points"))
       + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
       + geom_pointrange()
       + with_arg(data=subset(summation.plot.data, type=="curve"),
                  geom_line(), geom_ribbon(alpha=0.1))
-      + facet_wrap(~subject, scales="free_y")
+      + facet_wrap(~observer, scales="free_y")
       + labs(title="Sensitivity to carrier direction is inversely related to spacing"
              , y="Summation strength"))
 
