@@ -75,7 +75,7 @@ knitr
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes true
+\tracking_changes false
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
@@ -96,12 +96,55 @@ name "sec:methods"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex Sweave Options
+\begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
 
-fig.width=6,fig.height=4,dev="tikz",tidy=FALSE,cache=TRUE
+%knitr options
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-options,include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,encoding="UTF-8",fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE,stop_on_error=2L)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -487,7 +530,7 @@ name "sub:methods-stimuli"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -1053,15 +1096,6 @@ status open
 
 \begin_layout Plain Layout
 \align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="1" columns="1">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -1069,18 +1103,8 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{4in}{sample-stimuli.mov}
+includemovie[poster,repeat]{4in}{4in}{demo_stimuli.mov}
 \end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
 
 \end_inset
 
@@ -1126,6 +1150,13 @@ Methods
 
 \begin_layout Subsubsection
 Task
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:methods-task"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1399,6 +1430,13 @@ Observers performed the task in sessions that lasted a maximum of 1 hour,
 
 \begin_layout Subsubsection
 Staircase procedure
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:methods-staircase"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1410,8 +1448,15 @@ To measure the sensitivity of observers to envelope motion, we collected
 
 .
  For each psychometric function we used two interleaved staircases, one
- 2-up-1-down and the other 2-down-1-up, to bracket the particular displacement
- at which subjects were equivocal about perceived direction (PSE).
+ 2-up-1-down and the other 2-down-1-up, to bracket 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:methods-staircase"
+
+\end_inset
+
+the particular displacement at which subjects were equivocal about perceived
+ direction (PSE).
  In a typical session, 6-8 such staircases were collected concurrently,
  with each staircase operating independently and trials from all staircases
  being randomly interleaved.
@@ -1444,119 +1489,86 @@ clockwise
 
 \begin_layout Subsubsection
 Data folding
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:methods-folding"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Presuming that observers do not show a particular bias toward either clockwise
- or counterclockwise directions, we can consider 'flipped' versions of the
- experiment as equivalent, and can average data together after flipping
- the signs of carrier direction content, envelope displacement, and the
- observer's response.
- That is, we assume that the probability of an observer responding 
+We presume that an observer's responses to a stimulus and its mirror image
+ are symmetric.
+ Therefore we will present and write about stimuli, without loss of generality,
+ as though the carrier strength runs clockwise in all trials, even though
+ the underlying data contains a mixture of clockwise and counterclockwise
+ trials.
+ The mirror image of a trial reverses the sign of three properties: the
+ carrier motion, the envelope motion, the envelope motion, and the observer's
+ response.
+ So, a trial with carrier strength 
+\begin_inset Formula $C=-0.2$
+\end_inset
+
+ and envelope motion 
+\begin_inset Formula $\Delta x=0.1$
+\end_inset
+
+, where the observer responded 
 \begin_inset Quotes eld
 \end_inset
 
-clockwise
+clockwise,
 \begin_inset Quotes erd
 \end_inset
 
- given direction content 
-\begin_inset Formula $C$
+ will be presented identically to a trial with carrier strength 
+\begin_inset Formula $C=0.2$
 \end_inset
 
- and displacement 
-\begin_inset Formula $\Delta x$
+ and envelope motion 
+\begin_inset Formula $\Delta x=-0.1$
 \end_inset
 
- equals their probability of responding 
+, where the observer responded 
 \begin_inset Quotes eld
 \end_inset
 
-counterclockwise
+counterclockwise.
 \begin_inset Quotes erd
 \end_inset
 
- given direction content 
-\begin_inset Formula $-C$
-\end_inset
 
- and displacement 
-\begin_inset Formula $-\Delta x$
-\end_inset
-
-, and count these two circumstances as the same.
 \end_layout
 
 \begin_layout Standard
-Note that the sStaircase procedures were run using 
-\begin_inset Quotes eld
-\end_inset
+We choose the convention that carrier strength is always presented as positive.
+ Note that the sign of envelope motion can differ from that of carrier strength,
+ so that envelope motion will still take positive and negative values when
+ data is folded.
+\end_layout
 
-folding.
-\begin_inset Quotes erd
-\end_inset
+\begin_layout Standard
+In some cases subjects exhibit a bias toward clockwise or counterclockwise
+ responses.
+ We include a global bias term in our models to account for this.
+ Since the model is phrased in terms of unfolded data, we will also fold
+ the model predictions when showing model fits.
+ The predicted response for a particular stimulus strength is an average
+ of the model's predictions for that stimulus and its mirror.
+\end_layout
 
- So, a staircase that used a 
+\begin_layout Standard
+When staircase procedures were used, they employed randomized folding; a
+ staircase configured to use a carrier strength 
 \begin_inset Formula $C$
 \end_inset
 
  of 0.2 would actually pseudorandomly present either clockwise (0.2) or counterclo
-ckwise (-0.2) motion on a given trial.
-\end_layout
-
-\begin_layout Subsection
-Experiment 1
-\end_layout
-
-\begin_layout Standard
-The demonstrations in
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:wheels"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:singles"
-
-\end_inset
-
- seem to suggest that the perceived reversal of motion direction is a function
- not only of eccentricity viewing but of an interaction between multiple
- moving elements.
- We explored this spatial interaction by examining the interactions between
- local and global motion as a function of both the distance between elements
- and the amount of carrier 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-[[use carrier throughout when you talk about ]]
-\end_layout
-
-\end_inset
-
- direction content.
- Data were collected under two conditions, in the first the carrier direction
- content 
-\begin_inset Formula $C$
-\end_inset
-
- was fixed across the entire session and the spacing between elements was
- varied.
- In the second condition we used two fixed values for spacing and varied
- direction content over four values (0.1, 0.2, 0.4 and 1.0), thus collecting
- eight psychometric functions.
-\end_layout
-
-\begin_layout Subsection
-Experiment 2 (number versus density)
-\end_layout
-
-\begin_layout Subsection
-Experiment 3 (effect of eccentricity)
+ckwise (-0.2) motion on each trial, with the staircase-controlled envelope
+ motion reversing direction accordingly.
 \end_layout
 
 \begin_layout Standard

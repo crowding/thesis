@@ -1,0 +1,170 @@
+#make a few plots relevant to motion ehergy
+--command Rscript
+--input motion_energy_plot.R
+--input --match motion_energy\.csv
+--output motion_energy_plot.pdf
+
+#type "make figures" to try to refresh the figures
+#--command --input --invisible --match '.*\.fig$'
+#--invisible --phony figures
+
+#matlab stuff requires we unpack all the data into a matlab file.
+--command --once ./runmatlab --input --invisible runmatlab --once unpack
+--input --invisible --once unpack.m
+--input --match (.*_trials\.csv)$
+--output --invisible --once data.mat
+
+#might as well unpack into an R data file.
+--command --once Rscript
+--input --once unpack.R
+--output --once data.RData
+--input --match (.*_trials\.csv)
+
+#the model-fitting function
+#--command ./runmatlab --input --invisible runmatlab MeilstrupBoyntonModel
+#--input --invisible MeilstrupBoyntonModel.m
+#--input --invisible --match data\.mat"
+#--output --invisible modelResults.mat
+
+#fit all the models
+--command ./runmatlab --input --invisible runmatlab --once "fitAll"
+--input --invisible fitAll.m
+--input --match data\.mat
+--output fits.mat
+
+#plot all the fits
+#
+--command --once ./runmatlab --once plotFits
+--input --invisible plotFits.m
+--input --match fits\.mat
+--output --listing --intermediate fit_plots.list
+
+#bundle them all into a multipage PDF
+--command --once pdfjoin
+--once %--outfile
+--once --output fits_{0}.pdf
+--input --match fit_(.*)_.*\.pdf$
+--invisible --phony --once figures
+
+#make diagnostic figures? #WHY_IS_THIS_ALWAYS_RUNNING
+# --command ./runmatlab "makeDiagnostics"
+# --input --match 'fits\.mat'
+# --output --listing 'diagnosticPlots.pdf'
+# --invisible --phony --once figures
+
+#and bundle them #these are outputs of makeDiagnostics
+# --command --once pdfjoin
+# --once %--outfile
+# --once --output 'residuals_{0}_plots.pdf'
+# --input --match 'residual_(.*)_.*\.pdf$'
+# --invisible --phony --once figures
+
+#make our motion energy graphs
+--command Rscript
+--input motion_energy_plot.R$
+--input --match motion_energy.csv
+--output --listing --mkdir energy/motion_energy_plot.list
+
+--command Rscript
+--input slopeModel.R
+--input --match data.RData
+--input motion_energy.csv
+--output slopeModel.RData
+--output slopeModel.pdf
+
+--command Rscript
+--input density.calibration.R
+--input --match data.RData
+--input slopeModel.RData
+--output density.calibration.pdf
+
+--command Rscript
+--input --match "density.modeling.R$"
+--input data.RData
+--input slopeModel.RData
+--output density.modeling.pdf
+--output density.modeling.detail.pdf
+--output density.modeling.RData
+
+--command Rscript
+--input combined.model.R
+--input --match slopeModel\.RData
+--input density.modeling.RData
+--input motion_energy.csv
+--output combined.model.RData
+--output combined.model.pdf
+
+--command Rscript # without folding
+--input contours.R
+--input --match slopeModel\.RData$
+--input motion_energy.csv
+--output --mkdir --listing contours/contours.list FALSE
+
+--command Rscript # with folding
+--input contours.R
+--input --match slopeModel.RData$
+--input motion_energy.csv
+--output --mkdir --listing contours/contours_folded.list TRUE
+--phony --output --invisible intermediate_pdf
+
+--command pdfjoin %--rotateoversize 'false'
+%--outfile --output contours/all_contours.pdf
+'$$(' cat --input --match --listing contours/contours.list ')'
+#--phony --invisible intermediate_pdf
+
+--command pdfjoin %--rotateoversize 'false'
+%--outfile --output contours/all_contours_folded.pdf
+'$$(' cat --input --match --listing contours/contours_folded.list ')'
+#--phony --invisible intermediate_pdf
+
+#--command '$(LYX)' %-e pdf4 --input --match ([^_].*)\.lyx
+#--output --invisible {0}.pdf
+
+--command '$(LYX)' %-e knitr --input --match ([^_].*)\.lyx
+--output --invisible {0}.Rnw
+
+#--command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
+#--output --invisible {0}.tex
+
+--command Rscript %-e "\"library(knitr); knit('{0}.Rnw', '{0}.tex')\""
+--input --invisible --match ([^_].*)\.Rnw
+--output --invisible --once {0}.tex
+
+--command --invisible --input --match (.*)_weave\.R$
+--output --invisible --once {0}.tex
+
+--command latexmk %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
+--input --match ([^_].*)\.tex$
+#--input --listing --invisible {0}.in
+--output --invisible {0}.pdf
+--output --invisible {0}.fls
+--phony --invisible latex
+--invisible --input intermediate_pdf
+
+--command grep '^INPUT' --match --input (.*)\.fls
+| cut %-d "' '" %-f 2- > --output {0}.in
+
+--command grep '^OUTPUT' --match --input (.*)\.fls
+| cut %-d "' '" %-f 2- > --output {0}.prod
+
+--command Rscript --input --match '(.*)_weave.R$' --output {0}_plots.pdf
+--phony --invisible pdf
+
+#compile graffle figures...
+--command osascript --input og-export.applescript 
+$(abspath --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
+$(abspath --output {0}.pdf ) pdf
+--phony --invisible graffles 
+--phony --invisible intermediate_pdf
+
+#model.graffle includes some "inset" files as insets
+--command --output --invisible --once model.pdf
+--input --invisible --match inset_.*\.pdf
+
+#everything plots depends on this generated file
+--command --output --invisible --match everything\.tex
+--input --invisible sensitivity-plot.RData
+
+#which is updated when this is updated...
+--command --output --invisible --match sensitivity-plot\.RData
+--output --invisible results.tex

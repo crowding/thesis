@@ -11,10 +11,21 @@
 *.INIT
 *.files
 *.aux
+*.list
+*.nav
+*.snm
+*.toc
 *.bbl
 *.log
 *.map
 *.pygen
+*.tex
+*.in
+*.prod
+Rfigs
+*.fdb_latexmk
+*.fls
+tags
 \#*
 .\#*
 monk.makefile
@@ -22,6 +33,8 @@ monk.makefile
 *.pyc
 *.o
 *.sqlite-journal
+figure
+number-density
 last.dump.rda
 .Rhistory
 scripts.txt
@@ -35,6 +48,7 @@ descriptions
 collections
 dbtickets
 auto
+energy
 *.tar.gz
 *.products
 *.out
@@ -48,8 +62,6 @@ filelist.txt
 poolplots
 Rdata
 unpacked
-common
-common_adj
 stripped
 datafiles
 eyemovements

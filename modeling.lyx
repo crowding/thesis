@@ -4,7 +4,6 @@
 \begin_header
 \textclass article
 \use_default_options true
-\master master.lyx
 \begin_modules
 knitr
 \end_modules
@@ -55,12 +54,11 @@ knitr
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes true
+\tracking_changes false
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author 232785317 "Peter" 
 \end_header
 
 \begin_body
@@ -163,7 +161,7 @@ For
  region, we expect signals from multiple elements to sum, so that the local
  motion signal is proportionate to the direction content of individual elements
  and inversely proportional to the spacing (since the number of elements
- near the integration field is inversely proportional to the spacing.) .
+ near the integration field is inversely proportional to the spacing.)
 \end_layout
 
 \begin_layout Standard
@@ -299,24 +297,25 @@ placement measurement and the biases due to short-range and long range motion
 \end_layout
 
 \begin_layout Standard
-For dX, we assume that envelope motion is computed by taking two successive
- noisy estimates of the position of a given element.
+For 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+, we assume that envelope motion is computed by taking two successive noisy
+ estimates of the position of a given element.
  The strength of the envelope motion estimate therefore has uncertainty
-\change_deleted 232785317 1354803234
- 
-\change_unchanged
  proportional to the uncertainty of the successive position estimates.
  The sensitivity to displacements, 
-\begin_inset Formula $\beta_{\Delta_{x}}$
+\begin_inset Formula $\beta_{\Delta x}$
 \end_inset
 
  will be inversely proportional to this uncertainty.
  We assume that as flanking elements come closer to the tracked element,
- the the visual sistem will be less able to isolate a single element to
+ the the visual system will be less able to isolate a single element to
  determine its position,, so the sensitivity to changes in position will
  collapse.
  We model this by making 
-\begin_inset Formula $\beta_{\Delta_{x}}(S)$
+\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
 \end_inset
 
  a sigmoid 
@@ -352,18 +351,7 @@ reference "fig:model-uncertainty"
 
 \end_inset
 
-): : 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)
-\]
-
-\end_inset
-
-
+)
 \end_layout
 
 \begin_layout Standard
@@ -469,10 +457,11 @@ induced motion
  The influence of this process is generally repulsive; carrier motion outside
  the integration field biases observers towards perceiving the individual
  elements as moving in the opposite direction.
+ However, this effect can have a nonlinearity, which (see Results).
  We modeled this using a function defined as: 
 \begin_inset Formula 
 \[
-M_{I}=\left(\beta_{I_{b}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
+M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 \]
 
 \end_inset

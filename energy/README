@@ -1,0 +1,56 @@
+This illustrates some "leakage" between one of our stimulus variables,
+"displacement", and the motion energy of the stimulus. Our intention
+is that motion energy is controlled by the parameter "direction
+content" but as this demonstrates, the motion energy is also affected
+by constructive or destructive interference between successive
+presentations of motion elements.
+
+The motion energy is calculated by reconstructing the stimulus and
+filtering them in a usual motion-energy (Adelson and Bergen 1985.) The
+filters have spatial bandwidth matched to published psychophysical
+data for human subjects at the same eccentricities (Anderson and Burr,
+1987; Banks et al, 1991), and temporal bandwidth matched to
+measurements of MT cell physiology. Temporal bandwidth does not change
+appreciably with eccentricity (Virsu et al., 1982; Wright and
+Johnston, 1983). The temporal filters we use here are the same as have
+been used before for reconstructing motion energy of stimuli (Kiani et
+al. 2008.)
+
+The demo movie [deltax.mov] shows the motion energy changing as a
+function of displacement. At top is a space-time diagram of the
+stimulus being reconstructed (where the horizontal axis is a transect
+around the circle where the stimulus is located. At left is a Fourier
+spectrum of the stimulus, overlaid with the FWHM outlines of the
+analysis filters being used. At right are the magnitudes of responses
+of "clockwise" and "counterclockwise" versions of the
+filters. Scrubbing the movie should show you how these responses
+change as a function of the displacement parameter.
+
+The file [motion_energy_plot.pdf] shows a computation of motion energy over
+two parameters, direction content and spacing. The first page shows
+energy as a function of direction content, stratified by
+displacement. The two subplots at the bottom are the most interesting,
+showing opponent motion energy (clockwise minus counterclockwise) and
+normalized opponent motion energy (cw-ccw)/(cw+ccw). would like energy to be
+purely related to direction content, but it isn't and the lines are
+noisy. However, the relationship between direction content and motion
+energy is at least simple -- for any particular displacement, motion
+energy changes monotonically with direction content.
+
+The second page shows the same data as a function of
+displacement. Here we see that there is a dependence of direction
+content on displacement, at smaller values of displacement. Note that
+the effect, for our particular stimuli, is *inverted* from the normal
+situation -- small clockwise displacements bias motion energy
+counterclockwise, and vice versa.
+
+The files [norm_energy.html] and [energy.html] show 3d plots of the
+same data. Here color is mapped to motion energy.
+
+The presence of motion energy dependent on displacement may explain
+some features of the dataset such as why for some subjects (e.g. JB),
+the slope of the psychometric function of displacement does not
+collapse to zero at small spacings. These same subjects appear to have
+strong induced-motion effects, which (taking into account the backward
+relation of motion energy to displacement) would "help" them pick the
+correct direction of displacement.

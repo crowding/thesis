@@ -1,0 +1,854 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{hyperref}
+\end_preamble
+\use_default_options true
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Model fits and data for all observers
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:everything"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this section we show the complete collection of fitted models and for
+ all observers.
+ 
+\end_layout
+
+\begin_layout Subsection
+Perspective and 3d image plots
+\end_layout
+
+\begin_layout Standard
+The following plots show the effects of the motion model described in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:model"
+
+\end_inset
+
+ as fitted to each observer's data.
+ They are formatted identically to those presented earlier in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-contours"
+
+\end_inset
+
+ but the entire collection of observers is shown.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%setup
+\end_layout
+
+\begin_layout Plain Layout
+
+<<setup, echo=FALSE, include=FALSE, cache=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ptools)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+source("scales.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+source("library.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+setup_theme()
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+knit_engines$set(quote=function(options) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  do.call(args=options, function(var="str", code, ...) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    assign(var, paste(collapse="
+\backslash
+n", code), envir=globalenv())
+\end_layout
+
+\begin_layout Plain Layout
+
+  })
+\end_layout
+
+\begin_layout Plain Layout
+
+  return("")
+\end_layout
+
+\begin_layout Plain Layout
+
+})
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%data
+\end_layout
+
+\begin_layout Plain Layout
+
+<<data, cache=TRUE, echo=FALSE, results="hide", message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("slopeModel.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%contour-quote
+\end_layout
+
+\begin_layout Plain Layout
+
+<<contour-quote, engine="quote", echo=FALSE, results="hide", var="contour_templa
+te", cache=FALSE>>=
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[height=2.5in]{contours/contours_folded_{{observer}}_3d.pdf}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:all-contours-3d-{{observer}}"
+
+\end_inset
+
+Perspective view of fitted model for observer 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{{toupper(observer)}}
+\end_layout
+
+\end_inset
+
+.
+ Format of the plot is identical to 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:results-3d"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=1.0
+\backslash
+textwidth]{contours/contours_folded_{{observer}}_2d.pdf}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:all-contours-2d-{{observer}}"
+
+\end_inset
+
+Model fits and summary of data for observer 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{{toupper(observer)}}
+\end_layout
+
+\end_inset
+
+.
+ The format of the plot is the same as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%end quote
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+<<all-contours, echo=FALSE, results="asis", cache=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+cat(paste(collapse="
+\backslash
+n
+\backslash
+n", vapply(
+\end_layout
+
+\begin_layout Plain Layout
+
+	    as.character(model.df$subject), function(observer) {
+\end_layout
+
+\begin_layout Plain Layout
+
+          observer <<- observer
+\end_layout
+
+\begin_layout Plain Layout
+
+          knit_expand(text=contour_template)
+\end_layout
+
+\begin_layout Plain Layout
+
+        }, ""
+\end_layout
+
+\begin_layout Plain Layout
+
+      )))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sensitivity to envelope displacement
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:everything-sensitivity"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-sensitivity"
+
+\end_inset
+
+ depicts the sensitivity measure 
+\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\end_inset
+
+ as a function of spacing.
+ The construction of the measure and the figure is the same as described
+ in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-sensitivity"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%everything-sensitivity
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-sensitivity,fig.width=7,fig.height=7,cache.extra=file.info("sensitivity
+-plot.RData")$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("sensitivity-plot.RData") 
+\end_layout
+
+\begin_layout Plain Layout
+
+sensitivity_plot() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-sensitivity"
+
+\end_inset
+
+ Sensitivity to envelope motion as a function of element spacing.
+ This is a complete version of 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:results-spacing-sensitivity"
+
+\end_inset
+
+ showing all observers, and is otherwise formatted identically.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sensitivity to carrier motion
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-summation"
+
+\end_inset
+
+ depicts the spacing-dependent assimilation effect denoted in the model
+ as 
+\begin_inset Formula $\beta_{S}M$
+\end_inset
+
+ for all observers who participated in the experiment.
+ The construction is described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-basic-summation"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%everything-summation
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-summation,fig.width=7,fig.height=7,cache.extra=file.info("summation-plo
+t.RData")$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("summation-plot.RData") 
+\end_layout
+
+\begin_layout Plain Layout
+
+summation_plot() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-summation"
+
+\end_inset
+
+ Sensitivity to carrier motion as a function of spacing.
+ This is a complete version of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-summation"
+
+\end_inset
+
+ showing all observers; see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-basic-summation"
+
+\end_inset
+
+ for details on construction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Nonlinearity of repulsion effect
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-nonlinearity"
+
+\end_inset
+
+ depicts the strength of the repulsion effect 
+\begin_inset Formula $M_{I}\left(C\right)$
+\end_inset
+
+ as a function of carrier strength for all observers.
+ The construction is described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%everything-nonlinear
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-nonlinear,fig.width=7,fig.height=7,cache.extra=file.info("nonlinearity-
+plot.RData")$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("nonlinearity-plot.RData") 
+\end_layout
+
+\begin_layout Plain Layout
+
+environment(nonlinearity_plot) <- environment() #ugh
+\end_layout
+
+\begin_layout Plain Layout
+
+nonlinearity_plot() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-nonlinearity"
+
+\end_inset
+
+ The strength of the repulsion effect as a function of carrier strength.
+ This is a complete version of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-model-plot"
+
+\end_inset
+
+ showing all observers; see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+ for details on construction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

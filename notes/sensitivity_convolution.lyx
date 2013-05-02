@@ -64,12 +64,55 @@ knitr
 \begin_body
 
 \begin_layout Standard
-\begin_inset Flex Sweave Options
+\begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-fig.width=6,fig.height=4,dev="tikz",tidy=FALSE,cache=TRUE
+%knitr options
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-options,include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,encoding="UTF-8",fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,stop_on_error=2L,tidy=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset

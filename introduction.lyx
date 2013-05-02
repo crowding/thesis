@@ -11,6 +11,9 @@
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
+\begin_modules
+knitr
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -40,7 +43,7 @@
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine natbib_authoryear
+\cite_engine basic
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -58,7 +61,7 @@
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes true
+\tracking_changes false
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
@@ -354,7 +357,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
+includemovie[poster,repeat]{4in}{2in}{demo_single.mov}
 \end_layout
 
 \end_inset
@@ -378,7 +381,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{2in}{demo-multiple.mov}
+includemovie[poster,repeat]{4in}{2in}{demo_counter.mov}
 \end_layout
 
 \end_inset
@@ -514,8 +517,8 @@ From this demonstration it appears that having more than one target in a
  that the range of spatial interaction scales with the retinal eccentricity.
  A plausible explanation could be that the presence of flanking objects
  limits the ability to see movement of the envelope, allowing the carrier
- motion to determine the percept; that is, 'crowding' may be affecting howfirst-
-order and higher-order motion are combined.
+ motion to determine the percept; that is, 'crowding' may be affecting how
+ first-order and higher-order motion are combined.
 \end_layout
 
 \begin_layout Standard

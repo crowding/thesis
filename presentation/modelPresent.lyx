@@ -1,0 +1,1164 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Warsaw}
+% or ...
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+
+\def\lyxframeend{} %in case there is a superfluous end
+\end_preamble
+\use_default_options false
+\begin_modules
+knitr
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts true
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format pdf4
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+This file is a solution template for:
+\end_layout
+
+\begin_layout Itemize
+Talk at a conference/colloquium.
+ 
+\end_layout
+
+\begin_layout Itemize
+Talk length is about 20min.
+ 
+\end_layout
+
+\begin_layout Itemize
+Style is ornate.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+In principle, this file can be redistributed and/or modified under the terms
+ of the GNU Public License, version 2.
+ However, this file is supposed to be a template to be modified for your
+ own needs.
+ For this reason, if you use this file as a template and not specifically
+ distribute it as part of a another package/program, the author grants the
+ extra permission to freely copy and modify this file as you see fit and
+ even to delete this copyright notice.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Spatial interference determines whether motion perception is first-order
+ or higher-order
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+Spatial interference and motion 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Peter Meilstrup
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Itemize
+Give the names in the same order as the appear in the paper.
+ 
+\end_layout
+
+\begin_layout Itemize
+Use the 
+\begin_inset Quotes eld
+\end_inset
+
+Institute mark
+\begin_inset Quotes erd
+\end_inset
+
+ inset (
+\family sans
+Insert\SpecialChar \menuseparator
+Custom Insets\SpecialChar \menuseparator
+InstituteMark
+\family default
+) only if the authors have different affiliations.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Ione Fine, Geoff Boynton, Michael Shadlen
+\end_layout
+
+\begin_layout Date
+Vis/Cog lab meeting
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+
+\backslash
+
+\end_layout
+
+\end_inset
+
+(Oct 2012)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+These defaults control the behavior of the knitr package (which runs embedded
+ R code.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+cache=TRUE,fig.width=7,fig.height=4,dev="tikz",external=TRUE,tidy=FALSE,out.width="
+1.0
+\backslash
+
+\backslash
+textwidth",messages="hide",autodep=TRUE,external=TRUE
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+First order and higher order motion
+\end_layout
+
+\begin_layout Itemize
+First-order motion processing is understood in terms of linear spatiotemporal
+ filters that are
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+But stimuli that do not have first order component can still produce a compellin
+g sense of movement.
+\end_layout
+
+\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+How do first order and higher order motion signals interact?
+\end_layout
+
+\begin_layout BeginFrame
+Stimulus 
+\end_layout
+
+\begin_layout ColumnsCenterAligned
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+0.55
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Our stimulus combines first-order (carrier) motion and higher-order (envelope)
+ motion.
+\end_layout
+
+\begin_layout Itemize
+The stimulus is built out of Gabor-like elements with an 
+\emph on
+envelope
+\emph default
+ and a 
+\emph on
+carrier
+\end_layout
+
+\begin_layout Column
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+0.45
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename stimuli-motion-pulse.graffle
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Stimulus
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename stimuli-direction-content.graffle
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout ColumnsCenterAligned
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+0.45
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+First order motion is controlled by the 
+\emph on
+direction
+\noun on
+ 
+\noun default
+content
+\emph default
+ parameter 
+\color red
+
+\begin_inset Formula $C$
+\end_inset
+
+
+\color inherit
+.
+\end_layout
+
+\begin_layout Itemize
+Higher order motion is controlled by the displacement 
+\color red
+
+\begin_inset Formula $\Delta x$
+\end_inset
+
+
+\color inherit
+.
+\end_layout
+
+\begin_layout Column
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+0.55
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename stimuli-motion-element.graffle
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Stimulus
+\end_layout
+
+\begin_layout ColumnsCenterAligned
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+0.4
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+A number of elements are arranged in a circle.
+ 
+\color red
+
+\begin_inset Formula $S$
+\end_inset
+
+
+\color inherit
+ is the spacing between elements
+\end_layout
+
+\begin_layout Itemize
+The number of elements 
+\color red
+
+\begin_inset Formula $n$
+\end_inset
+
+
+\color inherit
+ varies inversely to 
+\color red
+
+\begin_inset Formula $S$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Column
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+0.6
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename stimuli-circle.graffle
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Stimulus Parameters
+\end_layout
+
+\begin_layout Standard
+\align center
+These parameters vary:
+\end_layout
+
+\begin_layout Itemize
+
+\color red
+\begin_inset Formula $C$
+\end_inset
+
+
+\color inherit
+ components of the carrier (strength of first-order motion)
+\end_layout
+
+\begin_layout Itemize
+
+\color red
+\begin_inset Formula $\Delta x$
+\end_inset
+
+
+\color inherit
+ speed of the envelope (higher order motion)
+\end_layout
+
+\begin_layout Itemize
+
+\color red
+\begin_inset Formula $S$
+\end_inset
+
+
+\color inherit
+ spacing between elements
+\end_layout
+
+\begin_layout Itemize
+
+\color red
+\begin_inset Formula $n$
+\end_inset
+
+
+\color inherit
+ number of elements
+\end_layout
+
+\begin_layout BeginFrame
+Task
+\end_layout
+
+\begin_layout ColumnsCenterAligned
+
+\end_layout
+
+\begin_deeper
+\begin_layout Column
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+0.4
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Subjects reported whether the stimuli appeared to be moving clockwise or
+ counterclockwise, turning a knob.
+\end_layout
+
+\begin_layout Column
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+0.6
+\backslash
+textwidth
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename task.pdf
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Staircase
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%externalize
+\end_layout
+
+\begin_layout Plain Layout
+
+<<externalize,cache=FALSE,echo=FALSE,result="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+read_chunk("modelPresent.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%preliminaries
+\end_layout
+
+\begin_layout Plain Layout
+
+%these code chunks refer to R code kept in the .R file.
+\end_layout
+
+\begin_layout Plain Layout
+
+<<preliminaries,cache=FALSE,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%loadData
+\end_layout
+
+\begin_layout Plain Layout
+
+<<loadData,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+We measured psychometric functions for different values of 
+\begin_inset Formula $C$
+\end_inset
+
+ and 
+\begin_inset Formula $S$
+\end_inset
+
+.
+ For each psychometric function we varied 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ using interleaved staircases (2-up-1-down, 2-down-1-up).
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%staircase-example
+\end_layout
+
+\begin_layout Plain Layout
+
+<<staircase-example,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Example Data
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-content
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-content,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%plotting-prelimiaries
+\end_layout
+
+\begin_layout Plain Layout
+
+<<plotting-preliminaries,results="hide",echo=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-content-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-content-plot,echo=FALSE,messages="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+Note 
+\begin_inset Quotes eld
+\end_inset
+
+misses
+\begin_inset Quotes erd
+\end_inset
+
+ in the orange/cyan lines at wide spacing.
+ What's happening?
+\end_layout
+
+\begin_layout Standard
+Narrower appears to decrease the slope; and narrower spacing increases the
+ effect of direction content (looking along the vertical line 
+\begin_inset Formula $\Delta x=0$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout BeginFrame
+Spacing
+\end_layout
+
+\begin_layout Standard
+\align center
+In these experiment we hold 
+\begin_inset Formula $C$
+\end_inset
+
+ constant and look at the effects of 
+\begin_inset Formula $S$
+\end_inset
+
+ (spacing).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-spacing
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-spacing,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%example-spacing-plot
+\end_layout
+
+\begin_layout Plain Layout
+
+<<example-spacing-plot,echo=FALSE,results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Qualitatively
+\end_layout
+
+\begin_layout Standard
+We now have umpteen psychometric functions over a bunch of parameters (subject,
+ 
+\begin_inset Formula $C$
+\end_inset
+
+, 
+\begin_inset Formula $S$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Some of them are well behaved.
+ Others are difficult to describe 
+\emph on
+as psychometric functions
+\emph default
+ because
+\end_layout
+
+\begin_layout Standard
+the function saturates (subject always picks clockwise)
+\end_layout
+
+\begin_layout Standard
+the function becomes flat/erratic; the subject does not know which way things
+ are going (losing information due to crowding etc.)
+\end_layout
+
+\begin_layout Standard
+But both of these cases are the actual phenomena that are interesting!
+\end_layout
+
+\begin_layout Standard
+[insert illustrations here]
+\end_layout
+
+\begin_layout BeginFrame
+Model (Overview)
+\end_layout
+
+\begin_layout Standard
+To gain leverage on the points where subjects' perceptions break down &
+ are unable to see components of the stimulus, I will develop a model that
+ builds on behavior they exhibit when they are able to see.
+\end_layout
+
+\begin_layout Standard
+Here is an overview of the model I will be developing.
+\end_layout
+
+\begin_layout Standard
+I hope to justify each piece of the model with data.
+\end_layout
+
+\begin_layout BeginFrame
+Starting out
+\end_layout
+
+\begin_layout Standard
+Here is PBM's data for the spacing experiment.
+ Each value of direction content was tested separately.
+ I've just fit a simple psychometric function to it.
+\end_layout
+
+\begin_layout BeginFrame
+Residuals
+\end_layout
+
+\begin_layout Standard
+To help see where our models are not fitting, we'll use residuals.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Pearson residual
+\emph default
+: Basically it counts the number of excess 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ the subject gave versus what the model predicted, normalized by the standard
+ error.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Deviance residual
+\emph default
+.
+ Counts 
+\begin_inset Quotes eld
+\end_inset
+
+excess of deficient likelihood
+\begin_inset Quotes erd
+\end_inset
+
+ of the data versus data that the model versus the model fit.
+\end_layout
+
+\begin_layout BeginFrame
+Slope
+\end_layout
+
+\begin_layout Standard
+The slope for PBM is clearly off, But we can look at that in terms of residuals.
+\end_layout
+
+\begin_layout Standard
+\align center
+[plot]
+\end_layout
+
+\begin_layout Standard
+Add a term for slope.
+ The slope is defined as
+\end_layout
+
+\begin_layout Standard
+\align center
+[equation]
+\end_layout
+
+\begin_layout Standard
+which looks like
+\end_layout
+
+\begin_layout Standard
+\align center
+[graph]
+\end_layout
+
+\begin_layout BeginFrame
+Fit
+\end_layout
+
+\begin_layout Standard
+This fit looks better.
+ Now it seems that the needs to be an effect of direction content.
+ 
+\end_layout
+
+\begin_layout BeginFrame
+Spacing
+\end_layout
+
+\begin_layout BeginFrame
+Adding spacing
+\end_layout
+
+\begin_layout Standard
+Adding the spacing didn't change at all! What's going on?
+\end_layout
+
+\begin_layout BeginFrame
+Trick question
+\end_layout
+
+\begin_layout Standard
+Which of these curves is a worse fit to the data?
+\end_layout
+
+\begin_layout BeginFrame
+Trick question
+\end_layout
+
+\begin_layout Standard
+How about if I adjust the x-scale?
+\end_layout
+
+\begin_layout Standard
+The max-likelihood fit only cares about vertical distance between model
+ and data -- the x-scale is irrelevant.
+ 
+\end_layout
+
+\begin_layout BeginFrame
+
+\end_layout
+
+\begin_layout Standard
+We can see what's going on by plotting residuals.
+ These are residuals against a model that has no effect of direction content,
+ plotted as a function of spacing, with colors corresponding to direction
+ content:
+\end_layout
+
+\begin_layout Standard
+[plot]
+\end_layout
+
+\begin_layout Standard
+Here's the same plot for all subjects.
+\end_layout
+
+\begin_layout Standard
+[plot]
+\end_layout
+
+\begin_layout BeginFrame
+Induced motion
+\end_layout
+
+\begin_layout Standard
+When spacing is large, adding first-order motion direction content actually
+ makes you go against the direction content, rather than for it.
+ This is similar to 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
+\end_inset
+
+ effects as well as analogous to the 
+\begin_inset Quotes eld
+\end_inset
+
+tilt illusion.
+\begin_inset Quotes erd
+\end_inset
+
+ We add a term to the model like so:
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

@@ -3,7 +3,18 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+
+\usepackage{movie15}
+
+\usepackage{hyperref}
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\end_preamble
 \use_default_options true
+\master _master.lyx
+\begin_modules
+knitr
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -25,6 +36,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -112,9 +124,9 @@ what kind of motion system is this stimulating?
 
 \begin_layout Standard
 It is worth commenting about some properties of this type of stimulus that
- can be subjectively observed, and (so far as we can tell) aknowledged by
- almost all colleagues we show our displays to, even though we do not attempt
- to establish them quantitatively.
+ can be subjectively observed, and (so far as we can tell) acknowledged
+ by almost all colleagues we show our displays to, even though we do not
+ attempt to establish them quantitatively.
 \end_layout
 
 \begin_layout Standard
