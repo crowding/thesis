@@ -279,7 +279,7 @@ summation.plot <-
   function(data=summation.plot.data) (
              ggplot(subset(data, type=="points"))
              + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
-             + geom_point(aes(size=n_obs))
+             + geom_point(aes(size=n_obs, alpha=0.5))
              + scale_size_area()
              + no_grid
              + with_arg(data=subset(data, type=="curve"),
@@ -359,8 +359,8 @@ second.models <- buildModel(linear.models, .~. + I(abs(content) * content))
 
 #and we want some models just fit all direction contents freely, to plot as points.
 free.asym.models <- buildModel(mutateModelData(null.models,
-                                               fContent = factor(content)),
-                               . ~ . + fContent:content
+                                               fContent = factor(abs(content))),
+                               . ~ . + fContent:sign(content)
                                )
 
 ## @knitr results-induced-stats
@@ -379,6 +379,7 @@ second.slopes <- sapply(second.models, function(x) x$coefficients[["content"]])
 curve.coef.name <- "I(abs(content) * content)"
 second.curves <- sapply(second.models, function(x) x$coefficients[["content"]])
 carissas.wierd <- names(second.slopes[second.slopes > 0 | second.curves > 0])
+#^ that is not the name of the subject. It's a seattle rock band.
 
 ## @knitr results-induced-model-plot
 # here's a plot showing what the model differences are.
@@ -396,23 +397,24 @@ spacingData <- function(models, type, newspacing=10, categorical=TRUE) {
   ldply(models, function(model) {
     subject = unique(model$data$subject)
     if (!categorical) {
-      newContent <- seq(-1,1,length=100)
+      newContent <- seq(0,1,length=100)
       fContent = newContent
     } else {
-      iu <- iunique(model$data$content)
-      newContent = model$data$content[iu]
+      iu <- iunique(abs(model$data$content))
+      newContent = abs(model$data$content[iu])
       fContent = model$data$fContent[iu]
     }
-    data = data.frame(subject=subject, model=type, spacing=newspacing,
-                      content=newContent, displacement=0, fContent = fContent, bias=1)
-    cbind(data, predict(model, data, se.fit=TRUE))
+    chain(data.frame(subject=subject, model=type, spacing=newspacing,
+            content=newContent, displacement=0, fContent = fContent, bias=0),
+          cbind(., folding_predict(model, ., type="response", se.fit=TRUE, fold=TRUE)),
+          mutate(observer=paste("Observer", toupper(subject))))
   })
 }
 
-plotBiasAtSpacing <- function(spacing) {
+plotBiasAtSpacing <- function(spacing, ...) {
    curve.fits <-
    mapply(models = list(linear.models, second.models),
-           type = c("linear", "2nd"),
+           type = c("linear", "2nd order"),
            spacingData, MoreArgs=list(newspacing=spacing, categorical=FALSE),
            SIMPLIFY=FALSE
            )
@@ -420,27 +422,32 @@ plotBiasAtSpacing <- function(spacing) {
   ##
   cat.fits <- spacingData(free.asym.models, "full", newspacing=spacing,
                           categorical=TRUE)
-  ##
+   ##
   #here is a depiction of what all the alternative induced motion
   #models.
   ##
-  (ggplot(curve.fits)
-   + content_scale
-   + facet_wrap(~subject)
-   + aes(y=fit, color=model, fill=model, ymin=fit-se.fit, ymax=fit+se.fit)
-   + geom_line()
-   + geom_ribbon(color=NA, alpha=0.3)
-   + geom_point(data=cat.fits)
-   + geom_errorbar(data=cat.fits)
+   (ggplot(subset(curve.fits, ...))
+    + content_scale
+    + proportion_scale
+    + facet_wrap(~subject)
+    + aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)
+    + with_arg(mapping=aes(color=model, fill=model),
+               geom_line(),
+               geom_ribbon(color=NA, alpha=0.3))
+    + geom_point(data=subset(cat.fits, ...), alpha=0.5)
+    + geom_errorbar(data=subset(cat.fits, ...))
 #   + coord_cartesian(ylim=c(-10,10))
-   + labs(y="bias",
-          title=paste( sep="\n",
-            "Induced motion as a function of direction content",
-            "(stationary envelope, 10 deg. spacing)"))
+    + theme(aspect.ratio=1)
+    + no_grid
+    + labs(
+      x="Carrier strength (CW)",
+      title=paste( sep="\n",
+        "Repulsion as a function of carrier strength",
+        "(stationary envelope, 10 deg. spacing)"))
    )
  }
 
-print(plotBiasAtSpacing(spacing=10))
+print(plotBiasAtSpacing(spacing=10, subject %in% sensitivity.example.subjects))
 ##I think the 2nd order plot is totally fine for my purposes.
 
 ## Now make a graph to justify the claim that sensitivity declines with spacing.

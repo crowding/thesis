@@ -8,7 +8,7 @@
 \usepackage{movie15}
 
 \usepackage{hyperref}
-\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+%\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
 \begin_modules

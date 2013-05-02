@@ -200,7 +200,78 @@ y, or interaction...
 
 \end_inset
 
+An interesting feature of our model is the component 
+\begin_inset Formula $M_{I}\left(C\right)$
+\end_inset
 
+, or 
+\begin_inset Quotes eld
+\end_inset
+
+repulsion
+\begin_inset Quotes erd
+\end_inset
+
+ which we describe as due to a very long range or global average of motion
+ energy.
+ This is the component that describes the extent to which carrier motion
+ biases observers' judgements when elements are widely spaced.
+ An example is shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-jb-example"
+
+\end_inset
+
+.
+ At narrow spacings (the upper subplots of the graph) we see that the effect
+ of changing local direction content is to bias subjects toward perceiving
+ the motion in the same direction as the added direction content.
+ So, clockwise direction contents, indicated in the figure by warmer colors,
+ cause a leftward shift in the psychometric functions, and vice versa.
+ However, at wider spacings, shown in the lower subplots, this effect reverses.
+ Thus assimilation of first-order motion under crowded conditions is a summation
+, but when elements are widely spaced apart, there is a repulsion.
+ (We discuss the extent to which this effect applies to all subjects in
+ the next section.) We feel this is similar to some phenomena that have been
+ called 
+\begin_inset Quotes eld
+\end_inset
+
+induced motion
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Reinhardt-Rutland:1988aa"
+
+\end_inset
+
+, in which a distant or full-field motion biases the perceived motion of
+ an individual target.
+ While our particular stimulus, with identical targets, does not inherently
+ distinguish the 
+\begin_inset Quotes eld
+\end_inset
+
+inducer
+\begin_inset Quotes erd
+\end_inset
+
+ from the 
+\begin_inset Quotes eld
+\end_inset
+
+induced,
+\begin_inset Quotes erd
+\end_inset
+
+ we can apply our previous insight about the lack of pooling of position
+ information; if the task is performed by attending or tracking single elements,
+ then any attended or tracked elements may be subject to motion induced
+ by the remainder of the display.
 \end_layout
 
 \begin_layout Subsubsection

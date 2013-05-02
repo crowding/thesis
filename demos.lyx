@@ -11,6 +11,7 @@
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
+\master _master.lyx
 \begin_modules
 knitr
 \end_modules

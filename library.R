@@ -200,18 +200,20 @@ dlply_along <- function(.data, .variables, .fun=NULL, ...
         , .parallel = .parallel, .paropts = .paropts)
 }
 
-folding_predict <- function(model, newdata=model$data, ..., fold=FALSE) {
-  pred <- predict(model, newdata=newdata, ...)
+folding_predict <- function(model, newdata=model$data, type="link", ..., fold=FALSE) {
+  pred <- predict(model, newdata=newdata, type=type, ...)
   if(fold) {
-    pred2 <- 1 - predict(model, newdata=fold_trials(newdata, TRUE),
-                     ...)
+    pred2 <- predict(model, newdata=fold_trials(newdata, TRUE), type=type, ...)
     switch(class(pred),
            list = Map(a=pred, b=pred2, n = names(pred), f=function(a, b, n) {
              switch(n,
                     se.fit = (a + b) / 2 / sqrt(2),
-                    (a + b) / 2)
+                    fit=switch(type,
+                      response=(a + (1-b)) / 2,
+                      terms = (a - b) / 2),
+                    a+b/2)
            }),
-           numeric=(pred+pred2)/2)
+           numeric=(pred+(1-pred2))/2)
   } else {
     pred
   }
