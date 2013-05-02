@@ -79,7 +79,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -88,7 +88,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<knitr-options,include=FALSE>>=
+<<knitr-options,include=FALSE, cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -103,7 +103,7 @@ opts_knit$set(stop_on_error=2L,encoding="UTF-8")
 
 \begin_layout Plain Layout
 
-opts_chunk$set(cache=TRUE,efig.width=6,
+opts_chunk$set(cache=TRUE,fig.width=6,
 \end_layout
 
 \begin_layout Plain Layout
@@ -876,7 +876,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -962,8 +962,8 @@ Sexpr{toupper(example.contour.subject)}
 , are placed along three axes.
  The color scale indicates the probability of responding clockwise predicted
  by our model.
- Four sections throu the notionally three-dimensional space are shown, and
- correspond to the four panels in 
+ Four sections through the notionally three-dimensional space are shown,
+ and correspond to the four panels in 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "fig:results-contours"
@@ -1645,84 +1645,6 @@ status collapsed
 
 \begin_layout Plain Layout
 
-%results-spacing-sensitivity
-\end_layout
-
-\begin_layout Plain Layout
-
-<<results-spacing-sensitivity,echo=FALSE,cache=TRUE, results="hide",fig.width=6,f
-ig.height=5>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:results-spacing-sensitivity"
-
-\end_inset
-
-Sensitivity to displacement collapses as spacing decreases.
- In each subplot, the horizontal axis denotes spacing, while the vertical
- axis measures sensitivity to direction content (corresponding to the slopes
- of the psychometric functions shown in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:results-spacing-collapse"
-
-\end_inset
-
-.
- Data points are obtained by re-fitting the model while allowing sensitivity
- to vary freely for each value of spacing, while other aspects of the model
- are unmodified.
- The vertical axis shows the value of the coefficient, 
-\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
-\end_inset
-
-, as a function of spacing 
-\begin_inset Formula $S$
-\end_inset
-
-.
- Curves show the prediction of the complete model.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
 %results-spacing-summation
 \end_layout
 
@@ -1926,7 +1848,7 @@ circ$", collapse=" and "))}
  around the circle.) These spacings should be large enough to escape crowding
  effects.
  To assess the presence or absence of pooling at large distances we compared
- observers' sensitivities to envelope displacement between 
+ observers' sensitivities to envelope displacement at 
 \begin_inset ERT
 status collapsed
 
@@ -1939,11 +1861,10 @@ Sexpr{element.numbers}
 
 \end_inset
 
- elements using a logistic regression model a logistic regression model
- described as 
+ elements using a logistic regression model formulated as 
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}(\beta_{n}\Delta_{x}+k_{\left|C\right|,n}C+b)
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}\left(\beta_{n}\Delta_{x}+k_{\left|C\right|,n}C+b\right)
 \]
 
 \end_inset
@@ -1972,8 +1893,8 @@ Sexpr{sum(results.pooling.change$change == "decreased")}
 
 \end_inset
 
- of the observers, the sensitivity coefficient decreased changing from 2
- to 4 elements; for the remaining 
+ of the observers, the sensitivity coefficient decreased at 4 elements as
+ compared to 2; for the remaining 
 \begin_inset ERT
 status collapsed
 
@@ -2052,6 +1973,110 @@ How does Anstis and Kim's illusion work when we don't have any pooling?
 \begin_layout Subsubsection
 With shorter distances between elements, sensitivity to envelope motion
  declines.
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-sensitivity"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%results-spacing-sensitivity
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-spacing-sensitivity,echo=FALSE,cache=TRUE, results="hide",fig.width=7,f
+ig.height=3.5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-spacing-sensitivity"
+
+\end_inset
+
+Sensitivity to displacement collapses as spacing decreases.
+ In each subplot, the horizontal axis denotes spacing, while the vertical
+ axis measures sensitivity to direction content (corresponding to the slopes
+ of the psychometric functions shown in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:results-spacing-collapse"
+
+\end_inset
+
+.
+ Data points are obtained by re-fitting the model while allowing sensitivity
+ to vary freely for each value of spacing, while other aspects of the model
+ are unmodified.
+ The size of the data points is scaled according to the number of trials
+ underlying its measurement; vertical bars show the standard error obtained
+ from the measurement.
+ The vertical axis is a sensitivity measure (corresponding to the the change
+ in log-likelihood of answering 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to a stimulus when changing 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ by 
+\begin_inset Formula $1^{\circ}$
+\end_inset
+
+.Curves show the prediction of the complete model 
+\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\end_inset
+
+, as a function of spacing 
+\begin_inset Formula $S$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2065,9 +2090,38 @@ reference "fig:model"
  is that we expect the sensitivity to envelope motion to decline as spacing
  between elements declines, i.e.
  there is a crowding effect on envelope motion.
- To illustrate this effect we wish to disentangle it from the other effects
- (carrier motion summation and repulsion) that we also observe.
- We do this by removing the parameterization of 
+ To illustrate this effect we derive a measurement of the effect size as
+ a function of spacing, disentangled from other effects (carrier motion
+ summation and repulsion.) We do this by removing the parameterization of
+ 
+\begin_inset Formula $\beta_{\Delta x}(S)$
+\end_inset
+
+ from the model and instead including a separate coefficient 
+\begin_inset Formula $\beta_{\Delta x}^{S}$
+\end_inset
+
+ for each distinct value of spacing tested, forming a modified model.
+ The fitted values of these coefficients constitute a measurement of the
+ sensitivity to displacement as a function of spacing.
+ The other components of the model (repulsion and carrier motion summation)
+ remain included.
+\end_layout
+
+\begin_layout Standard
+Examples of this measurement are shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-sensitivity"
+
+\end_inset
+
+ for three observers (the entire set is shown in 
+\end_layout
+
+\begin_layout Standard
+The measurement we obtain for sensitivity to displacement here is somewhat
+ noisy, but overall results are that.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2076,9 +2130,9 @@ y to carrier direction content.
 \end_layout
 
 \begin_layout Standard
-Another feature of our model, as illustrated in [previous figure] is that
- motion energy due to the carrier component of the stimulus influences both
- a local 
+Another feature of our model, as illustrated in is that the sensitivity
+ to the motion energy due to the carrier component of the stimulus also
+ increases as a funcvti both a local 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2095,7 +2149,7 @@ induced motion
 \end_inset
 
  process.
- 
+ We remove both the 
 \end_layout
 
 \begin_layout Itemize

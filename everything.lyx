@@ -3,8 +3,10 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{hyperref}
+\end_preamble
 \use_default_options true
-\master _master.lyx
 \begin_modules
 knitr
 \end_modules
@@ -78,19 +80,42 @@ name "sec:everything"
 \begin_layout Standard
 In this section we show the complete collection of fitted models and for
  all observers.
- The plots are formatted identically to those presented earlier in 
+ 
+\end_layout
+
+\begin_layout Subsection
+Perspective and 3d image plots
+\end_layout
+
+\begin_layout Standard
+The following plots show the effects of the motion model described in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:model"
+
+\end_inset
+
+ as fitted to each observer's data.
+ They are formatted identically to those presented earlier in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sub:results-contours"
 
 \end_inset
 
-.
+ but the entire collection of observers is shown.
 \end_layout
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -99,7 +124,64 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<setup, echo=FALSE, results="hide", cache=FALSE, message=FALSE>>=
+<<setup, echo=FALSE, include=FALSE, cache=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+library(ptools)
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+source("scales.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+setup_theme()
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -159,7 +241,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<data, cache=TRUE, echo=FALSE, results="hide">>=
+<<data, cache=TRUE, echo=FALSE, results="hide", message=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -217,7 +299,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -240,7 +322,7 @@ name "fig:all-contours-3d-{{observer}}"
 
 Perspective view of fitted model for observer 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -279,7 +361,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -304,7 +386,7 @@ name "fig:all-contours-2d-{{observer}}"
 
 Model fits and summary of data for observer 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -406,6 +488,124 @@ n", vapply(
 \end_layout
 
 \begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sensitivity to envelope displacement
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:everything-sensitivity"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-sensitivity"
+
+\end_inset
+
+ depicts the sensitivity measure 
+\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\end_inset
+
+ as a function of spacing.
+ The construction of the measure and the figure is the same as described
+ in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-sensitivity"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%everything-sensitivity
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-sensitivity,fig.width=7,fig.height=7,cache.extra=file.info("sensitivity
+-plot.RData")$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("sensitivity-plot.RData") 
+\end_layout
+
+\begin_layout Plain Layout
+
+sensitivity_plot() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-sensitivity"
+
+\end_inset
+
+ Sensitivity as a function of element spacing.
+ This is a complete version of 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:results-spacing-sensitivity"
+
+\end_inset
+
+ showing all observers, and is otherwise formatted identically.
+\end_layout
+
+\end_inset
+
 
 \end_layout
 

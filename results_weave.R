@@ -148,46 +148,71 @@ print(ggplot(summation.increases.plotdata$bubbles)
 ## declines. First, fit models that freely vary slope at each tested
 ## spacing.
 sensitivity.term.label <- ""
-sensitivity.free.models <- lapply(models, function(m) {
+sensitivity.models <- adply(model.df, 1, function(row) {
+  m <- row[[1,"model"]]
   l <- labels(terms(m))
   toDrop <- grep("displacementTerm", l)
   sensitivity.term.label <<- l[toDrop]
   length(toDrop) == 1 || stop("no")
   dropped <- drop.terms(terms(m), toDrop, keep.response=TRUE)
   f <- formula(dropped)
-  f <- update(f, . ~ . + displacement:factor(spacing))
+  #??? it should not be generating the "displacement" term (or should
+  #leave another out)...
+  f <- update(f, . ~ . + (displacement-1):factor(spacing) - displacement)
   environment(f) <- environment(m$formula)
-  glm(formula=f, data=m$data, family=m$family)
+  mutate(row, free.model=list(glm(formula=f, data=m$data, family=m$family)))
 })
 
-sensitivity.plot.data <- rbind.fill %()% Map(
-  model=models, free.model=sensitivity.free.models,
-  f=function(model, free.model) rbind.fill(
-    chain(
-      free.model$data,
-      count(splits %-% c("displacement", "content", "exp_type")),
-      cbind(displacement=1, content=0, type="points"),
-      cbind_predictions(free.model, type="terms", se.fit=TRUE),
-      rename(c("fit.displacement:factor(spacing)"="fit",
-               "se.fit.displacement:factor(spacing)"="se.fit"))),
-    chain(
-      model$data,
-      count(splits %-% c("displacement", "content", "exp_type",
-                         "spacing", "target_number_all", "target_number_shown")),
-      cbind(displacement=1, content=0, type="curve",
-            spacing=seq(2, 20, length=100)),
-      cbind_predictions(model, type="terms", se.fit=TRUE),
-      rename(structure(names=paste0(c("fit.", "se.fit."), sensitivity.term.label),
-                       c("fit", "se.fit"))))))
+#%plot log spacing versus log sensitivity?%
+sensitivity.plot.data <- rbind.fill %()% (
+  Map %<<% sensitivity.models
+  %()% list(
+    f = function(model, free.model, ...)
+    rbind.fill(
+      chain(
+        free.model$data,
+        count(splits %-% c("displacement", "content", "exp_type"), "n_obs"),
+        cbind(displacement=1, content=0, bias=0, type="points"),
+        cbind_predictions(free.model, type="terms", se.fit=TRUE),
+        rename(c("fit.displacement:factor(spacing)"="fit",
+                 "se.fit.displacement:factor(spacing)"="se.fit",
+                 "freq" = "n_obs"))),
+      chain(
+        model$data,
+        count(splits %-% c("displacement", "content", "exp_type",
+                           "spacing", "target_number_all",
+                           "target_number_shown"), "n_obs"),
+        cbind(displacement=1, content=0, type="curve",
+              spacing=seq(2, 20, length=100)),
+        cbind_predictions(model, type="terms", se.fit=TRUE),
+        rename(structure(names=paste0(c("fit.", "se.fit."), sensitivity.term.label),
+                         c("fit", "se.fit")))))))
 
-print(ggplot(subset(sensitivity.plot.data, type=="points"))
-      + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
-      + geom_pointrange()
-      + with_arg(data=subset(sensitivity.plot.data, type=="curve"),
-                 geom_line(), geom_ribbon(alpha=0.1))
-      + facet_wrap(~subject, scales="free_y")
-      + coord_cartesian(xlim=c(0, 10))
-      + labs(title="Sensitivity to envelope motion declines below 3 deg. spacing"))
+sensitivity.example.subjects <- c("jb", "pbm", "nj")
+
+sensitivity_plot <- function(data=sensitivity.plot.data){
+  (ggplot(subset(data, type=="points"))
+   + geom_hline(y=0, color="gray50")
+   + aes(x=spacing, y=fit)
+   + geom_point(aes(size=n_obs), color="gray50")
+   + geom_segment(aes(y=fit-se.fit, yend = fit+se.fit, xend=spacing))
+   + scale_size_area(breaks=c(50, 100, 200, 500, 1000))
+   + with_arg(data=subset(data, type=="curve"),
+              geom_line(),
+              geom_ribbon(alpha=0.1, aes(ymin=fit-se.fit, ymax=fit+se.fit)))
+   + facet_wrap(~subject, )
+   + no_grid
+   + spacing_scale_x
+   + theme(aspect.ratio=1)
+   + labs(title="Sensitivity to envelope motion declines below 3 deg. spacing",
+          y=expression(paste("Sentitivity ", beta[Delta*x])),
+          size="N"))
+}
+
+save(file="sensitivity-plot.RData", sensitivity.plot.data, sensitivity_plot)
+
+sensitivity_plot(subset(sensitivity.plot.data,
+                        subject %in% sensitivity.example.subjects))
 
 ## @knitr results-spacing-summation
 # ----------------------------------------------------------------------

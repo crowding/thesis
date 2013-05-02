@@ -160,3 +160,11 @@ $(abspath --output {0}.pdf ) pdf
 #model.graffle includes some "inset" files as insets
 --command --output --invisible --once model.pdf
 --input --invisible --match inset_.*\.pdf
+
+#everything plots depends on this generated file
+--command --output --invisible --match everything\.tex
+--input --invisible sensitivity-plot.RData
+
+#which is updated when this is updated...
+--command --output --invisible --match sensitivity-plot\.RData
+--output --invisible results.tex
