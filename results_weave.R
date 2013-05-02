@@ -231,15 +231,19 @@ sensitivity_plot(subset(sensitivity.plot.data,
 # The big question is why all of these end up NA when i simply use GNM.
 # How does that happen?
 whichTerm <- ""
-summation.free.models <- lapply(models, function(m) {
-  ofs <- predict(m, type="terms")
-  dat <- mutate(m$data, ofs=ofs[, whichTerm <<- grep("displacementTerm", colnames(ofs))])
-  f <- drop.terms(terms(m), 1:length(terms(m)), keep.response=TRUE)
-  f <- update(f, . ~ . + offset(ofs) + content:factor(spacing) +
-              I(content * abs(content)) - 1 + bias)
-  glm(family=m$family, data=dat,
-      formula = f)
-})
+makeSummationModel <- function(m) {
+  l <- labels(terms(m))
+  toDrop <- grep("1/spacing", l)
+  f <- formula(drop.terms(terms(m), toDrop, keep.response=TRUE))
+  f <- update(f, . ~ . + (factor(spacing) - 1):content - content)
+  m2 <- update(m, family=m$family, formula = f, data=m$data)
+  #the problem is for some subsets of data we were completely
+  #dominated and can't sensibly fit that subset. Eliminate that subset of data
+  #and try again.
+  oops <- predict(m2, type="terms")[,"content:factor(spacing)"]
+  update(m2, data=m2$data[oops!=0 & abs(oops) < 100,])
+}
+summation.free.models <- lapply(models, makeSummationModel)
 
 #The next step is to extract coefs and
 #curves. Individual coefs and curves from "terms" predictions of each
@@ -250,33 +254,43 @@ summation.plot.data <- rbind.fill %()% Map(
     rbind.fill(
     chain(
       free.model$data,
-      count(splits %-% c("displacement", "content", "exp_type")),
+      count(splits %-% c("displacement", "content", "exp_type"), "n_obs"),
       cbind(displacement=0, content=1, type="points"),
-      mutate(., ofs = predict(newdata=., model, type="terms")[,whichTerm]),
-      cbind_predictions(free.model, type="terms", se.fit=TRUE),
-      rename(c("fit.content:factor(spacing)"="fit",
-               "se.fit.content:factor(spacing)"="se.fit"))),
+      cbind_predictions(free.model, type="terms"),
+      mutate(n_obs = freq,
+             fit=`content:factor(spacing)`,
+             fit.content=0,
+             `fit.content:I(1/spacing)`=0)),
     chain(
       model$data,
       count(splits %-% c("displacement", "content", "exp_type",
                          "spacing", "target_number_all", "target_number_shown")),
       cbind(displacement=0, spacing = seq(2, 20, length=100),
             content=1, type="curve"),
-      cbind_predictions(model, type="terms", se.fit=TRUE),
+      cbind_predictions(model, type="terms", se.fit=TRUE), 
       mutate(fit=`fit.content:I(1/spacing)` + `fit.content`,
-             se.fit=`se.fit.content:I(1/spacing)`)))
+              se.fit=`se.fit.content:I(1/spacing)`))
+      )
   })
 summation.plot.data$observer <- chain(
   summation.plot.data$subject, toupper, paste("Observer", .))
 
-print(ggplot(subset(summation.plot.data, type=="points"))
-      + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
-      + geom_pointrange()
-      + with_arg(data=subset(summation.plot.data, type=="curve"),
-                 geom_line(), geom_ribbon(alpha=0.1))
-      + facet_wrap(~observer, scales="free_y")
-      + labs(title="Sensitivity to carrier direction is inversely related to spacing"
-             , y="Summation strength"))
+summation.plot <-
+  function(data=summation.plot.data) (
+             ggplot(subset(data, type=="points"))
+             + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
+             + geom_point(aes(size=n_obs))
+             + scale_size_area()
+             + no_grid
+             + with_arg(data=subset(data, type=="curve"),
+                        geom_line(), geom_ribbon(alpha=0.1))
+             + facet_wrap(~observer, scales="free_y")
+             + labs(title="Sensitivity to carrier direction is inversely related to spacing"
+                    , y=expression(paste("Carrier sensitivity " , beta[S]*M[S](S)))
+                    , size="N")
+             + geom_hline(y=0, alpha=0.5)
+             + theme(aspect.ratio=1))
+summation.plot(subset(summation.plot.data, subject %in% sensitivity.example.subjects))
 
 ## @knitr results-no-pooling
 
