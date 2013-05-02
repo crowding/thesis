@@ -176,11 +176,11 @@ decision_colors <- c(hex(pushRGB(RGB(c(low, med), c(low, med), c(low, med)),
 decision_values <- c(0, 0.5*((med-low)/(high-low)),
                      0.5,
                      1 - 0.5*((med-low)/(high-low)), 1)
-(ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
- +     scale_fill_gradientn(colours=decision_colors,
-                            values=decision_values,
-                            breaks = seq(0.1, 0.9, 0.2),
-                            space="rgb"))
+## (ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
+##  +     scale_fill_gradientn(colours=decision_colors,
+##                             values=decision_values,
+##                             breaks = seq(0.1, 0.9, 0.2),
+##                             space="rgb"))
 
 decision_contour <-
   list(

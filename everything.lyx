@@ -4,6 +4,7 @@
 \begin_header
 \textclass article
 \use_default_options true
+\master _master.lyx
 \begin_modules
 knitr
 \end_modules
@@ -65,6 +66,13 @@ knitr
 
 \begin_layout Section
 Model fits and data for all observers
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:everything"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

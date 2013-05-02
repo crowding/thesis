@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{hyperref}
+\end_preamble
 \use_default_options true
 \begin_modules
 knitr
@@ -95,7 +98,12 @@ pdf.options(encoding='ISOLatin2.enc')
 
 \begin_layout Plain Layout
 
-opts_chunk$set(cache=TRUE,encoding="UTF-8",fig.width=6,
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,efig.width=6,
 \end_layout
 
 \begin_layout Plain Layout
@@ -114,7 +122,7 @@ textwidth",autodep=TRUE,
 
 \begin_layout Plain Layout
 
-external=TRUE,results="hide",echo=FALSE,stop_on_error=2L)
+external=TRUE,results="hide",echo=FALSE)
 \end_layout
 
 \begin_layout Plain Layout
@@ -1555,7 +1563,7 @@ confusing
 \end_layout
 
 \begin_layout Subsection
-Measurement of effects
+Model components and measurement of effects
 \end_layout
 
 \begin_layout Standard
@@ -1614,10 +1622,11 @@ I'm rambling.
 \begin_layout Standard
 \align left
 We would like to distill out the distinct effects we see each into its own
- measurements This will help us provide some justification for the particular
+ measurement.
+ This will help us evaluate and provide some justification for the particular
  functional forms that have chosen in our model, as well as show how individual
- effects are consistent across observers (but may relatively vary in their
- strengths.)
+ effects are consistent across observers.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -1781,23 +1790,31 @@ reference "fig:results-summation-increases"
 
 \end_layout
 
-\begin_layout Itemize
-This section should attempt to justify (illustrate with data) the claim
- that displacement sensitivity reaches a plateau at large spacings.
-\end_layout
-
-\begin_layout Itemize
-Do this by allowing the model to fit independent values of (but otherwise
- letting the model do work for us in pooling data.)
-\end_layout
-
-\begin_layout Itemize
-Figure: show sensitivities measured at three wide spacings for different
- numbers of objects.
- 
-\end_layout
-
 \begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%results-no-pooling
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-no-pooling>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
 We motivated the description of our model (
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -1814,99 +1831,217 @@ reference "sec:model"
  Therefore in principle, it is not necessary that a subject isolate any
  particular element to arrive at a veridical perception of envelope motion;
  any element will do the same job.
- When disparate elements move in tandem, one often perceives the motion
- as of a all motions as that of a single object, as in Ternus displays or
- , it is possible, as in the Ternus display (
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-cite
-\end_layout
+ When distinct objects move concurrently, one can perceive the motion as
+ of a larger element of which the distinct components are features, as in
+ Ternus displays (e.g.
+ 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "BoiMarco2009"
 
 \end_inset
 
-) or when motion is perception 
+) or as when motion is consistent with the motion of a rigid body (e.g.
+ 
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealp
 key "Anstis:2011vn"
 
 \end_inset
 
- or a.
- This raises the possibility that an observer might pool multiple envelope
- position signals in order to improve sensitivity to envelope displacement.
- If that is the case than the sensitivity to displacement (i.e.
- the slope of the psychometric function of displacement) should increase
- with the number of elements on the display, as long as targets remain widely
- separated enough to avoid crowding.
+.) In our displays, the motion of all elements in the display is consistent
+ with that of a wheel rotating around the fixation point, at least if you
+ consider envelope and carrier motion separately.
+ Knowing this, an ideal observer could in principle pool multiple envelope
+ position signals in order to improve sensitivity to envelope motion.
+ If that is the case than the sensitivity to envelope motion (i.e.
+ the slope of the psychometric function relating envelope motion to response
+ probability) should increase when additional, coherently-moving elements
+ are added to the display, as long as targets remain widely separated enough
+ to avoid crowding.
 \end_layout
 
 \begin_layout Standard
-For several observers we measured psychometric functions at a spacing of
- 
+For 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{length(unique(results.pooling.candidates$subject))}
 \end_layout
 
-\begin_layout Standard
-To assess the presence or absence of pooling at large distances we compared
- subjects' sensitivities to envelope displacement as element number varied,
- for the subset of data where there were 6 or fewer elements on the display.
- We measured sensitivity by fitting a logistic regression model, 
+\end_inset
+
+ of the observers who participated in this experiment, we measured psychometric
+ functions with both 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{(element.numbers <- paste(sort(unique(results.pooling.candidates$target_numbe
+r_all)), collapse=" and "))[]}
+\end_layout
+
+\end_inset
+
+ elements on the display (at an eccentricity of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{latex.format(unique(results.pooling.data$eccentricity), digits=3)}^
+\backslash
+circ$
+\end_layout
+
+\end_inset
+
+, corresponding to spacings of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{chain(results.pooling.data$spacing, unique, sort, rev, format(digits=3),
+ paste("$", ., "^
+\backslash
+
+\backslash
+circ$", collapse=" and "))}
+\end_layout
+
+\end_inset
+
+ around the circle.) These spacings should be large enough to escape crowding
+ effects.
+ To assess the presence or absence of pooling at large distances we compared
+ observers' sensitivities to envelope displacement between 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{element.numbers}
+\end_layout
+
+\end_inset
+
+ elements using a logistic regression model a logistic regression model
+ described as 
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}(\beta_{n}\Delta_{x}+k_{C,n})
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}(\beta_{n}\Delta_{x}+k_{\left|C\right|,n}C+b)
 \]
 
 \end_inset
 
-where the slope of the psychometric function is modeled by 
+where the slope of the psychometric function corresponds to 
 \begin_inset Formula $\beta_{n}$
 \end_inset
 
- and a separate intercept is used for each value of direction content and.
- We then asked whether a single coefficient 
-\begin_inset Formula $\beta$
-\end_inset
-
- was sufficient, or whether the model fit was improved by letting separate
- values of 
+ and a separate intercept is used for each absolute value of direction content
+ and element number.
+ Using a treatment contrast for 
 \begin_inset Formula $\beta_{n}$
 \end_inset
 
- apply to each number of displayed elements.
-\end_layout
-
-\begin_layout Standard
-Values of 
-\begin_inset Formula $\beta$
-\end_inset
-
- obtained by this procedure are plotted ...., using one symbol for each subject.
- We do not find that the number of visible elements significantly affects
- the sensitivity to displacement at wide spacings [test].
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
+, we asked how sensitivities changed as a function of element number.
+ For 
+\begin_inset ERT
+status collapsed
 
 \begin_layout Plain Layout
-\begin_inset Caption
 
-\begin_layout Plain Layout
-Sensitivity to envelope motion characterized separately at several wide
- spacings.
- Points and errorbars show values of sensitivity obtained by allowing sensitivit
-y to fit independent values at these three spacings.
- Curved lines and shaded regions show model fits and standard errors, based
- on (we could even average across subjects here...?
+
+\backslash
+Sexpr{sum(results.pooling.change$change == "decreased")}
 \end_layout
 
 \end_inset
 
+ of the observers, the sensitivity coefficient decreased changing from 2
+ to 4 elements; for the remaining 
+\begin_inset ERT
+status collapsed
 
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(results.pooling.change$change == "increased")}
+\end_layout
+
+\end_inset
+
+ it increased.
+ However, any change only reached a significance level of 
+\begin_inset Formula $p<0.05$
+\end_inset
+
+ for only 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{switch(sum(results.pooling.change$signif), "one", stop())}
+\end_layout
+
+\end_inset
+
+ observer (whose sensitivity 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{chain(results.pooling.change, subset(signif), .$change)}
+\end_layout
+
+\end_inset
+
+ as element number changed from 2 to 4.) The subset of data considered here
+ comprises 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(results.pooling.data$n_obs)}
+\end_layout
+
+\end_inset
+
+ trials.
+ We conclude that there is not pooling of envelope motion data between separate
+ objects in this experiment.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+How does Anstis and Kim's illusion work when we don't have any pooling?
+ One clue is that the transition from 'local' to 'global' in that illusion
+ takes a while, and we don't let out observers look for that long.
 \end_layout
 
 \end_inset
@@ -1919,17 +2054,20 @@ With shorter distances between elements, sensitivity to envelope motion
  declines.
 \end_layout
 
-\begin_layout Itemize
-A central feature of the model discussed earlier is that sensitivity to
- envelope motion collapses to zero at small spacings.
-\end_layout
+\begin_layout Standard
+A central feature of our model as illustrated on 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:model"
 
-\begin_layout Itemize
-Illustrate that (regardless whether it is forced to by the model) sensitivity
- to envelope motion drops off at short spacings.
- (i.e.
- fit separate coefficients for separate values of spacing, still allowing
- the model to help out on its other dimensions)
+\end_inset
+
+ is that we expect the sensitivity to envelope motion to decline as spacing
+ between elements declines, i.e.
+ there is a crowding effect on envelope motion.
+ To illustrate this effect we wish to disentangle it from the other effects
+ (carrier motion summation and repulsion) that we also observe.
+ We do this by removing the parameterization of 
 \end_layout
 
 \begin_layout Subsubsection

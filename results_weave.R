@@ -241,6 +241,53 @@ print(ggplot(subset(summation.plot.data, type=="points"))
       + labs(title="Sensitivity to carrier direction is inversely related to spacing"
              , y="Summation strength"))
 
+## @knitr results-no-pooling
+
+results.pooling.sample.size.threshold <- 0
+
+results.pooling.candidates <-
+  chain(
+  model.df$model,
+  lapply(mkchain(
+    `$`(data),
+    count(c("spacing", "target_number_all", "subject"), "n_obs"))),
+    rbind %()% .,
+    subset(freq >= results.pooling.sample.size.threshold),
+    ddply("subject", subset, all(c(2, 4) %in% target_number_all)),
+    subset(target_number_all %in% c(2,4)),
+    arrange(subject, desc(spacing)))
+
+results.pooling.data <- chain(
+  model.df$model,
+  ldply(mkchain(
+    `$`(data),
+    merge(drop_columns(results.pooling.candidates,"freq")))),
+  mutate(target_number_all = C(
+           factor(target_number_all,
+                  levels=sort(unique(target_number_all))),
+           contr.treatment)))
+
+library(glm2)
+results.pooling.change <-
+  ddply(results.pooling.data, c("subject"), function(set) {
+    if (length(unique(abs(set$content))) > 1) {
+      fmla <- (cbind(n_cw, n_ccw)
+               ~ displacement*target_number_all
+               + sign(content):factor(abs(content)))
+    } else {
+      fmla <- (cbind(n_cw, n_ccw)
+               ~ displacement*target_number_all + content)
+    }
+    chain(set,
+          glm2(
+            formula = fmla,
+            family = binomial(link=logit.2asym(g = 0.025, lam = 0.025))),
+          summary, coef, as.data.frame, mutate(., coef=rownames(.)),
+          subset(coef=="displacement:target_number_all2"),
+          mutate(change=ifelse(Estimate>0, "decreased", "increased"),
+                 signif=`Pr(>|z|)` < 0.05))
+  })
+
 ## @knitr results-induced-modeling
 null.models <-
   buildModel(models,
