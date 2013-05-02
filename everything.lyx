@@ -115,7 +115,7 @@ reference "sub:results-contours"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -167,12 +167,22 @@ library(ptools)
 
 \begin_layout Plain Layout
 
+library(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
 pdf.options(encoding='ISOLatin2.enc')
 \end_layout
 
 \begin_layout Plain Layout
 
 source("scales.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+source("library.R")
 \end_layout
 
 \begin_layout Plain Layout
@@ -593,15 +603,241 @@ name "fig:everything-sensitivity"
 
 \end_inset
 
- Sensitivity as a function of element spacing.
+ Sensitivity to envelope motion as a function of element spacing.
  This is a complete version of 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "fig:results-spacing-sensitivity"
 
 \end_inset
 
  showing all observers, and is otherwise formatted identically.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Sensitivity to carrier motion
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-summation"
+
+\end_inset
+
+ depicts the spacing-dependent assimilation effect denoted in the model
+ as 
+\begin_inset Formula $\beta_{S}M$
+\end_inset
+
+ for all observers who participated in the experiment.
+ The construction is described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-basic-summation"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%everything-summation
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-summation,fig.width=7,fig.height=7,cache.extra=file.info("summation-plo
+t.RData")$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("summation-plot.RData") 
+\end_layout
+
+\begin_layout Plain Layout
+
+summation_plot() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-summation"
+
+\end_inset
+
+ Sensitivity to carrier motion as a function of spacing.
+ This is a complete version of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-summation"
+
+\end_inset
+
+ showing all observers; see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-basic-summation"
+
+\end_inset
+
+ for details on construction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Nonlinearity of repulsion effect
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-nonlinearity"
+
+\end_inset
+
+ depicts the strength of the repulsion effect 
+\begin_inset Formula $M_{I}\left(C\right)$
+\end_inset
+
+ as a function of carrier strength for all observers.
+ The construction is described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%everything-nonlinear
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-nonlinear,fig.width=7,fig.height=7,cache.extra=file.info("nonlinearity-
+plot.RData")$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("nonlinearity-plot.RData") 
+\end_layout
+
+\begin_layout Plain Layout
+
+environment(nonlinearity_plot) <- environment() #ugh
+\end_layout
+
+\begin_layout Plain Layout
+
+nonlinearity_plot() 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-nonlinearity"
+
+\end_inset
+
+ The strength of the repulsion effect as a function of carrier strength.
+ This is a complete version of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-model-plot"
+
+\end_inset
+
+ showing all observers; see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+ for details on construction.
 \end_layout
 
 \end_inset

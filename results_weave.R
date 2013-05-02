@@ -275,11 +275,12 @@ summation.plot.data <- rbind.fill %()% Map(
 summation.plot.data$observer <- chain(
   summation.plot.data$subject, toupper, paste("Observer", .))
 
-summation.plot <-
+summation_plot <-
   function(data=summation.plot.data) (
              ggplot(subset(data, type=="points"))
-             + aes(x=spacing, y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
-             + geom_point(aes(size=n_obs, alpha=0.5))
+             + spacing_scale_x
+             + aes(y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
+             + geom_point(aes(size=n_obs), alpha=0.5)
              + scale_size_area()
              + no_grid
              + with_arg(data=subset(data, type=="curve"),
@@ -290,7 +291,10 @@ summation.plot <-
                     , size="N")
              + geom_hline(y=0, alpha=0.5)
              + theme(aspect.ratio=1))
-summation.plot(subset(summation.plot.data, subject %in% sensitivity.example.subjects))
+
+save(file="summation-plot.RData", summation_plot, summation.plot.data)
+
+summation_plot(subset(summation.plot.data, subject %in% sensitivity.example.subjects))
 
 ## @knitr results-no-pooling
 
@@ -411,7 +415,7 @@ spacingData <- function(models, type, newspacing=10, categorical=TRUE) {
   })
 }
 
-plotBiasAtSpacing <- function(spacing, ...) {
+nonlinearity_plot <- function(..., spacing=10) {
    curve.fits <-
    mapply(models = list(linear.models, second.models),
            type = c("linear", "2nd order"),
@@ -429,7 +433,7 @@ plotBiasAtSpacing <- function(spacing, ...) {
    (ggplot(subset(curve.fits, ...))
     + content_scale
     + proportion_scale
-    + facet_wrap(~subject)
+    + facet_wrap(~observer)
     + aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)
     + with_arg(mapping=aes(color=model, fill=model),
                geom_line(),
@@ -447,7 +451,10 @@ plotBiasAtSpacing <- function(spacing, ...) {
    )
  }
 
-print(plotBiasAtSpacing(spacing=10, subject %in% sensitivity.example.subjects))
+save(file="nonlinearity-plot.RData", spacingData, linear.models,
+     second.models, free.asym.models, nonlinearity_plot)
+
+nonlinearity_plot(subject %in% sensitivity.example.subjects)
 ##I think the 2nd order plot is totally fine for my purposes.
 
 ## Now make a graph to justify the claim that sensitivity declines with spacing.
@@ -455,40 +462,6 @@ print(plotBiasAtSpacing(spacing=10, subject %in% sensitivity.example.subjects))
 
 ## @knitr results-summation-models
 ##The other thing I_want to do now is look at the behavior at short ranges.
-FALSE && {
-  #start with the 2nd order model for induced motion, deconstruct its short-range behavior
-  null.summation.models <- buildModel(second.models,
-                                      . ~ . - I(1/spacing):content)
-
-  ## @knitr results-induced-element-number
-
-  ##the next thing is to justify the 1/x dependence on spacing?
-  null.summation.models <- buildModel(models, .~. - content:I(1/spacing))
-
-  free.summation.models <- buildModel(null.summation.models, .~. + content:I(factor(spacing)))
-
-  ##
-  #library(gridExtra)
-  #do.call(grid.arrange, c(plots, ncol=2))
-  #then compare them all.
-
-  #another possible series of functions, motion energy balance of the
-  #scene? divided by leftward squared plus rightward squared? Could be a
-  #thing... and probably not detailed enough to worry about.
-  curve( 2*x / ((1-x)^2+(x+1)^2), -1, 1)
-  curve( x - 2*x / ((1-x)^2+(x+1)^2), -1, 1, add=TRUE)
-  curve( abs(x) * x / 2, -1, 1, add=TRUE, col="red") 
-  curve( x - abs(x) * x / 2, -1, 1, add=TRUE, col="red")
-  curve( x^3/2, add=TRUE, col="blue")
-  ##it would be really nifty if we could collapse the induced motion
-  ##into one thing summation (opponent) versus divisive normalization
-  ##(induced)
-
-  #The thing is, this is misleading unless we can also let the other
-  #function of dorection content -- the short-range summation --vary
-  #freely with direction content.
-
-}
 
 ## @knitr do-not-run
 dev.off()
