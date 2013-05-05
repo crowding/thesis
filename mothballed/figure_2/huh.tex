@@ -1,0 +1,27 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage{capt-of}
+\usepackage{epstopdf}
+\usepackage[raggedright,nooneline,FIGTOPCAP,Large,tight]{subfigure}
+\usepackage{hyperref}
+\usepackage{todonotes}
+\subfiglabelskip=0pt
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+\newcommand{\subfigureautorefname}{\figureautorefname}
+
+\title{Brief Article}
+\author{The Author}
+
+%\usepackage{Sweave}
+\begin{document}
+\section{Experiment 2. Occlusion.}
+
+foo
+
+\end{document}

@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+
+<picture version='3' xmlns:rgml='http://r-project.org/RGML' source='figure_1/A.eps' date='2010-10-08 14:11:40' creator='R (2.10.0)' >
+
+<path type='fill' id='1'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.0' lty=''/>
+	</context>
+
+	<move y='1742.2' x='1106.31'/>
+	<line y='1742.2' x='225.383'/>
+	<line y='2623.13' x='225.383'/>
+	<line y='2623.13' x='1106.31'/>
+	<line y='1742.2' x='1106.31'/>
+	<line y='1742.2' x='1106.31'/>
+</path>
+
+<path type='stroke' id='2'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1742.2' x='1106.31'/>
+	<line y='1742.2' x='225.383'/>
+	<line y='2623.13' x='225.383'/>
+	<line y='2623.13' x='1106.31'/>
+	<line y='1742.2' x='1106.31'/>
+	<line y='1742.2' x='1106.31'/>
+</path>
+
+<path type='fill' id='3'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1211.26' x='1634.88'/>
+	<line y='1211.26' x='753.945'/>
+	<line y='2092.19' x='753.945'/>
+	<line y='2092.19' x='1634.88'/>
+	<line y='1211.26' x='1634.88'/>
+	<line y='1211.26' x='1634.88'/>
+</path>
+
+<path type='stroke' id='4'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1211.26' x='1634.88'/>
+	<line y='1211.26' x='753.945'/>
+	<line y='2092.19' x='753.945'/>
+	<line y='2092.19' x='1634.88'/>
+	<line y='1211.26' x='1634.88'/>
+	<line y='1211.26' x='1634.88'/>
+</path>
+
+<path type='fill' id='5'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='680.309' x='2163.44'/>
+	<line y='680.309' x='1282.51'/>
+	<line y='1561.23' x='1282.51'/>
+	<line y='1561.23' x='2163.44'/>
+	<line y='680.309' x='2163.44'/>
+	<line y='680.309' x='2163.44'/>
+</path>
+
+<path type='stroke' id='6'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='680.309' x='2163.44'/>
+	<line y='680.309' x='1282.51'/>
+	<line y='1561.23' x='1282.51'/>
+	<line y='1561.23' x='2163.44'/>
+	<line y='680.309' x='2163.44'/>
+	<line y='680.309' x='2163.44'/>
+</path>
+
+<path type='fill' id='7'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='149.352' x='2692.01'/>
+	<line y='149.352' x='1811.07'/>
+	<line y='1030.29' x='1811.07'/>
+	<line y='1030.29' x='2692.01'/>
+	<line y='149.352' x='2692.01'/>
+	<line y='149.352' x='2692.01'/>
+</path>
+
+<path type='stroke' id='8'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='149.352' x='2692.01'/>
+	<line y='149.352' x='1811.07'/>
+	<line y='1030.29' x='1811.07'/>
+	<line y='1030.29' x='2692.01'/>
+	<line y='149.352' x='2692.01'/>
+	<line y='149.352' x='2692.01'/>
+</path>
+
+<path type='fill' id='9'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1712.2' x='195.383'/>
+	<line y='1591.6' x='74.7773'/>
+	<line y='1061.85' x='604.527'/>
+	<line y='1181.26' x='723.945'/>
+</path>
+
+<path type='stroke' id='10'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1712.2' x='195.383'/>
+	<line y='1591.6' x='74.7773'/>
+	<line y='1061.85' x='604.527'/>
+	<line y='1181.26' x='723.945'/>
+</path>
+
+<path type='fill' id='11'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1588.27' x='2195.47'/>
+	<line y='1708.87' x='2316.07'/>
+	<line y='2238.62' x='1786.32'/>
+	<line y='2119.2' x='1666.9'/>
+</path>
+
+<path type='stroke' id='12'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='1588.27' x='2195.47'/>
+	<line y='1708.87' x='2316.07'/>
+	<line y='2238.62' x='1786.32'/>
+	<line y='2119.2' x='1666.9'/>
+</path>
+
+<path type='fill' id='13'>
+	<context>
+		<rgb r='1.0' g='1.0' b='1.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='657.91' x='1265.38'/>
+	<line y='537.309' x='1144.78'/>
+	<line y='7.55859' x='1674.53'/>
+	<line y='126.98' x='1793.95'/>
+</path>
+
+<path type='stroke' id='14'>
+	<context>
+		<rgb r='0.0' g='0.0' b='0.0'/>
+		<style lwd='10.7' lty=''/>
+	</context>
+
+	<move y='657.91' x='1265.38'/>
+	<line y='537.309' x='1144.78'/>
+	<line y='7.55859' x='1674.53'/>
+	<line y='126.98' x='1793.95'/>
+</path>
+
+<summary count='14' ymax='2623.13' ymin='7.55859' xmax='2692.01' xmin='74.7773'/>
+
+</picture>
