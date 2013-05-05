@@ -1,0 +1,50 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\tikzset{external/system call={latex \tikzexternalcheckshellescape -halt-on-error 
+  -interaction=batchmode -jobname "\image" "\texsource"; 
+  dvips -o "\image".ps "\image".dvi;}}
+\usepackage[margin=1in]{geometry}
+\title{Minimal pgfSweave Example}
+\author{Cameron Bracken}    
+
+\begin{document}
+
+<<setup,echo=F>>= 
+setCacheDir("cache") 
+options(keep.space=TRUE)
+@ 
+
+\maketitle
+This example is identical to that in the Sweave manual and is intended to 
+introduce pgfSweave and highlight the basic differences.  Please refer to 
+the pgfSweave vignette for more usage instructions. 
+
+We embed parts of the examples from the \texttt{kruskal.test} help page 
+into a \LaTeX{} document:
+
+<<data,cache=T,tidy=T>>=
+        #     hey, a comment
+    data(airquality)
+    print(kruskal.test( Ozone ~ Month, data = airquality ))  # and another
+@
+
+\noindent which shows that the location parameter of the Ozone distribution varies 
+significantly from month to month. Finally we include a boxplot of the data:
+
+\begin{figure}[!ht]
+\centering
+%notice the new options
+{\pgfkeys{/pgf/images/include external/.code={\includegraphics[width=3in]{#1}}}
+<<boxplot,echo=T,fig=T,width=3,height=3,tikz=T,external=T,highlight=T>>=
+  boxplot(Ozone ~ Month, data = airquality,
+    main='Ozone distribution',xlab='Month',ylab='Concentration')
+@
+}% this brace ends the effect of include external
+\caption{This is from pgfSweave. Text is typset by \LaTeX\ and so matches the
+ font of the document.}
+\end{figure}
+
+
+\end{document}
+

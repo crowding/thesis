@@ -1,0 +1,295 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass apa
+\use_default_options true
+\master manuscript.lyx
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+General Methods
+\end_layout
+
+\begin_layout Subsection
+Observers
+\end_layout
+
+\begin_layout Standard
+Observers were one of the authors (P.B.M.) and three naïve subjects (J.A., D.A.,
+ and X.X.).
+ All had normal or corrected-to-normal vision.
+\end_layout
+
+\begin_layout Subsection
+Equipment
+\end_layout
+
+\begin_layout Standard
+Stimuli were presented on a flat CRT video monitor (ViewSonic PF790; 
+\begin_inset Formula $800\times600$
+\end_inset
+
+; display area 
+\begin_inset Formula $341\times256$
+\end_inset
+
+ mm; 120Hz refresh rate) Experiments were programmed in MATLAB using the
+ Psychtoolbox 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brainard:1997gq"
+
+\end_inset
+
+ and Eyelink toolbox extensions 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Cornelissen:2002wl"
+
+\end_inset
+
+, along with custom OpenGL code.
+ The monitor was calibrated using a Tektronix photometer.
+ A minimum luminance patch shown against the surrounding background measured
+ $
+\begin_inset Formula $0.10\textrm{\frac{cd}{m^{2}}}$
+\end_inset
+
+, and a maximum luminance patch measured 
+\begin_inset Formula $66.05\mathrm{\frac{cd}{m^{2}}}$
+\end_inset
+
+.
+ The background luminance was chosen to lie at the midpoint of these values
+ and a hardware lookup table was constructed to linearize the display response.
+\end_layout
+
+\begin_layout Standard
+Subjects sat behind a blackout curtain so that ambient illumination was
+ mostly due to the monitor and viewed the screen binocularly using a chin
+ and forehead rest with the eyes 60 cm from the screen.
+ Eye position was monitored using a video-based eye tracker (EyeLink 1000;
+ SR Research) using a sample rate of 1000 Hz.
+ Eye movements were recorded but are not reported in this paper.
+ Subjects gave responses by turning a knob (PowerMate; Griffin Technologies)
+ with their preferred hand.
+ 
+\end_layout
+
+\begin_layout Subsection
+Stimuli
+\end_layout
+
+\begin_layout Standard
+Example stimuli are shown in 
+\backslash
+autoref{mov:stimuli} and are illustrated in an $(x, t)$ plot in 
+\backslash
+autoref{fig:stimuli} ($x$ here being a slice around a circle centered on
+ the fixation point and passing through the center of each motion element.)
+ The stimuli consisted of discrete local motion elements presented at regular
+ temporal and spatial intervals as in apparent motion.
+ Each local motion element had a luminance profile along the circle given
+ by a Cauchy filter function 
+\backslash
+citep{Klein:1985rz} with peak spatial frequency $f$.
+ The luminance profile shifts phase with a constant temporal frequency $
+\backslash
+omega$ and is temporally modulated by a Gaussian envelope with standard
+ deviation $d/2$.
+ In the radial direction, each local motion element had a Gaussian envelope
+ with standard deviation $w/2$.
+ The equation describing the luminance profile of a patch as a function
+ of position and time is then: 
+\backslash
+begin{equation*} C(x, y, t) = 
+\backslash
+mathrm{cos}^n(
+\backslash
+mathrm{tan}^{-1}(fx/n))
+\backslash
+mathrm{cos}(n 
+\backslash
+cdot 
+\backslash
+mathrm{tan}^{-1}(fx/n) + {
+\backslash
+omega}t) e^{-(t/2d)^2-(y/2d)^2} 
+\backslash
+end{equation*} with the direction of motion along $x$.
+ 
+\backslash
+todo{Is the equation totally necessary? Is the use of x,y to describe a
+ circular stimulus confusing here?} The spatial bandwidth parameter $n$
+ was set to 4 for all stimuli.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{movie}   
+\backslash
+includemovie[poster,text={
+\backslash
+small(Movie: three example stimuli)}]{4in}{4in}{demo_stimuli.mov}   
+\backslash
+caption{Three example stimuli.
+ Subjects viewed stimuli such as these and were asked to judge the direction
+ ofmovement of the elements (here clockwise in all cases) regardless of
+ the direction of local motion (clockwise, neutral counterphase, or counterclock
+wise)}   
+\backslash
+label{mov:stimuli} 
+\backslash
+end{movie}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In each trial, a number of identical elements were arranged in a circle
+ around the fixation point, each oriented with the direction of motion tangentia
+l to the circle.
+ Each element was presented repeatedly at intervals of ${
+\backslash
+Delta}t$, each successive appearance displaced a fixed distance ${
+\backslash
+Delta}x$ around the circle.
+ The examples in 
+\backslash
+autoref{mov:stimuli} have the following settings, the same as used in Experiment
+ 1 
+\backslash
+todo{Double check these figures}: ${
+\backslash
+Delta}t = 100$ ms, $
+\backslash
+omega = 10$ cyc/s, $d$ = 0.033 s, and if $
+\backslash
+phi$ denotes eccentricity, then $f = 8.9 cyc/
+\backslash
+phi$, ${
+\backslash
+Delta}x = 0.05 
+\backslash
+cdot 
+\backslash
+phi$, and $w = 0.066 
+\backslash
+cdot 
+\backslash
+phi$.
+ The contrast of the local motion elements was 100
+\backslash
+% for trials using counterphase stimuli, and $70.7
+\backslash
+%$ for other trials (so as to keep the motion-energy of the display constant.)
+\end_layout
+
+\begin_layout Standard
+For Experiments 1, 2, and 3, subjects were required to respond within a
+ fixed temporal window.
+ If the latency from motion onset to response was outside the window, the
+ fixation point changed color (red for late responses, blue for early responses)
+ for 1 second as feedback and the trial was reshuffled into the stimulus
+ set to be repeated later in the session.
+ 
+\end_layout
+
+\begin_layout Standard
+Subjects performed the task in sessions of at most 1 hour, divided into
+ 4 or 5 blocks of 150 to 200 trials each, and were prompted to take a break
+ between blocks.
+ Subjects could also rest at any point by simply delaying fixation.
+ At the beginning of each block, the eye tracking system was automatically
+ recalibrated by asking the subject to make saccades to a sequence of targets
+ at randomly chosen locations on the screen.
+ 
+\end_layout
+
+\begin_layout Standard
+For all experiments reported here, three stimulus types were used with equal
+ probability.
+ In one third of trials the direction of local motion was congruent with
+ that of global motion.
+ In the second third, the direction of local motion was opposite to the
+ direction of global motion.
+ In the remaining trials, elements with counterphase local motion were used.
+ Counterphase elements were constructed by superposing two local motion
+ elements with equal and opposite directions of local motion.; i.e.
+ the counterphase stimuli have the same spatial and temporal frequency content
+ as the congruent and incongruent elements, but their motion energy is equivocal
+ between opposite directions.
+ The second stimulus in 
+\backslash
+autoref{mov:stimuli} shows counterphase local motion.
+ 
+\end_layout
+
+\end_body
+\end_document

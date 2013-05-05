@@ -1,0 +1,907 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+
+%% maxwidth is the original width if it's less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\def\maxwidth{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+
+%% if you use XeTeX, you need to put the following statement in the preamble
+%% \tikzset{external/system call={xelatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+\end_preamble
+\options nogin
+\use_default_options true
+\begin_modules
+pgfsweave
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Flex Sweave Options
+status open
+
+\begin_layout Plain Layout
+
+prefix.string=Rfig
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%% 
+\backslash
+maxwidth has been defined in the preamble; see document settings
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+setkeys{Gin}{width=
+\backslash
+maxwidth}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+<<setup, echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
+\end_layout
+
+\begin_layout Chunk
+@
+\end_layout
+
+\begin_layout Title
+Using pgfSweave with LyX
+\end_layout
+
+\begin_layout Author
+Yihui Xie
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Department of Statistics, Iowa State University.
+ Email: 
+\begin_inset CommandInset href
+LatexCommand href
+name "xie@yihui.name"
+target "xie@yihui.name"
+type "mailto:"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Gregor Gorjanc 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+and
+\end_layout
+
+\end_inset
+
+ Jean-Marc Lasgouttes
+\end_layout
+
+\begin_layout Standard
+The 
+\family sans
+pgfSweave
+\family default
+ module makes use of the R package 
+\series bold
+pgfSweave
+\series default
+ (version 
+\begin_inset Formula $\geq1.2$
+\end_inset
+
+) to compile Sweave documents.
+ All options in Sweave are still available in 
+\series bold
+pgfSweave
+\series default
+, so users may start with the example 
+\family sans
+sweave.lyx
+\family default
+ to know how Sweave works in LyX.
+ New chunk options in 
+\series bold
+pgfSweave
+\series default
+ include:
+\end_layout
+
+\begin_layout Description
+cache if 
+\family typewriter
+TRUE
+\family default
+, the 
+\series bold
+cacheSweave
+\series default
+ package will be used to cache R objects
+\end_layout
+
+\begin_layout Description
+highlight if 
+\family typewriter
+TRUE
+\family default
+ (default), the R code will be highlighted by the 
+\series bold
+highlight
+\series default
+ package
+\end_layout
+
+\begin_layout Description
+tikz 
+\family typewriter
+TRUE
+\family default
+ by default; it uses the 
+\emph on
+tikz()
+\emph default
+ device in the 
+\series bold
+tikzDevice
+\series default
+ package to record R graphics
+\end_layout
+
+\begin_layout Description
+external if 
+\family typewriter
+TRUE
+\family default
+, the tikz graphics will be externalized (i.e.
+ cached)
+\end_layout
+
+\begin_layout Description
+tidy if 
+\family typewriter
+TRUE
+\family default
+, the R code will be tidied up by the 
+\series bold
+formatR
+\series default
+ package (spaces and indent are added automatically, and comments are preserved)
+\end_layout
+
+\begin_layout Standard
+Please refer to the vignette of 
+\series bold
+pgfSweave
+\series default
+ for a complete introduction; there are also some additional system requirements
+ for using 
+\series bold
+pgfSweave
+\series default
+, e.g.
+ the version of the PGF/TikZ package has to be at least 2.10 in LaTeX, and
+ Windows users have to install Rtools, etc.
+\end_layout
+
+\begin_layout Section
+pgfSweave Examples
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:lm-demo"
+
+\end_inset
+
+ is a simple example of using LaTeX math formulas in R graphics.
+ We can see from the source code that we just need to write native LaTeX
+ code in R plots, which does not require us to remember any tricks like
+ the ones in 
+\family typewriter
+demo(plotmath)
+\family default
+.
+ We intentionally changed the fonts for this LaTeX document so that the
+ 
+\begin_inset Quotes eld
+\end_inset
+
+consistency
+\begin_inset Quotes erd
+\end_inset
+
+ between tikz plots and the LaTeX document is clear -- the texts in the
+ plots are of the same style with the body of the LaTeX document, whereas
+ their fonts will be 
+\family sans
+sans serif
+\family default
+ by default in other R graphics devices.
+\end_layout
+
+\begin_layout Standard
+We can externalize tikz graphics by 
+\family typewriter
+external=TRUE
+\family default
+, in which case the tikz plots will be compiled to PDF files; LaTeX will
+ ignore these tikz files and include the PDF files directly when the document
+ is re-compiled.
+ This can save us a lot of time because the compilation of tikz plots can
+ be time-consuming for complex plots.
+ At the same time, 
+\series bold
+pgfSweave
+\series default
+ will not try to re-generate these plots either when we re-run the Sweave
+ document.
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+highlight
+\family default
+ option is easy to understand, and the 
+\family typewriter
+tidy
+\family default
+ option may be less obvious.
+ Below is a simple example demonstrating these options; note the difference
+ between the original code and the final output:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Chunk
+
+<<lm-demo,fig=TRUE,width=5,height=3,echo=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+
+set.seed(123)
+\end_layout
+
+\begin_layout Chunk
+
+x <- rnorm(10)
+\end_layout
+
+\begin_layout Chunk
+
+y <- x + rnorm(5, sd = 0.25)
+\end_layout
+
+\begin_layout Chunk
+
+model <- lm(y ~ x)
+\end_layout
+
+\begin_layout Chunk
+
+par(mar = c(4, 4, 1, 2), las = 1)
+\end_layout
+
+\begin_layout Chunk
+
+plot(x, y, pch = seq(x), ylab = "$Y=
+\backslash
+
+\backslash
+beta_0 + 
+\backslash
+
+\backslash
+beta_1 x + 
+\backslash
+
+\backslash
+epsilon$")
+\end_layout
+
+\begin_layout Chunk
+
+abline(model, col = "red")
+\end_layout
+
+\begin_layout Chunk
+
+legend("bottomright", legend = sprintf("$
+\backslash
+
+\backslash
+hat{Y} = %.2f + %.2fx$",
+\end_layout
+
+\begin_layout Chunk
+
+coef(model)[1], coef(model)[2]), bty = "n")
+\end_layout
+
+\begin_layout Chunk
+
+legend("topleft", legend = "$
+\backslash
+
+\backslash
+epsilon 
+\backslash
+
+\backslash
+sim N(0, 
+\backslash
+
+\backslash
+sigma^2)$",
+\end_layout
+
+\begin_layout Chunk
+
+bty = "n")
+\end_layout
+
+\begin_layout Chunk
+
+mtext("native 
+\backslash
+
+\backslash
+LaTeX{} code", side = 4, las = 0)
+\end_layout
+
+\begin_layout Chunk
+
+text(-0.5, 1, paste("$
+\backslash
+
+\backslash
+Phi(x)=
+\backslash
+
+\backslash
+int_{-
+\backslash
+
+\backslash
+infty}^x
+\backslash
+
+\backslash
+frac{1}{
+\backslash
+
+\backslash
+sqrt{2
+\backslash
+
+\backslash
+pi}}",
+\end_layout
+
+\begin_layout Chunk
+
+"
+\backslash
+
+\backslash
+exp(x^2/2)dx$"))
+\end_layout
+
+\begin_layout Chunk
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+A linear regression with equations on a scatter plot.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:lm-demo"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chunk
+%% highlight is TRUE by default, so no need to set here, but tidy=FALSE
+ by default
+\end_layout
+
+\begin_layout Chunk
+<<hilite-tidy, highlight=TRUE, tidy=TRUE, eval=FALSE>>=
+\end_layout
+
+\begin_layout Chunk
+## original R code has no spaces or indent
+\end_layout
+
+\begin_layout Chunk
+ ## rotation of the word 'Animation' in a loop; change the angle and color
+ step by step
+\end_layout
+
+\begin_layout Chunk
+for (i in 1:360) {
+\end_layout
+
+\begin_layout Chunk
+# redraw the plot again and again
+\end_layout
+
+\begin_layout Chunk
+plot(1,ann=FALSE,type="n",axes=FALSE)
+\end_layout
+
+\begin_layout Chunk
+# rotate; use rainbow() colors
+\end_layout
+
+\begin_layout Chunk
+text(1,1,"Animation",srt=i,col=rainbow(360)[i],cex=7*i/360)
+\end_layout
+
+\begin_layout Chunk
+Sys.sleep(0.01)  # pause for a while
+\end_layout
+
+\begin_layout Chunk
+message(i)} 
+\end_layout
+
+\begin_layout Chunk
+@
+\end_layout
+
+\begin_layout Standard
+A final note is that 
+\family typewriter
+external=TRUE
+\family default
+ is partially based on the MD5 digest of a code chunk, which means the plot
+ will not be re-generated as long as there are no changes to this chunk
+ (including white-space changes and width/height option changes).
+ In other words, a new tikz plot will be generated and re-compiled whenever
+ there are any changes to the code chunk.
+\end_layout
+
+\begin_layout Section
+The 
+\family sans
+pgfSweave
+\family default
+ Module
+\end_layout
+
+\begin_layout Standard
+The R script 
+\family sans
+lyx-pgfsweave.R
+\family default
+ under the 
+\family sans
+scripts
+\family default
+ directory of LyX is the workhorse behind the scene.
+ Everything is similar to the 
+\family sans
+Sweave
+\family default
+ module (so please read the Section 2 in 
+\family sans
+sweave.lyx
+\family default
+), and a few more issues to be explained are:
+\end_layout
+
+\begin_layout Itemize
+the tikz metrics dictionary: roughly speaking, this dictionary is a file
+ generated by the package 
+\series bold
+tikzDevice
+\series default
+ which is used to store font metrics information for tikz plots.
+ By default it is created in the temporary directory and gets removed when
+ R is closed, but it is extremely important in terms of speeding up the
+ plotting in the tikz device! The R script here will create this dictionary
+ in the current working directory (i.e.
+ the directory of the LyX document), so that it can be re-used every time
+ LyX opens R.
+ As a result, we will see a dictionary file named 
+\family sans
+tikzDict-
+\emph on
+filename
+\family default
+\emph default
+ where 
+\family sans
+filename
+\family default
+ is the filename of the LyX document.
+ Once a dictionary is built up, it will be much faster to redraw a plot
+ in the tikz device.
+ See the documentation of the 
+\series bold
+tikzDevice
+\series default
+ package for more information.
+\end_layout
+
+\begin_layout Itemize
+the 
+\begin_inset Quotes eld
+\end_inset
+
+pseudo cache
+\begin_inset Quotes erd
+\end_inset
+
+: due to the way the caching mechanism in 
+\series bold
+pgfSweave
+\series default
+ and tikz externalization was designed, we have to manually modify the tex
+ output to maintain the nice cache feature.
+ For example, the commands 
+\family typewriter
+
+\backslash
+tikzsetnextfilename
+\family default
+ and 
+\family typewriter
+
+\backslash
+tikzexternalfiledependsonfile
+\family default
+ are commented out to disable the real cache, while 
+\family typewriter
+
+\backslash
+input{*.tikz}
+\family default
+ is replaced by 
+\family typewriter
+
+\backslash
+includegraphics{*}
+\family default
+ as a 
+\begin_inset Quotes eld
+\end_inset
+
+pseudo caching mechanism
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This might sound weird at the first glance, but we have to do it mainly
+ because 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+we need to run pgfSweave in the current working directory (otherwise we
+ have to copy all the R output from LyX's temporary directory to the current
+ working directory)
+\end_layout
+
+\begin_layout Itemize
+pgfSweave writes relative paths in the figure list (
+\family sans
+*.figlist
+\family default
+) and the makefile (
+\family sans
+*.makefile
+\family default
+), and if we do not disable the real cache in the tex output, we will end
+ up with LaTeX being unable to compile the tex document (because the figure
+ list and makefile are missing in the temporary directory), and even if
+ it is able to, all the PDF figures will be generated in the temporary directory
+, which means they will be lost when we close LyX and the cache will not
+ make any sense
+\end_layout
+
+\begin_layout Standard
+anyway, the 
+\begin_inset Quotes eld
+\end_inset
+
+pseudo cache
+\begin_inset Quotes erd
+\end_inset
+
+ has essentially the same effect as the real cache, i.e.
+ no need to re-compile the tikz plots when 
+\family typewriter
+external=TRUE
+\family default
+.
+ Users do not need to worry too much about the technical details here.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+XeTeX users need to put this declaration in the preamble: 
+\family typewriter
+
+\backslash
+tikzset{external/system call={xelatex 
+\backslash
+tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname
+ "
+\backslash
+image" "
+\backslash
+texsource"}}
+\family default
+ (this should be a 
+\emph on
+single
+\emph default
+ line; remember to remove the line breaks when you copy the text here)
+\end_layout
+
+\begin_layout Itemize
+yet another option 
+\family typewriter
+lyx.graphics.width
+\family default
+ can be used to specify the global width of all graphics, i.e.
+ if 
+\family typewriter
+getOption('lyx.graphics.width')
+\family default
+ is not 
+\family typewriter
+NULL
+\family default
+, all the tikz plots will be set to a uniform width.
+\end_layout
+
+\begin_layout Standard
+The package 
+\series bold
+formatR
+\series default
+ is used to reformat the R code when 
+\family typewriter
+tidy=TRUE
+\family default
+, and several global options can affect its output, which are introduced
+ in Appendix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:formatR"
+
+\end_inset
+
+.
+ If we export R code from a LyX document with the 
+\family sans
+pgfSweave
+\family default
+ module, the 
+\series bold
+formatR
+\series default
+ package will also be used to reformat the R code; this is slightly different
+ with the traditional 
+\family typewriter
+R CMD Stangle
+\family default
+ approach.
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+The formatR Options
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:formatR"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Currently there are four options which can be pre-specified for the 
+\series bold
+formatR
+\series default
+ package.
+ We can either set them in the file 
+\family sans
+.Rprofile
+\family default
+ or in R code chunks in the document.
+\end_layout
+
+\begin_layout Description
+options('keep.comment') (
+\family typewriter
+TRUE
+\family default
+) whether to preserve comments
+\end_layout
+
+\begin_layout Description
+options('keep.blank.line') (
+\family typewriter
+FALSE
+\family default
+) whether to preserve blank lines
+\end_layout
+
+\begin_layout Description
+options('keep.space') (
+\family typewriter
+FALSE
+\family default
+) whether to preserve the leading spaces in the single lines of comments
+\end_layout
+
+\begin_layout Description
+options('replace.assign') (
+\family typewriter
+FALSE
+\family default
+) whether to replace the assignment operator 
+\family typewriter
+=
+\family default
+ with 
+\family typewriter
+<-
+\end_layout
+
+\begin_layout Standard
+Again, users are encouraged to read the documentation of the function 
+\emph on
+tidy.source()
+\emph default
+ in the 
+\series bold
+formatR
+\series default
+ package, or the vignette in this package, in order to know the limitation
+ of this package.
+\end_layout
+
+\end_body
+\end_document

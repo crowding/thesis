@@ -1,0 +1,635 @@
+\batchmode
+\documentclass[english,noae,nogin]{article}
+\newcommand{\hlnumber}[1]{\textcolor[rgb]{0.0823529411764706,0.0784313725490196,0.709803921568627}{#1}}%
+\newcommand{\hlfunctioncall}[1]{\textcolor[rgb]{1,0,0}{#1}}%
+\newcommand{\hlstring}[1]{\textcolor[rgb]{0.6,0.6,1}{#1}}%
+\newcommand{\hlkeyword}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlargument}[1]{\textcolor[rgb]{0.694117647058824,0.247058823529412,0.0196078431372549}{#1}}%
+\newcommand{\hlcomment}[1]{\textcolor[rgb]{0.8,0.8,0.8}{#1}}%
+\newcommand{\hlroxygencomment}[1]{\textcolor[rgb]{0,0.592156862745098,1}{#1}}%
+\newcommand{\hlformalargs}[1]{\textcolor[rgb]{0.0705882352941176,0.713725490196078,0.0705882352941176}{#1}}%
+\newcommand{\hleqformalargs}[1]{\textcolor[rgb]{0.0705882352941176,0.713725490196078,0.0705882352941176}{#1}}%
+\newcommand{\hlassignement}[1]{\textcolor[rgb]{0.215686274509804,0.215686274509804,0.384313725490196}{\textbf{#1}}}%
+\newcommand{\hlpackage}[1]{\textcolor[rgb]{0.588235294117647,0.713725490196078,0.145098039215686}{#1}}%
+\newcommand{\hlslot}[1]{\textit{#1}}%
+\newcommand{\hlsymbol}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlprompt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+
+\usepackage{color}%
+ 
+\newsavebox{\hlnormalsizeboxclosebrace}%
+\newsavebox{\hlnormalsizeboxopenbrace}%
+\newsavebox{\hlnormalsizeboxbackslash}%
+\newsavebox{\hlnormalsizeboxlessthan}%
+\newsavebox{\hlnormalsizeboxgreaterthan}%
+\newsavebox{\hlnormalsizeboxdollar}%
+\newsavebox{\hlnormalsizeboxunderscore}%
+\newsavebox{\hlnormalsizeboxand}%
+\newsavebox{\hlnormalsizeboxhash}%
+\newsavebox{\hlnormalsizeboxat}%
+\newsavebox{\hlnormalsizeboxpercent}% 
+\newsavebox{\hlnormalsizeboxhat}%
+\newsavebox{\hlnormalsizeboxsinglequote}%
+\newsavebox{\hlnormalsizeboxbacktick}%
+
+\setbox\hlnormalsizeboxopenbrace=\hbox{\begin{normalsize}\verb.{.\end{normalsize}}%
+\setbox\hlnormalsizeboxclosebrace=\hbox{\begin{normalsize}\verb.}.\end{normalsize}}%
+\setbox\hlnormalsizeboxlessthan=\hbox{\begin{normalsize}\verb.<.\end{normalsize}}%
+\setbox\hlnormalsizeboxdollar=\hbox{\begin{normalsize}\verb.$.\end{normalsize}}%
+\setbox\hlnormalsizeboxunderscore=\hbox{\begin{normalsize}\verb._.\end{normalsize}}%
+\setbox\hlnormalsizeboxand=\hbox{\begin{normalsize}\verb.&.\end{normalsize}}%
+\setbox\hlnormalsizeboxhash=\hbox{\begin{normalsize}\verb.#.\end{normalsize}}%
+\setbox\hlnormalsizeboxat=\hbox{\begin{normalsize}\verb.@.\end{normalsize}}%
+\setbox\hlnormalsizeboxbackslash=\hbox{\begin{normalsize}\verb.\.\end{normalsize}}%
+\setbox\hlnormalsizeboxgreaterthan=\hbox{\begin{normalsize}\verb.>.\end{normalsize}}%
+\setbox\hlnormalsizeboxpercent=\hbox{\begin{normalsize}\verb.%.\end{normalsize}}%
+\setbox\hlnormalsizeboxhat=\hbox{\begin{normalsize}\verb.^.\end{normalsize}}%
+\setbox\hlnormalsizeboxsinglequote=\hbox{\begin{normalsize}\verb.'.\end{normalsize}}%
+\setbox\hlnormalsizeboxbacktick=\hbox{\begin{normalsize}\verb.`.\end{normalsize}}%
+\setbox\hlnormalsizeboxhat=\hbox{\begin{normalsize}\verb.^.\end{normalsize}}%
+
+
+
+\newsavebox{\hltinyboxclosebrace}%
+\newsavebox{\hltinyboxopenbrace}%
+\newsavebox{\hltinyboxbackslash}%
+\newsavebox{\hltinyboxlessthan}%
+\newsavebox{\hltinyboxgreaterthan}%
+\newsavebox{\hltinyboxdollar}%
+\newsavebox{\hltinyboxunderscore}%
+\newsavebox{\hltinyboxand}%
+\newsavebox{\hltinyboxhash}%
+\newsavebox{\hltinyboxat}%
+\newsavebox{\hltinyboxpercent}% 
+\newsavebox{\hltinyboxhat}%
+\newsavebox{\hltinyboxsinglequote}%
+\newsavebox{\hltinyboxbacktick}%
+
+\setbox\hltinyboxopenbrace=\hbox{\begin{tiny}\verb.{.\end{tiny}}%
+\setbox\hltinyboxclosebrace=\hbox{\begin{tiny}\verb.}.\end{tiny}}%
+\setbox\hltinyboxlessthan=\hbox{\begin{tiny}\verb.<.\end{tiny}}%
+\setbox\hltinyboxdollar=\hbox{\begin{tiny}\verb.$.\end{tiny}}%
+\setbox\hltinyboxunderscore=\hbox{\begin{tiny}\verb._.\end{tiny}}%
+\setbox\hltinyboxand=\hbox{\begin{tiny}\verb.&.\end{tiny}}%
+\setbox\hltinyboxhash=\hbox{\begin{tiny}\verb.#.\end{tiny}}%
+\setbox\hltinyboxat=\hbox{\begin{tiny}\verb.@.\end{tiny}}%
+\setbox\hltinyboxbackslash=\hbox{\begin{tiny}\verb.\.\end{tiny}}%
+\setbox\hltinyboxgreaterthan=\hbox{\begin{tiny}\verb.>.\end{tiny}}%
+\setbox\hltinyboxpercent=\hbox{\begin{tiny}\verb.%.\end{tiny}}%
+\setbox\hltinyboxhat=\hbox{\begin{tiny}\verb.^.\end{tiny}}%
+\setbox\hltinyboxsinglequote=\hbox{\begin{tiny}\verb.'.\end{tiny}}%
+\setbox\hltinyboxbacktick=\hbox{\begin{tiny}\verb.`.\end{tiny}}%
+\setbox\hltinyboxhat=\hbox{\begin{tiny}\verb.^.\end{tiny}}%
+
+
+
+\newsavebox{\hlscriptsizeboxclosebrace}%
+\newsavebox{\hlscriptsizeboxopenbrace}%
+\newsavebox{\hlscriptsizeboxbackslash}%
+\newsavebox{\hlscriptsizeboxlessthan}%
+\newsavebox{\hlscriptsizeboxgreaterthan}%
+\newsavebox{\hlscriptsizeboxdollar}%
+\newsavebox{\hlscriptsizeboxunderscore}%
+\newsavebox{\hlscriptsizeboxand}%
+\newsavebox{\hlscriptsizeboxhash}%
+\newsavebox{\hlscriptsizeboxat}%
+\newsavebox{\hlscriptsizeboxpercent}% 
+\newsavebox{\hlscriptsizeboxhat}%
+\newsavebox{\hlscriptsizeboxsinglequote}%
+\newsavebox{\hlscriptsizeboxbacktick}%
+
+\setbox\hlscriptsizeboxopenbrace=\hbox{\begin{scriptsize}\verb.{.\end{scriptsize}}%
+\setbox\hlscriptsizeboxclosebrace=\hbox{\begin{scriptsize}\verb.}.\end{scriptsize}}%
+\setbox\hlscriptsizeboxlessthan=\hbox{\begin{scriptsize}\verb.<.\end{scriptsize}}%
+\setbox\hlscriptsizeboxdollar=\hbox{\begin{scriptsize}\verb.$.\end{scriptsize}}%
+\setbox\hlscriptsizeboxunderscore=\hbox{\begin{scriptsize}\verb._.\end{scriptsize}}%
+\setbox\hlscriptsizeboxand=\hbox{\begin{scriptsize}\verb.&.\end{scriptsize}}%
+\setbox\hlscriptsizeboxhash=\hbox{\begin{scriptsize}\verb.#.\end{scriptsize}}%
+\setbox\hlscriptsizeboxat=\hbox{\begin{scriptsize}\verb.@.\end{scriptsize}}%
+\setbox\hlscriptsizeboxbackslash=\hbox{\begin{scriptsize}\verb.\.\end{scriptsize}}%
+\setbox\hlscriptsizeboxgreaterthan=\hbox{\begin{scriptsize}\verb.>.\end{scriptsize}}%
+\setbox\hlscriptsizeboxpercent=\hbox{\begin{scriptsize}\verb.%.\end{scriptsize}}%
+\setbox\hlscriptsizeboxhat=\hbox{\begin{scriptsize}\verb.^.\end{scriptsize}}%
+\setbox\hlscriptsizeboxsinglequote=\hbox{\begin{scriptsize}\verb.'.\end{scriptsize}}%
+\setbox\hlscriptsizeboxbacktick=\hbox{\begin{scriptsize}\verb.`.\end{scriptsize}}%
+\setbox\hlscriptsizeboxhat=\hbox{\begin{scriptsize}\verb.^.\end{scriptsize}}%
+
+
+
+\newsavebox{\hlfootnotesizeboxclosebrace}%
+\newsavebox{\hlfootnotesizeboxopenbrace}%
+\newsavebox{\hlfootnotesizeboxbackslash}%
+\newsavebox{\hlfootnotesizeboxlessthan}%
+\newsavebox{\hlfootnotesizeboxgreaterthan}%
+\newsavebox{\hlfootnotesizeboxdollar}%
+\newsavebox{\hlfootnotesizeboxunderscore}%
+\newsavebox{\hlfootnotesizeboxand}%
+\newsavebox{\hlfootnotesizeboxhash}%
+\newsavebox{\hlfootnotesizeboxat}%
+\newsavebox{\hlfootnotesizeboxpercent}% 
+\newsavebox{\hlfootnotesizeboxhat}%
+\newsavebox{\hlfootnotesizeboxsinglequote}%
+\newsavebox{\hlfootnotesizeboxbacktick}%
+
+\setbox\hlfootnotesizeboxopenbrace=\hbox{\begin{footnotesize}\verb.{.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxclosebrace=\hbox{\begin{footnotesize}\verb.}.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxlessthan=\hbox{\begin{footnotesize}\verb.<.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxdollar=\hbox{\begin{footnotesize}\verb.$.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxunderscore=\hbox{\begin{footnotesize}\verb._.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxand=\hbox{\begin{footnotesize}\verb.&.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxhash=\hbox{\begin{footnotesize}\verb.#.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxat=\hbox{\begin{footnotesize}\verb.@.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxbackslash=\hbox{\begin{footnotesize}\verb.\.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxgreaterthan=\hbox{\begin{footnotesize}\verb.>.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxpercent=\hbox{\begin{footnotesize}\verb.%.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxhat=\hbox{\begin{footnotesize}\verb.^.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxsinglequote=\hbox{\begin{footnotesize}\verb.'.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxbacktick=\hbox{\begin{footnotesize}\verb.`.\end{footnotesize}}%
+\setbox\hlfootnotesizeboxhat=\hbox{\begin{footnotesize}\verb.^.\end{footnotesize}}%
+
+
+
+\newsavebox{\hlsmallboxclosebrace}%
+\newsavebox{\hlsmallboxopenbrace}%
+\newsavebox{\hlsmallboxbackslash}%
+\newsavebox{\hlsmallboxlessthan}%
+\newsavebox{\hlsmallboxgreaterthan}%
+\newsavebox{\hlsmallboxdollar}%
+\newsavebox{\hlsmallboxunderscore}%
+\newsavebox{\hlsmallboxand}%
+\newsavebox{\hlsmallboxhash}%
+\newsavebox{\hlsmallboxat}%
+\newsavebox{\hlsmallboxpercent}% 
+\newsavebox{\hlsmallboxhat}%
+\newsavebox{\hlsmallboxsinglequote}%
+\newsavebox{\hlsmallboxbacktick}%
+
+\setbox\hlsmallboxopenbrace=\hbox{\begin{small}\verb.{.\end{small}}%
+\setbox\hlsmallboxclosebrace=\hbox{\begin{small}\verb.}.\end{small}}%
+\setbox\hlsmallboxlessthan=\hbox{\begin{small}\verb.<.\end{small}}%
+\setbox\hlsmallboxdollar=\hbox{\begin{small}\verb.$.\end{small}}%
+\setbox\hlsmallboxunderscore=\hbox{\begin{small}\verb._.\end{small}}%
+\setbox\hlsmallboxand=\hbox{\begin{small}\verb.&.\end{small}}%
+\setbox\hlsmallboxhash=\hbox{\begin{small}\verb.#.\end{small}}%
+\setbox\hlsmallboxat=\hbox{\begin{small}\verb.@.\end{small}}%
+\setbox\hlsmallboxbackslash=\hbox{\begin{small}\verb.\.\end{small}}%
+\setbox\hlsmallboxgreaterthan=\hbox{\begin{small}\verb.>.\end{small}}%
+\setbox\hlsmallboxpercent=\hbox{\begin{small}\verb.%.\end{small}}%
+\setbox\hlsmallboxhat=\hbox{\begin{small}\verb.^.\end{small}}%
+\setbox\hlsmallboxsinglequote=\hbox{\begin{small}\verb.'.\end{small}}%
+\setbox\hlsmallboxbacktick=\hbox{\begin{small}\verb.`.\end{small}}%
+\setbox\hlsmallboxhat=\hbox{\begin{small}\verb.^.\end{small}}%
+
+
+
+\newsavebox{\hllargeboxclosebrace}%
+\newsavebox{\hllargeboxopenbrace}%
+\newsavebox{\hllargeboxbackslash}%
+\newsavebox{\hllargeboxlessthan}%
+\newsavebox{\hllargeboxgreaterthan}%
+\newsavebox{\hllargeboxdollar}%
+\newsavebox{\hllargeboxunderscore}%
+\newsavebox{\hllargeboxand}%
+\newsavebox{\hllargeboxhash}%
+\newsavebox{\hllargeboxat}%
+\newsavebox{\hllargeboxpercent}% 
+\newsavebox{\hllargeboxhat}%
+\newsavebox{\hllargeboxsinglequote}%
+\newsavebox{\hllargeboxbacktick}%
+
+\setbox\hllargeboxopenbrace=\hbox{\begin{large}\verb.{.\end{large}}%
+\setbox\hllargeboxclosebrace=\hbox{\begin{large}\verb.}.\end{large}}%
+\setbox\hllargeboxlessthan=\hbox{\begin{large}\verb.<.\end{large}}%
+\setbox\hllargeboxdollar=\hbox{\begin{large}\verb.$.\end{large}}%
+\setbox\hllargeboxunderscore=\hbox{\begin{large}\verb._.\end{large}}%
+\setbox\hllargeboxand=\hbox{\begin{large}\verb.&.\end{large}}%
+\setbox\hllargeboxhash=\hbox{\begin{large}\verb.#.\end{large}}%
+\setbox\hllargeboxat=\hbox{\begin{large}\verb.@.\end{large}}%
+\setbox\hllargeboxbackslash=\hbox{\begin{large}\verb.\.\end{large}}%
+\setbox\hllargeboxgreaterthan=\hbox{\begin{large}\verb.>.\end{large}}%
+\setbox\hllargeboxpercent=\hbox{\begin{large}\verb.%.\end{large}}%
+\setbox\hllargeboxhat=\hbox{\begin{large}\verb.^.\end{large}}%
+\setbox\hllargeboxsinglequote=\hbox{\begin{large}\verb.'.\end{large}}%
+\setbox\hllargeboxbacktick=\hbox{\begin{large}\verb.`.\end{large}}%
+\setbox\hllargeboxhat=\hbox{\begin{large}\verb.^.\end{large}}%
+
+
+
+\newsavebox{\hlLargeboxclosebrace}%
+\newsavebox{\hlLargeboxopenbrace}%
+\newsavebox{\hlLargeboxbackslash}%
+\newsavebox{\hlLargeboxlessthan}%
+\newsavebox{\hlLargeboxgreaterthan}%
+\newsavebox{\hlLargeboxdollar}%
+\newsavebox{\hlLargeboxunderscore}%
+\newsavebox{\hlLargeboxand}%
+\newsavebox{\hlLargeboxhash}%
+\newsavebox{\hlLargeboxat}%
+\newsavebox{\hlLargeboxpercent}% 
+\newsavebox{\hlLargeboxhat}%
+\newsavebox{\hlLargeboxsinglequote}%
+\newsavebox{\hlLargeboxbacktick}%
+
+\setbox\hlLargeboxopenbrace=\hbox{\begin{Large}\verb.{.\end{Large}}%
+\setbox\hlLargeboxclosebrace=\hbox{\begin{Large}\verb.}.\end{Large}}%
+\setbox\hlLargeboxlessthan=\hbox{\begin{Large}\verb.<.\end{Large}}%
+\setbox\hlLargeboxdollar=\hbox{\begin{Large}\verb.$.\end{Large}}%
+\setbox\hlLargeboxunderscore=\hbox{\begin{Large}\verb._.\end{Large}}%
+\setbox\hlLargeboxand=\hbox{\begin{Large}\verb.&.\end{Large}}%
+\setbox\hlLargeboxhash=\hbox{\begin{Large}\verb.#.\end{Large}}%
+\setbox\hlLargeboxat=\hbox{\begin{Large}\verb.@.\end{Large}}%
+\setbox\hlLargeboxbackslash=\hbox{\begin{Large}\verb.\.\end{Large}}%
+\setbox\hlLargeboxgreaterthan=\hbox{\begin{Large}\verb.>.\end{Large}}%
+\setbox\hlLargeboxpercent=\hbox{\begin{Large}\verb.%.\end{Large}}%
+\setbox\hlLargeboxhat=\hbox{\begin{Large}\verb.^.\end{Large}}%
+\setbox\hlLargeboxsinglequote=\hbox{\begin{Large}\verb.'.\end{Large}}%
+\setbox\hlLargeboxbacktick=\hbox{\begin{Large}\verb.`.\end{Large}}%
+\setbox\hlLargeboxhat=\hbox{\begin{Large}\verb.^.\end{Large}}%
+
+
+
+\newsavebox{\hlLARGEboxclosebrace}%
+\newsavebox{\hlLARGEboxopenbrace}%
+\newsavebox{\hlLARGEboxbackslash}%
+\newsavebox{\hlLARGEboxlessthan}%
+\newsavebox{\hlLARGEboxgreaterthan}%
+\newsavebox{\hlLARGEboxdollar}%
+\newsavebox{\hlLARGEboxunderscore}%
+\newsavebox{\hlLARGEboxand}%
+\newsavebox{\hlLARGEboxhash}%
+\newsavebox{\hlLARGEboxat}%
+\newsavebox{\hlLARGEboxpercent}% 
+\newsavebox{\hlLARGEboxhat}%
+\newsavebox{\hlLARGEboxsinglequote}%
+\newsavebox{\hlLARGEboxbacktick}%
+
+\setbox\hlLARGEboxopenbrace=\hbox{\begin{LARGE}\verb.{.\end{LARGE}}%
+\setbox\hlLARGEboxclosebrace=\hbox{\begin{LARGE}\verb.}.\end{LARGE}}%
+\setbox\hlLARGEboxlessthan=\hbox{\begin{LARGE}\verb.<.\end{LARGE}}%
+\setbox\hlLARGEboxdollar=\hbox{\begin{LARGE}\verb.$.\end{LARGE}}%
+\setbox\hlLARGEboxunderscore=\hbox{\begin{LARGE}\verb._.\end{LARGE}}%
+\setbox\hlLARGEboxand=\hbox{\begin{LARGE}\verb.&.\end{LARGE}}%
+\setbox\hlLARGEboxhash=\hbox{\begin{LARGE}\verb.#.\end{LARGE}}%
+\setbox\hlLARGEboxat=\hbox{\begin{LARGE}\verb.@.\end{LARGE}}%
+\setbox\hlLARGEboxbackslash=\hbox{\begin{LARGE}\verb.\.\end{LARGE}}%
+\setbox\hlLARGEboxgreaterthan=\hbox{\begin{LARGE}\verb.>.\end{LARGE}}%
+\setbox\hlLARGEboxpercent=\hbox{\begin{LARGE}\verb.%.\end{LARGE}}%
+\setbox\hlLARGEboxhat=\hbox{\begin{LARGE}\verb.^.\end{LARGE}}%
+\setbox\hlLARGEboxsinglequote=\hbox{\begin{LARGE}\verb.'.\end{LARGE}}%
+\setbox\hlLARGEboxbacktick=\hbox{\begin{LARGE}\verb.`.\end{LARGE}}%
+\setbox\hlLARGEboxhat=\hbox{\begin{LARGE}\verb.^.\end{LARGE}}%
+
+
+
+\newsavebox{\hlhugeboxclosebrace}%
+\newsavebox{\hlhugeboxopenbrace}%
+\newsavebox{\hlhugeboxbackslash}%
+\newsavebox{\hlhugeboxlessthan}%
+\newsavebox{\hlhugeboxgreaterthan}%
+\newsavebox{\hlhugeboxdollar}%
+\newsavebox{\hlhugeboxunderscore}%
+\newsavebox{\hlhugeboxand}%
+\newsavebox{\hlhugeboxhash}%
+\newsavebox{\hlhugeboxat}%
+\newsavebox{\hlhugeboxpercent}% 
+\newsavebox{\hlhugeboxhat}%
+\newsavebox{\hlhugeboxsinglequote}%
+\newsavebox{\hlhugeboxbacktick}%
+
+\setbox\hlhugeboxopenbrace=\hbox{\begin{huge}\verb.{.\end{huge}}%
+\setbox\hlhugeboxclosebrace=\hbox{\begin{huge}\verb.}.\end{huge}}%
+\setbox\hlhugeboxlessthan=\hbox{\begin{huge}\verb.<.\end{huge}}%
+\setbox\hlhugeboxdollar=\hbox{\begin{huge}\verb.$.\end{huge}}%
+\setbox\hlhugeboxunderscore=\hbox{\begin{huge}\verb._.\end{huge}}%
+\setbox\hlhugeboxand=\hbox{\begin{huge}\verb.&.\end{huge}}%
+\setbox\hlhugeboxhash=\hbox{\begin{huge}\verb.#.\end{huge}}%
+\setbox\hlhugeboxat=\hbox{\begin{huge}\verb.@.\end{huge}}%
+\setbox\hlhugeboxbackslash=\hbox{\begin{huge}\verb.\.\end{huge}}%
+\setbox\hlhugeboxgreaterthan=\hbox{\begin{huge}\verb.>.\end{huge}}%
+\setbox\hlhugeboxpercent=\hbox{\begin{huge}\verb.%.\end{huge}}%
+\setbox\hlhugeboxhat=\hbox{\begin{huge}\verb.^.\end{huge}}%
+\setbox\hlhugeboxsinglequote=\hbox{\begin{huge}\verb.'.\end{huge}}%
+\setbox\hlhugeboxbacktick=\hbox{\begin{huge}\verb.`.\end{huge}}%
+\setbox\hlhugeboxhat=\hbox{\begin{huge}\verb.^.\end{huge}}%
+
+
+
+\newsavebox{\hlHugeboxclosebrace}%
+\newsavebox{\hlHugeboxopenbrace}%
+\newsavebox{\hlHugeboxbackslash}%
+\newsavebox{\hlHugeboxlessthan}%
+\newsavebox{\hlHugeboxgreaterthan}%
+\newsavebox{\hlHugeboxdollar}%
+\newsavebox{\hlHugeboxunderscore}%
+\newsavebox{\hlHugeboxand}%
+\newsavebox{\hlHugeboxhash}%
+\newsavebox{\hlHugeboxat}%
+\newsavebox{\hlHugeboxpercent}% 
+\newsavebox{\hlHugeboxhat}%
+\newsavebox{\hlHugeboxsinglequote}%
+\newsavebox{\hlHugeboxbacktick}%
+
+\setbox\hlHugeboxopenbrace=\hbox{\begin{Huge}\verb.{.\end{Huge}}%
+\setbox\hlHugeboxclosebrace=\hbox{\begin{Huge}\verb.}.\end{Huge}}%
+\setbox\hlHugeboxlessthan=\hbox{\begin{Huge}\verb.<.\end{Huge}}%
+\setbox\hlHugeboxdollar=\hbox{\begin{Huge}\verb.$.\end{Huge}}%
+\setbox\hlHugeboxunderscore=\hbox{\begin{Huge}\verb._.\end{Huge}}%
+\setbox\hlHugeboxand=\hbox{\begin{Huge}\verb.&.\end{Huge}}%
+\setbox\hlHugeboxhash=\hbox{\begin{Huge}\verb.#.\end{Huge}}%
+\setbox\hlHugeboxat=\hbox{\begin{Huge}\verb.@.\end{Huge}}%
+\setbox\hlHugeboxbackslash=\hbox{\begin{Huge}\verb.\.\end{Huge}}%
+\setbox\hlHugeboxgreaterthan=\hbox{\begin{Huge}\verb.>.\end{Huge}}%
+\setbox\hlHugeboxpercent=\hbox{\begin{Huge}\verb.%.\end{Huge}}%
+\setbox\hlHugeboxhat=\hbox{\begin{Huge}\verb.^.\end{Huge}}%
+\setbox\hlHugeboxsinglequote=\hbox{\begin{Huge}\verb.'.\end{Huge}}%
+\setbox\hlHugeboxbacktick=\hbox{\begin{Huge}\verb.`.\end{Huge}}%
+\setbox\hlHugeboxhat=\hbox{\begin{Huge}\verb.^.\end{Huge}}%
+ 
+
+\def\urltilda{\kern -.15em\lower .7ex\hbox{\~{}}\kern .04em}%
+
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.16,0.16,1}{#1}}
+\newcommand{\hlesc}[1]{\textcolor[rgb]{1,0,1}{#1}}
+\newcommand{\hlstr}[1]{\textcolor[rgb]{1,0,0}{#1}}
+\newcommand{\hldstr}[1]{\textcolor[rgb]{0.51,0.51,0}{#1}}
+\newcommand{\hlslc}[1]{\textcolor[rgb]{0.51,0.51,0.51}{\it{#1}}}
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.51,0.51,0.51}{\it{#1}}}
+\newcommand{\hldir}[1]{\textcolor[rgb]{0,0.51,0}{#1}}
+\newcommand{\hlsym}[1]{\textcolor[rgb]{0,0,0}{#1}}
+\newcommand{\hlline}[1]{\textcolor[rgb]{0.33,0.33,0.33}{#1}}
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0,0,0}{\bf{#1}}}
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.51,0,0}{#1}}
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0,0}{\bf{#1}}}
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0,0,0.51}{#1}}
+
+\newenvironment{Houtput}{\raggedright}{%
+%
+}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{babel}
+\usepackage[unicode=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+ %\usepackage{Sweave}
+ \ifdefined\Sinput
+ \else
+ \IfFileExists{Sweave.sty}{
+   \usepackage{Sweave}
+ }{
+   \usepackage{graphicx,fancyvrb}
+   \DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl}
+   \DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+   \DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl}
+   \newenvironment{Schunk}{}{}
+   \newcommand{\Sconcordance}[1]{%
+     \ifx\pdfoutput\undefined%
+       \csname newcount\endcsname\pdfoutput\fi%
+       \ifcase\pdfoutput\special{##1}%
+     \else%
+       \begingroup%
+       \pdfcompresslevel=0%
+       \immediate\pdfobj stream{##1}%
+       \pdfcatalog{/SweaveConcordance \the\pdflastobj\space 0 R}%
+       \endgroup%
+     \fi}
+ }
+ \fi
+ \usepackage{tikz}
+\usetikzlibrary{external}
+\tikzexternalize[mode=list and make]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{ae}
+\renewcommand{\rmdefault}{ppl}
+\renewcommand{\sfdefault}{aess}
+\renewcommand{\ttdefault}{aett}
+
+%% maxwidth is the original width if it's less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\def\maxwidth{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+
+%% if you use XeTeX, you need to put the following statement in the preamble
+%% \tikzset{external/system call={xelatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource"}}
+
+\makeatother
+
+\begin{document}
+
+
+%% \maxwidth has been defined in the preamble; see document settings
+\setkeys{Gin}{width=\maxwidth}
+
+
+
+
+\title{Using pgfSweave with \LyX{}}
+
+
+\author{Yihui Xie%
+\thanks{Department of Statistics, Iowa State University. Email: \protect\href{mailto:xie@yihui.name}{xie@yihui.name}%
+} \and Gregor Gorjanc \and Jean-Marc Lasgouttes}
+
+\maketitle
+The \textsf{pgfSweave} module makes use of the R package \textbf{pgfSweave}
+(version $\geq1.2$) to compile Sweave documents. All options in Sweave
+are still available in \textbf{pgfSweave}, so users may start with
+the example \textsf{sweave.lyx} to know how Sweave works in \LyX{}.
+New chunk options in \textbf{pgfSweave} include:
+\begin{description}
+\item [{cache}] if \texttt{TRUE}, the \textbf{cacheSweave} package will
+be used to cache R objects
+\item [{highlight}] if \texttt{TRUE} (default), the R code will be highlighted
+by the \textbf{highlight} package
+\item [{tikz}] \texttt{TRUE} by default; it uses the \emph{tikz()} device
+in the \textbf{tikzDevice} package to record R graphics
+\item [{external}] if \texttt{TRUE}, the tikz graphics will be externalized
+(i.e. cached)
+\item [{tidy}] if \texttt{TRUE}, the R code will be tidied up by the \textbf{formatR}
+package (spaces and indent are added automatically, and comments are
+preserved)
+\end{description}
+Please refer to the vignette of \textbf{pgfSweave} for a complete
+introduction; there are also some additional system requirements for
+using \textbf{pgfSweave}, e.g. the version of the PGF/TikZ package
+has to be at least 2.10 in \LaTeX{}, and Windows users have to install
+Rtools, etc.
+
+
+\section{pgfSweave Examples}
+
+Figure \ref{fig:lm-demo} is a simple example of using \LaTeX{} math
+formulas in R graphics. We can see from the source code that we just
+need to write native \LaTeX{} code in R plots, which does not require
+us to remember any tricks like the ones in \texttt{demo(plotmath)}.
+We intentionally changed the fonts for this \LaTeX{} document so that
+the ``consistency'' between tikz plots and the \LaTeX{} document
+is clear -- the texts in the plots are of the same style with the
+body of the \LaTeX{} document, whereas their fonts will be \textsf{sans
+serif} by default in other R graphics devices.
+
+We can externalize tikz graphics by \texttt{external=TRUE}, in which
+case the tikz plots will be compiled to PDF files; \LaTeX{} will ignore
+these tikz files and include the PDF files directly when the document
+is re-compiled. This can save us a lot of time because the compilation
+of tikz plots can be time-consuming for complex plots. At the same
+time, \textbf{pgfSweave} will not try to re-generate these plots either
+when we re-run the Sweave document.
+
+The \texttt{highlight} option is easy to understand, and the \texttt{tidy}
+option may be less obvious. Below is a simple example demonstrating
+these options; note the difference between the original code and the
+final output:
+
+\begin{center}
+\begin{figure}
+
+{\tikzexternaldisable
+\input{Rfig-lm-demo.tikz}
+}
+
+\selectlanguage{english}%
+\caption{A linear regression with equations on a scatter plot.\label{fig:lm-demo}}
+\end{figure}
+
+\par\end{center}
+
+%% highlight is TRUE by default, so no need to set here, but tidy=FALSE by default
+\begin{Houtput}
+\hspace*{\fill}\\
+\hlstd{}\ttfamily\noindent
+\hlprompt{\usebox{\hlnormalsizeboxgreaterthan}{\ }}\hlcomment{\usebox{\hlnormalsizeboxhash}\usebox{\hlnormalsizeboxhash}{\ }original{\ }R{\ }code{\ }has{\ }no{\ }spaces{\ }or{\ }indent}\mbox{}
+\normalfont
+\hspace*{\fill}\\
+\hlstd{}\ttfamily\noindent
+\hlprompt{\usebox{\hlnormalsizeboxgreaterthan}{\ }}\hlcomment{\usebox{\hlnormalsizeboxhash}\usebox{\hlnormalsizeboxhash}{\ }rotation{\ }of{\ }the{\ }word{\ }\usebox{\hlnormalsizeboxsinglequote}Animation\usebox{\hlnormalsizeboxsinglequote}{\ }in{\ }a{\ }loop;}\mbox{}
+\normalfont
+\hspace*{\fill}\\
+\hlstd{}\ttfamily\noindent
+\hlprompt{\usebox{\hlnormalsizeboxgreaterthan}{\ }}\hlcomment{\usebox{\hlnormalsizeboxhash}{\ }{\ }{\ }change{\ }the{\ }angle{\ }and{\ }color{\ }step{\ }by{\ }step}\mbox{}
+\normalfont
+\hspace*{\fill}\\
+\hlstd{}\ttfamily\noindent
+\hlprompt{\usebox{\hlnormalsizeboxgreaterthan}{\ }}\hlkeyword{for}{\ }\hlkeyword{(}\hlsymbol{i}{\ }\hlkeyword{in}{\ }\hlnumber{1}\hlkeyword{:}\hlnumber{360}\hlkeyword{)}{\ }\hlkeyword{\usebox{\hlnormalsizeboxopenbrace}}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }\hlcomment{\usebox{\hlnormalsizeboxhash}{\ }redraw{\ }the{\ }plot{\ }again{\ }and{\ }again}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }\hlfunctioncall{plot}\hlkeyword{(}\hlnumber{1}\hlkeyword{,}{\ }\hlargument{ann}{\ }\hlargument{=}{\ }\hlnumber{FALSE}\hlkeyword{,}{\ }\hlargument{type}{\ }\hlargument{=}{\ }\hlstring{"n"}\hlkeyword{,}{\ }\hlargument{axes}{\ }\hlargument{=}{\ }\hlnumber{FALSE}\hlkeyword{)}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }\hlcomment{\usebox{\hlnormalsizeboxhash}{\ }rotate;{\ }use{\ }rainbow(){\ }colors}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }\hlfunctioncall{text}\hlkeyword{(}\hlnumber{1}\hlkeyword{,}{\ }\hlnumber{1}\hlkeyword{,}{\ }\hlstring{"Animation"}\hlkeyword{,}{\ }\hlargument{srt}{\ }\hlargument{=}{\ }\hlsymbol{i}\hlkeyword{,}{\ }\hlargument{col}{\ }\hlargument{=}{\ }\hlfunctioncall{rainbow}\hlkeyword{(}\hlnumber{360}\hlkeyword{)}\hlkeyword{[}\hlsymbol{i}\hlkeyword{]}\hlkeyword{,}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\hlargument{cex}{\ }\hlargument{=}{\ }\hlnumber{7}{\ }\hlkeyword{*}{\ }\hlsymbol{i}\hlkeyword{/}\hlnumber{360}\hlkeyword{)}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }\hlfunctioncall{Sys.sleep}\hlkeyword{(}\hlnumber{0.01}\hlkeyword{)}{\ }{\ }\hlcomment{\usebox{\hlnormalsizeboxhash}{\ }pause{\ }for{\ }a{\ }while}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}{\ }{\ }{\ }{\ }\hlfunctioncall{message}\hlkeyword{(}\hlsymbol{i}\hlkeyword{)}\hspace*{\fill}\\
+\hlstd{}\hlprompt{+{\ }}\hlkeyword{\usebox{\hlnormalsizeboxclosebrace}}\mbox{}
+\normalfont
+\hspace*{\fill}\\
+\hlstd{}
+\end{Houtput}
+
+A final note is that \texttt{external=TRUE} is partially based on
+the MD5 digest of a code chunk, which means the plot will not be re-generated
+as long as there are no changes to this chunk (including white-space
+changes and width/height option changes). In other words, a new tikz
+plot will be generated and re-compiled whenever there are any changes
+to the code chunk.
+
+
+\section{The \textsf{pgfSweave} Module}
+
+The R script \textsf{lyx-pgfsweave.R} under the \textsf{scripts} directory
+of \LyX{} is the workhorse behind the scene. Everything is similar
+to the \textsf{Sweave} module (so please read the Section 2 in \textsf{sweave.lyx}),
+and a few more issues to be explained are:
+\begin{itemize}
+\item the tikz metrics dictionary: roughly speaking, this dictionary is
+a file generated by the package \textbf{tikzDevice} which is used
+to store font metrics information for tikz plots. By default it is
+created in the temporary directory and gets removed when R is closed,
+but it is extremely important in terms of speeding up the plotting
+in the tikz device! The R script here will create this dictionary
+in the current working directory (i.e. the directory of the \LyX{}
+document), so that it can be re-used every time \LyX{} opens R. As
+a result, we will see a dictionary file named \textsf{tikzDict-}\textsf{\emph{filename}}
+where \textsf{filename} is the filename of the \LyX{} document. Once
+a dictionary is built up, it will be much faster to redraw a plot
+in the tikz device. See the documentation of the \textbf{tikzDevice}
+package for more information.
+\item the ``pseudo cache'': due to the way the caching mechanism in \textbf{pgfSweave}
+and tikz externalization was designed, we have to manually modify
+the tex output to maintain the nice cache feature. For example, the
+commands \texttt{\textbackslash{}tikzsetnextfilename} and \texttt{\textbackslash{}tikzexternalfiledependsonfile}
+are commented out to disable the real cache, while \texttt{\textbackslash{}input\{{*}.tikz\}}
+is replaced by \texttt{\textbackslash{}includegraphics\{{*}\}} as
+a ``pseudo caching mechanism''. This might sound weird at the first
+glance, but we have to do it mainly because 
+
+\begin{itemize}
+\item we need to run pgfSweave in the current working directory (otherwise
+we have to copy all the R output from \LyX{}'s temporary directory
+to the current working directory)
+\item pgfSweave writes relative paths in the figure list (\textsf{{*}.figlist})
+and the makefile (\textsf{{*}.makefile}), and if we do not disable
+the real cache in the tex output, we will end up with \LaTeX{} being
+unable to compile the tex document (because the figure list and makefile
+are missing in the temporary directory), and even if it is able to,
+all the PDF figures will be generated in the temporary directory,
+which means they will be lost when we close \LyX{} and the cache will
+not make any sense
+\end{itemize}
+
+anyway, the ``pseudo cache'' has essentially the same effect as
+the real cache, i.e. no need to re-compile the tikz plots when \texttt{external=TRUE}.
+Users do not need to worry too much about the technical details here.
+
+\item Xe\TeX{} users need to put this declaration in the preamble: \texttt{\textbackslash{}tikzset\{external/system
+call=\{xelatex \textbackslash{}tikzexternalcheckshellescape -halt-on-error
+-interaction=batchmode -jobname \textquotedbl{}\textbackslash{}image\textquotedbl{}
+\textquotedbl{}\textbackslash{}texsource\textquotedbl{}\}\}} (this
+should be a \emph{single} line; remember to remove the line breaks
+when you copy the text here)
+\item yet another option \texttt{lyx.graphics.width} can be used to specify
+the global width of all graphics, i.e. if \texttt{getOption('lyx.graphics.width')}
+is not \texttt{NULL}, all the tikz plots will be set to a uniform
+width.
+\end{itemize}
+The package \textbf{formatR} is used to reformat the R code when \texttt{tidy=TRUE},
+and several global options can affect its output, which are introduced
+in Appendix \ref{sec:formatR}. If we export R code from a \LyX{}
+document with the \textsf{pgfSweave} module, the \textbf{formatR}
+package will also be used to reformat the R code; this is slightly
+different with the traditional \texttt{R CMD Stangle} approach.
+
+\appendix
+
+\section{The formatR Options\label{sec:formatR}}
+
+Currently there are four options which can be pre-specified for the
+\textbf{formatR} package. We can either set them in the file \textsf{.Rprofile}
+or in R code chunks in the document.
+\begin{description}
+\item [{options('keep.comment')}] (\texttt{TRUE}) whether to preserve comments
+\item [{options('keep.blank.line')}] (\texttt{FALSE}) whether to preserve
+blank lines
+\item [{options('keep.space')}] (\texttt{FALSE}) whether to preserve the
+leading spaces in the single lines of comments
+\item [{options('replace.assign')}] (\texttt{FALSE}) whether to replace
+the assignment operator \texttt{=} with \texttt{<-}
+\end{description}
+Again, users are encouraged to read the documentation of the function
+\emph{tidy.source()} in the \textbf{formatR} package, or the vignette
+in this package, in order to know the limitation of this package.
+\end{document}

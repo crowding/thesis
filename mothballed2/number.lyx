@@ -1,0 +1,521 @@
+#LyX 1.6.4.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass apa
+\use_default_options true
+\master manuscript.16.lyx
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Experiment 3
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:number"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:reversal"
+
+\end_inset
+
+we saw that the perceived direciton of motion appears to be dominated by
+ the short-range motion energy content when the distance between features
+ is smaller than some critical distance, and by long-range movement when
+ spacing is larger than that critical distance..
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:eccentricity"
+
+\end_inset
+
+showed that this critical distance scaled in a roughly linear fashion with
+ the stimulus eccentricity.
+ However, because the stimulus consists of a number of elements spaced evenly
+ around a circle, the critically spaced stimuli contain approximately the
+ same number of elements at all eccentricities tested (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:number-of-elements"
+
+\end_inset
+
+).
+ So an alternate way of describing the results of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:eccentricity"
+
+\end_inset
+
+ would be to say that the perceived direction of motion is dominated by
+ short range information when the elements in the display are more numberous
+ than some threshold.
+\end_layout
+
+\begin_layout Standard
+Several studies of the 
+\begin_inset Quotes eld
+\end_inset
+
+multiple object tracking
+\begin_inset Quotes erd
+\end_inset
+
+ task (cites: Pylyshyn et al.) have shown that when attentively tracking
+ moving objects, there appears to be a limit of the number of objects tracked.
+ In this task, 
+\end_layout
+
+\begin_layout Standard
+Furthermore, it is not clear.
+ For example, suppose there is a process that integrates short-range motion
+ over the visual field without regard to changes in the Optic flow may be
+ computed in such a way, and our stimulus is configured in a manner that
+ the short range motion is consistent with.
+\end_layout
+
+\begin_layout Standard
+To rule out these alternate mechanisms we constructed an experiment to disentang
+le the effect of target number from that of target spacing.
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+The task was identical to that in 
+
+\begin_inset CommandInset ref
+LatexCommand prettyref
+reference "sec:reversal"
+
+\end_inset
+
+
+\lang english
+and
+\begin_inset CommandInset ref
+LatexCommand prettyref
+reference "sec:eccentricity"
+
+\end_inset
+
+.
+ The stimulus was fixed at 6.7 degrees eccentricity.
+ The stimulus consisted of a number of moving elements, identically specified
+ to those in but instead of being evenly distributed around a circle, the
+ elements were limited to a region on either the left or right side of the
+ display.
+ Both the spacing and the number of elements used varied independently;
+ accordingly, the total spatial extent of the stimulus varied from trial
+ to trial, but the and the values of both parameters are shown in Figure
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:number-spacing-values"
+
+\end_inset
+
+.
+ Each value of element spacing was tested using more than one value for
+ the number of moving targets,
+\end_layout
+
+\begin_layout Standard
+We found that with the elements confined to a segment of the circle, it
+ is easy to discern the direction of motion by noting the position of the
+ non-moving elements.
+ at either end, or by treating the entire set of moving elments as a group.
+ Se surmised that To remove the To added two non-moving elements to the
+ stimulus, at either end of the group of moving elmeents.
+ The flanking elements flickered in counterphase identically to those used
+ in counterphase stimuli in 
+\begin_inset CommandInset ref
+LatexCommand prettyref
+reference "sec:eccentricity"
+
+\end_inset
+
+.
+ On all trials, the flanking elements were positioned so that they were
+ 
+\begin_inset Formula $1^{\circ}$
+\end_inset
+
+ away from the adjacent moving element at its closest approach.
+ The angle formed by the two flankers was at least XXX and no more than
+ YYY
+\end_layout
+
+\begin_layout Standard
+When viewing the full circle stimuli of 
+\begin_inset CommandInset ref
+LatexCommand prettyref
+reference "sec:reversal"
+
+\end_inset
+
+, subjects were free to direct their attention to any region of the screen
+ they wished to, as long as they held fixation at the central point.
+ With stimuli covering only a portion of the circle, direction attention
+ would only be effective if Preliminary experiments suggested that subjects'
+ performance was indeed weaker when they could not anticipate the region
+ of the display where stimuli.
+ Therefore to allow subjects to and provide the most direct comparison to
+ 
+\begin_inset CommandInset ref
+LatexCommand prettyref
+reference "sec:reversal"
+
+\end_inset
+
+, we centered our stimuli on the left and rights sides of the screen, in
+ alternating blocks.
+ (anisotropies in the visual field, but also in MOT...)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+insert figure graphics here
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:number-of-elements"
+
+\end_inset
+
+Data from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:reversal"
+
+\end_inset
+
+are re-plotted to show the number of elements present in the stimulus at
+ PSE.
+ The number of elements in the screen at PSE is relatively constant across
+ eccentricities for each subject.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+insert figure graphics here
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:number-stimulus"
+
+\end_inset
+
+Stimulus diagram.
+ A number of moving elements are present on either the left or right sides
+ of the display.
+ Two additional flanking elements (marked *) are added.
+ The flanking elements are positioned 
+\begin_inset Formula $1^{\circ}$
+\end_inset
+
+ away from the adjacent elment at its closest approach.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+insert figure graphics here
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:number-spacing-values"
+
+\end_inset
+
+The set of stimuli used in this experiment.
+ The number of elements used and the spacing was tested at each combination
+ used
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Format of density/number experiment.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+insert figure graphics here
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Raw data from subject DA.
+ In the left axes, the proportion of responses agreeing with global motion
+ is plotted as a function of the number of moving elements in the stimulus.
+ Data is grouped according to the element density and separate lines are
+ drawn for each element.
+ On the right axes, the proportion of responses to global motion is plotted
+ as a function of the element density, with data grouped by the number of
+ moving elements.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+insert figure graphics here
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Logistic regression coefficients for each subject.
+ (stacked bar graph) A multiple logistic regression was used to apportion
+ subjects' responses to element count (red bars) or to element spacing.
+ Positive values for the density coefficient indicate that the proportion
+ of responses agreeing with local motion increased when density increased,
+ holding elmeent number constant; vise versa for the count coefficient.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Results of density/number experiment.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,132 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+I have a puzzle.
+ CF appears to be an alert, well-performing subject, but doesn't deem to
+ be subject to the crowding effect at all.
+ Weirdly, his responses to coherent motion contain a high number of errors
+ -- in fact, almost as many errors as he makes on counterphase AND incongruent
+ motion.
+\end_layout
+
+\begin_layout Standard
+It may be that this reflects 
+\begin_inset Quotes eld
+\end_inset
+
+second guessing
+\begin_inset Quotes erd
+\end_inset
+
+ on the part of CF.
+ Many of the errors he makes in coherent motion are at longer response times,
+ as shown in this plot:
+\end_layout
+
+\begin_layout Standard
+But CF cas been instructed to 
+\end_layout
+
+\begin_layout Standard
+I have been wondering about how to make this experiment more precisely analagous
+ to what happens inteh crowding literature.
+\end_layout
+
+\begin_layout Standard
+It may be that subjects vary in the degree that they are sensitive to different
+ features of the stimulus, such as local direction.
+ Actually this is not the first time I have seen a subject who did not do
+ well at the local 
+\end_layout
+
+\begin_layout Standard
+Therefore, I constructed an experiment to get at the discrimination thresholds
+ 
+\end_layout
+
+\begin_layout Subsection
+Methods
+\end_layout
+
+\begin_layout Standard
+In half of the trials, we presented counterphase motion elements, whose
+ long-range motion displacement varied according to the.
+ The amount of displacement 
+\end_layout
+
+\begin_layout Standard
+In a parallel and randomly interleaved set of trials, we presented stimuli
+ that 
+\end_layout
+
+\begin_layout Subsection
+Objection.
+\end_layout
+
+\begin_layout Standard
+It isn't clear that the discrimination threshold for change in position
+ of a counterphase-flickering object is the same as the discrimination threshold
+ related to the change in position of an incongruently-moving object.
+\end_layout
+
+\end_body
+\end_document
