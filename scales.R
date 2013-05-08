@@ -1,6 +1,7 @@
+library(ptools)
 library(scales)
 library(ggplot2)
-library(colorspace)
+source("colors.R")
 
 if ( !exists("use_unicode") || use_unicode) {
   curveleft = "\u21BA"
@@ -120,67 +121,6 @@ balloon <- list(geom_point(aes(size=n_obs))
 
 
 
-#mess with color scales.....
-library(colorspace)
-
-#conversion of cone-space to CIE space
-lms2xyz = function(lms) {
-  if(!(is.matrix(lms))) {
-    lms <- matrix(lms, nrow=1)
-  }
-  lms <- t(lms)
-  xyz <- solve(
-    matrix(c(
-      .7328, .4296, -0.1624,
-      -.7036, 1.6975, .0061,
-      .0030, -.0136, .9834),
-           nrow=3, byrow=TRUE),
-    lms)
-  XYZ(t(xyz))
-}
-col2RGB <- function(col) RGB(t(col2rgb(col)) / 255)
-setY0 <- mkchain(as("XYZ"), coords, `[<-`( , 2, 0), XYZ)
-
-#grayRamp <- as(col2RGB(c("gray10", "gray75")), "XYZ")
-
-#some isoluminant directions in RGB space
-redtint <- chain(c(1,-1,0), lms2xyz, setY0, as("RGB"), coords)
-bluetint <- chain(c(0,0,1), lms2xyz, setY0, as("RGB"), coords)
-greentint <- chain(c(-1,1,0), lms2xyz, setY0, as("RGB"), coords)
-yellowtint <- chain(c(0,0,-1), lms2xyz, setY0, as("RGB"), coords)
-
-pushRGB <- function(colors, direction) {
-  #adjust some colors to a direction, pushing as far as display will allow.
-  #do this in RGB_space because
-  #RGB is a linear space (unlike sRGB) where [0,1] bounds the gamut
-  coo <- coords(as(colors, "RGB"))
-  lower.headroom1 <- coo
-  lower.headroom2 <- aaply(coo, 1, `+`, direction)
-  upper.headroom1 <- (1-coo)
-  upper.headroom2 <- aaply(1-coo, 1, `-`, direction)
-  howmuch <- function(a, b) a/(a-b)
-  scale <- c(howmuch(lower.headroom1, lower.headroom2),
-             howmuch(upper.headroom1, upper.headroom2))
-  scale <- min(scale[is.finite(scale) & scale >= 0])
-  RGB(matrix(pmax(0, pmin(1,aaply(coo, 1, `+`, direction * scale))),
-             ncol=3))
-}
-
-low <- 0.10; med <- 0.75; high <- 0.79
-decision_colors <- c(hex(pushRGB(RGB(c(low, med), c(low, med), c(low, med)),
-                                 bluetint)),
-                     hex(RGB(high, high, high)),
-                     hex(pushRGB(RGB(c(med, low), c(med, low), c(med, low)),
-                                 redtint)))
-## print(as(col2RGB(decision_colors), "XYZ"))
-decision_values <- c(0, 0.5*((med-low)/(high-low)),
-                     0.5,
-                     1 - 0.5*((med-low)/(high-low)), 1)
-## (ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
-##  +     scale_fill_gradientn(colours=decision_colors,
-##                             values=decision_values,
-##                             breaks = seq(0.1, 0.9, 0.2),
-##                             space="rgb"))
 
 decision_contour <-
   list(
@@ -193,8 +133,6 @@ decision_contour <-
                          rescale=function(x,...) x,
                          oob=squish, space="rgb")
     )
-
-
 
 no_padding <- with_arg(expand=c(0,0), scale_x_continuous(), scale_y_continuous())
 #no_padding <- list(scale_x_continuous(expand=c(0,0)), scale_y_continuous(expand=c(0,0)))
@@ -243,7 +181,6 @@ mapColors <- function(data, map,
   index <- round((data - min) / (max-min) * (sampling - 1)) + 1
   colors[index]
 }
-
 
 color_pal <- #function(n) rainbow(n, start=0, end=0.75)
   discretize(gradient_n_pal(
