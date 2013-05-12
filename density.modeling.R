@@ -1,5 +1,3 @@
-##{{{ ---------- SETUP AND LOAD DATA -------------------------------------
-
 ## @knitr density-setup
 options(width = 70, useFancyQuotes = FALSE, digits = 4,
         lyx.graphics.center = TRUE)
@@ -159,7 +157,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##models.  That is, make predictions using the interesting nonlinear
   ##term that was fit in the circle model, then play around with the
   ##residuals.
-  ##Here's a data frame of the coefficients of my "full circle" models
+  ##Here's a data frame of my "full circle" models
   circle.models <- data.frame(model=I(models), subject=names(models),
                               stringsAsFactors=FALSE)
 
@@ -176,17 +174,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     newfit <- basic_inform_model(model, newdata)
     quickdf(c(group, list(model=I(list(newfit)))))
   })
-
-  ##here's a function to plot those predictions
-  dev.set(detail.dev)
-  plot(plot.spacing
-       + prediction_layers(predict_from_model_frame(basic.informed.models))
-       + labs(title="Predictions of spacing-causes-collapse model",
-              x=paste("spacing", sep="\n",
-                "(ignore the stratification with target number, that is not in this model.",
-                "The point is that we got slope of response~spacing right without even trying)")
-              ))
-
+  #
   dev.set(plot.dev)
   plot((plot.spacing %+% segment.folded.spindled.mutilated)
        + prediction_layers(predict_from_model_frame(
@@ -205,16 +193,16 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##sensitivity. Slope with respect to spacing is an odd metric
   ##though, as it's drawing off the nonlinear term of the model.
 
-  ##Let's think about what that means. We've captures the slope of
+  ##Let's think about what that means. We've captured the slope of
   ##lines of constant target number.  In the descriptive model, these
   ##slopes are determined by the term (content:I(1/spacing))
 
-  ## First let's compare this "spacing-causes-collapse" model to a "number-causes-collapse" model.
-  ##Rhetorically, we want to say that the data are more consistent
-  ##with a collapse with respect to spacing than they are with a
-  ##collapse of spacing with respect to number. So let's tweak the
-  ##models to respond to number rather than spacing (but otherwise
-  ##equal.)
+  ## First let's compare this "spacing-causes-collapse" model to a
+  ## "number-causes-collapse" model.  Rhetorically, we want to say that
+  ##the data are more consistent with a collapse with respect to
+  ##spacing than they are with a collapse of spacing with respect to
+  ##number. So let's tweak the models to respond to number rather than
+  ##spacing (but otherwise equal.)
 
   ## What we will end up finding is that the spacing model based on
   ## Experiment 1 predicts slope a lot better than the number model.
@@ -222,93 +210,148 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##Let's pull the same trick, but pretend that it's elemnent number
   ##that causes sensitivity collapse and not spacing. What should we
   ##see?
+
+  ##note that we even allow an additional parameter in this...
   number.informed.models <- adply(circle.models, 1, function(row) {
     bind[model=bind[model], ...=group] <- as.list(row)
     if (empty(match_df(as.data.frame(group), segment, names(group))))
       return(data.frame())
     newdata <- merge(group, segment)
     newfit <- number_inform_model(model, newdata, number.factor=2)
-    quickdf(c(group, list(model=I(list(newfit)))))
+     quickdf(c(group, list(model=I(list(newfit)))))
   })
-
-  dev.set(detail.dev)
-  plot(plot.spacing
-       + prediction_layers(predict_from_model_frame(number.informed.models))
-       + labs(title="Predictions from number-causes-collapse model", x="spacing"))
-
+  #
   dev.set(plot.dev)
   plot(plot.spacing %+% segment.folded.spindled.mutilated
        + prediction_layers(predict_from_model_frame(
          number.informed.models,
          fold=TRUE, spindle=TRUE, collapse=TRUE))
        + labs(title="Predictions of number-causes-collapse model")
-       + errorbars(segment.folded.spindled.mutilated))
-
-  dev.set(detail.dev)
-  plot(plot.extent %+% segment.folded.spindled.mutilated
-       + prediction_layers(predict_from_model_frame(
-         basic.informed.models,
-         fold=TRUE, spindle=TRUE, collapse=TRUE))
-       + labs(title=paste0("Extent plot. note increasing spacing/number\n",
-                "effects at larger extents?\n",
-                "(predictions are from spacing-causes-collapse model)"))
-       + errorbars(segment.folded.spindled.mutilated))
-
-  ## Compare the predictions for NJ and PBM in particular versus the
-  ## spacing-causes-collapse predictions.
+       + errorbars(segment.folded.spindled.mutilated)
+       + theme(aspect.ratio=1))
 
   # Now let's try to expand the model to describe the data we really see.
   ## This "descriptive models" is really a bit of data smoothing I'm
   ## applying, just to show the. However, it may provide a basis for
   ## comparing the number-model to the spacing-model as well.
   descriptive.models <- make_descriptive_models(segment)
-  dev.set(detail.dev)
+
+  fmla <- eval(formals(inform_model)$formula)
+  recast.fmla <- eval(formals(do_recast)$updater)
+
+  #so what we can do here is decide recasting formula to add, the
+  #predictor to add, and then see what the effects are...
+  fmla <- cbind(n_cw, n_ccw) ~ offset(pred) + content_global + content
+  recast.fmla <- . ~ . - I(1/spacing:content) + content_global
+  if (!exists("last.AIC")) last.AIC <- data.frame(1)[-1]
+  if (exists("this.AIC")) last.AIC <- this.AIC
   informed.models <- ldply(descriptive.models$subject, function(subj) {
     sub <- data.frame(subject=subj, stringsAsFactors=FALSE)
     subject.data <- match_df(segment, sub, on="subject")
-    bind[descriptive.model, informed.model, circle.model] <-
-      lapply(list(descriptive.models, basic.informed.models, circle.models),
+    bind[descriptive.model, circle.model] <-
+      lapply(list(descriptive.models, circle.models),
              function(x) match_df(x, sub)[[1,"model"]])
-    #
-    #here's the a plot of one subject's data without any folding and spindling
-    unfolded.prediction.plot <-
-      (ggplot(subset(predict_from_model(descriptive.model), content != 0))
-       + axes.basic + by.spacing
-       + prediction_layers(connect="number") + aes(y=fit)
-       + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
-    #
-    #if (interactive()) figure("source")
-    plot(unfolded.prediction.plot
-         + labs(title=sprintf("Descriptive fits for subject %s, unfolded",
-                  toupper(sub$subject))))
-    #
-    #if(interactive()) figure("compare")
-    recast.model <- do_recast(circle.model)
-    informed.recast.model <- inform_model(recast.model, recast_data(subject.data))
-    plot(unfolded.prediction.plot
-         %+% subset(predict_from_model(informed.recast.model), content != 0)
-         + labs(title=paste0("Displacement model + global content",
-                  " sum, subject ", toupper(sub$subject))))
+    recast.model <- do_recast(circle.model, recast.fmla)
+    informed.recast.model <- inform_model(recast.model, recast_data(subject.data), formula=fmla)
     #
     data.frame(subject=subj, model=I(list(informed.recast.model)), row.names=subj)
   })
-
-  #finally, plot "collapsed" predictions.
-  collapsed.predictions <-
+  #
+  #finally, plot "collapsed" predictions from the informed model,
+ collapsed.predictions <-
     predict_from_model_frame(informed.models,
                              fold=TRUE, spindle=TRUE, collapse=TRUE)
   dev.set(plot.dev)
-  plot((plot.spacing %+% segment.folded.spindled.mutilated)
-       + prediction_layers(collapsed.predictions)
-       + errorbars(segment.folded.spindled.mutilated)
-       + labs(title="Model fits (Experiment 1 model + global motion-energy)",
-              x=paste("Spacing", sep="\n")))
+  print((plot.spacing %+% segment.folded.spindled.mutilated
+         + prediction_layers(collapsed.predictions)
+         + errorbars(segment.folded.spindled.mutilated)
+         + labs(title="Model fits (Experiment 1 model + global motion-energy)",
+                x=paste("Spacing", sep="\n"))
+         + theme(aspect.ratio=1)))
+  this.AIC <- ldply(informed.models$model, fun(c(aic=extractAIC(x), dev=deviance(x))))
+  print(data.frame(subject=informed.models$subject, last=last.AIC, this=this.AIC))
 
+  subject.set <- c("nj", "ns", "pbm")
+  density.plotdata <- chain(
+    rbind.fill(
+      chain(segment.folded.spindled.mutilated,
+            subset(subject %in% subject.set),
+            merge(data.frame(type="data",
+                             model=c("spacing", "number", "global"),
+                             stringsAsFactors=FALSE),
+                  by=c())),
+      chain(basic.informed.models,
+            subset(subject %in% subject.set),
+            predict_from_model_frame(fold=TRUE, spindle=TRUE, collapse=TRUE),
+            mutate(type="prediction", model="spacing")),
+      chain(number.informed.models,
+            subset(subject %in% subject.set),
+            predict_from_model_frame(fold=TRUE, spindle=TRUE, collapse=TRUE),
+            mutate(type="prediction", model="number")),
+      chain(informed.models,
+            subset(subject %in% subject.set),
+            predict_from_model_frame(fold=TRUE, spindle=TRUE, collapse=TRUE),
+            mutate(type="prediction", model="global"))
+      ),
+    mutate(model=factor(model, levels=unique(model))))
+
+  ##organize observer in column, number in row
+  dev.set(plot.dev)
+  density.figure <- (
+    plot.spacing %+% subset(density.plotdata, type=="data")
+    + prediction_layers(subset(density.plotdata, type=="prediction"))
+    + errorbars(subset(density.plotdata, type="data"), facet=c("subject", "model"))
+    + facet_grid(model~subject, labeller=function(var, value) {
+      switch(var,
+             subject = paste("Observer", toupper(as.character(value))),
+             model = vapply(value, switch, "",
+               raw = "Raw data",
+               spacing = "Sensitivity(spacing)",
+               number = "Sensitivity(number)",
+               global = "Spacing & global carrier"))
+    })
+    + no_grid
+    + theme(aspect.ratio=1)
+    )
+  print(density.figure)
+  #agonizingly, plot the overly detailed model vs. smoothed data
+
+  dev.set(detail.dev)
+  ((Map %<<% modelmerge(informed.models, descriptive.models,
+                        c(".informed", ".descriptive")))
+   (f = function(model.informed, model.descriptive, subject, ...) {
+     #here's the a plot of one subject's data without any folding and spindling
+     unfolded.prediction.plot <-
+       (ggplot(subset(predict_from_model(model.descriptive), content != 0))
+        + axes.basic + by.spacing
+        + prediction_layers(connect="number") + aes(y=fit)
+        + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
+     #
+     #if (interactive()) figure("source")
+     plot(unfolded.prediction.plot
+          + labs(title=sprintf("Descriptive fits for observer %s, unfolded",
+                   toupper(subject))))
+     #
+     #if(interactive()) figure("compare")
+         #
+    plot(unfolded.prediction.plot
+         %+% subset(predict_from_model(model.informed), content != 0)
+         + labs(title=paste0("Displacement model + global content",
+                  " sum, observer ", toupper(subject))))
+   }))
+ 
   save(file=savefile, list=ls())
 }
 
-errorbars <- function(segment, x.axis="spacing") {
-  ddply(segment, .(label), here(summarize),
+modelmerge <- function(
+  x, y,
+  suffixes=paste0(".", c(deparse(substitute(x)), deparse(substitute(y))))) {
+  force(suffixes)
+  merge(x, y, by=intersect(names(x), names(y)) %-% c("model"), suffixes=suffixes)
+}
+
+errorbars <- function(segment, x.axis="spacing", facet="label") {
+  ddply(segment, facet, here(summarize),
         y = 0.5,
         x = max(
           switch(x.axis,
@@ -438,18 +481,20 @@ make_descriptive_models <- function(segment) {
 }
 
 basic_inform_model <- function(model, newdata=model$data) {
-  offs <- predict(model, newdata=newdata, type="terms")
+  recast.model <- do_recast(model)
+  recast.data <- recast_data(newdata, number.factor=0.5)
+  offs <- predict(recast.model, newdata=recast.data, type="terms")
   whichterm <- grep("displacementTerm", colnames(offs))
-  newdata$offs <- rowSums(offs[,whichterm, drop=FALSE])
-  #newdata$pred <- pred[,  whichterm] #rowSums(pred) #does this break earlier data?
+  recast.data$offs <- rowSums(offs[,whichterm, drop=FALSE])
+  recast.data$pred <- rowSums(offs)
   newfit <- glm(cbind(n_cw, n_ccw)
-                ~ offset(offs)
-                + content:factor(side) - 1
-                , data = newdata
+                ~ offset(pred)
+                + content #content_global
+                , data = recast.data
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
 }
 
-number_inform_model <- function(model, newdata=model$data, number.factor=1) {
+number_inform_model <- function(model, newdata=model$data, number.factor=2) {
   num.model <- numberize_model(model)
   #set number.factor to 2 if you think "number of targets in a hemifield"
   #is going to be more important than total number.
@@ -457,9 +502,10 @@ number_inform_model <- function(model, newdata=model$data, number.factor=1) {
   offs <- predict(num.model, newdata=newdata, type="terms")
   whichterm <- grep("displacementTerm", colnames(offs))
   newdata$offs <- rowSums(offs[,whichterm, drop=FALSE])
+  newdata$pred <- rowSums(offs)
   newfit <- glm(cbind(n_cw, n_ccw)
                 ~ offset(offs)
-                + content:factor(side) - 1
+                + content
                 , data = newdata
                 , family=num.model$family)
 }
@@ -478,7 +524,7 @@ numberize_model <- function(model, newdata=model$data) {
                       family=model$family)
 }
 
-do_recast <- function(model) {
+do_recast <- function(model, updater= . ~ . - I(1/spacing:content) + content_global) {
   #One thing we need to to is make the main model separate its two
   #different responses to "spacing." There's two "spacing" responses;
   #the one that parameterizes the slope (which I argue should not
@@ -501,9 +547,7 @@ do_recast <- function(model) {
   #induced motion, but that's what I'll do. I'll relate it to the
   #"extent" (space covered) by the stimulus. This has some resonance
   #with thinking of it as a center-surround type of effect.
-  new_formula <- update(model$formula, . ~ .
-                        - I(1/spacing:content)
-                        + content_global)
+  new_formula <- update(model$formula, updater)
 
   #Refit the model (this is still to the full-circle-data. Despite
   #splitting up the variables we should have the same result (so same
@@ -518,13 +562,13 @@ do_recast <- function(model) {
   new_model
 }
 
-inform_model <- function(model, newdata=model$data) {
+inform_model <- function(model, newdata=model$data,
+                         formula = ( cbind(n_cw, n_ccw)
+                                    ~ offset(pred)
+                                    + content:factor(side) + content_global
+                                    )) {
   pred <- predict(model, newdata=newdata, type="terms")
-  newdata$pred <- rowSums(pred) #does this break earlier data?
-  formula <- (cbind(n_cw, n_ccw)
-                   ~ offset(pred)
-                   + content:factor(side)                   + content_global
-                   )
+  newdata$pred <- rowSums(pred)
   suppress_matching_warnings(
     "truncate",
     newfit <- glm2(
