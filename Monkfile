@@ -1,4 +1,8 @@
+#use dependency discovery for R/MATLAB
+@monk/autodep/dependencies.monkfile
+
 #make a few plots relevant to motion ehergy
+
 --command Rscript
 --input motion_energy_plot.R
 --input --match motion_energy\.csv
