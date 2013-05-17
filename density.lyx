@@ -268,32 +268,14 @@ status collapsed
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
-\begin_layout Itemize
-Local 
-\begin_inset Quotes eld
-\end_inset
-
-obligatory summation
-\begin_inset Quotes erd
-\end_inset
-
- of motion energy is confounded with global motion energy that might contribute
- to 
-\begin_inset Quotes eld
-\end_inset
-
-induced motion
-\begin_inset Quotes erd
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-When holding direction content constant, number of elements is also confounded
- with aggregate motion energy
+\begin_layout Plain Layout
+Start with summation extend because my data is stronger there.
+ I don't believe in spacing effect...
+ (we are not really worried because the limit for tracking objects in MOT
+ appears to be ~2 per hemifield, which is a lot lower than the number of
+ elements in our stimulus.
 \end_layout
 
 \end_inset
@@ -302,30 +284,101 @@ When holding direction content constant, number of elements is also confounded
 \end_layout
 
 \begin_layout Standard
-In section 
+In 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "sec:results-basic"
 
 \end_inset
 
-we saw that the perceived direction of motion is more sensitive to the carrier
- motion when spacing is small but more sensitive to envelope motion when
- spacing is large.
- .
- However, because the stimulus consists of a varying number of elements
- spaced evenly around a circle, the count of elements in the stimulus is
- confounded with the spacing, between elements, one being inversely related
- to the other.
- Therefore in order to confirm that the sensitivity to displacement is a
- function of element spacing rather than number, we should attempt to distinguis
-h the two factors.
+we saw that the perceived direction of motion becomes more sensitive to
+ carrier motion when spacing is large.
+ Equivalently, we could describe the results of 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:results-basic"
+
+\end_inset
+
+ as being that observers were more sensitive to carrier strength when the
+ number of elements on the screen is large.
+ The relevant term in the model described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:model"
+
+\end_inset
+
+ is 
+\begin_inset Formula $\beta_{S}\frac{C}{S}$
+\end_inset
+
+, which could be wriutten equivalently as 
+\begin_inset Formula $\beta_{N}CN$
+\end_inset
+
+ with 
+\begin_inset Formula $N$
+\end_inset
+
+ being the number of elements in the scene.
+ We sketched an interpretation in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:model-visual-schematic"
+
+\end_inset
+
+ in which this term is described as being summed over a window surrounding
+ one attentively tracked element.
+ However as far as the data from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:results-basic"
+
+\end_inset
+
+ is concerned, this window of summation could be any size, from an interaction
+ directly between an element and its neighbor to a summation over the entire
+ visual field.
+ We therefore wished to determine how global the summation of carrier motion
+ was.
 \end_layout
 
 \begin_layout Standard
-Similarly, our proposed mechanism of obligatory summation is characterized
- as a function of the product of the carrier direction content with the
- element density (i.e.
+A parallel concern 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+this is the problem -- this experiment is designed to address both issues
+ but I think it only has leverage to address one or the other.
+\end_layout
+
+\end_inset
+
+is that we describe the decline in sensitivity to envelope motion, described
+ by the term 
+\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\end_inset
+
+, as being due to the number of elements in the stimulus.
+ Equivalently, we could have parameterized it in terms of the number of
+ elements on screen, in which case we would be talking about a decline in
+ sensitivity with increasing numbers of elements.
+ Therefore we wish to distinguish these two possibilities.
+\end_layout
+
+\begin_layout Standard
+Similarly, our model in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:model"
+
+\end_inset
+
+ characterized the response to carrier strength as being proportional to
+ the product of the carrier direction content with the element density (i.e.
  the inverse of the spacing); in 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -333,16 +386,84 @@ reference "sec:results-basic"
 
 \end_inset
 
- this factor has been confounded with the total motion energy in the scene
- (i.e.
- direction content multiplied by number of elements.) To verify that the
- degree of bias depends on spacing rather than total motion energy, we should
- try to distinguish spacing from element number.
+.
+ This factor can be interpreted as a summation of the carrier strength of
+ elements in some region, indicated by the red circle in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:model-visual-schematic"
+
+\end_inset
+
+.
+ This raises the question of how large that region is.
+ In particular, we wonder if the region of summation is of a similar size
+ as the 
+\begin_inset Quotes eld
+\end_inset
+
+critical distance
+\begin_inset Quotes erd
+\end_inset
+
+ controlled by the parameter 
+\begin_inset Formula $S_{C}$
+\end_inset
+
+ in our model.
+ 
+\begin_inset Note Greyedout
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+more discussion atmo 
+\end_layout
+
+\end_inset
+
+It has been suggested that crowding results from 
+\begin_inset Quotes eld
+\end_inset
+
+obligatory summation
+\begin_inset Quotes erd
+\end_inset
+
+ of features within some distance; however another interpretation of crowding
+ is that it results from a loss of information about spatial information,
+ and the obligatory summation might be considered to be a separate phenomenon.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Our model also included terms controlling a repulsive effect.
+ This effect did not appear to depend on the density 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+did I talk about this in the earlier section?
+\end_layout
+
+\end_inset
+
+ it may either reflect a sort of normalized average of the motion energy
+ across the visual field, or the influence of the carrier motion of an isolated
+ element on itself.
+ where am I going with this>:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Greyedout
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Another goal was to determine whether there were differences in performance
@@ -379,6 +500,10 @@ I don't find anything useful for crossing meridians.
 \end_inset
 
 
+\begin_inset Note Greyedout
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Note Note
 status open
 
@@ -512,17 +637,37 @@ A third reason concerns the induced motion effect we observed at larger
  Do these effects depend on element number???
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
-Therefore we wished to know whether the apparent reversal of the stimulus
- as a function of element spacing could be explained as an effect of the
- number of elements instead.
- Our approach was to show elements covering only a portion of the annulus,
- so that fewer elements were displayed at the same density.
+Therefore we wished to know whether the loss of ability to track changes
+ in position (i.e.
+ envelope motion) could be better explained as a function of element spacing
+ or of element number.
+ Our approach to both of these questions was to modify the stimulus to cover
+ only a portion of the scene, so that spacing and number can be varied independe
+ntly.
+ The necessarily involves varying the 
+\emph on
+extent
+\emph default
+ of the stimulus, which is the area in the visual scene spanned by all moving
+ objects.
+ We measure this as a distance along the circle at constant eccentricity
+ on which elements are located.
+ Any two of these variables (spacing, number, and extent) determine the
+ third, so to some extent our choice in favoring one pair of these variables
+ over another is arbitrary, but we hope to choose the description that makes
+ the most parsimonious account of the data.
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 It probably turns out we can't say anything useful on left vs.
@@ -543,6 +688,57 @@ Methods
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename numdensity-stimulus.pdf
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-stimulus"
+
+\end_inset
+
+Example frame from a partial-circle stimulus.
+ A number of moving elements are present on one side of the display.
+ Two additional flanking elements are added, which always have carrier strength
+ of 0 (i.e.
+ they flicker in counterphase.) The flanking elements are positioned 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{numbers$min.distance}
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+ away from the nearest moving elements at their closest approach.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \begin_inset Note Greyedout
 status collapsed
 
@@ -580,297 +776,6 @@ SUBTLE BUT IMPORTANT POINT: It's the slope of the lines that matters most,
  one in which element number causes collapse due to failure of attentive
  tracking or whatever.
  Work through why the model predicts this.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename numdensity-stimulus.pdf
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:density-stimulus"
-
-\end_inset
-
-Example frame from a partial-circle stimulus.
- A number of moving elements are present on one side of the display.
- Two additional flanking elements are added, which always have carrier motion
- of 0.
- The flanking elements are positioned 
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-$
-\backslash
-Sexpr{numbers$min.distance}
-\backslash
-degree$
-\end_layout
-
-\end_inset
-
- away from the nearest moving elements at their closest approach.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%density-conditions
-\end_layout
-
-\begin_layout Plain Layout
-
-<<density-conditions,fig.width=4,fig.height=4>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:density-conditions"
-
-\end_inset
-
-The combinations of element spacing and element number used in this experiment.
- Tick marks on symbols depict variations in spacing and number (which are
- also shown on the X axis.) Numbers reference stimuli demonstrated in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "movie:density-stimuli"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemovie[poster]{3in}{3in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_segment.mov",sep="")}}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "movie:density-stimuli"
-
-\end_inset
-
-Example stimuli for 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
-.
- In this movie, the elements are shown in the left hemifield; in the experiment,
- elements were shown in the right hemifield.
- Two stationary flankers with null carrier motion are present in all stimuli.
- Stimuli numbered 1 and 2 have identical numbers of targets, with large,
- then small spacing.
- Stimuli 3 and 4 show targets with identical spacing, with fewer and then
- more targets.
- The numbers correspond to stimuli marked with a number in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "fig:density-conditions"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:density-predictions"
-
-\end_inset
-
-Alternative predictions for 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
-.
- We show a collection of psychometric functions, stratified by spacing,
- that we collected in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
-
-\end_inset
-
-.
- The vertical line indicates a value of spacing that was selected for this
- subject to use in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
-.
- In the left column we show a prediction for how the proportion of responses
- answering 
-\begin_inset Quotes eld
-\end_inset
-
-clockwise
-\begin_inset Quotes erd
-\end_inset
-
- for these stimuli should vary with the element spacing in Experiment 3,
- all other parameters being equal.
- This corresponds to the intercepts of each point in the upper graph through
- the graph.
- This prediction is based on the model fit to Experiment 1, presuming that
- the decline in sensitivity seen by the is a function of element spacing.
- In the right column, we show a prediction made similarly but presuming
- that the decline in 
-\begin_inset Formula $\beta_{\Delta_{x}}$
-\end_inset
-
- observed in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:results-basic"
-
-\end_inset
-
- depends on element number.
- The fit is clearly better for the model in which 
-\begin_inset Formula $\beta_{\Delta_{x}}$
-\end_inset
-
- is a function of spacing rather than number.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(if we include two graphs in this figure) Note that the model is capable
- of predicting two apparently different patterns of behavior; one in which.
- The different patterns of behavior seen here are understood as products
- of PBM's higher sensitivity to envelope displacement versus NJ's higher
- sensitivity to total motion energy.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -952,6 +857,143 @@ Sexpr{chain(numbers$tested$spacing, max(.)/min(.),latex.format(digits=3))}
 \end_inset
 
  in element spacing.)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster]{3in}{3in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_segment.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "movie:density-stimuli"
+
+\end_inset
+
+Example stimuli for 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ In this movie, the elements are shown in the left hemifield; in the experiment,
+ stimuli alternated hemifieldsin trial blocks.
+ Two stationary flankers with no carrier carrier motion (i.e.
+ counterphase flicker_ are present in all stimuli.
+ Stimuli numbered 1 and 2 have identical numbers of targets, with large,
+ then small spacing.
+ Stimuli 3 and 4 show targets with identical spacing, with fewer and then
+ more targets.
+ The numbers correspond to stimuli marked with a number in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "fig:density-conditions"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-conditions
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-conditions,fig.width=4,fig.height=4>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-conditions"
+
+\end_inset
+
+The combinations of element spacing and element number used in this experiment.
+ Tick marks on symbols indicate variations in spacing and number (which
+ are also shown on the X axis.) Numbers reference stimuli demonstrated in
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "movie:density-stimuli"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1041,15 +1083,189 @@ reference "fig:density-conditions"
 \begin_layout Standard
 The particular values of direction content and envelope motion were chosen
  for each subject based on preliminary findings of Experiment 1.
- This choice was made by the experimenter with the goal to select values
- that would elicit a useful effect of element spacing (see 
+ We selected stimuli with the goal of finding a setting where both envelope
+ and carrier motion mechanisms would be sensitive to changes in spacing
+ and/or number.
+ Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:density-predictions"
 
 \end_inset
 
-)
+ shows the choice of stimulus for one observer, with reference to the model
+ fit shown as a heatmap as in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:results-contours"
+
+\end_inset
+
+.
+ Some subjects were tested using more than one value of envelope displacement
+ and/or carrier direction content as in Figure 1, but results were qualitatively
+ similar between the configurations tested so that we show them here averaged
+ (while our model still accounts for the particular values used.)
+\end_layout
+
+\begin_layout Standard
+Since the strength of crowding is typically not uniform across the visual
+ field and varies between hemifields 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Feng:2007lr"
+
+\end_inset
+
+, we tested stimuli positioned in the left and right visual fields.
+ Each session used an equal number of stimuli positioned in the left and
+ right hemifields, with the position alternating in blocks of 100 to 200
+ trials.
+ In preliminary experiments we found that having the stimulus appear randomly
+ between trials was detrimental to observer's performance as they could
+ not anticipate where to direct their attention for the brief stimulus.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Talk a little, in discussion maybe, about the similarities and differences
+ between our stimulus and 
+\begin_inset Quotes eld
+\end_inset
+
+crowding
+\begin_inset Quotes erd
+\end_inset
+
+ stimuli: in both cases flanker distance determines the percept, but in
+ crowding stimuli the flankers are irrelevant, however in ours the flankers
+ are necessarily relevant.
+ They are 
+\begin_inset Quotes eld
+\end_inset
+
+necessarily
+\begin_inset Quotes erd
+\end_inset
+
+ relevant because position itself is a relevant feature that subjects are
+ trying to discriminate.
+ Our stimuli change position over time; so that both target and flanker.
+ Accordingly, there is no distinct 
+\begin_inset Quotes eld
+\end_inset
+
+target
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+flanker
+\begin_inset Quotes erd
+\end_inset
+
+ in this stimulus; all elements serve both roles.
+ This requires the stimulus to be distributed all the way around the visual
+ field; or else hacks like our non-moving flanker.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Results 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Things look different to start out with, but recasting in terms of the model,
+ we will find that things are remarkable consistent between subjects.
+ NJ and PBM have the most leverage in this experiment, in different directions,
+ but consistent with the underlying core, so we will focus on them for examples.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-measurements"
+
+\end_inset
+
+An example of the measurements performed in Experiment 1.
+ (A) A plot of modeled observer responses from observer NJ, in the same
+ format as 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:results-contours"
+
+\end_inset
+
+, showing a slice through a fixed value of spacing.
+ in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:results-basic"
+
+\end_inset
+
+, at a fixed value of spacing.
+ We selected fixed values of 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ (envelope motion) and 
+\begin_inset Formula $C$
+\end_inset
+
+ (carrier strength) where we expected observers to be sensitive to changes
+ in element spacing (or equivalently element number), and also relatively
+ sensitive to the summation of local motion.
+ For this observer the selected stimulus configuration is shown by the star.
+ Stimuli used these fixed values and varied in element number and spacing
+ according to the stimulus set shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-conditions"
+
+\end_inset
+
+.
+ In the lower part of the graph we show data for two observers.
+ We plot the proportion of responses clockwise as a function of the spacing
+ between elements, connecting different lines for each element.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1122,70 +1338,35 @@ reference "sec:results-number"
 \end_layout
 
 \begin_layout Standard
-Since the strength of crowding is typically not uniform and varies between
- hemifields, we tested stimuli positioned in the left and right visual fields.
- Each session used an equal number of stimuli left wand right, which alternated
- in blocks of 100 to 200 trials.alternating in blocks of 
-\begin_inset Note Note
+\begin_inset Float figure
+wide false
+sideways false
 status open
 
 \begin_layout Plain Layout
-100 to 200 trials.
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
+\begin_inset Caption
 
 \begin_layout Plain Layout
-Talk a little, in discussion maybe, about the similarities and differences
- between our stimulus and 
-\begin_inset Quotes eld
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-predictions"
+
 \end_inset
 
-crowding
-\begin_inset Quotes erd
-\end_inset
-
- stimuli: in both cases flanker distance determines the percept, but in
- crowding stimuli the flankers are irrelevant, however in ours the flankers
- are necessarily relevant.
- They are 
-\begin_inset Quotes eld
-\end_inset
-
-necessarily
-\begin_inset Quotes erd
-\end_inset
-
- relevant because position itself is a relevant feature that subjects are
- trying to discriminate.
- Our stimuli change position over time; so that both target and flanker.
- Accordingly, there is no distinct 
-\begin_inset Quotes eld
-\end_inset
-
-target
-\begin_inset Quotes erd
-\end_inset
-
- or 
-\begin_inset Quotes eld
-\end_inset
-
-flanker
-\begin_inset Quotes erd
-\end_inset
-
- in this stimulus; all elements serve both roles.
- This requires the stimulus to be distributed all the way around the visual
- field; or else hacks like our non-moving flanker.
+Alternate predictions for Experiment 2.
+ Data for two observers are shown one in each column.
+ The data in the four columns shows four predictions for the same observer,
+ constructed using only data from Experiment 1.
  
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(if we include two graphs in this figure) Note that the model is capable
+ of predicting two apparently different patterns of behavior; one in which.
+ The different patterns of behavior seen here are understood as products
+ of PBM's higher sensitivity to envelope displacement versus NJ's higher
+ sensitivity to total motion energy.
 \end_layout
 
 \end_inset
@@ -1193,16 +1374,9 @@ flanker
 
 \end_layout
 
-\begin_layout Subsection
-Results 
-\begin_inset Note Note
-status open
+\end_inset
 
-\begin_layout Plain Layout
-Things look different to start out with, but recasting in terms of the model,
- we will find that things are remarkable consistent between subjects.
- NJ and PBM have the most leverage in this experiment, in different directions,
- but consistent with the underlying core, so we will focus on them for examples.
+
 \end_layout
 
 \end_inset
@@ -1239,7 +1413,7 @@ reference "sec:results-number"
 \end_inset
 
 .
- Basic results are shown in 
+ An example of the data collected 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:segment-rates"
@@ -1255,12 +1429,64 @@ clockwise
 \begin_inset Quotes erd
 \end_inset
 
- to a stimulus.
- Some subjects were tested using more than one value of envelope displacement
- and/or carrier direction content as in Figure 1, but results were qualitatively
- similar between sessions so these are shown averaged.
- Although there appear to be qualitative differences, there are also substantial
- similarities.
+ to a stimulus at a particular value of spacing and of element number, with
+ the spacing values organized along the x-axis and the y-values organized
+ along the y-axis.
+ At first glance the response patterns of these two observers appear very
+ different.
+ NJ's response probability changes little with element spacing, while being
+ greatly affected by changes in element number.
+ PBM, on the other hand, appears to change his response probability along
+ with changes in spacing, while being little affected by changes in element
+ number.
+ However, there are also common patterns.
+ There does not appear to be any interaction between spacing and slope;
+ 
+\end_layout
+
+\begin_layout Standard
+We can attempt to see how well these patterns are captured by the existing
+ model.
+ This we do in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-predictions"
+
+\end_inset
+
+.
+ As described earlier, there are different possible ways to do this; we
+ can interpret the change in displacement sensitivity 
+\begin_inset Formula $\beta_{\Delta x}$
+\end_inset
+
+ as being a function of the local spacing between elements or due to the
+ global number of elements; we can interpret the sensitivity to carrier
+ strength 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ as being controlled by a local summation (i.e., adding up carrier motion
+ over small regions of space) or a global summation (i.e.
+ adding up carrier motion over a large region or the entire hemifield elements
+ over a small region of space, or adding up over a large region), or as
+ being due to the changing number of elements.
+ Similarly, we can interpret the change in as being due to the changing
+ number of.
+ These four classes of predictions are shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-predictions"
+
+\end_inset
+
+, one per each row, overlaid over the same dataset from two observers.
+ From top to bottom, we show the 
+\end_layout
+
+\begin_layout Standard
+Thus we see that the errorAlthough there appear to be qualitative differences,
+ there are also substantial similarities.
  For example, the responses of observer NJ appears to be determined 
 \begin_inset Quotes eld
 \end_inset
