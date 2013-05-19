@@ -530,7 +530,7 @@ mkrates <- function(data,
 }
 
 #undo mkrates, convert counted yes/no data into binary data.
-unmkrates <- function(data, keep.count.cols=FALSE) {
+unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data)) {
   is <- is_rates(data, splits)
   if (!is.na(is)) {
     if (!is) {
@@ -543,7 +543,7 @@ unmkrates <- function(data, keep.count.cols=FALSE) {
   responses = inverse.rle(list(
       lengths = rbind(data$n_cw, data$n_ccw),
       values = replicate(nrow(data), c(TRUE,FALSE))))
-  data <- data[rows,]
+  data <- data[rows,columns, drop=FALSE]
   data$response <- responses
   if (keep.count.cols) {
     mutate(data, n_cw = ifelse(response, 1, 0), n_ccw = ifelse(response, 0, 1),
@@ -698,3 +698,96 @@ show_dup <- function(joined, which_dup = 1) {
   dups <- which(duplicated(joined$left.check))
   subset(joined, left.check %in% left.check[dups[which_dup]])
 }
+
+hosmerlem = function(model, newdata=model$data, groups=10) {
+  #Hosmer-Lemeshow statistic for goodness of fit, for a binomial
+  #response. We could use this in other ways, it's a
+  #deviance test essentially.
+  newdata$fit <- predict(model, newdata=newdata, type="response")
+  #make sure it is binary data and not grouped
+  newdata <- unmkrates(newdata, columns=c("fit"))
+  bind[y, yhat] <- newdata[c("response", "fit")]
+  cutyhat <- floor((order(yhat) - 1)/length(yhat) * groups)
+  obs = xtabs(cbind(1 - y, y) ~ cutyhat)
+  expect = xtabs(cbind(1 - yhat, yhat) ~ cutyhat)
+  chisq = sum((obs - expect)^2/expect)
+  P = pchisq(-chisq, groups - 1)
+  return(list(stat=chisq, dof=groups-1, p=P))
+}
+
+subset_deviance <- function(model, subset=TRUE, .enclos=parent.frame()) {
+  mask <- eval(substitute(subset), model$data, .enclos)
+  y <- model$y[mask]
+  mu <- model$fitted.values[mask]
+  wts <- model$prior.weights[mask]
+  sum(model$family$dev.resids(y, mu, wts))
+}
+
+normalize <- function(x) x / mean(x)
+standardize <- function(x) (x - mean(x)) / sd(x)
+shift_min <- function(x, ...) x - min(x, ...)
+normalize_min <- function(x) (x / min(x))
+
+colwise_mutate <- function(...) {
+  f <- colwise(...)
+  function(df) {
+    ff <- f(df)
+    df[names(ff)] <- ff
+    df
+  }
+}
+
+captureWarnings <- function(expr, print=TRUE) {
+  warnings <- NULL
+  i <- 0
+  result <- withCallingHandlers(
+    simpleWarning=function(w) {
+      if(print) message(w)
+      i <<- i + 1
+      warnings[[i]] <<- w
+      invokeRestart("muffleWarning")
+    },
+    tryCatch(
+      list(result=expr, warnings=warnings, error=NULL),
+      error=function(e) {
+        if(print) message(e)
+        list(result=NULL, warnings=warnings, error=e)
+    }))
+}
+
+functions.of <- function(..., .envir=parent.frame()) {
+  args <- quote_args(...)
+  function(...) {
+    lapply(quote_args(...), function(x) {
+      eval(template(function(.=...(args)) .(x)), .envir)
+    })
+  }
+}
+
+asisify <- function(df) {
+  quickdf(lapply(df, function(x) if (is.recursive(x)) I(x) else x))
+}
+
+nonrec <- function(df) {
+  #only nonrecursive columns
+  df[!vapply(df, is.recursive, FALSE)]
+}
+
+declare_data <- function(...) {
+  #make a data frame from a bunch of list arguments, automatically
+  #applyin asIs to recursive columns
+  chain(list(...), zip,
+        lapply(function(x) if(is.recursive(x)) I(x) else x),
+        quickdf)
+}
+
+qq <- template
+
+qe <- function(x, envir=parent.frame()) eval(
+                    template %()% list(substitute(x), parent.frame()),
+                    parent.frame())
+
+factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x)) {
+  if (filter(x)) factor(x, levels=unique(x)) else x
+}
+

@@ -16,62 +16,304 @@ infile <- "density.modeling.RData"
 outfile <- "combined.model.RData"
 plotfile <- "combined.model.pdf"
 
-formula.additions <- list(
-  #look, the fact that
-  global1 = . ~ . + content_global + I(content_global*full_circle) ,
-  #fits acceptably, while
-  global2 = . ~ . + content_global + I(content_global*full_circle) ,
-  #doesn't and
-  global3 = . ~ . + content_global:full_circle
-  #also doesn't, is disturbing. Makes me not want to trust the GNM package.
-  #I could try fitting these models in Stan...
+join <- function(...) suppressMessages(plyr::join(...))
+
+#We're going to try a nonlinear term for "surround size."
+#Define a "surround" term and a surround function
+
+#Relative summation strength as a function of width at narrow spacing.
+#i.e. at narrow widths the surround is saturated, at wide it drops off
+#(relatively). range 0 to 1
+#Relative summation strength as a function of extent
+#i.e. smaller fields stimulate a wider thing range 0 to 1
+term_and_fun <- function(params, vars, form) {
+    qe(list(
+      term = nonlinearTerm(...(params))(...(vars))(.(form)),
+      fun = (function(.a=...(quote_args %()% params), .b=...(quote_args %()% vars))
+             .(form))))
+}
+
+bind[term=surroundTerm, fun=surroundFun] <-
+  term_and_fun(
+    params = alist(width, strength),
+    vars = alist(density, extent),
+    form = quote(
+      strength * density
+      * (2*exp(extent/sqrt(width^2) * pi^2/3)
+         / (1+exp(extent/sqrt(width^2) * pi^2/3)) - 1)))
+
+bind[term=softMinSurroundTerm, fun=softMinSurroundFun] <-
+  term_and_fun(
+      params = alist(width, strength, sharpness),
+      vars = alist(density, extent),
+      form = quote(
+        -strength * density *
+        (log(exp(-extent*sharpness^2) + exp(-width*sharpness^2))
+         /sharpness^2
+         /width)))
+
+bind[term=spacingDisplacementTerm, fun=spacingDisplacementFun] <-
+  term_and_fun(
+    params=alist(cs, beta_dx),
+    vars=alist(spacing, displacement),
+    form=quote(beta_dx * displacement * (2 - 2/(1+exp(-cs/spacing)))))
+
+bind[term=softMinDisplacementTerm, fun=softMinDisplacementFun] <-
+  term_and_fun(
+    params=alist(beta_dx, cs, dsharpness),
+    vars=alist(displacement, spacing),
+    form=quote(
+      -displacement * beta_dx
+      * log(exp(-beta_dx*dsharpness^2)
+            + exp(-spacing/cs*dsharpness^2)/dsharpness^2)))
+
+#not used yet
+bind[term=softNumberDisplacementTerm, fun=softNumberDisplacementFun] <-
+  term_and_fun(
+    params=alist(beta_dx, cnum, field, dsharpness),
+    vars=alist(displacement, number, spacing),
+    form=quote(
+      NULL
+      #soft min of "number of elements" and "number of elements in field"
+      #soft min of...
+      #-displacement * log(exp(-beta_dx*dsharpness^2) + exp(-spacing/cs*dsharpness^2)/dsharpness^2)
+      ))
+
+showSurrounds <- function() {
+  layout(rbind(c(1,2),c(3,4),c(5,6), c(7,8)))
+
+  curve(surroundFun(width, 1, 1, 10), 0, 20, xname="width",
+        ylab="Relative summation strength",
+        xlab="Field width")
+  title("Logit summation, stimulus extent=10")
+  abline(v=10, lty="11", col="gray50")
+
+  curve(softMinSurroundFun(width, 1, 1, 1, 10), 0, 20, xname="width",
+        ylab="Relative summation strength",
+        xlab="Field width")
+  title("Soft-min summation, stimulus extent=10")
+  abline(v=10, lty="11", col="gray50")
+
+  curve(surroundFun(10, 1, 1, extent), 0, 20, xname="extent",
+        ylab="Relative summation strength",
+        xlab="Stimulus extent")
+  abline(v=10, lty="11", col="gray50")
+  title("Logit summation, field size=10")
+
+  curve(softMinSurroundFun(10, 1, 1, 1, extent), 0, 20, xname="extent",
+        ylab="Relative summation strength",
+        xlab="Stimulus extent")
+  abline(v=10, lty="11", col="gray50")
+  title("Soft-min summation, field size=10")
+
+  curve(spacingDisplacementFun(5, 1, spacing, 1), 0, 20, xname="spacing",
+        ylab="Displacement sensitivity",
+        xlab="Spacing")
+  title("Sigmoid displacement sensitivity, cs=5")
+  abline(v=5, lty="11", col="gray50")
+
+  curve(softMinDisplacementFun(1, 5, 2, 1, spacing), 0, 20, xname="spacing",
+        ylab="Soft-min sensitivity",
+        xlab="Spacing")
+  title("Soft-min displacement sensitivity, critical spacing=5")
+  abline(v=5, lty="11", col="gray50")
+
+  curve(spacingDisplacementFun(cs, 1, 1, 5), 0, 20, xname="cs",
+        ylab="Displacement sensitivity, spacing=5",
+        xlab="Critical spacing")
+  title("Sigmoid displacement sensitivity, cs=5")
+  abline(v=5, lty="11", col="gray50")
+
+  curve(softMinDisplacementFun(5, cs, 2, 1, 5), 0, 20, xname="cs",
+        ylab="Displacement sensitivity",
+        xlab="Critical Spacing")
+  title("Soft-min displacement sensitivity, cs=5")
+  abline(v=5, lty="11", col="gray50")
+}
+
+#things to try adding to the spacingish model to account for the
+#spacing experiment.
+model.types <- chain(
+  declare_data(
+    list(type = "spacing", dconstrain=list(c()),
+         fmla = (cbind(n_cw, n_ccw) ~
+                 displacementTerm(spacing, displacement,
+                                  start=c(cs=6, beta_dx=10))
+                 + content + I(content * abs(content)))),
+    list("softSpacing", list(c()),
+         (cbind(n_cw, n_ccw) ~
+          softMinDisplacementTerm(spacing, displacement,
+                                 start=c(cs=5, beta_dx=14, dsharpness=2))
+          + content + I(content * abs(content)))
+         ),
+    list("number", list(c()),
+         (cbind(n_cw, n_ccw) ~
+          displacementTerm(number_shown_as_spacing, displacement,
+                           start=c(cs=4, beta_dx=14))
+          + content + I(content * abs(content)))
+         ),
+    list("null", list(c()),
+         cbind(n_cw, n_ccw) ~ 1)
+    ),
+  colwise(factor_in_order)()
   )
 
-#we toy with weights to tease the fitting...
+#here are all the different models we will consider.
+model.additions <- chain(
+  merge(data.frame(type=c("softSpacing", "spacing", "number"), stringsAsFactors=FALSE),
+        declare_data(
+          list(addition = "none", constrain = list(c()),
+               fmla = . ~ .),
+          list("global", list(c()),
+               . ~ . + content_global),
+          list("local", list(c()),
+               . ~ . + content_local),
+          list("local_extent", list(c()),
+               . ~ . + content_local:extent),
+          list("local_fullcircle", list(c()),
+               . ~ . + content_local + content_local:full_circle),
+          list("global_fullcircle", list(c()),
+               . ~ . + content_global + content_global:full_circle),
+          list("global_fullcircle_displacement", list(c()),
+               . ~ . + displacement + content_global + content_global:full_circle),
+          list("local_global_fullcircle", list(c()),
+               . ~ . + content_global
+               + content_local + content_global:full_circle),
+          #should actually be equivalent
+          list("local_global_fullcircle_2", list(c()),
+               . ~ . + content_global
+               + content_local + content_local:full_circle),
+          list("global_extent_fullcircle", list(c()),
+               . ~ . + content_global + extent + content_global:full_circle),
+          list("local_extent_fullcircle", list(c()),
+               . ~ . + content_local + extent + content_local:full_circle),
+          list("logit_surround", list(c()),
+               . ~ . + surroundTerm(content_local, extent,
+                                    start = c(width=10, strength=6))),
+          list("soft_min_surround", c(sharpness=1),
+               . ~ . + softMinSurroundTerm(content_local, extent,
+                                   start = c(width=10, strength=6))),
+          list("soft_min_surround_sharp", list(c()),
+               . ~ . + softMinSurroundTerm(content_local, extent,
+                                   start = c(width=10, strength=6, sharpness=1)))
+          #content:side not identifiable by GNM for some reason...
+          ## list("global_fullcircle_contentside",
+          ##      . ~ . + content_global
+          ##      + content_global:full_circle + content:factor(side)),
+          ## list("globalside",
+          ##      . ~ . + content_global:side),
+          ## list("global_fullcircle_contentside",
+          ##      . ~ . + content_global + I(content_global*full_circle)
+          ##      - content + content:factor(side)),
+          )),
+  rbind(
+    declare_data(
+      list(type="null", addition="none", constrain=list(c()), fmla=. ~ .)
+      , .
+      )),
+  colwise(factor_in_order)()
+  )
+
+#with that setup, here are the fields which uniquely identify a "model type"
+model.identifiers <- (names(model.types)
+                      %v% names(model.additions)
+                      %-% c("model", "fmla", "dconstrain",
+                            "constrain", "start"))
+
+#we toy with weights to tease the fitting for number style. Not really helping...
 segment.weight <- 1
 #circle.weight <- 2
 
-fit_combined_model <- function(dataset, relweight=segment.weight) {
-  #what really isn't making sense here is why content_local seems to be useless
-  #(rank deficient, leading to NA values in the coefficients)
+fit_many_models <- function(model.df, combined.data,
+                            starts = model.types,
+                            scenarios = model.scenarios)
+  {
+  #for each given model....
+  results <- adply(model.df, 1, function(row) {
+    bind[model=bind[model], ...=model.group] <- row
+    print(model.group)
+    # skip if we don't have numdensity for this observer
+    if (all(merge(combined.data, model.group)$full_circle))
+      return (quickdf(list(model=list())))
+    #for all types of starting points (spacing/number)...
+    adply(starts, 1, function(row) {
+      bind[fmla=bind[starting.fmla], dconstrain=bind[dconstrain],
+           ...=start.group] <- row
+      print(cbind(model.group, start.group))
+      new.data <- merge(combined.data, model.group, names(model.group))
+      new.data$side <- factor(new.data$side)
+      # Then try the model update, using all the data.
+      # Then refit under each of the scenarios
+      adply(
+        merge(model.additions, start.group)[names(model.additions)], 1,
+        function(row) {
+          bind[fmla=bind[fmla], constrain=bind[constrain], ...=addition.group] <- row
+          print(cbind(model.group, start.group, addition.group))
+          new.fmla <- update(starting.fmla, fmla)
+          bind[new.model, warnings=warnings, error=error] <- captureWarnings(
+             update(model, new.fmla, data=new.data, verbose=FALSE,
+                   family=model$family,
+                   constrain=(c(names(constrain) %||% character(0),
+                                names(dconstrain) %||% character(0))),
+                   constrainTo=c(constrain, dconstrain)))
+          #return the model with some statistics....
+          if(!is.null(new.model)) {
+            statify(data.frame(
+              #todo this could be better factored out as running
+              #diagnostics on the completed dataset, or just DGAF
+              coef=I(list(coef(new.model))),
+              na.coef= sum(is.na(coef(new.model))),
+              model=I(list(new.model)),
+              warnings = I(list(warnings)),
+              n.warnings = length(warnings),
+              error=I(list(error)),
+              is.error=!is.null(error),
+              made.fit = TRUE
+              ))
+          }
+          else data.frame(
+              warnings = I(list(warnings)),
+              n.warnings = length(warnings),
+              error=I(list(error)),
+              is.error=!is.null(error),
+              made.fit = FALSE
+            )
+        })
+    })
+  })
+  asisify(results)
+}
 
-  # Also why does content:factor(side) fit poorly?
-  # Why does content_local fit poorly?
+#all of the stats we can compute
+stat.funs <- functions.of(model)(
+  deviance.all=deviance(model),
+  deviance.circle=subset_deviance(model, full_circle),
+  deviance.segment=subset_deviance(model, !full_circle),
+  edf=length(residuals(model)) - model$df,
+  aic.penalty=2 * (length(residuals(model)) - model$df.residual),
+  bic.penalty=(log(length(residuals(model))) *
+               (length(residuals(model)) - model$df.residual)),
+  aic=extractAIC(model)[2],
+  bic=extractAIC(model,
+    k=log(length(residuals(model))))[2],
+  hosmer.all=hosmerlem(model)$stat,
+  hosmer.circle=hosmerlem(model,
+    subset(model$data, full_circle))$stat,
+  hosmer.segment=hosmerlem(model,
+    subset(model$data, !full_circle))$stat
+  )
 
-  #What's interesting, though is that I get a passable fit using only
-  #content_global and ignoring content_local entirely.
-
-  #Also it seems prediction standard errors are NOT_calculated correctly by the
-  #GNM package, so forget them. Do a simulation later.
-
-  #dataset <- subset(dataset, full_circle==TRUE)
-  fmla.base <- (cbind(n_cw, n_ccw) ~
-           displacementTerm(spacing, displacement, start=c(cs=6, beta_dx=10))
-           + content + I(content * abs(content))
-           + bias:side - 1
-           )
-  fmla <- update(fmla.base, formula.additions[[2]])
-  gnm(  formula=fmla, data=dataset, family=binom.fam
-      , weights=with(dataset, ifelse(full_circle, 1, relweight))
-      )
+statify <- function(model.frame, functions=stat.funs) {
+  stats <- ldply(
+    model.frame$model,
+    function(model) quickdf(lapply(functions, function(y) y(model))))
+  model.frame[names(stats)] <- stats
+  model.frame
 }
 
 coef_frame <- function(model.frame) {
   ddply(model.frame, names(model.frame) %-% "model", function(x)
         quickdf(as.list(coef(x$model[[1]]))))
-}
-
-#fit a "combined" model to all subject data
-fit_combined_models <- function(combined.data) {
-  combined.models <- ddply_along(
-    combined.data,
-    "subject", function(vars, dataset) {
-      if (!any(dataset$exp_type == "numdensity")) return(data.frame())
-      print(vars)
-      #pull in the old stuff and recase the data
-      cm <- fit_combined_model(dataset)
-      quickdf(c(list(model=I(list(cm)))))
-    })
 }
 
 infile <- "density.modeling.RData"
@@ -86,23 +328,26 @@ main <- function(infile="density.modeling.RData",
                  outfile="combined.model.RData",
                  plotfile="combined.model.pdf") {
 
+  old <- gcinfo(TRUE)
+  on.exit(gcinfo(old))
+
   load(infile2)
   load(infile)
 
   motion.energy <- add_energies(read.csv(grid))
-  bind[sample.displacement, sample.content, sample.spacing] <- (
-    chain(motion.energy, subset(grid==TRUE),
-          mutate(spacing=target_number_all * 2*pi/eccentricity),
-          .[c("displacement", "content", "spacing")],
-          lapply(unique), lapply(sort)))
-  sample.displacement <<- sample.displacement
-  sample.content <<- sample.content
-  sample.spacing <<- sample.spacing
+  ## bind[sample.displacement, sample.content, sample.spacing] <- (
+  ##   chain(motion.energy, subset(grid==TRUE),
+  ##         mutate(spacing=target_number_all * 2*pi/eccentricity),
+  ##         .[c("displacement", "content", "spacing")],
+  ##         lapply(unique), lapply(sort)))
+  ## sample.displacement <<- sample.displacement
+  ## sample.content <<- sample.content
+  ## sample.spacing <<- sample.spacing
 
   if (interactive()) {
-    while(length(dev.list()) < 3) dev.new()
-    plot1 <- dev.list()[2]
-    plot2 <- dev.list()[2]
+    while(length(dev.list()) < 1) dev.new()
+    plot.dev <- dev.list()[1]
+    detail.dev <- dev.list()[2]
   } else {
     cairo_pdf(plotfile, onefile=TRUE)
     plot.dev <- dev.cur()
@@ -110,62 +355,126 @@ main <- function(infile="density.modeling.RData",
     on.exit(dev.off(plot.dev), add=TRUE)
   }
 
-  splits <- c(segment.config.vars, segment.experiment.vars, "exp_type")
-  splits <<- splits
-  if (!exists("combined.data")) {
-    combined.data <- chain(
-      data,
-      subset(exp_type %in% c("content", "spacing", "numdensity")),
-      mutate(side=factor(ifelse(exp_type %in% "numdensity", side, "all"))),
-      recast_data,
-      mkrates(splits %v% c("exp_type", "side")))
-    combined.data <<- combined.data
-  }
+  dev.set(plot.dev)
+  showSurrounds()
 
-  combined.models <- fit_combined_models(combined.data)
-  # check that coefs are not NA
-  coefs <- coef_frame(combined.models)
-  print(coefs)
+  model.df <<- model.df
 
-  prediction.dataset <- chain(
+  #all the data we have
+  splits <<- splits <- c(segment.config.vars, segment.experiment.vars, "side")
+  combined.data <<- combined.data <- chain(
+    data,
+    subset(exp_type %in% c("content", "spacing", "numdensity")),
+    mutate(side=factor(ifelse(exp_type %in% "numdensity", side, "all")),
+           ),
+    recast_data,
+    mkrates(splits))
+
+  prediction.dataset <<- prediction.dataset <- chain(
     c(segment.config.vars, segment.experiment.vars,
-      "bias", "exp_type", "full_circle", "side"),
-    subset(combined.data, exp_type=="numdensity", select=.),
+      "bias", "full_circle", "side"),
+    subset(combined.data, side!="all", select=.),
     unique,
     recast_data)
 
-  combined.predictions <-
-    predict_from_model_frame(combined.models,
-                             newdata=prediction.dataset)
+  #collect a bunch of fits to compare.
+  many.fits <<- many.fits <- fit_many_models(model.df, combined.data)
+  gc()
 
+  #attach the null deviance to each model
+  many.fits <- chain(
+    fits=many.fits,
+    subset(type=="null"),
+    ddply(names(model.df) %-% "model", summarize,
+          null.deviance.all=deviance.all,
+          null.deviance.segment=deviance.segment,
+          null.deviance.circle = deviance.circle),
+    merge(fits, by=names(model.df) %-% "model"))
+  if(interactive()) many.fits <<- many.fits
+
+  # Summarize the quality of fit across models...
+  chain(many.fits,
+        drop_recursive,
+#        subset(na.coef == 0),
+#       subset(n.warnings == 0),
+        merge(data.frame(subset=c("bic", "deviance", "segment", "circle"))),
+        ddply(c("type","addition"), mutate,
+              grpmean = mean(bic[type=="spacing" & is.finite(bic)])),
+        arrange(desc(grpmean)),
+        mutate(addition=factor_in_order(addition)),
+        mutate(., stat = cbind(
+                    bic=bic,
+                    all=deviance.all- null.deviance.all,
+                    segment=deviance.segment - null.deviance.segment,
+                    circle=deviance.circle - null.deviance.circle
+                    )[cbind(1:nrow(.), subset)]),
+        ddply(c("subset", "subject"),
+              mutate, stat=stat - min(stat[is.finite(stat)]) ),
+        mutate(stat=ifelse(is.finite(stat), stat, Inf)),
+        mutate(stat=stat/quantile(stat[is.finite(stat)],0.9)),
+#        ddply("subset", mutate, stat=stat/quantile(stat[is.finite(stat)], 0.9)),
+        force
+        ) -> plotdata
+
+  (ggplot(plotdata)
+   + aes(x=addition, y=stat, color=subject,# shape=subject,
+         #linetype=type, shape=type,
+         group=interaction(subject, type))
+   + facet_grid(subset ~ type)
+   + coord_cartesian(ylim=c(-0.2,1.5))
+   + geom_line(alpha=0.5)
+   + geom_point()
+   + theme(axis.text.x=element_text(angle=-90, hjust=0, size=rel(0.5)),
+           legend.position="bottom"))
+
+  bind[incomplete.model.types, complete.model.types] <- chain(
+    many.fits, drop_recursive,
+    ddply(model.identifiers, summarize, complete=all(made.fit)),
+    alply(data.frame(complete=c(FALSE, TRUE)), 1, merge, .))
+
+  bind[unproblematic.model.types, problematic.model.types] <- chain(
+    many.fits, drop_recursive,
+    ddply(model.identifiers, summarize,
+          problematic=!all(made.fit & n.warnings==0 & na.coef==0)),
+    alply(data.frame(problematic=c(FALSE, TRUE)), 1, merge, .))
+
+  #okay, well, pick the best overall model type...
+  best.model.type <- chain(
+    many.fits, drop_recursive,
+    match_df(unproblematic.model.types),
+    ddply(model.identifiers, summarize, total.bic=sum(bic)),
+    arrange(total.bic), .[1,]
+    )
+
+  # and let's plot its fits across the segment data
+  selected.model <- data.frame(type="spacing", addition="global_extent_fullcircle")
+  selected.model <- best.model.type
+
+  # and lets' plot its fits across coefficient data
+
+  #plot the predictions of some chosen model versus the data...
+  predictions <- predict_from_model_frame(
+    merge(many.fits, selected.model)
+    , newdata=prediction.dataset
+    , fold=TRUE, spindle=TRUE, collapse=TRUE)
   #plot.spacing et al come from density.modeling.RData
-  dev.set(2)
-  plot((plot.spacing %+% segment.folded.spindled)
-        + prediction_layers(combined.predictions))
-  dev.set(3)
-  plot((plot.spacing %+% segment.folded.spindled.mutilated
-        + prediction_layers(predict_from_model_frame(
-          combined.models,
-          newdata=prediction.dataset,
-          fold=TRUE, spindle=TRUE, collapse=TRUE))))
+  print((plot.spacing %+% segment.folded.spindled.mutilated
+         + prediction_layers(predictions, connect="number")
+         ))
 
-  # to this we add plotting the slopeModel results...
-  alply(combined.models, 1, function(chunk) {
-    bind[model=bind[model], ...=group] <- as.list(chunk)
-    fulldata <- subset(model$data, full_circle==TRUE)
-    plot_fit(model, data = fulldata, fold = use_folding)
-  })
+  #also as diagnostic, plot the predictions of the model on
+  #previous data.
+  if(FALSE) {
+    circle.select <- data.frame(selected.model, subject="pbm")
+    model <- match_df(many.fits, circle.select)$model[[1]]
+    data <- chain(match_df(combined.data, circle.select, mutate("exp_type")))
+    plotPredictions(merge())
+  }
 
   save(file=outfile, list=ls())
 }
 
 run_as_command()
-
-FALSE && {
-  print(do_recast(circle.models$model[[1]])$formula)
-  print(informed.models$model[[1]]$formula)
-  print(combined.models$model[[1]]$formula)
-} #original....
 
 # let's make sure I'm computing "local" and "global" correctly.
 FALSE && {
@@ -176,9 +485,37 @@ FALSE && {
         .+aes(content_local, content_global,
               color=factor(target_number_shown),
               shape=full_circle) +
-        facet_wrap(~target_number_all) + geom_point())}
+        facet_wrap(~target_number_all) + geom_point())
 
-#let's make a prediction on all of it...
+  #this would be a better way to test the "number versus spacing" deal
+  #but it's not giving any reasonable results.
+  #the whole tanh thing is an attempt to bound the relative field size between zero and 1
+  numberDisplacementTerm <-
+    (nonlinearTerm(load, beta_dx, fieldsize)(number, displacement, fullcircle)
+     ( (2 - 2/(1+exp(-number/load
+                     * ((tanh(fieldsize)*1)/2*(1-fullcircle) + (0+fullcircle)) )))
+      * beta_dx * displacement))
+  test.data <- subset(combined.data, subject=="pbm")
+  number.factor.model <- gnm(
+    (cbind(n_cw, n_ccw) ~
+     numberDisplacementTerm(target_number_shown, displacement, full_circle,
+                            start=c(cs=4, beta_dx=14, fieldsize=0.5))
+     + content_global:full_circle
+     + content + I(content * abs(content))
+     + bias - 1),
+    data=test.data,
+    family=binomial(link=logit.2asym(g=0.025, lam=0.025))
+    )
 
-#there needs to be a "fudge factor" I think... for full curcle versus
-#simple circle.  because global sum only goes over a hemifield?
+  number_factor_model <- gnm(
+    (cbind(n_cw, n_ccw) ~
+     spacingDisplacementTerm(number_shown_as_spacing, displacement,
+                             start=c(cs=4, beta_dx=14, fieldsize=0.5))
+     + content_global
+     + content_local
+     + content + I(content * abs(content))
+     + bias - 1),
+    data=test.data,
+    family=binomial(link=logit.2asym(g=0.025, lam=0.025))
+    )
+}
