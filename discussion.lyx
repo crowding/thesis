@@ -4,9 +4,6 @@
 \begin_header
 \textclass article
 \use_default_options true
-\begin_modules
-knitr
-\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -302,57 +299,28 @@ Today we identify the phi-phenomenon with the earliest stages of the motion
  sensing system; this accords both with what we have learned of the psychophysic
 s, and with its subjective appearance as a form of motion that is without
  attachment to object or form.
- If we presume that.....This has a good accordance with the results we have observed,
- and with the mechanism we propose, in which the carrier motion engages
- a mechanism that has very poor spatial selectivity, whereas the mechanism
- we engage by envelope motion is much more sensitive to the position of
- moving objects.
 \end_layout
 
 \begin_layout Standard
 We engage in this historical discussion to raise the point that the separate
- motion systems are not on equal perceptual footing.
+ motion systems are not on equal perceptual footing perceptually equal.
  While we have engaged in a more psychophysical analysis and task which
  attempts to put each component of our motion stimulus on equal footing,
  we are aware that these motions.
  Even though we engage in a form of 'nulling' by finding stimulus conditions
  in which, given a particular mixture of carrier and envelope, observers
- equivocate in judging the direction of motion, this does not mean that.
- In some experiments not detailed here, where observers directly adjusted
- the mixture of carrier and envelope motion, observers noted that the region
- of equivocation was not the region where motion was least, but was the
- region where it was 
+ may, this does not mean that.
+ In some experiments not detailed here, where observers adjusted the mixture
+ of carrier and envelope, observers noted that the region of equivocation
+ was not was the 
 \begin_inset Quotes eld
 \end_inset
 
-most confusing.
+most confusing
 \begin_inset Quotes erd
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Given the opportunity to describe their impressions of the stimuli, most
- observers were able to distinguish without prompting between envelope and
- carrier motion.
- More than one of them even chose the terms 
-\begin_inset Quotes eld
-\end_inset
-
-real motion
-\begin_inset Quotes erd
-\end_inset
-
- to denote the envelope motion and 
-\begin_inset Quotes eld
-\end_inset
-
-fake motion
-\begin_inset Quotes erd
-\end_inset
-
- to denote that of the carrier.
 \end_layout
 
 \begin_layout Subsubsection
@@ -949,21 +917,6 @@ Response times! Review evidence that the computation of long range motion
  takes longer than that for short range motion -- as evidenced in eye movements
  as well as perception.
  
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Need to talk about Devalous and De Valois 1993 -- since vernier acuituity
- merely a temporal verions of, but why to they not see induced motion in
- the displacement? Would motivate further investigation
 \end_layout
 
 \end_inset

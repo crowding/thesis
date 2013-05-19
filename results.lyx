@@ -1993,14 +1993,6 @@ clockwise
 \end_inset
 
 .
- Three observers are shown here; the complete set is shown in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:everything-sensitivity"
-
-\end_inset
-
-.
 \end_layout
 
 \end_inset
@@ -2185,14 +2177,6 @@ reference "fig:results-summation-increases"
  each panel has a different scale on the vertical axis; the gray horizontal
  line indicates a sensitivity of 0, which marks the boundary between summation
  and repulsion.
- Three observers are shown here; the complete set is shown in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:everything-summation"
-
-\end_inset
-
-.
 \end_layout
 
 \end_inset
@@ -2377,7 +2361,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<results-induced-stats,results="hide",echo=FALSE,warning=FALSE>>=
+<<results-induced-stats,results="hide",echo=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -2460,14 +2444,6 @@ reference "sub:results-induced-modeling"
  indicating a repulsive effect for weak direction content, while the second
  order coefficient weakens or reverses this effect for stronger direction
  contents.
- Three observers are shown here; the complete set is shown in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:everything-nonlinearity"
-
-\end_inset
-
-.
 \end_layout
 
 \end_inset
@@ -2648,7 +2624,7 @@ Sexpr{toupper(carissas.wierd)}
 \end_inset
 
 , indicating that small imbalances of motion energy at wide target spacings
- usually lead to repulsion, but that the repulsion is proportionately weaker,
+ usually lead to repulsion, but that the repulsion is ≈proportionately weaker,
  or even reverses, with stronger direction content.
 \end_layout
 
