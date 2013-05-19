@@ -25,7 +25,7 @@
 \end_preamble
 \use_default_options true
 \begin_modules
-pgfsweave
+knitr
 \end_modules
 \maintain_unincluded_children false
 \language english
@@ -293,20 +293,6 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex Sweave Options
-status open
-
-\begin_layout Plain Layout
-
-prefix.string=Rfigs/,echo=F,results=hide,cache=T,external=T
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -317,12 +303,17 @@ status open
 
 \begin_layout Plain Layout
 
-<<setup,cache=F>>=
+<<setup,cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-setCacheDir("cache")
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts$chunk$set(prefix.string="Rfigs/",echo=FALSE,results=hide,cache=TRUE)
 \end_layout
 
 \begin_layout Plain Layout
@@ -527,7 +518,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-load("Constant.Rdata")
+load("../../pools/Constant.Rdata")
 \end_layout
 
 \begin_layout Plain Layout
@@ -2278,7 +2269,7 @@ raw.response.rates <-
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -2287,7 +2278,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<response-rate-plot,fig=TRUE,external=TRUE,width=7,height=4>>=
+<<response-rate-plot,external=TRUE,fig.width=7,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -2376,7 +2367,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -2419,7 +2410,7 @@ response.time.subset <- subset(trials,
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -2428,7 +2419,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<response-time-plot,fig=TRUE,external=TRUE,width=7,height=4>>=
+<<response-time-plot,external=TRUE,fig.width=7,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout
