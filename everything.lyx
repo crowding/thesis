@@ -167,22 +167,12 @@ library(ptools)
 
 \begin_layout Plain Layout
 
-library(plyr)
-\end_layout
-
-\begin_layout Plain Layout
-
 pdf.options(encoding='ISOLatin2.enc')
 \end_layout
 
 \begin_layout Plain Layout
 
 source("scales.R")
-\end_layout
-
-\begin_layout Plain Layout
-
-source("library.R")
 \end_layout
 
 \begin_layout Plain Layout
@@ -669,8 +659,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<everything-summation,fig.width=7,fig.height=7,cache.extra=file.info("summation-plo
-t.RData")$mtime>>=
+<<summation,fig.width=7,fig.height=7,cache.extra=file.info("summation-plot.RData")$mt
+ime>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -736,30 +726,7 @@ reference "sub:results-basic-summation"
 \end_layout
 
 \begin_layout Subsection
-Nonlinearity of repulsion effect
-\end_layout
-
-\begin_layout Standard
-Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:everything-nonlinearity"
-
-\end_inset
-
- depicts the strength of the repulsion effect 
-\begin_inset Formula $M_{I}\left(C\right)$
-\end_inset
-
- as a function of carrier strength for all observers.
- The construction is described in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:results-induced-modeling"
-
-\end_inset
-
-.
+Nonlinearity 
 \end_layout
 
 \begin_layout Standard
@@ -770,32 +737,27 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-%everything-nonlinear
+%everything-summation
 \end_layout
 
 \begin_layout Plain Layout
 
-<<everything-nonlinear,fig.width=7,fig.height=7,cache.extra=file.info("nonlinearity-
-plot.RData")$mtime>>=
+<<summation,fig.width=7,fig.height=7,cache.extra=file.info("summation-plot.RData")$mt
+ime>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-load("nonlinearity-plot.RData") 
+load("nonlinear-plot.RData") 
 \end_layout
 
 \begin_layout Plain Layout
 
-environment(nonlinearity_plot) <- environment() #ugh
-\end_layout
-
-\begin_layout Plain Layout
-
-nonlinearity_plot() 
+nonlinear_plot() 
 \end_layout
 
 \begin_layout Plain Layout
@@ -842,6 +804,158 @@ reference "sub:results-induced-modeling"
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Predictions for single-circle data
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+missingfigure{figure goes here}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-density-predictions"
+
+\end_inset
+
+ Predictions from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:results-basic"
+
+\end_inset
+
+, extrapolated to the partial-circle stimuli.
+ Predictions are obtained over four assumptions concerning the globality
+ or locality of effects of element spacing on envelope or carrier motion
+ mechanisms.
+ The format of this figure is the same as 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-predictions"
+
+\end_inset
+
+ but shows the entire set of observers.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sensitivity to carrier motion as a function of the stimulus extent.
+ Data come from both 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ Curved lines show a model fit parameterized by the size of the summation
+ field, which is indicated by the vertical dashed line.
+ Segmented lines show values obtained by binning trials of equal extents.
+ The format of this figure is the same as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-model-sensitivity"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sensitivity to carrier motion as a function of the stimulus extent.
+ Data come from both
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
