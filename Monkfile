@@ -121,29 +121,24 @@
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
 #--phony --invisible intermediate_pdf
 
-#--command '$(LYX)' %-e pdf4 --input --match ([^_].*)\.lyx
-#--output --invisible {0}.pdf
-
 --command '$(LYX)' %-e knitr --input --match ([^_].*)\.lyx
 --output --invisible {0}.Rnw
 
-#--command '$(LYX)' %-e latex --input --match ([^_].*)\.lyx
-#--output --invisible {0}.tex
-
---command Rscript %-e "\"library(knitr); knit('{0}.Rnw', '{0}.tex')\""
---input --invisible --match ([^_].*)\.Rnw
---output --invisible --once {0}.tex
+--command Rscript %-e "\"library(knitr); knit('{0}{1}.Rnw', '{1}.tex')\""
+--input --invisible --match ((?:.*/)?)([^_].*)\.Rnw
+--output --invisible --once {0}{1}.tex
 
 --command --invisible --input --match (.*)_weave\.R$
 --output --invisible --once {0}.tex
 
---command latexmk %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
---input --match ([^_].*)\.tex$
+--command ( cd ./{0} && latexmk 
+%-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
+--input --match --invisible ((?:.*/)?)([^_].*)\.tex$ {1}.tex
 #--input --listing --invisible {0}.in
---output --invisible {0}.pdf
---output --invisible {0}.fls
+--output --invisible {0}{1}.pdf
+--output --invisible {0}{1}.fls
 --phony --invisible latex
---invisible --input intermediate_pdf
+--invisible --input intermediate_pdf )
 
 --command grep '^INPUT' --match --input (.*)\.fls
 | cut %-d "' '" %-f 2- > --output {0}.in
