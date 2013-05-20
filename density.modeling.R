@@ -162,18 +162,18 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                               stringsAsFactors=FALSE)
 
   basic.informed.models <-
-  adply(circle.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <- as.list(row)
-    #skip if there is not corresponding segment data
-    if (empty(match_df(as.data.frame(group), segment, names(group))))
-      return(data.frame())
-    newdata <- merge(group, segment)
-    #Let's fix a model taking the position-discrimination as granted.
-    #To do that, we'll predict the old model terms over the new data,
-    #then use that as an offset in the new model.
-    newfit <- basic_inform_model(model, newdata)
-    quickdf(c(group, list(model=I(list(newfit)))))
-  })
+    asisify(adply(circle.models, 1, function(row) {
+      bind[model=bind[model], ...=group] <- as.list(row)
+      #skip if there is not corresponding segment data
+      if (empty(match_df(as.data.frame(group), segment, names(group))))
+        return(data.frame())
+      newdata <- merge(group, segment)
+      #Let's fix a model taking the position-discrimination as granted.
+      #To do that, we'll predict the old model terms over the new data,
+      #then use that as an offset in the new model.
+      newfit <- basic_inform_model(model, newdata)
+      quickdf(c(group, list(model=I(list(newfit)))))
+    }))
   #
   dev.set(plot.dev)
   plot((plot.spacing %+% segment.folded.spindled.mutilated)
@@ -183,10 +183,21 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + labs(title="Predictions of spacing-causes-collapse model",
               x=paste("Spacing", sep="\n")))
 
+  carrier.field.guess <- 2
+  number.field.guess <- 2
+  quad.informed.models <-
+    chain(
+      circle.models
+      , join(expand.grid(carrier.local=c(TRUE, FALSE),
+                         envelope.local=c(TRUE, FALSE)))
+      , adply(
+        1, chain,
+        )
+      , asisify)
+
   ##That is really cool. this gets the slope with respect to "spacing"
-  ##pretty much right, with only offset terms. The slope of every line here
-  ##is determined by exp. 1 and only the y-intercept is being adjusted
-  ##to exp.2.
+  ##pretty much right, with only offset terms. The sense of slope with
+  ##respoec tot spacing and with respect to number is 
 
   ##Now what does that success actually tell us? It's telling us how
   ##the "content" sensitivity trades off with the spacing
@@ -482,14 +493,14 @@ make_descriptive_models <- function(segment) {
 
 basic_inform_model <- function(model, newdata=model$data) {
   recast.model <- do_recast(model)
-  recast.data <- recast_data(newdata, number.factor=0.5)
+  recast.data <- recast_data(newdata, number.factor=2)
   offs <- predict(recast.model, newdata=recast.data, type="terms")
   whichterm <- grep("displacementTerm", colnames(offs))
   recast.data$offs <- rowSums(offs[,whichterm, drop=FALSE])
   recast.data$pred <- rowSums(offs)
   newfit <- glm(cbind(n_cw, n_ccw)
                 ~ offset(pred)
-                + content #content_global
+            #    + content #content_global
                 , data = recast.data
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
 }
@@ -508,6 +519,19 @@ number_inform_model <- function(model, newdata=model$data, number.factor=2) {
                 + content
                 , data = newdata
                 , family=num.model$family)
+}
+
+flex_inform_model <- function(model, newdata=model$data,
+                              carrier.local=TRUE,
+                              envelope.local=TRUE,
+                              carrier.factor=2, envelope.factor=2) {
+  if (!envelope_local)
+    model <- numberize_model(model)
+
+  if (!carrier_local) NULL
+
+  newdata <- recast_data(
+    newdata, number.factor=carrier.factor, carrier.factor=carrier.factor)
 }
 
 numberize_model <- function(model, newdata=model$data) {

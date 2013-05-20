@@ -561,8 +561,44 @@ take_nearest <- function(data, candidates) {
   restrict[findInterval(data, breaks, rightmost.closed=TRUE)]
 }
 
+which.pmax <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  Reduce(x=seq_along(args), init=list(-Inf, 0), function(aia, ib) {
+    a <- aia[[1]]; ia <- aia[[2]]
+    b <- args[[ib]]
+    keep <- a >= b & !(na.rm & is.na(b))
+    list(ifelse(keep, a, b), ifelse(keep, ia, ib))
+  })[[2]]
+}
+
+which.pmin <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  Reduce(x=seq_along(args), init=list(Inf, 0), function(aia, ib) {
+    a <- aia[[1]]; ia <- aia[[2]]
+    b <- args[[ib]]
+    keep <- a <= b & !(na.rm & is.na(b))
+    list(ifelse(keep, a, b), ifelse(keep, ia, ib))
+  })[[2]]
+}
+
+abs.pmin <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  select <- which.pmin %<<% c(na.rm=na.rm) %()% lapply(args, abs)
+  arr <- cbind %()% lapply(args, unattr)
+  arr[cbind(seq_len(nrow(arr)), select)]
+}
+
+abs.pmax <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  select <- which.pmax %<<% c(na.rm=na.rm) %()% lapply(args, abs)
+  arr <- cbind %()% lapply(args, unattr)
+  arr[cbind(seq_len(nrow(arr)), select)]
+}
+
 #compute columns for total "local" motion energy and total "global" motion energy
-recast_data <- function(data, number.factor=1) {
+recast_data <- function(data, number.factor=2,
+                        envelope.factor = number.factor,
+                        content.factor = number.factor) {
   chain(data,
         mutate_when_missing(
           eccentricity = 20/3,
@@ -572,12 +608,15 @@ recast_data <- function(data, number.factor=1) {
           content_ccw = (1 - content)/4,
           side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
         mutate(
-          content_global = content * target_number_shown,
           content_local = content / spacing,
+          content_global = sign(content) * pmin(
+            abs(content) * target_number_shown,
+            abs(content) * target_number_all/content.factor),
           full_circle = target_number_shown == target_number_all,
           extent = spacing * target_number_shown,
-          number_shown_as_spacing = (eccentricity*2*pi/
-                                     (number.factor*target_number_shown))))
+          number_shown_as_spacing = abs.pmin(
+            target_number_shown,
+            target_number_all / envelope.factor)))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)

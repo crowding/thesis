@@ -335,14 +335,6 @@ main <- function(infile="density.modeling.RData",
   load(infile)
 
   motion.energy <- add_energies(read.csv(grid))
-  ## bind[sample.displacement, sample.content, sample.spacing] <- (
-  ##   chain(motion.energy, subset(grid==TRUE),
-  ##         mutate(spacing=target_number_all * 2*pi/eccentricity),
-  ##         .[c("displacement", "content", "spacing")],
-  ##         lapply(unique), lapply(sort)))
-  ## sample.displacement <<- sample.displacement
-  ## sample.content <<- sample.content
-  ## sample.spacing <<- sample.spacing
 
   if (interactive()) {
     while(length(dev.list()) < 1) dev.new()
