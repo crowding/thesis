@@ -412,7 +412,7 @@ critical distance
 
  in our model.
  
-\begin_inset Note Greyedout
+\begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
@@ -462,7 +462,7 @@ did I talk about this in the earlier section?
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Greyedout
+\begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
@@ -500,7 +500,7 @@ I don't find anything useful for crossing meridians.
 \end_inset
 
 
-\begin_inset Note Greyedout
+\begin_inset Note Note
 status collapsed
 
 \begin_layout Plain Layout
@@ -786,7 +786,7 @@ SUBTLE BUT IMPORTANT POINT: It's the slope of the lines that matters most,
 \begin_layout Standard
 The task was identical to that in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "sec:results-basic"
 
 \end_inset
@@ -808,7 +808,7 @@ Sexpr{sprintf("%.2f",numbers$segment.ecc)}
  The stimulus consisted of a number of moving elements, identically specified
  to those in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "sec:results-basic"
 
 \end_inset
@@ -819,7 +819,7 @@ reference "sec:results-basic"
  the total spatial extent of the stimulus varied from trial to trial.
  The values of spacing and element count we used are shown in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset
@@ -911,7 +911,7 @@ reference "sec:results-number"
  more targets.
  The numbers correspond to stimuli marked with a number in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset
@@ -946,7 +946,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<density-conditions,fig.width=4,fig.height=4>>=
+<<density-conditions,fig.width=5,fig.height=4>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -975,15 +975,15 @@ name "fig:density-conditions"
 
 The combinations of element spacing and element number used in this experiment.
  Tick marks on symbols indicate variations in spacing and number (which
- are also shown on the X axis.) Numbers reference stimuli demonstrated in
- 
+ are also shown on the X axis.) Numbers reference the stimuli demonstrated
+ in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "movie:density-stimuli"
 
 \end_inset
 
-
+.
 \end_layout
 
 \end_inset
@@ -1000,7 +1000,7 @@ reference "movie:density-stimuli"
 We found it necessary to include two stationary flanking elements, indicated
  in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "fig:density-stimulus"
 
 \end_inset
@@ -1013,6 +1013,9 @@ reference "fig:density-stimulus"
  (i.e.
  their carriers flickered in counterphase.) The flanking elements were positioned
  so that they were 
+between 
+\lang english
+
 \begin_inset ERT
 status collapsed
 
@@ -1020,7 +1023,22 @@ status collapsed
 
 $
 \backslash
-Sexpr{numbers$min.distance}
+Sexpr{min(numbers$min.distance)}
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{max(numbers$min.distance)}
 \backslash
 degree$
 \end_layout
@@ -1064,15 +1082,15 @@ degree$
  outermost moving elements to the fixation point.
  The movie shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "movie:density-stimuli"
 
 \end_inset
 
-demonstrates the stimuli with flanking elements, for the four configurations
+ demonstrates the stimuli with flanking elements, for the four configurations
  indicated with numbers in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand ref
 reference "fig:density-conditions"
 
 \end_inset
@@ -1086,7 +1104,7 @@ The particular values of direction content and envelope motion were chosen
  We selected stimuli with the goal of finding a setting where both envelope
  and carrier motion mechanisms would be sensitive to changes in spacing
  and/or number.
- Figure 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:density-predictions"
@@ -1103,9 +1121,9 @@ reference "fig:results-contours"
 
 .
  Some subjects were tested using more than one value of envelope displacement
- and/or carrier direction content as in Figure 1, but results were qualitatively
- similar between the configurations tested so that we show them here averaged
- (while our model still accounts for the particular values used.)
+ and/or carrier strength, but results were qualitatively similar between
+ the configurations tested, so we show them here averaged (while our model
+ still accounts for the particular values used.)
 \end_layout
 
 \begin_layout Standard
@@ -1205,6 +1223,34 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%density-measurements
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-measurements, fig.width=5, fig.height=2.5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -1215,6 +1261,10 @@ name "fig:density-measurements"
 \end_inset
 
 An example of the measurements performed in Experiment 1.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
  (A) A plot of modeled observer responses from observer NJ, in the same
  format as 
 \begin_inset CommandInset ref
@@ -1253,9 +1303,19 @@ reference "fig:density-conditions"
 \end_inset
 
 .
- In the lower part of the graph we show data for two observers.
+ In the lower part of the graph w
+\end_layout
+
+\end_inset
+
+We show data for two observers.
  We plot the proportion of responses clockwise as a function of the spacing
- between elements, connecting different lines for each element.
+ between elements, connecting lines for each element.
+ Lines show how observers' proportion of responses clockwise varied as a
+ function of element spacing, with other parameters (envelope displacement,
+ carrier strength and element number) held constant.
+ Colors indicate different numbers of elements on the display.
+ Error bars show the standard error for each data point (same for all points.)
 \end_layout
 
 \end_inset
@@ -1269,6 +1329,10 @@ reference "fig:density-conditions"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 \begin_inset Float figure
 wide false
 sideways false
@@ -1337,10 +1401,15 @@ reference "sec:results-number"
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
-Of the subjects who had previously participated in 
+Of the observers who had previously participated in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand nameref
 reference "sec:results-basic"
 
 \end_inset
@@ -1360,16 +1429,16 @@ Sexpr{length(unique(segment$subject))}
 
  participated in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand nameref
 reference "sec:results-number"
 
 \end_inset
 
 .
- An example of the data collected 
+ An example of the data collected is shown in 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:segment-rates"
+reference "fig:density-measurements"
 
 \end_inset
 
@@ -1410,7 +1479,7 @@ editorializing....
 
 \end_inset
 
- it would appear that these subjects are using different rules to perform
+ it would appear that these two observers are using different rules to perform
  the task.
  However, interpreting these patterns of behavior in detail requires correlating
  them with the measurements from 
@@ -1427,8 +1496,7 @@ reference "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
-We can attempt to see whether these patterns are captured by the existing
- model.
+We tried to see whether these patterns are captured by the existing model.
  Our model predicts that there will be a progressive change in sensitivity
  to envelope motion as a function of spacing (or number) and there will
  be a change in sensitivity to carrier motion based on changes in the number
@@ -1437,9 +1505,9 @@ We can attempt to see whether these patterns are captured by the existing
  change, as either envelope or carrier motion makes a larger contribution,
  despite the envelope motion and carrier strength remaining the same for
  all stimuli.
- So we expect to see the same gross features 
+ So we expect to see the same gross features as in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:density-measurements"
 
 \end_inset
@@ -1465,7 +1533,7 @@ reference "sec:results-basic"
 \begin_layout Standard
 We asked how well the results from 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand nameref
 reference "sec:results-number"
 
 \end_inset
@@ -1477,17 +1545,24 @@ reference "sec:model"
 
 \end_inset
 
- and fit to data taken from Experiment 1.
+ and fit to data taken from 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+.
  There are different possible ways to obtain predictions for 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sec:results-number"
 
 \end_inset
 
 's data based on the full circle stimuli used in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand nameref
 reference "sec:results-basic"
 
 \end_inset
@@ -1500,7 +1575,8 @@ and
 \begin_inset Formula $\beta_{S}$
 \end_inset
 
-; We can interpret the change in displacement sensitivity 
+.
+ We can interpret the change in displacement sensitivity 
 \begin_inset Formula $\beta_{\Delta x}$
 \end_inset
 
@@ -1603,7 +1679,7 @@ status open
 \begin_layout Standard
 These four sets of predictions are shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:density-predictions"
 
 \end_inset
@@ -1619,7 +1695,7 @@ reference "sec:results-basic"
 
  with little input from 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand nameref
 reference "sec:results-number"
 
 \end_inset
@@ -1629,7 +1705,14 @@ reference "sec:results-number"
  Four rows show predictions over four assumptions (global or local summation
  of carrier motion; global or local change in envelope motion sensitivity);
  two columns correspond to models that were fit to two example observers
- (the entire set is shown in 
+ (the entire set is shown in the appendix in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-density-predictions"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1662,7 +1745,7 @@ local
 \begin_inset Quotes erd
 \end_inset
 
- the carrier and displacement sensitivity is interpreted, with reference
+ the carrier and displacement sensitivity is interpreted with reference
  to the fits obtained from 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1670,13 +1753,13 @@ reference "sec:results-basic"
 
 \end_inset
 
-.
+, ad a function of spacing without regard top the extent of the stimulus.
  Different assumptions about the size of the regions of spatial interaction
  lead to somewhat different results, but do not change the qualitative agreement
  or disagreement with the data.
- We do note that in the raw data there is no appearance of saturating behavior
- as a function of the extent of the stimulus; adding another element or
- changing the spacing seems to have the same relative effect for larger
+ We do note that in the raw data there is little appearange of saturating
+ behavior as a function of the extent of the stimulus; adding another element
+ or changing the spacing seems to have the same relative effect for larger
  stimuli as for smaller.
  We will address the question of how large the spatial interaction regions
  are subsequently.
@@ -1853,10 +1936,6 @@ sharpness
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption

@@ -12,6 +12,8 @@ source("slopeModel.R")
 source("library.R")
 setup_theme()
 
+density.example.subjects <- c("pbm", "nj")
+
 ## @knitr do-not-run
 if (!interactive()) {
   cairo_pdf(commandArgs(trailingOnly=TRUE)[1], onefile=TRUE)
@@ -24,6 +26,7 @@ segment <- chain(  data
                  , subset(exp_type=="numdensity" & subject %in% names(models))
                  , do.rename(folding=TRUE)
                  )
+source("density.modeling.R")
 load("numbers.RData")
 load("density.modeling.RData")
 
@@ -81,47 +84,14 @@ unmatching <-
       + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
       + theme(legend.position="none"))
 
-## @knitr density-rates
-segment.rates <-
-  mkrates(  segment
-          , c(  segment.config.vars, segment.experiment.vars))
-segment.rates.sided <-
-  mkrates(  segment
-          , c(  segment.config.vars, segment.experiment.vars
-              , "side","eccentricity"))
+## @knitr density-measurements
+density.example.dataset <- subset(segment.folded.spindled.mutilated,
+                         subject %in% density.example.subjects)
+(plot.spacing %+% density.example.dataset
+ + theme(aspect.ratio=1)
+ + errorbars(density.example.dataset))
 
-#sanity check:
-#I think that in each experiment the number of trials is meant to be
-#the same for each condition, at least for each side. Close to the same.
-#Sometimes a prematurely terminated experiment means one or two are different.
-mapply(rates=list(segment.rates, segment.rates.sided),
-       extra = list(c(), "side"), function(rates, extra) {
-  all(unlist(dlply(  rates
-                   , c(segment.experiment.vars, extra)
-                   , mkchain(`$`(n_obs), range, diff))) <= 2) || stop("oops")
-})
-
-# Compute a standard error bar over a nominal 50% rate.
-# I think this is bull though
-binom_se <- function(n, p) sqrt(p*(1-p)/n)
-
-# what we are going to do is look at predictions under conditions of
-# spacing-collapse and number-collapse. In the top of the figure there
-# should be a sample data set varying by spacing;
-
-density.prediction.displacement <- 0.1
-
-#using only a subset of the spacing values here, to be less busy.
-density.prediction.bins <- local({
-  model <- models$nj
-  chain(model$data,
-        subset(abs(content) == 0.4 & target_number_shown %in% c(6, 9, 12, 16, 20, 24)),
-        bin_along_resid(model, ., "response", splits, "displacement", fold=TRUE))
-})
-
-density.prediction.curves <-
-  makePredictions(models$nj, density.prediction.bins, fold=TRUE)
-
+## @knitr do-not-run
 print(ggplot(density.prediction.bins)
       + displacement_scale
       + proportion_scale
