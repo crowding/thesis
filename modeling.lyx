@@ -54,7 +54,7 @@ knitr
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
@@ -297,16 +297,12 @@ placement measurement and the biases due to short-range and long range motion
 \end_layout
 
 \begin_layout Standard
-For 
-\begin_inset Formula $\Delta x$
-\end_inset
-
-, we assume that envelope motion is computed by taking two successive noisy
- estimates of the position of a given element.
+For dX, we assume that envelope motion is computed by taking two successive
+ noisy estimates of the position of a given element.
  The strength of the envelope motion estimate therefore has uncertainty
  proportional to the uncertainty of the successive position estimates.
  The sensitivity to displacements, 
-\begin_inset Formula $\beta_{\Delta x}$
+\begin_inset Formula $\beta_{\Delta_{x}}$
 \end_inset
 
  will be inversely proportional to this uncertainty.
@@ -315,7 +311,7 @@ For
  determine its position,, so the sensitivity to changes in position will
  collapse.
  We model this by making 
-\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\begin_inset Formula $\beta_{\Delta_{x}}(S)$
 \end_inset
 
  a sigmoid 
@@ -351,7 +347,18 @@ reference "fig:model-uncertainty"
 
 \end_inset
 
-)
+): : 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

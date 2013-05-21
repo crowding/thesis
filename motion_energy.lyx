@@ -115,7 +115,67 @@ key "Klein:1985rz"
 \end_inset
 
  with the center frequencies matched to those of the stimuli.
- The temporal components of our filter were the same as used 
+ Previous evidence from human psychophysics suggests that the spatial bandwidth
+ of channels in early vision changes as a function of both eccentricity
+ and spatial frequency; in particular, in particular, at a given eccentricity,
+ the bandwidths of the filters decrease somewhat with increasing spatial
+ frequency 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anderson:1987oq,Banks:1991kl,Anderson:1991hc"
+
+\end_inset
+
+; we interpolated the measurements of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Banks:1991kl"
+
+\end_inset
+
+ to select the bandwidth parameters of our filters.
+ The values we selected are shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Bandwidth"
+
+\end_inset
+
+.
+ We calculated the response in several overlapping spatial frequency bands
+ and summed the response according to a typical contrast sensitivity function
+ for human observers () For each stimulus this analysis produced two numbers,
+ a 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ motion energy and a 
+\begin_inset Quotes eld
+\end_inset
+
+counterclockwise
+\begin_inset Quotes erd
+\end_inset
+
+ motion energy.
+ further weighted the outputs of these filters according to the human contrast
+ sensitivity function () On the other hand, human psychophysical evidence
+ suggests that temporal frequency response does not appreciably change as
+ a function of either eccentricity or spatial frequency 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Virsu:1982fv,Wright:1983dz"
+
+\end_inset
+
+; therefore we used the same temporal filters to analyze all stimuli.
+ The output of our analyses were two numbers frequency response of analysis
+ filters was left constant.
+ We used the same filters as 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Kiani:2008uq"
@@ -133,64 +193,7 @@ something or other (movshon)
 
 \end_inset
 
- Evidence from human psychophysics suggests that temporal frequency response
- does not appreciably change as a function of either eccentricity or spatial
- frequency 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Virsu:1982fv,Wright:1983dz"
 
-\end_inset
-
-; therefore we used the same temporal components in all filters.
- However, evidence from human psychophysics suggests that the spatial bandwidth
- of channels in early vision changes as a function of both eccentricity
- and spatial frequency; in particular, at a given eccentricity, the bandwidths
- of the filters decrease somewhat with increasing spatial frequency, lending
- more lobes to the impulse response function 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Anderson:1987oq,Banks:1991kl,Anderson:1991hc"
-
-\end_inset
-
-.
- We interpolated the measurements of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Banks:1991kl"
-
-\end_inset
-
- to select the bandwidth parameters of our filters.
- The values we selected are shown in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:Bandwidth"
-
-\end_inset
-
-.
- We calculated the response of our spatiotemporal filters in several overlapping
- spatial frequency bands and weighted the response according to a typical
- contrast sensitivity function for human observers () For each stimulus
- this analysis produced two numbers, a 
-\begin_inset Quotes eld
-\end_inset
-
-clockwise
-\begin_inset Quotes erd
-\end_inset
-
- motion energy and a 
-\begin_inset Quotes eld
-\end_inset
-
-counterclockwise
-\begin_inset Quotes erd
-\end_inset
-
- motion energy.
 \end_layout
 
 \begin_layout Standard
@@ -377,14 +380,7 @@ name "tab:Bandwidth"
 \end_inset
 
 Bandwidth settings used in motion energy analysis.
- These values were chosen by interpolating measurements performed by 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Banks:1991kl"
-
-\end_inset
-
-.
+ These values were chosen by interpolatine measurements performed by .
 \end_layout
 
 \end_inset
@@ -395,20 +391,6 @@ key "Banks:1991kl"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Itemize
-For our stimuli, the displacement interacts somewhat with motion energy,
- so that covarying displacement and direction content does not cleanly separate
- direction content and 
-\end_layout
-
-\begin_layout Itemize
-Plot a surface or collection of lines illustrating this.
-\end_layout
-
-\begin_layout Itemize
-Illustrate closer model fit with motion energy versus direction content?
 \end_layout
 
 \begin_layout Standard

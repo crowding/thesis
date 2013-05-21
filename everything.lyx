@@ -83,39 +83,9 @@ In this section we show the complete collection of fitted models and for
  
 \end_layout
 
-\begin_layout Subsection
-Perspective and 3d image plots
-\end_layout
-
-\begin_layout Standard
-The following plots show the effects of the motion model described in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:model"
-
-\end_inset
-
- as fitted to each observer's data.
- They are formatted identically to those presented earlier in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sub:results-contours"
-
-\end_inset
-
- but the entire collection of observers is shown.
-\end_layout
-
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -167,12 +137,12 @@ library(ptools)
 
 \begin_layout Plain Layout
 
-library(plyr)
+pdf.options(encoding='ISOLatin2.enc')
 \end_layout
 
 \begin_layout Plain Layout
 
-pdf.options(encoding='ISOLatin2.enc')
+source('library.R')
 \end_layout
 
 \begin_layout Plain Layout
@@ -182,16 +152,104 @@ source("scales.R")
 
 \begin_layout Plain Layout
 
-source("library.R")
-\end_layout
-
-\begin_layout Plain Layout
-
 setup_theme()
 \end_layout
 
 \begin_layout Plain Layout
 
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%data
+\end_layout
+
+\begin_layout Plain Layout
+
+<<data, cache=TRUE, echo=FALSE, results="hide", message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("slopeModel.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Model fits in perspective and contour plots
+\end_layout
+
+\begin_layout Standard
+The following figures illustrate the main effects of the motion model described
+ in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:model"
+
+\end_inset
+
+ as fitted to each observer's data.
+ They are formatted identically to those presented earlier in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-contours"
+
+\end_inset
+
+ but the entire collection of observers is shown.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%knitr-quote-engine
+\end_layout
+
+\begin_layout Plain Layout
+
+%"quote" chunk engine captures raw chunk text and stuffs it in a variable
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-quote-engine, cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -242,50 +300,16 @@ n", code), envir=globalenv())
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-%data
+%Quote the following:
 \end_layout
 
 \begin_layout Plain Layout
 
-<<data, cache=TRUE, echo=FALSE, results="hide", message=FALSE>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-load("slopeModel.RData")
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%contour-quote
-\end_layout
-
-\begin_layout Plain Layout
-
-<<contour-quote, engine="quote", echo=FALSE, results="hide", var="contour_templa
-te", cache=FALSE>>=
+<<contour-quote, engine="quote", var="contour_template", cache=FALSE>>=
 \end_layout
 
 \end_inset
@@ -309,7 +333,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -332,7 +356,7 @@ name "fig:all-contours-3d-{{observer}}"
 
 Perspective view of fitted model for observer 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -342,9 +366,9 @@ status collapsed
 \end_inset
 
 .
- Format of the plot is identical to 
+ The format of the plot is the same as 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
@@ -371,7 +395,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -396,7 +420,7 @@ name "fig:all-contours-2d-{{observer}}"
 
 Model fits and summary of data for observer 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -408,7 +432,7 @@ status collapsed
 .
  The format of the plot is the same as 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -428,20 +452,16 @@ reference "fig:results-contours"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-%end quote
+%End quote.
 \end_layout
 
 \begin_layout Plain Layout
 
 @
-\end_layout
-
-\begin_layout Plain Layout
-
 \end_layout
 
 \end_inset
@@ -451,11 +471,16 @@ status collapsed
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-<<all-contours, echo=FALSE, results="asis", cache=FALSE>>=
+%Now make a bunch of those.
+\end_layout
+
+\begin_layout Plain Layout
+
+<<all-contours, results="asis", cache=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -556,7 +581,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -736,30 +761,7 @@ reference "sub:results-basic-summation"
 \end_layout
 
 \begin_layout Subsection
-Nonlinearity of repulsion effect
-\end_layout
-
-\begin_layout Standard
-Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:everything-nonlinearity"
-
-\end_inset
-
- depicts the strength of the repulsion effect 
-\begin_inset Formula $M_{I}\left(C\right)$
-\end_inset
-
- as a function of carrier strength for all observers.
- The construction is described in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:results-induced-modeling"
-
-\end_inset
-
-.
+Nonlinearity 
 \end_layout
 
 \begin_layout Standard
@@ -774,23 +776,24 @@ status open
 
 \begin_layout Plain Layout
 
-%everything-nonlinear
+%nonlinearity
 \end_layout
 
 \begin_layout Plain Layout
 
-<<everything-nonlinear,fig.width=7,fig.height=7,cache.extra=file.info("nonlinearity-
-plot.RData")$mtime>>=
+<<everything-nonlinearity,fig.width=7,fig.height=7,cache.extra=file.info("nonlineari
+ty-plot.RData")$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-load("nonlinearity-plot.RData") 
+load("nonlinearity-plot.RData")
 \end_layout
 
 \begin_layout Plain Layout
 
-environment(nonlinearity_plot) <- environment() #ugh
+lapply(ls(),function(x) assign(x, get(x), globalenv())) #make everything
+ global
 \end_layout
 
 \begin_layout Plain Layout
@@ -838,6 +841,143 @@ reference "sub:results-induced-modeling"
 \end_inset
 
  for details on construction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Predictions for single-circle data
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+missingfigure{figure goes here}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-density-predictions"
+
+\end_inset
+
+ Predictions from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:results-basic"
+
+\end_inset
+
+, extrapolated to the partial-circle stimuli in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:results-number"
+
+\end_inset
+
+.
+ Predictions are obtained over four assumptions concerning the globality
+ or locality of effects of element spacing on envelope or carrier motion
+ mechanisms.
+ The format of this figure is the same as 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-predictions"
+
+\end_inset
+
+ but shows the entire set of observers.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+missingfigure{figure goes here}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sensitivity to carrier motion as a function of the stimulus extent.
+ Data come from both 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ Curved lines show a model fit parameterized by the size of the summation
+ field, which is indicated by the vertical dashed line.
+ Segmented lines show values obtained by binning trials into five groups
+ by extent.
+ The format of this figure is the same as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-model-sensitivity"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
