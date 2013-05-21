@@ -10,6 +10,10 @@ source("icons.R")
 source("scales.R")
 source("slopeModel.R")
 source("library.R")
+source("density.modeling.R")
+for (name in ls()) {
+  assign(name, get(name), globalenv())
+} #coz saved fucntion
 setup_theme()
 
 density.example.subjects <- c("pbm", "nj")
@@ -26,12 +30,8 @@ segment <- chain(  data
                  , subset(exp_type=="numdensity" & subject %in% names(models))
                  , do.rename(folding=TRUE)
                  )
-source("density.modeling.R")
 load("numbers.RData")
 load("density.modeling.RData")
-for (name in ls()) {
-  assign(name, get(name), globalenv())
-} #coz saved fucntion
 
 #this just illustrates the combinations of number and density.
 segment.config.vars <-

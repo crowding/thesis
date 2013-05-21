@@ -1640,7 +1640,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<density-predictions, fig.width=3, fig.height=7>>=
+<<density-predictions, fig.width=5, fig.height=8>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -2044,10 +2044,6 @@ reference "sec:results-number"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
