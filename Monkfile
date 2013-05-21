@@ -12,56 +12,11 @@
 #--command --input --invisible --match '.*\.fig$'
 #--invisible --phony figures
 
-#matlab stuff requires we unpack all the data into a matlab file.
---command --once ./runmatlab --input --invisible runmatlab --once unpack
---input --invisible --once unpack.m
---input --match (.*_trials\.csv)$
---output --invisible --once data.mat
-
-#might as well unpack into an R data file.
+#Unpack all data into an R data file.
 --command --once Rscript
 --input --once unpack.R
 --output --once data.RData
 --input --match (.*_trials\.csv)
-
-#the model-fitting function
-#--command ./runmatlab --input --invisible runmatlab MeilstrupBoyntonModel
-#--input --invisible MeilstrupBoyntonModel.m
-#--input --invisible --match data\.mat"
-#--output --invisible modelResults.mat
-
-#fit all the models
---command ./runmatlab --input --invisible runmatlab --once "fitAll"
---input --invisible fitAll.m
---input --match data\.mat
---output fits.mat
-
-#plot all the fits
-#
---command --once ./runmatlab --once plotFits
---input --invisible plotFits.m
---input --match fits\.mat
---output --listing --intermediate fit_plots.list
-
-#bundle them all into a multipage PDF
---command --once pdfjoin
---once %--outfile
---once --output fits_{0}.pdf
---input --match fit_(.*)_.*\.pdf$
---invisible --phony --once figures
-
-#make diagnostic figures? #WHY_IS_THIS_ALWAYS_RUNNING
-# --command ./runmatlab "makeDiagnostics"
-# --input --match 'fits\.mat'
-# --output --listing 'diagnosticPlots.pdf'
-# --invisible --phony --once figures
-
-#and bundle them #these are outputs of makeDiagnostics
-# --command --once pdfjoin
-# --once %--outfile
-# --once --output 'residuals_{0}_plots.pdf'
-# --input --match 'residual_(.*)_.*\.pdf$'
-# --invisible --phony --once figures
 
 #make our motion energy graphs
 --command Rscript
@@ -97,12 +52,16 @@
 --input motion_energy.csv
 --output combined.model.RData
 --output combined.model.pdf
+--phony --invisible pdf
 
 --command Rscript # without folding
 --input contours.R
 --input --match slopeModel\.RData$
 --input motion_energy.csv
 --output --mkdir --listing contours/contours.list FALSE
+
+--command --invisible --match --input contours/.*.pdf
+--phony --invisible pdf
 
 --command Rscript # with folding
 --input contours.R
