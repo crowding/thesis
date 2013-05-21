@@ -1,0 +1,261 @@
+#scratchpad for testing/debugging code I'm refining elsewhere
+
+source("icons.R")
+
+#we can also show it in colormap form if you're curious....
+(ggplot(subset(density.plotdata, type=="data"))
+ + aes(y=factor(target_number_shown),
+       x = factor(spacing,
+         levels=sort(unique(spacing)),
+         labels=format(sort(unique(spacing)), digits=2)))
+ + scale_fill_gradientn("Responses CW", colours=hex(colorful.gradient))
+ + scale_y_discrete("Element number")
+ + scale_x_discrete("Spacing")
+ + geom_tile(data=subset(density.plotdata, type=="prediction"), aes(fill=fit), color=NA)
+ + facet_grid(model~subject, labeller=function(var, value) {
+      switch(var,
+             subject = paste("Observer", toupper(as.character(value))),
+             model = vapply(value, switch, "",
+               raw = "Raw data",
+               spacing = "Sensitivity(spacing)",
+               number = "Sensitivity(number)",
+               global = "Spacing & global carrier"))
+    })
+ + geom_circle(data=subset(density.plotdata, type=="data"), aes(fill=p), color="green", linetype="11")
+ + no_grid
+ + theme(aspect.ratio=1)
+ )
+
+#the thing is that this experiment doesn't have a whole lot of
+#leverage; these are the most informative observers
+
+(ggplot(plot.spacing) %+% subset(plotdata, type="data"))
+
+#for the sake of argument, present the same thing in color map form...
+
+#let's make up any values for this...
+source("scales.R")
+
+#an attempt at a high saturation colormap. Answer: need to think
+#about saturation as a perceptual variable.
+  
+colorful.colors <- chain(
+  c("blue", "red", "orange", "yellow"
+    )
+  , col2rgb, t, ./255, RGB, as("XYZ") #get color names into colorspace
+  , coords, apply(., 2, `/`, .[,"Y"]), XYZ #equalize luminance
+  , as("RGB"), coords, sRGB, coords, ./max(.), sRGB, hex #conflate RGB as sRGB because colorRamp is linear in sRGB...
+  , colorRamp, .(seq(0,1,length=100)) , RGB
+  )
+
+colorful.tints <- chain(
+  colorful.colors, as("XYZ"), coords
+  , apply(., 2, '-', .[,"Y"]), XYZ, as("RGB")
+  )
+
+colorful.levels = chain(
+  c("black", "white"), colorRamp(space="Lab"),
+  .(seq(0,1,length=chain(colorful.colors,coords,dim, `[`(1)))),
+  ./255, sRGB)
+
+colorful.gradient <- pushRGB(colorful.levels, colorful.tints, pointwise=TRUE)
+
+## library(reshape2)
+## (ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
+##  +     scale_fill_gradientn(colours=hex(colorful.gradient),
+##                             space="rgb"))
+
+
+predict_from_model_frame <- function(models, newdata,
+                                     fold=TRUE, spindle=TRUE, collapse=FALSE) {
+  ##take a data frame with a list of models, and the variables to
+  ##match by, produce predictions for the folding data.
+  newdata_missing <- missing(newdata)
+
+  test <- chain(models,
+        adply(1, function(row) {
+          browser()
+          bind[model=bind[model], ...=group] <- as.list(row)
+          if (newdata_missing) {
+            newdata <- predict_from_model(model)
+          } else {
+            predict_from_model(model,
+                               match_df(newdata, quickdf(group),
+                                        on = names(newdata) %^% names(group)))
+          }
+        })
+## ,
+        ## drop_recursive,
+        ## if (any(fold, spindle, collapse)) {
+        ##   mutilate.predictions(., fold=fold, spindle=spindle, collapse=collapse)
+        ## } else .
+                )
+  
+}
+
+##########
+## something about GNM is fucked and sensitive to different ways of contrasting...
+
+  #a fit that ain't working for whatever reason
+  model1 <- match_df(many.fits, cbind(bad.fits[3,], subject="nj", type="spacing"))$model[[1]]
+
+#how you run through a mexican hat....
+
+summary(gnm(cbind(n_cw, n_ccw)
+            ~ displacementTerm(spacing, displacement, start=c(cs=6, beta_dx=10))
+            + content
+            + I(content*abs(content))
+            + content_global
+            + content_global:full_circle
+            ,
+            data=model1$data,
+            family=binomial(link=logit.2asym(0.025, 0.025)),
+            ))
+
+ summary(gnm(cbind(n_cw, n_ccw)
+            ~ displacementTerm(spacing, displacement, start=c(cs=6, beta_dx=10))
+            + surroundTerm(content_local, extent, start=c(width0.5=2, strength=6))
+            + content
+            + I(content*abs(content))
+            ,
+            data=model1$data,
+            family=binomial(link=logit.2asym(0.025, 0.025)),
+            ))
+
+ summary(gnm(cbind(n_cw, n_ccw)
+            ~ displacementTerm(spacing, displacement, start=c(cs=6, beta_dx=10))
+            + softMinSurroundTerm(content, extent, start=c(width=10, strength=6))
+            + content
+            + I(content*abs(content))
+            ,
+            data=model1$data,
+            family=binomial(link=logit.2asym(0.025, 0.025)),
+            ))
+
+summary(gnm(cbind(n_cw, n_ccw)
+            ~ displacementTerm(spacing, displacement, start=c(cs=6, beta_dx=10))
+            + content
+            + I(content*abs(content))
+            + content_local
+            + content_local:factor( extent)
+            + content_local:full_circle
+            ,
+            data=model1$data,
+            family=binomial(link=logit.2asym(0.025, 0.025)),
+            ))
+
+s <- sample(length(model1$residuals), 10)
+model.matrix(~ side - 1, ndata,
+             contrasts.arg=list(side="contr.treatment "))[s,]
+options()
+umodel <- update(model0, .~.+addition, data=ndata, family=model0$family)
+
+model.matrix(model1)[s,]
+model.matrix(model2)[s,]
+ndata$addition[s,]
+
+
+summarise2 <- function (.data, ...) {
+  env <- list2env(.data, parent = parent.frame())
+ 
+  cols <- eval(substitute(alist(...)))
+   for (col in names(cols)) {
+    env[[col]] <- eval(cols[[col]], env)
+  }
+  quickdf(mget(names(cols), env))
+}
+
+summarize3 <- macro(function(.data, ...) {
+  template(quickdf(eval(quote({
+          ...(Map(list(...), names(list(...)),
+                  f = function(x,n)
+                  template( .(as.name(n)) <- .(x))))
+          mget(.(names(list(...))), environment())
+        }),
+        list2env(.(.data)))))
+})
+
+library(ptools)
+summarize4 <- macro(function(.data, ...) {
+  e <- list(...)
+  n <- names(e)
+  template(.(quickdf)(.(do.call)(
+    `{`,
+    .(c(Map(e=e, n=n, function(e, n) template( .(`<-`)(.(n),.(e)))),
+        template(.(mget)(.(n), .(environment)())))),
+    envir=.(list2env)(.(.data)))))
+})
+
+head(summarize4(baseball, g2 = g * 2, g4 = g2 * 2))
+
+library(microbenchmark)
+
+microbenchmark(
+#  summarise(baseball, g2 = g * 2, g4 = g2 * 2),
+  summarise2(baseball, g2 = g * 2, g4 = g2 * 2),
+  summarize3(baseball, g2 = g * 2, g4 = g2 * 2),
+  summarize4(baseball, g2 = g * 2, g4 = g2 * 2)
+  )
+
+
+makePromiseEnv <- function(expressions, parent=parent.frame()) {
+   f <- function() environment()
+   formals(f) <- as.pairlist(expressions)
+   environment(f) <- parent
+   f()
+}
+
+e <- makePromiseEnv(alist(a = {print("hello"); 4}, b = {print("again"); 6}))
+
+makePromiseEnv2 <- function(expressions, envir=parent.frame()) {
+  f <- eval(substitute(function() EE()), list(EE=environment))
+  arglist <- expressions
+  arglist[] <- list(quote(expr=))       #delete defaults, keep names
+  formals(f) <- as.pairlist(arglist)
+  do.call(f, expressions, envir=envir)
+}
+
+e <- makePromiseEnv2(alist(a=ls()))
+
+
+d_env <- environment()
+d_env$log <- function(x) s( (1/x) * d(x) )
+d_env$`^` <- function(x, y) s( y*x^(y-1) * d(y) * d(x) )
+d_env$`+` <- function(x, y) if(nargs()==1) s( d(x) ) else s( d(x)  + d(y) )
+d_env$`*` <- function(x, y) s( y*d(x)  + x*d(y) )
+d_env*`-` <- function(x, y) if(nargs()==1) s( -d(x) else -d(x) - d(y) )
+d_env$`exp` <- function(x) s( exp(x) * d(x) )
+d_env$`sin` <- function(x) s( cos(x) * d(x) )
+d_env$`cos` <- function(x) s( -sin(x) * d(x) )
+
+d <- function(a, b) {}
+
+(ggplot() + aes(with(circle.models$model[[1]]$data, content/spacing),
+                with(recast_data(circle.models$model[[1]]$data), content_global),
+                color=circle.models$model[[1]]$data$target_number_shown)
+ + geom_point())
+
+chain(
+  segment,
+  extract_segment(fold=TRUE, spindle=TRUE, collapse=FALSE),
+#  models$pbm$data,
+#  refold(fold=TRUE),
+  recast_data(carrier.factor=3, envelope.factor=3),
+  subset(content==1),
+  ggplot,
+  (.+aes(x=spacing, y=number_shown_as_spacing,
+         color=target_number_shown, group=target_number_shown)
+   + geom_line()))
+
+chain(
+  quad.recast.models
+  , match_df(data.frame(subject="pbm",
+                        content.local=FALSE, envelope.local=TRUE))
+  , .$model[[1]]$data
+  , ggplot
+  , +aes(content_local, content_global, color=target_number_shown)
+  , +geom_point())
+
+chain(
+  quad.predictions
+  , match_df(data.frame(subject="pbm")))
