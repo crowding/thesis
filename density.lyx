@@ -1553,14 +1553,8 @@ reference "sec:results-basic"
 \end_inset
 
 .
- There are different possible ways to obtain predictions for 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:results-number"
-
-\end_inset
-
-'s data based on the full circle stimuli used in 
+ There are different possible ways to obtain predictions based on the full
+ circle stimuli used in 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sec:results-basic"
@@ -1636,6 +1630,34 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%density-predictions
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-predictions, fig.width=3, fig.height=7>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -1685,8 +1707,8 @@ reference "fig:density-predictions"
 \end_inset
 
 .
- In this figure the shaded ribbons plot response rates predicted almost
- entirely from the data taken from 
+ In this figure the shaded ribbons with dotted lines plot response rates
+ predicted almost entirely from the data taken from 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:results-basic"
@@ -1700,12 +1722,12 @@ reference "sec:results-number"
 
 \end_inset
 
-; these predictions are plotted as shaded ribbons on top of the actual data
- we took.
+ (on;y the overall proportion clockwise is ajdusted to match); these predictions
+ are plotted as shaded ribbons on top of the actual data we took.
  Four rows show predictions over four assumptions (global or local summation
  of carrier motion; global or local change in envelope motion sensitivity);
- two columns correspond to models that were fit to two example observers
- (the entire set is shown in the appendix in 
+ two columns correspond to models that were fit to two example observers.
+ The entire set is shown in the appendix in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:everything-density-predictions"
@@ -1727,7 +1749,7 @@ global
  (i.e.
  acting over a large field) we have extrapolated from 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand nameref
 reference "sec:results-basic"
 
 \end_inset
@@ -1757,17 +1779,28 @@ reference "sec:results-basic"
  Different assumptions about the size of the regions of spatial interaction
  lead to somewhat different results, but do not change the qualitative agreement
  or disagreement with the data.
- We do note that in the raw data there is little appearange of saturating
+ We do note that in the raw data there is little appearance of saturating
  behavior as a function of the extent of the stimulus; adding another element
  or changing the spacing seems to have the same relative effect for larger
- stimuli as for smaller.
+ stimuli as for smaller, so we conclude that effective regions of both envelope
+ and carrier motion are either larger or smaller than all the extents tested.
+ That is, if the size of a effective region for either carrier or envelope
+ motion fell in the range of extents tested, we would see a 
+\begin_inset Quotes eld
+\end_inset
+
+bend
+\begin_inset Quotes erd
+\end_inset
+
+ in the lines plotted in these figures, rather than a consistent slope .
  We will address the question of how large the spatial interaction regions
- are subsequently.
+ might be subsequently.
  
 \end_layout
 
 \begin_layout Standard
-There is one other deviation from a 
+There is one deviation from a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1777,7 +1810,7 @@ pure
 
  prediction from 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand nameref
 reference "sec:results-basic"
 
 \end_inset
@@ -1785,28 +1818,28 @@ reference "sec:results-basic"
 : we have adjusted the average response rates of the predictions shown in
  
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:density-predictions"
 
 \end_inset
 
-to agree with the total number of clockwise responses, with the intention
+ to agree with the total number of clockwise responses, with the intention
  that the phenomena determined by globality or locality (i.e.
  the slopes of the lines of response rate with respect to spacing , and
  the change in response rate as a function of element number); can be more
  directly compared.
- When modeling the dataset as a whole we will discard this adjustment.
+ When modeling the dataset as a whole we find we can discard this adjustment.
 \end_layout
 
 \begin_layout Standard
 In 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:density-predictions"
 
 \end_inset
 
- we see the best agreement with the model projections is in the 3rd row,
+ we see the best agreement with the model projections is in the second row,
  where the response to carrier strength is taken to be global (so that changing
  the number of elements affects the carrier strength summation) and the
  change in spacing sensitivity appears to be local (so that adding elements
@@ -1814,7 +1847,31 @@ reference "fig:density-predictions"
  to the nearest flanker does.) This model, compared to the alternatives,
  manages to capture the slope of the relation between spacing and response
  rate, even though these two observers had very different slopes.
- It also manages to capture the direction of effect of the element number.
+ It does not capture the effect of element number on response rate as well.
+ But we tentatively conclude that for the data 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+ to be consistent with each other, the summation of carrier strength happens
+ over a large region and the 
+\begin_inset Quotes eld
+\end_inset
+
+crowding
+\begin_inset Quotes erd
+\end_inset
+
+ effect on envelope motion detection happens over a relatively smaller region.
  
 \begin_inset Note Note
 status open
@@ -1932,16 +1989,42 @@ sharpness
 \end_layout
 
 \begin_layout Standard
+We also considered alternative models including local summation of carrier
+ motion, and a parameterization of˙†e effective size the region of interference
+ for envelope motion, but the present model appeared to fit the data the
+ best.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+missingfigure{insert plot here}
+\end_layout
+
+\end_inset
+
+
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Predictions from a combined model for two observers.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-modeled"
+
+\end_inset
+
+Predictions from a model combiningh the data for two observers.
  The model here fits values from both 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -1980,6 +2063,19 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+missingfigure{insert plot here}
+\end_layout
+
+\end_inset
+
+
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -2069,10 +2165,18 @@ cite
  depending on stimulus extent.
  This allows us to capture how much summation there is for each size of
  the stimulus, and compare to the model parameterization.
- Results from this procedure are shown in; the curved line corresponds to
- the fitted model while the segmented line with error bars corresponds to
- the.
+ Results from this procedure are shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-model-sensitivity"
+
+\end_inset
+
+; the curved line corresponds to the fitted model parameterized by the field
+ size, while the segmented line with error bars corresponds to the piecewise
+ check.
  The vertical line corresponds to the size of the integration field that
+ is fit by our model.
  
 \end_layout
 
@@ -2080,171 +2184,9 @@ cite
 With the addition of this single parameter for the size of the summation
  region, a single model makes a good fit to data from both Experiment 1
  and Experiment 2.
- The predictions from this model for two observers are shown on We also
- considered alternative models including local summation of carrier motion,
- and additional terms accounting for local summation; 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Carrier sensitivity as
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%segment-rates
-\end_layout
-
-\begin_layout Plain Layout
-
-<<segment-rates,cache=TRUE>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%segment-by-spacing
-\end_layout
-
-\begin_layout Plain Layout
-
-<<segment-by-spacing>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%segment-by-elements
-\end_layout
-
-\begin_layout Plain Layout
-
-<<segment-by-elements>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%segment-dualplots
-\end_layout
-
-\begin_layout Plain Layout
-
-<<segment-dualplots,fig.width=6,fig.height=4>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:segment-dualplots"
-
-\end_inset
-
-In the upper plots, the proportion of responses agreeing with long range
- motion is plotted as a function of the number of the element spacing.
- Data is grouped according to the element spacing and separate lines are
- drawn for each spacing.
- In the lower plots, the proportion of responses agreeing with long range
- motion direction is plotted as a function of the number of moving elements,
- with data grouped by the spacing used.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
+ The predictions from this model for two observers are shown in and hte
+ entire set are shown in the appendix.
+ 
 \end_layout
 
 \begin_layout Standard

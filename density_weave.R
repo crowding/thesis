@@ -29,6 +29,9 @@ segment <- chain(  data
 source("density.modeling.R")
 load("numbers.RData")
 load("density.modeling.RData")
+for (name in ls()) {
+  assign(name, get(name), globalenv())
+} #coz saved fucntion
 
 #this just illustrates the combinations of number and density.
 segment.config.vars <-
@@ -90,6 +93,11 @@ density.example.dataset <- subset(segment.folded.spindled.mutilated,
 (plot.spacing %+% density.example.dataset
  + theme(aspect.ratio=1)
  + errorbars(density.example.dataset))
+
+## @knitr density-predictions
+(quad_prediction_plot(match=data.frame(subject=density.example.subjects),
+                      orientation="over")
+ + theme(aspect.ratio=1))
 
 ## @knitr do-not-run
 print(ggplot(density.prediction.bins)
