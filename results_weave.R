@@ -410,7 +410,7 @@ spacingData <- function(models, type, newspacing=10, categorical=TRUE) {
     }
     chain(data.frame(subject=subject, model=type, spacing=newspacing,
             content=newContent, displacement=0, fContent = fContent, bias=0),
-          cbind(., folding_ predict(model, ., type="response", se.fit=TRUE, fold=TRUE)),
+          cbind(., folding_predict(model, ., type="response", se.fit=TRUE, fold=TRUE)),
           mutate(observer=paste("Observer", toupper(subject))))
   })
 }

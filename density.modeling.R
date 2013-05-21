@@ -282,9 +282,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     quad_prediction_plot()
   }
 
-  quad_prediction_plot(match=data.frame(subject=c("nj", "pbm", "ns")),
+  quad_prediction_plot(match=data.frame(subject=c("nj", "pbm")),
                        orientation="over")
-
 
   # and plot this with a color scale too, if you care...
 
