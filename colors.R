@@ -42,11 +42,11 @@ pushRGB <- function(colors, direction, pointwise=FALSE) {
   lower.headroom1 <- coo
   lower.headroom2 <- lower.headroom1
   for (i in 1:dim(lower.headroom1)[2])
-    lower.headroom2[,i] = coo[,i] + direction[,i]
+    lower.headroom2[,i] = lower.headroom1[,i] + direction[,i]
   upper.headroom1 <- (1-coo)
   upper.headroom2 <- upper.headroom1
   for (i in 1:dim(upper.headroom1)[2])
-    upper.headroom2[,i] = coo[,i] - direction[,i]
+    upper.headroom2[,i] = upper.headroom2[,i] - direction[,i]
   howmuch <- function(a, b) a/(a-b)
   p_max_pos <- function(a,b) {
     #the maximum of the positive numbers...
@@ -74,11 +74,14 @@ decision_colors <- c(hex(pushRGB(RGB(c(low, med), c(low, med), c(low, med)),
 decision_values <- c(0, 0.5*((med-low)/(high-low)),
                      0.5,
                      1 - 0.5*((med-low)/(high-low)), 1)
-## (ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
-##  +     scale_fill_gradientn(colours=decision_colors,
-##                             values=decision_values,
-##                             breaks = seq(0.1, 0.9, 0.2),
-##                             space="rgb"))
+
+if(FALSE) {
+  (ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
+   +     scale_fill_gradientn(colours=decision_colors,
+                              values=decision_values,
+                              breaks = seq(0.1, 0.9, 0.2),
+                              space="rgb"))
+}
 
 #an attempt at a high saturation colormap. Answer: need to think
 #about saturation as a perceptual variable.
