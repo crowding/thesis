@@ -95,8 +95,9 @@ match_to <- function(x, from) {
 collapse <- function(data) {
   #collapses different sides and direction contents together (as for
   #most subjects in this experiment these don't matter.)
+  data <- chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45))
   args <- dots(
-    chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45)),
+    data,
     segment.config.vars %v% segment.experiment.vars %-% c("displacement", "content"),
     summarize)
 
@@ -598,7 +599,12 @@ abs.pmax <- function(..., na.rm=FALSE) {
 #compute columns for total "local" motion energy and total "global" motion energy
 recast_data <- function(data, number.factor=2,
                         envelope.factor = number.factor,
-                        content.factor = number.factor) {
+                        carrier.factor = number.factor) {
+  #all of content_local, content_global and
+  #content/spacing, should be similarly scaled _for full circle
+  #stimuli_. this helps keep model fitting on the right starting
+  #points.
+  #similar goes for spacing and number_shown_aso_spacing
   chain(data,
         mutate_when_missing(
           eccentricity = 20/3,
@@ -609,14 +615,16 @@ recast_data <- function(data, number.factor=2,
           side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
         mutate(
           content_local = content / spacing,
-          content_global = sign(content) * pmin(
-            abs(content) * target_number_shown,
-            abs(content) * target_number_all/content.factor),
+          content_global = content / 2/pi/eccentricity
+          * abs.pmin(
+            target_number_shown * carrier.factor,
+            target_number_all),
           full_circle = target_number_shown == target_number_all,
           extent = spacing * target_number_shown,
-          number_shown_as_spacing = abs.pmin(
-            target_number_shown,
-            target_number_all / envelope.factor)))
+          number_shown_as_spacing =
+            2*pi*eccentricity / envelope.factor / abs.pmin(
+              target_number_shown,
+              target_number_all / envelope.factor)))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -626,6 +634,7 @@ seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 `%^%` <- intersect
 `%call%` <- function(x, y) do.call(x, as.list(y), envir=parent.frame())
 mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
+invoke <- function(x, y) y %()% x
 
 ddply_along <-
   function(.data, .variables, .fun=NULL, ...

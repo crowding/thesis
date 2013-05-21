@@ -217,13 +217,12 @@ makePromiseEnv2 <- function(expressions, envir=parent.frame()) {
 
 e <- makePromiseEnv2(alist(a=ls()))
 
-
 d_env <- environment()
 d_env$log <- function(x) s( (1/x) * d(x) )
 d_env$`^` <- function(x, y) s( y*x^(y-1) * d(y) * d(x) )
 d_env$`+` <- function(x, y) if(nargs()==1) s( d(x) ) else s( d(x)  + d(y) )
 d_env$`*` <- function(x, y) s( y*d(x)  + x*d(y) )
-d_env*`-` <- function(x, y) if(nargs()==1) s( -d(x) else -d(x) - d(y) )
+d_env*`-` <- function(x, y) if(nargs()==1) s( -d(x) ) else -d(x) - d(y) 
 d_env$`exp` <- function(x) s( exp(x) * d(x) )
 d_env$`sin` <- function(x) s( cos(x) * d(x) )
 d_env$`cos` <- function(x) s( -sin(x) * d(x) )
@@ -257,5 +256,9 @@ chain(
   , +geom_point())
 
 chain(
-  quad.predictions
-  , match_df(data.frame(subject="pbm")))
+  new.data,
+  ggplot
+  , +aes(x=extent, y=abs(content_global), color=factor(spacing)
+         , group=factor(spacing))
+  , +geom_point(position="dodge")
+  , +geom_line())

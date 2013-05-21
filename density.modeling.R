@@ -176,30 +176,20 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
     }))
   #
   dev.set(plot.dev)
-  plot((plot.spacing %+% segment.folded.spindled.mutilated)
-       + prediction_layers(predict_from_model_frame(
-         basic.informed.models, fold=TRUE, spindle=TRUE, collapse=TRUE))
-       + errorbars(segment.folded.spindled.mutilated)
-       + labs(title="Predictions of spacing-causes-collapse model",
-              x=paste("Spacing", sep="\n")))
 
-  carrier.field.guess <- 2
-  number.field.guess <- 2
-  quad.informed.models <-
-    chain(
-      circle.models
-      , join(expand.grid(carrier.local=c(TRUE, FALSE),
-                         envelope.local=c(TRUE, FALSE)))
-      , adply(
-        1, chain,
-        )
-      , asisify)
+  print(plot.spacing %+% segment.folded.spindled.mutilated
+        + prediction_layers(predict_from_model_frame(
+          basic.informed.models, fold=TRUE, spindle=TRUE, collapse=TRUE))
+        + errorbars(segment.folded.spindled.mutilated)
+        + labs(title="Predictions of spacing-causes-collapse model",
+               x=paste("Spacing", sep="\n")))
 
   ##That is really cool. this gets the slope with respect to "spacing"
   ##pretty much right, with only offset terms. The sense of slope with
-  ##respoec tot spacing and with respect to number is 
+  ##respoect to spacing and with respect to number is mostly in the
+  ##right direction.
 
-  ##Now what does that success actually tell us? It's telling us how
+     ##Now what does that success actually tell us? It's telling us how
   ##the "content" sensitivity trades off with the spacing
   ##sensitivity. Slope with respect to spacing is an odd metric
   ##though, as it's drawing off the nonlinear term of the model.
@@ -220,26 +210,83 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
 
   ##Let's pull the same trick, but pretend that it's elemnent number
   ##that causes sensitivity collapse and not spacing. What should we
-  ##see?
+  ##see? In fact, let's pull all four combinations_(with a fidge for
+  ##guessing the field size)
 
-  ##note that we even allow an additional parameter in this...
-  number.informed.models <- adply(circle.models, 1, function(row) {
-    bind[model=bind[model], ...=group] <- as.list(row)
-    if (empty(match_df(as.data.frame(group), segment, names(group))))
-      return(data.frame())
-    newdata <- merge(group, segment)
-    newfit <- number_inform_model(model, newdata, number.factor=2)
-     quickdf(c(group, list(model=I(list(newfit)))))
-  })
-  #
-  dev.set(plot.dev)
-  plot(plot.spacing %+% segment.folded.spindled.mutilated
-       + prediction_layers(predict_from_model_frame(
-         number.informed.models,
-         fold=TRUE, spindle=TRUE, collapse=TRUE))
-       + labs(title="Predictions of number-causes-collapse model")
-       + errorbars(segment.folded.spindled.mutilated)
-       + theme(aspect.ratio=1))
+  {
+    carrier.field.guess <- 2
+    envelope.field.guess <- 3
+    quad.conditions <- expand.grid(carrier.local=c(TRUE, FALSE)
+                                   , envelope.local=c(TRUE, FALSE))
+    quad.recast.models <-
+      chain(
+        circle.models
+        , merge(quad.conditions, by=c(), type="full")
+        , (Map %<<% .)(
+          function (model, carrier.local, envelope.local, ...) {
+            group <- list(...)
+            segment.data <- merge(group, segment)
+            if (empty(segment.data)) return(data.frame())
+            model <- flex_recast_model(
+              model
+              , carrier.local=carrier.local, envelope.local=envelope.local
+              , carrier.factor=carrier.field.guess
+              , envelope.factor=envelope.field.guess
+              , inform = TRUE
+              , inform.data = segment.data
+              , inform.fmla = .~. + content)
+            quickdf(list(
+              ..., model=list(model)
+              , carrier.local=carrier.local, envelope.local=envelope.local))
+          })
+        , rbind %()% .
+        , asisify)
+    #
+    chain(
+      quad.recast.models,
+      ddply(c("carrier.local", "envelope.local"),
+            predict_from_model_frame,
+            fold=TRUE, spindle=TRUE, collapse=TRUE)
+      ) -> quad.predictions
+    #
+    quad_prediction_plot <- function(match,
+                                     orientation = c("down", "over")) {
+      orientation <- match.arg(orientation)
+      facet.fmla <- switch(orientation,
+                           down=subject ~ carrier.local + envelope.local,
+                           over=carrier.local + envelope.local ~ subject)
+      if (!is.missing(match)) {
+        raw.data <- merge(segment.folded.spindled.mutilated, match)
+        predictions <- merge(quad.predictions, match)
+      } else {
+        raw.data <- segment.folded.spindled.mutilated
+        predictions <- quad.predictions
+      }
+      chain(quad.conditions
+            , expanded.data=merge(raw.data)
+            , plot.spacing %+% .
+#            , {.; stop()}
+            , +facet_grid(facet.fmla, labeller=function(var, value) {
+                switch(
+                  var,
+                  carrier.local=
+                  paste("Carrier", ifelse(value, "local", "global")),
+                  envelope.local=
+                  paste("Envelope", ifelse(value, "local", "global")),
+                  subject=paste("Observer", toupper(value)))})
+            , +prediction_layers(predictions)
+            , +labs(title="Predictions for Experiment 2 from Experiment 1")
+            , +errorbars(expanded.data,
+                         facet=c("carrier.local", "envelope.local", "subject")))
+    }
+    quad_prediction_plot()
+  }
+
+  quad_prediction_plot(match=data.frame(subject=c("nj", "pbm", "ns")),
+                       orientation="over")
+
+
+  # and plot this with a color scale too, if you care...
 
   # Now let's try to expand the model to describe the data we really see.
   ## This "descriptive models" is really a bit of data smoothing I'm
@@ -263,7 +310,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
       lapply(list(descriptive.models, circle.models),
              function(x) match_df(x, sub)[[1,"model"]])
     recast.model <- do_recast(circle.model, recast.fmla)
-    informed.recast.model <- inform_model(recast.model, recast_data(subject.data), formula=fmla)
+    informed.recast.model <-
+      inform_model(recast.model, recast_data(subject.data), formula=fmla)
     #
     data.frame(subject=subj, model=I(list(informed.recast.model)), row.names=subj)
   })
@@ -281,51 +329,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
          + theme(aspect.ratio=1)))
   this.AIC <- ldply(informed.models$model, fun(c(aic=extractAIC(x), dev=deviance(x))))
   print(data.frame(subject=informed.models$subject, last=last.AIC, this=this.AIC))
-
-  subject.set <- c("nj", "ns", "pbm")
-  density.plotdata <- chain(
-    rbind.fill(
-      chain(segment.folded.spindled.mutilated,
-            subset(subject %in% subject.set),
-            merge(data.frame(type="data",
-                             model=c("spacing", "number", "global"),
-                             stringsAsFactors=FALSE),
-                  by=c())),
-      chain(basic.informed.models,
-            subset(subject %in% subject.set),
-            predict_from_model_frame(fold=TRUE, spindle=TRUE, collapse=TRUE),
-            mutate(type="prediction", model="spacing")),
-      chain(number.informed.models,
-            subset(subject %in% subject.set),
-            predict_from_model_frame(fold=TRUE, spindle=TRUE, collapse=TRUE),
-            mutate(type="prediction", model="number")),
-      chain(informed.models,
-            subset(subject %in% subject.set),
-            predict_from_model_frame(fold=TRUE, spindle=TRUE, collapse=TRUE),
-            mutate(type="prediction", model="global"))
-      ),
-    mutate(model=factor(model, levels=unique(model))))
-
-  ##organize observer in column, number in row
-  dev.set(plot.dev)
-  density.figure <- (
-    plot.spacing %+% subset(density.plotdata, type=="data")
-    + prediction_layers(subset(density.plotdata, type=="prediction"))
-    + errorbars(subset(density.plotdata, type="data"), facet=c("subject", "model"))
-    + facet_grid(model~subject, labeller=function(var, value) {
-      switch(var,
-             subject = paste("Observer", toupper(as.character(value))),
-             model = vapply(value, switch, "",
-               raw = "Raw data",
-               spacing = "Sensitivity(spacing)",
-               number = "Sensitivity(number)",
-               global = "Spacing & global carrier"))
-    })
-    + no_grid
-    + theme(aspect.ratio=1)
-    )
-  print(density.figure)
-  #agonizingly, plot the overly detailed model vs. smoothed data
 
   dev.set(detail.dev)
   ((Map %<<% modelmerge(informed.models, descriptive.models,
@@ -351,8 +354,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                   " sum, observer ", toupper(subject))))
    }))
  
-  save(file=savefile, list=ls())
-}
+  save(file=savefile, list=ls())} 
 
 modelmerge <- function(
   x, y,
@@ -505,47 +507,44 @@ basic_inform_model <- function(model, newdata=model$data) {
                 , family = binomial(link=logit.2asym(g=0.025, lam=0.025)))
 }
 
-number_inform_model <- function(model, newdata=model$data, number.factor=2) {
-  num.model <- numberize_model(model)
-  #set number.factor to 2 if you think "number of targets in a hemifield"
-  #is going to be more important than total number.
-  newdata <- recast_data(newdata, number.factor=number.factor)
-  offs <- predict(num.model, newdata=newdata, type="terms")
-  whichterm <- grep("displacementTerm", colnames(offs))
-  newdata$offs <- rowSums(offs[,whichterm, drop=FALSE])
-  newdata$pred <- rowSums(offs)
-  newfit <- glm(cbind(n_cw, n_ccw)
-                ~ offset(offs)
-                + content
-                , data = newdata
-                , family=num.model$family)
-}
-
-flex_inform_model <- function(model, newdata=model$data,
-                              carrier.local=TRUE,
+flex_recast_model <- function(model,
+                              carrier.local=FALSE,
                               envelope.local=TRUE,
-                              carrier.factor=2, envelope.factor=2) {
-  if (!envelope_local)
-    model <- numberize_model(model)
-
-  if (!carrier_local) NULL
-
-  newdata <- recast_data(
-    newdata, number.factor=carrier.factor, carrier.factor=carrier.factor)
-}
-
-numberize_model <- function(model, newdata=model$data) {
-  #requires a new column in the dataset "number_shown_as_spacing"
-  new.data <- recast_data(model$data)
-  which.term <- grep("displacementTerm", labels(terms(model)))
-  new.terms <- drop.terms(terms(model), which.term, keep.response=TRUE)
-  new.formula <- formula(new.terms)
-  new.formula <-
-    update(new.formula,
-           . ~ . + displacementTerm(number_shown_as_spacing, displacement,
-                                    start=c(cs=4, beta_dx=14)))
-  new.model <- gnm(data=new.data, formula=new.formula,
-                      family=model$family)
+                              carrier.factor=2, envelope.factor=2,
+                              inform=FALSE,
+                              inform.fmla=.~.+content,
+                              inform.data=model$data) {
+  model.data <- recast_data(model$data,
+                            envelope.factor=envelope.factor,
+                            carrier.factor=carrier.factor)
+  fmla <- model$formula
+  i.carrier.term <- grep("content.*/spacing", labels(terms(fmla)))
+  new.terms <- drop.terms(terms(fmla), i.carrier.term, keep.response=TRUE)
+  fmla <- formula(new.terms)
+  if (carrier.local) {
+    fmla <- update(fmla, .~.+ content_local)
+  } else {
+    fmla <- update(fmla, . ~ . + content_global)
+  }
+  if (!envelope.local) {
+    fmla <- as.formula(substituteDirect(fmla, alist(spacing=number_shown_as_spacing)))
+  }
+  new.model <- gnm(data=model.data, formula=fmla, family=model$family)
+  #deviance should be equal....
+  if (deviance(model) - deviance(new.model) > 2) {
+    cat("models not equivalent...\n")
+    print(c(new=extractAIC(new_model), old=extractAIC(model)))
+  }
+  if(inform) {
+     new.data <- recast_data(inform.data,
+                            envelope.factor=envelope.factor,
+                            carrier.factor=carrier.factor)
+    new.data$pred <- predict(new.model, newdata=new.data, type="link")
+    fmla <- cbind(n_cw, n_ccw) ~ offset(pred)
+    fmla <- update(fmla, inform.fmla)
+    new.model <- glm2(fmla, data=new.data, family=new.model$family)
+  }
+  new.model
 }
 
 do_recast <- function(model, updater= . ~ . - I(1/spacing:content) + content_global) {
