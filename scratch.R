@@ -3,28 +3,7 @@
 source("icons.R")
 
 #we can also show it in colormap form if you're curious....
-(ggplot(subset(density.plotdata, type=="data"))
- + aes(y=factor(target_number_shown),
-       x = factor(spacing,
-         levels=sort(unique(spacing)),
-         labels=format(sort(unique(spacing)), digits=2)))
- + scale_fill_gradientn("Responses CW", colours=hex(colorful.gradient))
- + scale_y_discrete("Element number")
- + scale_x_discrete("Spacing")
- + geom_tile(data=subset(density.plotdata, type=="prediction"), aes(fill=fit), color=NA)
- + facet_grid(model~subject, labeller=function(var, value) {
-      switch(var,
-             subject = paste("Observer", toupper(as.character(value))),
-             model = vapply(value, switch, "",
-               raw = "Raw data",
-               spacing = "Sensitivity(spacing)",
-               number = "Sensitivity(number)",
-               global = "Spacing & global carrier"))
-    })
- + geom_circle(data=subset(density.plotdata, type=="data"), aes(fill=p), color="green", linetype="11")
- + no_grid
- + theme(aspect.ratio=1)
- )
+
 
 #the thing is that this experiment doesn't have a whole lot of
 #leverage; these are the most informative observers
@@ -262,3 +241,20 @@ chain(
          , group=factor(spacing))
   , +geom_point(position="dodge")
   , +geom_line())
+
+
+# show a contour plot of spacing versus number for a particular idea.
+
+
+apply(HairEyeColor, c("Hair", "Eye"), sum)
+melt(acast(melt(HairEyeColor), Hair ~ Eye, sum))
+
+modelA <- subset(informed.models, subject=="pbm")$model[[1]]
+modelB <- subset(adj.models, carrier.local==TRUE & envelope.local==TRUE & subject=="pbm")$model[[1]]
+
+names(cbind(modelA$data, modelB$data))
+
+(ggplot(modelB$data)
+ + aes(spacing, content_global, color=target_number_shown)
+ + facet_grid(content~.)
+ + geom_point())

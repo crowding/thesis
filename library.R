@@ -604,7 +604,7 @@ recast_data <- function(data, number.factor=2,
   #content/spacing, should be similarly scaled _for full circle
   #stimuli_. this helps keep model fitting on the right starting
   #points.
-  #similar goes for spacing and number_shown_aso_spacing
+  #similar goes for spacing and number_shown_a_spacing
   chain(data,
         mutate_when_missing(
           eccentricity = 20/3,
@@ -839,3 +839,18 @@ factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x
   if (filter(x)) factor(x, levels=unique(x)) else x
 }
 
+put <- macro(function(assignment, value) {
+  assignment_target <- function(x) {
+    switch(
+      class(x),
+      name=x,
+      character=as.name(x),
+      call = switch(head<- class(x[[1]]),
+        name = assignment_target(x[[2]]),
+        character = assignment_target(x[[2]]),
+        stop("that doesn't look like an assignment target")),
+      stop("that doesn't look like an assignment target"))
+  }
+  target <- assignment_target(assignment)
+  template((function() {.(assignment) <- .(value); .(target)})())
+})

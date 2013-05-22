@@ -42,7 +42,6 @@
 --input data.RData
 --input slopeModel.RData
 --output density.modeling.pdf
---output density.modeling.detail.pdf
 --output density.modeling.RData
 
 --command Rscript
