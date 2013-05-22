@@ -1,23 +1,30 @@
 ## @knitr density-setup
 library(knitr)
-opts_knit$set(stop_on_error=2L)
+opts_knit$set(
+  stop_on_error=2L)
+opts_chunk$set(
+  cache.extra=file.info(c(
+    "data.RData", "slopeModel.RData",
+    "numbers.RData", "density.modeling.RData",
+    "latexing.R", "icons.R", "scales.R", "slopeModel.R",
+    "density.modeling.R", "density.calibration.R", "contours.R"))$mtime)
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
 library(ggplot2)
 library(plyr)
 library(grid)
 library(ptools)
+
 source("latexing.R")
 source("icons.R")
 source("scales.R")
 source("slopeModel.R")
-source("library.R")
 source("density.modeling.R")
 source("density.calibration.R")
+source("contours.R")
 for (name in ls()) {
   assign(name, get(name), globalenv())
 } #coz saved fucntion
 setup_theme()
-
 density.example.subjects <- c("pbm", "nj")
 
 ## @knitr do-not-run
@@ -26,12 +33,11 @@ if (!interactive()) {
 }
 
 ## @knitr density-load
-load("data.Rdata")
+load("data.RData")
 load("slopeModel.RData")
 segment <- chain(  data
                  , subset(exp_type=="numdensity" & subject %in% names(models))
-                 , do.rename(folding=TRUE)
-                 )
+                 , do.rename(folding=TRUE))
 load("numbers.RData")
 load("density.modeling.RData")
 
@@ -96,11 +102,51 @@ density.example.dataset <- subset(segment.folded.spindled.mutilated,
  + theme(aspect.ratio=1)
  + errorbars(density.example.dataset))
 
+##plot with spacing...
+
 ## @knitr density-predictions
-(quad_prediction_plot(match=data.frame(subject=density.example.subjects),
-                      orientation="over")
+(condition_prediction_plot(
+  quad.predictions, segment.folded.spindled.mutilated,
+  match=data.frame(subject=density.example.subjects),
+  orientation="over",
+  conditions=quad.conditions)
  + theme(aspect.ratio=1))
 
-## @knitr segment-diagnostics
-#here is how much data I have (incl. non-incongruent trials)
-print(summary(with(segment, interaction(subject,side))))
+## and calculate deviances
+unadjusted.deviances <- chain(quad.models,
+                   ddply(c("subject", names(quad.conditions)),
+                         summarize,
+                         deviance=vapply(model, chain, 0, extractAIC, `[`(2))),
+                   acast(carrier.local ~ envelope.local ~ subject, sum,
+                         value.var="deviance", margins=),
+                   put(names(dimnames(.)),
+                       c("carrier.local", "envelope.local", "subject")))
+ 
+unadjusted.winner <- chain(unadjusted.deviances,
+                           apply(names(quad.conditions), sum),
+                           melt(value.name="deviance"),
+                           arrange(deviance))
+
+each.unadjusted.winner <- chain(unadjusted.deviances,
+                                melt(value.name="deviance"),
+                                ddply(., "subject", chain,
+                                      arrange(deviance), .[1,]))
+
+adj.deviances <- chain(adj.models,
+                   ddply(c("subject", names(quad.conditions)),
+                         summarize,
+                         deviance=vapply(model, chain, 0, extractAIC, `[`(2))),
+                   acast(carrier.local ~ envelope.local ~ subject, sum,
+                         value.var="deviance", margins=),
+                   put(names(dimnames(.)),
+                       c("carrier.local", "envelope.local", "subject")))
+
+adj.winner <- chain(adj.deviances,
+                           apply(names(quad.conditions), sum),
+                           melt(value.name="deviance"),
+                           arrange(deviance))
+
+each.adj.winner <- chain(unadjusted.deviances,
+                         melt(value.name="deviance"),
+                         ddply(., "subject", chain,
+                               arrange(deviance), .[1,]))

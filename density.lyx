@@ -95,7 +95,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<knitr-options,include=FALSE>>=
+<<knitr-options,include=FALSE, results="hide">>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -240,7 +240,7 @@ name "sec:results-number"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -346,19 +346,8 @@ reference "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
-A parallel concern 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-this is the problem -- this experiment is designed to address both issues
- but I think it only has leverage to address one or the other.
-\end_layout
-
-\end_inset
-
-is that we describe the decline in sensitivity to envelope motion, described
- by the term 
+A parallel concern is that we describe the decline in sensitivity to envelope
+ motion, described by the term 
 \begin_inset Formula $\beta_{\Delta x}\left(S\right)$
 \end_inset
 
@@ -793,7 +782,7 @@ reference "sec:results-basic"
 
 ; The stimulus was fixed at 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -1206,7 +1195,7 @@ status open
 
 \begin_layout Plain Layout
 Things look different to start out with, but recasting in terms of the model,
- we will find that things are remarkable consistent between subjects.
+ we will find that things are remarkably consistent between subjects.
  NJ and PBM have the most leverage in this experiment, in different directions,
  but consistent with the underlying core, so we will focus on them for examples.
 \end_layout
@@ -1316,84 +1305,6 @@ We show data for two observers.
  carrier strength and element number) held constant.
  Colors indicate different numbers of elements on the display.
  Error bars show the standard error for each data point (same for all points.)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-missingfigure{graph here}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:density-discretion"
-
-\end_inset
-
- Example data from 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
-, below, compared to data from 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
-
-\end_inset
-
-.
- The vertical line shows the value of displacement chosen by the experimenter
- for use in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
-; this stimulus configuration was anticipated to show an effect.
- Below, the data that was collected at this stimulus configuration.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -1767,68 +1678,62 @@ local
 \begin_inset Quotes erd
 \end_inset
 
- the carrier and displacement sensitivity is interpreted with reference
- to the fits obtained from 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:results-basic"
-
-\end_inset
-
-, ad a function of spacing without regard top the extent of the stimulus.
- Different assumptions about the size of the regions of spatial interaction
- lead to somewhat different results, but do not change the qualitative agreement
- or disagreement with the data.
+ the carrier and displacement sensitivity is constructed as a function of
+ spacing, without regard to the extent of the stimulus.
  We do note that in the raw data there is little appearance of saturating
  behavior as a function of the extent of the stimulus; adding another element
  or changing the spacing seems to have the same relative effect for larger
  stimuli as for smaller, so we conclude that effective regions of both envelope
  and carrier motion are either larger or smaller than all the extents tested.
  That is, if the size of a effective region for either carrier or envelope
- motion fell in the range of extents tested, we would see a 
-\begin_inset Quotes eld
-\end_inset
+ motion fell in the range of extents tested, we would see a bend in the
+ lines plotted in these figures, resulting in an interaction between spacing
+ and number, rather than a consistent slope and apparently independent effects
+ of slope and number.
+ This suggests that if either motion mechanism depends on the global stimulus
+ properties, it would have to have an interaction region larger than the
+ largest stimulus we used in figure 2 (
+ which spanned a circumferential distance 
+\lang english
 
-bend
-\begin_inset Quotes erd
-\end_inset
+\begin_inset ERT
+status collapsed
 
- in the lines plotted in these figures, rather than a consistent slope .
- We will address the question of how large the spatial interaction regions
- might be subsequently.
- 
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(max(with(segment,extent/eccentricity)), digits=2)}$
 \end_layout
 
-\begin_layout Standard
-There is one deviation from a 
+\end_inset
+
+ times eccentricity), suggesting an entire hemifield.
+  On the other hand, because of the minimum size of stimuli that we tested,
+ interaction regions with radius smaller than roughly 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(min(with(segment,extent/eccentricity))/2, digits=1)}$
+\end_layout
+
+\end_inset
+
+ times eccentricity would be classified as 
 \begin_inset Quotes eld
 \end_inset
 
-pure
+local.
 \begin_inset Quotes erd
 \end_inset
 
- prediction from 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
-
-\end_inset
-
-: we have adjusted the average response rates of the predictions shown in
+ We return to the question of exactly how large the spatial interaction
+ regions might be subsequently.
  
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:density-predictions"
-
-\end_inset
-
- to agree with the total number of clockwise responses, with the intention
- that the phenomena determined by globality or locality (i.e.
- the slopes of the lines of response rate with respect to spacing , and
- the change in response rate as a function of element number); can be more
- directly compared.
- When modeling the dataset as a whole we find we can discard this adjustment.
 \end_layout
 
 \begin_layout Standard
@@ -1847,8 +1752,60 @@ reference "fig:density-predictions"
  to the nearest flanker does.) This model, compared to the alternatives,
  manages to capture the slope of the relation between spacing and response
  rate, even though these two observers had very different slopes.
- It does not capture the effect of element number on response rate as well.
- But we tentatively conclude that for the data 
+ It does not capture the overall response rate or the effect of element
+ number on response rate as well.
+ Nevertheless, aggregating the residual deviances over all observers tested,
+ we find that the least deviance between prediction and observation is given
+ when the carrier motion mechanism is taken to be 
+\begin_inset Quotes eld
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{if(unadjusted.winner$carrier.local[1]) stop("nope") else "global"}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+ and the envelope motion mechanism is interpreted to be 
+
+\begin_inset Quotes eld
+\end_inset
+
+
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{if(unadjusted.winner$envelope.local[1]) "local" else stop("nono")}
+\end_layout
+
+\end_inset
+
+.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We tentatively conclude that for the data 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sec:results-basic"
@@ -1873,16 +1830,6 @@ crowding
 
  effect on envelope motion detection happens over a relatively smaller region.
  
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Talk quantitatively about the degree of fit?
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection

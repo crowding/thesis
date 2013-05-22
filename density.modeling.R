@@ -174,9 +174,9 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   bind[models=quad.models, predictions=quad.predictions] <-
     recast_all_models(circle.models, conditions=quad.conditions,
                       carrier.field.guess=2, envelope.field.guess=2,
-                      inform=FALSE,
+                      inform=TRUE,
                       inform.data=segment,
-                      inform.fmla = . ~ . - 1)
+                      inform.fmla = . ~ .)
 
   print(
     condition_prediction_plot(quad.predictions,
