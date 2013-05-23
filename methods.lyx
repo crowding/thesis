@@ -751,14 +751,7 @@ reference "mov:sample-stimuli"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-Stimuli were designed to allow us to independently manipulate higher-order,
- position-based motion, and first-order motion energy.
- We did this by independently controlling the motion of the envelope and
- the carrier of oriented motion stimuli.
+mcarrier of oriented motion stimuli.
  
 \begin_inset Note Note
 status collapsed
@@ -1332,9 +1325,10 @@ status open
 \end_inset
 
  ms after detecting fixation, the motion stimulus was shown for 500 ms (the
- initial location, then 4 steps of displacement at 100ms intervals) After
- the motion stimulus concluded, observers indicated the direction of perceived
- motion by turning a knob within a response window that lasted 
+ initial location, then 4 steps of envelope displacement occuring at 100ms
+ intervals) After the motion stimulus concluded, observers indicated the
+ direction of perceived motion by turning a knob within a response window
+ that lasted 
 \begin_inset Note Note
 status collapsed
 
@@ -1499,16 +1493,27 @@ name "sub:methods-folding"
 \end_layout
 
 \begin_layout Standard
-We presume that an observer's responses to a stimulus and its mirror image
- are symmetric.
+When staircase procedures were used, they employed randomized folding; a
+ staircase configured to use a carrier strength 
+\begin_inset Formula $C$
+\end_inset
+
+ of 0.2 would actually pseudorandomly present either clockwise (0.2) or counterclo
+ckwise (-0.2) motion on each trial, with the staircase-controlled envelope
+ motion reversing direction accordingly.
+\end_layout
+
+\begin_layout Standard
+We similarly presume that an observer's responses to a stimulus and its
+ mirror image are symmetric.
  Therefore we will present and write about stimuli, without loss of generality,
  as though the carrier strength runs clockwise in all trials, even though
- the underlying data contains a mixture of clockwise and counterclockwise
- trials.
+ the underlying data contains a counterbalanced mixture of clockwise and
+ counterclockwise trials.
  The mirror image of a trial reverses the sign of three properties: the
  carrier motion, the envelope motion, the envelope motion, and the observer's
  response.
- So, a trial with carrier strength 
+ So, trials with carrier strength 
 \begin_inset Formula $C=-0.2$
 \end_inset
 
@@ -1524,7 +1529,7 @@ clockwise,
 \begin_inset Quotes erd
 \end_inset
 
- will be presented identically to a trial with carrier strength 
+ will be considered to be identical to trials with carrier strength 
 \begin_inset Formula $C=0.2$
 \end_inset
 
@@ -1546,29 +1551,19 @@ counterclockwise.
 \begin_layout Standard
 We choose the convention that carrier strength is always presented as positive.
  Note that the sign of envelope motion can differ from that of carrier strength,
- so that envelope motion will still take positive and negative values when
- data is folded.
+ so that envelope motion will still take both positive and negative values
+ when data is folded.
 \end_layout
 
 \begin_layout Standard
 In some cases subjects exhibit a bias toward clockwise or counterclockwise
  responses.
- We include a global bias term in our models to account for this.
- Since the model is phrased in terms of unfolded data, we will also fold
- the model predictions when showing model fits.
- The predicted response for a particular stimulus strength is an average
- of the model's predictions for that stimulus and its mirror.
-\end_layout
-
-\begin_layout Standard
-When staircase procedures were used, they employed randomized folding; a
- staircase configured to use a carrier strength 
-\begin_inset Formula $C$
-\end_inset
-
- of 0.2 would actually pseudorandomly present either clockwise (0.2) or counterclo
-ckwise (-0.2) motion on each trial, with the staircase-controlled envelope
- motion reversing direction accordingly.
+ We include a global bias term in our model to account for this - this is
+ the only term in the model that is not symmetric.
+ We fit the model using unfolded data, and then folded the model predictions
+ when showing model fits.
+ The predicted response for a particular stimulus strength is therefore
+ an average of the model's predictions for that stimulus and its mirror.
 \end_layout
 
 \begin_layout Standard

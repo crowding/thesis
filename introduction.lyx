@@ -121,7 +121,11 @@ key "Steinman:2000ap"
 \end_inset
 
 .
- It is believed that local (or short range) mechanisms respond to the motion
+ The goal of this thesis is to examine how these mechanisms interact.
+\end_layout
+
+\begin_layout Standard
+It is believed that local (or short range) mechanisms respond to the motion
  of visual features defined by luminance, or by motion energy in the Fourier
  domain 
 \begin_inset CommandInset citation
@@ -131,7 +135,6 @@ key "Adelson:1985ea"
 \end_inset
 
 , at short temporal and spatial scales.
- 
 \end_layout
 
 \begin_layout Standard
@@ -175,7 +178,7 @@ It is thought that the first-order motion mechanism originates with the
  in a small region of space, in a way similar to what has been observed
  to drive the activity of cells in V1 
 \begin_inset Marginal
-status collapsed
+status open
 
 \begin_layout Plain Layout
 cites:(Reichardt; Adelson; Simoncelli; Ullman 
@@ -191,7 +194,7 @@ cites:(Reichardt; Adelson; Simoncelli; Ullman
  of a V1 neuron.
  
 \begin_inset Marginal
-status open
+status collapsed
 
 \begin_layout Plain Layout
 cites
@@ -203,9 +206,10 @@ cites
 \end_layout
 
 \begin_layout Standard
-However, the perception of motion does not necessarily require features
- to differ in mean luminance from the background, does not necessarily require
- motion energy in the Fourier domain.
+However, motion clearly requires more than these simple first-order mechanisms.
+ For example, the perception of motion does not necessarily require features
+ to differ in mean luminance from the background, and does not necessarily
+ require motion energy in the Fourier domain.
  Moving stimuli can be constructed that would not be consistently detectable
  to first-order mechanisms, yet nonetheless elicit strong perceptions of
  movement.
@@ -223,8 +227,12 @@ key "Lu:1995la"
 \end_inset
 
 .
- There is evidence that global motion may have a different neural substrate
- from local motion.
+ 
+\end_layout
+
+\begin_layout Standard
+There is evidence that these global motion signals may have a different
+ neural substrate from local motion.
  For example, adding higher-order motion to a display does not appear to
  change the threshold of detection for first-order motion 
 \begin_inset CommandInset citation
@@ -233,15 +241,14 @@ key "Edwards:1995fk,Cassanello:2011uq"
 
 \end_inset
 
-, and there is some neuropsychological evidence of while a combination of
- linear spatiotemporal filters and output nonlinearities is successful at
- predicting the detection of first order motion, and corresponds to neural
- response properties in V1, stimuli can also be designed to be invisible
- to such a mechanism.
- Higher order motion stimuli can be created these stimuli nonetheless elicit
- a strong sensation of motion can also be created without any Fourier motion
- signal, by using stimuli that modulate contrast, texture, or other features
- - such stimuli being invisible to a system that relies on linear filter
+, and there is some neuropsychological evidence that while a combination
+ of linear spatiotemporal filters and output nonlinearities is successful
+ at predicting the detection of first order motion (and corresponds to neural
+ response properties in V1) visible motion stimuli can also be designed
+ that are invisible to such a mechanism.
+ Higher order motion stimuli that modulate contrast, texture, or other features
+ and do not contain any Fourier motion signal, created to be 'invisible'
+ to first order mechanisms, nonetheless elicit a strong sensation of motion
  
 \begin_inset Note Note
 status collapsed
@@ -252,9 +259,11 @@ ISTR Simoncelli's chapter in Gazzaniga had some discussion?
 
 \end_inset
 
-; Another difference between long-range and short-range motion is that the
- former seems to be capable of tracking a feature object over distances
- larger than what can be achieved through individual local filters.
+.
+ Another difference between long-range and short-range motion that suggests
+ different mechanisms is that the former seems to be capable of tracking
+ a feature object over distances larger than what can be achieved through
+ individual local filters.
  Interestingly, the anatomical substrate of higher-order motion mechanism
  is still unclear.
  While area MT and MST have been proposed as candidates, response properties
@@ -285,9 +294,9 @@ One possible reason for having multiple motion estimation systems is that
  local motion signals are not always a reliable indication of the global
  motion.
  In a complicated visual world, motion can come from many sources, and accurate
- perception of the movement of objects requires disambiguating those motion
- signals attributable to the object from irrelevant motions in the background
- or of other objects.
+ perception of the movement of objects requires disambiguating motion signals
+ attributable to the object from irrelevant motions in the background or
+ of other objects.
  Consider the task of trying to track the movement of a zebra among a background
  of waving grass.
  While many of the local signals will correctly signal the motion of the
@@ -297,13 +306,22 @@ One possible reason for having multiple motion estimation systems is that
 \change_deleted 232785317 1349734913
  
 \change_unchanged
- significant proportion of these individual receptive fields provide an
- incorrect signal , and a simple pooling of their signals over space might
- also be incorrect.
+This, a significant proportion of these individual receptive fields provide
+ an incorrect signal , and as a consequence a simple pooling of their signals
+ over space is also likely to be incorrect.
  To track the zebra requires integrating local motion signals over space
  and time in a way that is consistent with the global change in position
  of an object, while discarding local signals that are inconsistent with
  the object's trajectory.
+\end_layout
+
+\begin_layout Standard
+Despite the fact that these two motions systems clearly interact in determining
+ our impression of the moving world, little is known as yet about how they
+ combine information so as to produce a single coherent percept of motion.
+ Here we examine this combination using a simple display that contains independe
+nt local and global motion stimuli whose direction of motion can be indepdently
+ manipulated.
 \end_layout
 
 \begin_layout Standard
@@ -455,8 +473,23 @@ reference "mov:demo"
  The movie shows two wheels, each composed of five moving elements.
  The elements are Gabor-like stimuli that window a moving carrier inside
  of a spatial envelope.
- The envelope moves independently of the carrier, so that the carrier produces
- first order motion while the envelope produces higher order motion.
+ The envelope moves independently of the carrier, so that the 
+\emph on
+carrier
+\emph default
+ produces 
+\emph on
+first order motion
+\emph default
+ while the 
+\emph on
+envelope
+\emph default
+ produces 
+\emph on
+higher order motion
+\emph default
+.
  On the right side of the display, the local and global motion components
  move in the same direction; on the left side the local and global components
  are in opposite directions.
@@ -504,7 +537,7 @@ reference "mov:demo-multiple"
  direction of motion is consistent with the envelope.
  When the ring is viewed in the periphery, the apparent direction of motion
  matches that of the carrier.
- If the observer keeps attention on that stimulus while moving the eyes
+ If the observer maintains attention on the ring, while moving her eyes
  so as to move the stimulus from central to peripheral vision it is possible
  to make the apparent motion reverse.
 \end_layout
@@ -514,11 +547,11 @@ From this demonstration it appears that having more than one target in a
  given region of space affects how first-order and higher-order motion are
  combined.
  That the appearance changes with retinal eccentricity of the stimulus suggests
- that the range of spatial interaction scales with the retinal eccentricity.
+ that the range of spatial interaction scales with retinal eccentricity.
  A plausible explanation could be that the presence of flanking objects
- limits the ability to see movement of the envelope, allowing the carrier
- motion to determine the percept; that is, 'crowding' may be affecting howfirst-
-order and higher-order motion are combined.
+ limits the ability to see movement of the envelope, thereby allowing the
+ carrier motion to determine the percept; that is, 'crowding' may be affecting
+ how first-order and higher-order motion are combined.
 \end_layout
 
 \begin_layout Standard

@@ -59,6 +59,7 @@ knitr
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
+\author -1683065902 "Ione Fine" 
 \end_header
 
 \begin_body
@@ -132,13 +133,20 @@ reference "fig:model"
 \begin_inset Formula $M_{s}$
 \end_inset
 
- is a sum of first order motion energy inside a relatively restricted region
- (shown by the smaller, green dashed circle), 
+ is a sum of first order motion energy
+\change_inserted -1683065902 1369202101
+ - carrier motion -
+\change_unchanged
+ inside a relatively restricted region (shown by the smaller, green dashed
+ circle), 
 \begin_inset Formula $\bar{\Delta_{x}}$
 \end_inset
 
- is an estimate of the change of position of a tracked target, within the
- same restricted region (indicated by a black line,) 
+ is an estimate of the change of position of a tracked target
+\change_inserted -1683065902 1369202095
+ - the movement of the envelope
+\change_unchanged
+, within the same restricted region (indicated by a black line,) 
 \begin_inset Formula $M_{I}$
 \end_inset
 
@@ -161,7 +169,13 @@ For
  region, we expect signals from multiple elements to sum, so that the local
  motion signal is proportionate to the direction content of individual elements
  and inversely proportional to the spacing (since the number of elements
- near the integration field is inversely proportional to the spacing.)
+ 
+\change_deleted -1683065902 1369202125
+near
+\change_inserted -1683065902 1369202126
+within
+\change_unchanged
+ the integration field is inversely proportional to the spacing.)
 \end_layout
 
 \begin_layout Standard

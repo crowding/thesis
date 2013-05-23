@@ -123,10 +123,8 @@ what kind of motion system is this stimulating?
 \end_layout
 
 \begin_layout Standard
-It is worth commenting about some properties of this type of stimulus that
- can be subjectively observed, and (so far as we can tell) acknowledged
- by almost all colleagues we show our displays to, even though we do not
- attempt to establish them quantitatively.
+Any model will need to explain a number of properties of this type of stimulus
+ that can be subjectively observed.
 \end_layout
 
 \begin_layout Standard
@@ -158,7 +156,7 @@ wheels
  elements on both wheels appear to orbit counterclockwise.
  But if gaze is focused on the right wheel, the left wheel now appears to
  rotate counterclockwise.
- 
+ (this repeats from the previous section)
 \end_layout
 
 \begin_layout Standard
@@ -187,10 +185,11 @@ density
 \end_layout
 
 \begin_layout Standard
-Taken together, these demonstrations motivate our investigation of the interplay
- of three factors in determining motion perception: the agreement of short-range
- and long-range movement, the eccentricity of the stimulus, and the density
- of elements contained therein.
+Taken together, these demonstrations suggest that any successful model will
+ need to include at least three factors when predicting the percept of motion
+ for a given display: whether or not short-range and long-range movement
+ are in the same direction, the eccentricity of the stimulus, and the density
+ of elements in the display.
 \end_layout
 
 \begin_layout Standard
@@ -397,10 +396,10 @@ k to avoid that collocation.
 
 \end_inset
 
- that occurs in incongruent stimuli (those whose short range and long range
- components are in opposition.) When elements are widely spaced, the apparent
- direction of motion follows that of the envelopes; as element spacing decreases
-, the direction of motion changes to agree with that of the carrier.
+ that occurs in incongruent stimuli (when short and long range motion is
+ in opposition.) When elements are widely spaced, the apparent direction
+ of motion follows that of the envelopes; as element spacing decreases,
+ the direction of motion changes to agree with that of the carrier.
 \end_layout
 
 \begin_layout Standard
@@ -421,28 +420,29 @@ start by describing narrow spacings, then intermediate, then wide.
 \begin_layout Standard
 We will proceed to quantify this reversal effect below.
  In order to do so we ask subjects to make forced classifications of the
- stimulus' overall direction (clockwise or counterclockwise.) However, the
- subjective appearance of our stimulus can be complex, with several properties
- that change aside from overall direction.
- Although we do not attempt to quantify these details of the appearance
- of our stimuli, we feel it is worth describing our impressions of them.
- Suitable individual adjustments of element spacing and other properties
- appear to elicit the same kinds of descriptions in everyone we have shown
- these stimuli to.
+ stimulus' overall direction (clockwise or counterclockwise.) However, it
+ is worth noting that these simnple direction judgments do not fully capture
+ changes in the subjective appearance of our stimulus as a function of element
+ density.
 \end_layout
 
 \begin_layout Standard
 When elements are closely spaced, it is generally impossible to see the
- direction of envelope motion; the overall impression is of motion the the
+ direction of envelope motion; the overall impression is of motion in the
  direction of the carrier.
+ There is not the sense of two separate motions when short and long range
+ motion are iincongruent.
  However, the amount of subjective flicker does appear to differ between
  incongruent and congruent motion, with ingongruent motion having more flicker.
 \end_layout
 
 \begin_layout Standard
-Increasing the inter-element spacing somewhat, we approach a critical spacing,
- where for incongruent stimuli, subjects equivocate in their reports of
- perveived motion direction, 
+As the inter-element spacing increases, we approach a 
+\emph on
+'critical spacing'
+\emph default
+, where for incongruent stimuli, subjects equivocate in their reports of
+ perceived motion direction, 
 \begin_inset Note Greyedout
 status open
 
@@ -460,15 +460,14 @@ critical distance.
 
 \end_inset
 
- The subjective appearance of a critically spaced, incongruent motion stimulus
- is somewhat variable.
- To some observers, it appears to first move in the direction of the carrier,
- and then to reverse direction shortly after stimulus onset.
+ To some observers, these stimuli appear to first move in the direction
+ of the carrier, and then to reverse direction shortly after stimulus onset.
+ For other subject elements appear to move clockwise in some parts of the
+ circle and counterclockwise elsewhere.
  Although both the carrier and envelope motions are (considered separately)
  consistent with an underlying rigid rotation of a surface around the fixation
- point, or alternately a rotation of the observer, the perception does not
- appear to obey a rigid body constraint; elements can appear to move clockwise
- in some parts of the circle and counterclockwise elsewhere.
+ point, or alternately a rotation of the observer, the perception never
+ appears to obey a rigid body constraint.
  
 \end_layout
 
@@ -580,8 +579,10 @@ capture
 
 \begin_layout Standard
 The subjective speed of the elements also changes with the element spacing.
- As element spacing is reduced, the perceived speed of element motion (as
- distinguished from the 
+ At spacings near the critical distance the elements almost appear to be
+ at a near standstill over the brief duration of the stimulus.
+ As element spacing is increased, the perceived speed of element motion
+ (as distinguished from the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -589,17 +590,14 @@ wind
 \begin_inset Quotes erd
 \end_inset
 
-) also seems to reduce, until spacing near the critical distance, where
- the elements almost appear to be at a near standstill over the brief duration
- of the stimulus.
+) also seems to increase.
 \end_layout
 
 \begin_layout Standard
-Thus at very narrow and very wide element spacings it becomes difficult
- to tell congruent motion apart from incongruent motion via the sensation
- of motion direction.
- However, the sensation of subjective flicker and smoothness of movement
- does tend to tell the two stimuli apart.
+Thus at very narrow and very wide element spacings the motion signal does
+ not provide a particularly good cue for congruent vs.
+ incongruent motion, though the sensation of subjective flicker and smoothness
+ of movement does tend to differentiate the two stimuli.
  Incongruent stimuli have more flicker, at both narrow and wide element
  spacings, and appear to move less smoothly.
  We have attempted to correlate this sensation of smoothness or lack thereof
@@ -648,8 +646,9 @@ This next paragraph doesn't really connect to anything unless I perform
 \begin_layout Standard
 As a final note, in some instances it appears that small fixational eye
  movements have some influence over the appearance of these stimuli.
- This is most easily demonstrated in a where the long range displacement
- is zero but the carrier has a consistent direction, as shown in 
+ This is most easily demonstrated in a demonstration where the long range
+ displacement is zero but the carrier has a consistent direction, as shown
+ in 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "mov:eyemovements"
@@ -682,6 +681,7 @@ key "Kitaoka:2007fv"
  to be driven by slight shifts of a stationary image on the retina, the
  construction of our stimulus would tend to rule that out as a mechanism;
  the motion is directly contained in the stimulus.
+ I woudl delete this whole paragraph, it's a digression.
 \end_layout
 
 \begin_layout Standard
