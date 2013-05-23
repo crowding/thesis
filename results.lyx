@@ -334,7 +334,7 @@ reference "sub:methods-staircase"
 
 \end_inset
 
-, I used an interleaved staircase procedure to collect psychometric functions,
+, I used an interleaved staircase procedure to measure psychometric functions,
  with the staircase varying the speed of the envelope motion.
  There were two types of sessions.
  One type was focused on the effect of spacing, and tested several spacings
@@ -384,7 +384,7 @@ There are three qualitative effects that we wish to point out before combining
 \end_layout
 
 \begin_layout Subsubsection
-Sensitivity to displacement decreases as spacing decreases
+Sensitivity to envelope displacement decreases as spacing decreases
 \end_layout
 
 \begin_layout Standard
@@ -418,10 +418,10 @@ clockwise
 \begin_inset Quotes erd
 \end_inset
 
- to that stimulus.
- For 
+to that stimulus on the vertical axis.
+For
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-collapse"
 
 \end_inset
@@ -432,8 +432,8 @@ reference "fig:results-spacing-collapse"
  spacing has a shallower slope, independently of any shifts it may have.
  In a later section (
 \begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:results-no-pooling"
+LatexCommand formatted
+reference "sec:model"
 
 \end_inset
 
@@ -444,7 +444,7 @@ reference "sub:results-no-pooling"
 Crowding causes interference at smaller distances, while pooling might still
  act over larger distances.
  Therefore I also tested whether there was a change in envelope motion sensitivi
-ty at wider spacings, outside the range of spacings that might be subject
+ty with element number at wider spacings, outside the range of spacings that might be subject
  to crowding, but I found no significant effect (
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -714,8 +714,8 @@ reference "sec:results-basic"
 
 -intercepts reflects the observer's sensitivity to carrier motion at that
  spacing.
- This sensitivity is greater at wider spacings.
- At narrow spacings, curves intercept the vertical axis below 
+ This sensitivity is greater at narrow spacings.
+ At wider spacings, curves intercept the vertical axis below 
 \begin_inset Formula $P=0.5$
 \end_inset
 
@@ -774,7 +774,7 @@ reference "sub:results-sensitivity"
 
 \end_inset
 
-.) Note that this statement is based on comparing the intercepts with the
+.) Note that this statement about sensitivity is based on comparing the intercepts with the
  vertical axis, rather than the points of subjective equality (intercepts
  with the horizontal line 
 \begin_inset Formula $P=0.5$
@@ -782,9 +782,8 @@ reference "sub:results-sensitivity"
 
 .) One would expect the distance between the points of subjective equality
  to be increased even of the strength of carrier motion did not change,
- because of the change in slopes: an identical shift in log-likelihood applied
- to two sigmoid cumulative distribution functions will produce a greater 
- change in the PSE for the one with the shallower slope.
+ because of the change in slopes: an identical vertical shift applied to two lines will
+ produce a greater shift in the x-intercept for the line with the shallower slope.
  However, since the intercepts with the vertical axis are also farther apart
  at smaller spacings, we conclude that the sensitivity to carrier motion
  has increased in addition to the decrease in sensitivity to envelope motion.
@@ -886,7 +885,7 @@ have to qualify this because they can be combined given longer viewing durations
 \end_layout
 
 \begin_layout Subsection
-Model overview and visualizations
+Model and data visualizations
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-contours"
@@ -898,7 +897,7 @@ name "sub:results-contours"
 
 \begin_layout Standard
 Having given examples illustrating some of the effects that a model should
- capture, this section attempt to present an overview both of the entire
+ capture, this section attempts to present an overview both of the entire
  dataset, and how the model specified in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1144,21 +1143,23 @@ reference "fig:results-3d"
  The shading of each circle depends on the residual between the recorded
  responses and the model prediction for that set of stimuli; an identical
  shade inside the circle as outside indicates no residual.
- Each circle represents the subset of trials falling nearest that point.
+ Each circle represents the subset of trials falling near that point.
  
 \noun on
 Upper left
 \noun default
-: we plot the response probability as a function of carrier strength and
- spacing, with envelope motion fixed to zero.
- Circles collect trials with all envelope motions.
+: Response probability as a function of carrier strength and spacing, with
+ envelope motion fixed to zero.
+ Data are combined across all carrier strengths (see below).
  
 \noun on
 Lower left
 \noun default
-: we show the response probability as a function of envelope motion and
- spacing, for stimuli with no carrier strength (i.e.
- counterphase) 
+: Response probability as a function of envelope motion and spacing, for
+ stimuli with no carrier strength (i.e.
+ counterphase).
+ Data are combined across all envelope motions (see LINK).
+
 \noun on
 Upper right 
 \noun default
@@ -1166,16 +1167,14 @@ and
 \noun on
 lower right
 \noun default
-: We plot the fitted model response as a function of carrier spacing and
- strength, for two different values of spacing (indicated;) the upper left
- plot is taken at a relatively wider spacing while the lower left plot is
- taken at a relatively narrower spacing.
- In plotting the shaded circles indicating residuals, the upper left plot
- shows that the Trials are divided between these plots; the upper left plot
- computes residuals from trials that used a wider spacing and the lower
- left plot shows residuals from trials that had a narrower spacing (as indicated
-).
- Both plots on the left use all trials in computing residuals.
+: Fitted model response as a function of carrier spacing and strength, for
+ two different values of spacing.
+ The upper right plot shows carrier strength as a funciton of envelope motion
+ for trials where the spacing ranged between XXX and XXX< whereas the the
+ lower right plot contains contains trials where the spacing ranged between
+ XXX and XXX.
+ .
+ 
 \end_layout
 
 \end_inset
@@ -1248,13 +1247,31 @@ reference "fig:results-contours"
  shows the model's predictions as a function of two of the three variables,
  leaving the other fixed; the value of the fixed variable is noted in the
  upper right corner of each panel.
- From upper right counterclockwise, we show how (a) model responses vary
- as a function of spacing and carrier strength, for stimuli with zero envelope
- motion, (b) as a function of spacing and envelope movement, for stimuli
- with zero carrier motion, (c) as a function of envelope motion and carrier
- strength, for stimuli with a fixed, narrower spacing, and (d) as a function
- of envelope motion and carrier strength (similarly to (c)), for stimuli
- with a fixed, wider spacing.
+ From upper right counterclockwise, we show how (
+\noun on
+Upper left
+\noun default
+) model responses vary as a function of spacing and carrier strength, for
+ stimuli with zero envelope motion, (
+\noun on
+Lower left
+\noun default
+) as a function of spacing and envelope movement, for stimuli with zero
+ carrier motion, (
+\noun on
+Upper right
+\noun default
+) as a function of envelope motion and carrier strength, for stimuli with
+ a fixed, narrower spacing, and (
+\noun on
+lower right
+\noun default
+) as a function of envelope motion and carrier strength (same slice direction
+ as 
+\noun on
+Upper right
+\noun default
+), for stimuli with a fixed, wider spacing.
 \end_layout
 
 \begin_layout Standard
@@ -1282,37 +1299,37 @@ d.
 \begin_layout Standard
 Note that the shading within each circle is not simply the arithmetic mean
  of observers' responses, but is based on the difference between the data
- and model fit; we need to base the plot on residuals rather than the mean
- for a few reasons.
- One is that the actual stimulus parameters of the trials are scattered
- through the 3-D space outlined in the upper figure, and the underlying
- response probability depends on all three dimensions.
- Each circle collects the subset of trials that lie closest to it, but the
- underlying response probabilities we are trying to model still differ over
- that subset.
- In the upper left figure the points collected under one circle at a particular
- value of displacement can take any value in the unseen dimension (envelope
- motion); and with reverence to the other plots we see that at a particular
- spacing and carrier strength, the response is expected to vary as a function
- of envelope motion.
- Observing a response probability of 0.5 for some particular stimulus, means
- different things depending on if the model predicts 0.2 (the model undershoots)
- or 0.8 (the model overshoots); Therefore we base the plot on the difference
- between model and observation rather than taking the mean of the raw observatio
-ns.
+ and model fit; we chose to base the plot on residuals rather than the mean
+ for three reasons, related to the fact that the actual stimulus parameters
+ of the trials are scattered through the 3-D space outlined in the upper
+ figure.
+ First, each circle collects the subset of trials that lie closest to it
+ in the slice direction, but these trials are not centered on a particular
+ unique x,y location in the slice.
+ Second, the data collected for any given x, y direction on a slice, must
+ be combined along the unseen dimension (e.g.
+ in the 
+\noun on
+Upper left
+\noun default
+ panel showing the slice direction of carrier strength vs.
+ spacing, data are combined across all envelope motions).
+ he points collected under one circle at a particular value of displacement
+ can take any value in the unseen dimension (envelope motion).
+ The final reason is that data are not evenly sampled throughout the stimulus
+ configuration space.
+ 
 \end_layout
 
 \begin_layout Standard
-Another reason is that the data are not evenly sampled throughout the stimulus
- configuration space.
- For example, in the upper left plot, each circle represents a number of
- trials that occur over a number of different envelope motions; because
- a staircase procedure was used, the set of envelope motion values that
- was collected differs for each circle.
- If each staircase procedure converged well, using the arithmetic mean would
- plot a probability close to 0.5 for all circles in the upper left graph;
- but this would not be useful for assessing the model fit or the behavior
- of the observer.
+Using the Pearson residuals between the observed response probabilty and
+ the model prediction allows us to quantify the difference between observers
+ and models within this 3D space.
+ 
+\end_layout
+
+\begin_layout Standard
+.
  
 \begin_inset Note Note
 status open
@@ -1336,15 +1353,19 @@ crystal clear
 \end_layout
 
 \begin_layout Standard
-The shading used inside the circles should be interpretable against the
- background, so we compute the shade by asking 
-\begin_inset Quotes eld
-\end_inset
+The shading used inside the circles is designed to provide an estimate (Pearson
+ residual x number of trials2)of how well the model fits the data.
+ Note that we chose to show a measure of the difference between observation
+ and model, not a measure of statistical significance.
+ We did this so data points with small n, can still show as non-matching
+ from model predictions.
+\begin_inset Note Note
+status open
 
-what response probability for the configuration at which the circle is centered
- would give the same Pearson residual as we actually observe for these trials
- at this sample size.
-\begin_inset Quotes erd
+\begin_layout Plain Layout
+Show Pearson models?
+\end_layout
+
 \end_inset
 
  If the model fits exactly, the interior of each circle will match the exterior.
@@ -2094,6 +2115,14 @@ clockwise
 \end_inset
 
 .
+ Three observers are shown here; the complete set is shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:everything-sensitivity"
+
+\end_inset
+
+.
 \end_layout
 
 \end_inset
@@ -2278,6 +2307,14 @@ reference "fig:results-summation-increases"
  each panel has a different scale on the vertical axis; the gray horizontal
  line indicates a sensitivity of 0, which marks the boundary between summation
  and repulsion.
+ Three observers are shown here; the complete set is shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:everything-summation"
+
+\end_inset
+
+.
 \end_layout
 
 \end_inset
@@ -2725,7 +2762,7 @@ Sexpr{toupper(carissas.wierd)}
 \end_inset
 
 , indicating that small imbalances of motion energy at wide target spacings
- usually lead to repulsion, but that the repulsion is ≈proportionately weaker,
+ usually lead to repulsion, but that the repulsion is proportionately weaker,
  or even reverses, with stronger direction content.
 \end_layout
 
