@@ -295,7 +295,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
 
 }
 
-as.names <- function(names, value=missing.value()) {
+as.names <- function(names, value=missing_value()) {
   x <- replicate(length(names), value)
   names(x) <- names
   x

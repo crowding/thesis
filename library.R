@@ -54,17 +54,20 @@ predict_from_model_frame <- function(models, newdata,
         adply(1, function(row) {
           bind[model=bind[model], ...=group] <- as.list(row)
           if (newdata_missing) {
-            predict_from_model(model)
+            newdata <- predict_from_model(model)
           } else {
             predict_from_model(model,
                                match_df(newdata, quickdf(group),
                                         on = names(newdata) %^% names(group)))
           }
         }),
+        drop_recursive,
         if (any(fold, spindle, collapse)) {
           mutilate.predictions(., fold=fold, spindle=spindle, collapse=collapse)
         } else .)
 }
+
+drop_recursive <- function(df) df[!vapply(df, is.recursive, FALSE)]
 
 predict_from_model <- function(model, newdata=model$data, se.fit=TRUE) {
   #chunk prediction because predict.gnm does something odd
@@ -92,8 +95,9 @@ match_to <- function(x, from) {
 collapse <- function(data) {
   #collapses different sides and direction contents together (as for
   #most subjects in this experiment these don't matter.)
+  data <- chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45))
   args <- dots(
-    chain(data, subset(abs(content) > 0 & displacement/sign(content) < 0.45)),
+    data,
     segment.config.vars %v% segment.experiment.vars %-% c("displacement", "content"),
     summarize)
 
@@ -134,22 +138,32 @@ mutilate.predictions <-
 
 #label function for each facet
 labeler <- function(data) {
-  ddply(data, "exp_type", function(data) {
-    mutate(data, label={
+  l <- if ("exp_type" %in% names(data)) {
+    unlist(use.names=FALSE, dlply(data, "exp_type", with, {
+      monodisp <- exists("displacement") && length(unique(displacement))==1
+      monocon <- exists("content") && length(unique(content))==1
       switch(
         as.character(exp_type[[1]]),
         numdensity = {
-          paste(
+          paste0(
+            if (!monodisp && !monocon) "Observer " else "",
             sprintf("%s", toupper(subject) ),
-            if ("displacement" %in% names(data))
-              paste0("d=", format(displacement, digits=2)) else "",
-            if ("content" %in% names(data))
-              paste0("C=", format(content, digits=2)) else ""
-            )},
-        content = sprintf("Content %s", toupper(subject)),
-        spacing = sprintf("Spacing %s", toupper(subject)))
-    })
-  })
+            if (monodisp) paste0(" d=", format(displacement, digits=2)) else "",
+            if (monocon) paste0(" C=", format(content, digits=2)) else ""
+            )
+        },
+        content = sprintf("Content, observer %s", toupper(subject)),
+        spacing = sprintf("Spacing, observer %s", toupper(subject)))
+    }))
+  } else {
+    with(data,
+         if (exists("full_circle") && length(unique(full_circle)) > 1) {
+           sprintf("Observer %s", toupper(subject))
+         } else {
+           sprintf("Observer %s", toupper(subject))
+         })
+  }
+  cbind(data, label=l)
 }
 
 zip <- function(l, collate=c) {
@@ -517,7 +531,7 @@ mkrates <- function(data,
 }
 
 #undo mkrates, convert counted yes/no data into binary data.
-unmkrates <- function(data, keep.count.cols=FALSE) {
+unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data)) {
   is <- is_rates(data, splits)
   if (!is.na(is)) {
     if (!is) {
@@ -530,7 +544,7 @@ unmkrates <- function(data, keep.count.cols=FALSE) {
   responses = inverse.rle(list(
       lengths = rbind(data$n_cw, data$n_ccw),
       values = replicate(nrow(data), c(TRUE,FALSE))))
-  data <- data[rows,]
+  data <- data[rows,columns, drop=FALSE]
   data$response <- responses
   if (keep.count.cols) {
     mutate(data, n_cw = ifelse(response, 1, 0), n_ccw = ifelse(response, 0, 1),
@@ -548,8 +562,49 @@ take_nearest <- function(data, candidates) {
   restrict[findInterval(data, breaks, rightmost.closed=TRUE)]
 }
 
+which.pmax <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  Reduce(x=seq_along(args), init=list(-Inf, 0), function(aia, ib) {
+    a <- aia[[1]]; ia <- aia[[2]]
+    b <- args[[ib]]
+    keep <- a >= b & !(na.rm & is.na(b))
+    list(ifelse(keep, a, b), ifelse(keep, ia, ib))
+  })[[2]]
+}
+
+which.pmin <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  Reduce(x=seq_along(args), init=list(Inf, 0), function(aia, ib) {
+    a <- aia[[1]]; ia <- aia[[2]]
+    b <- args[[ib]]
+    keep <- a <= b & !(na.rm & is.na(b))
+    list(ifelse(keep, a, b), ifelse(keep, ia, ib))
+  })[[2]]
+}
+
+abs.pmin <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  select <- which.pmin %<<% c(na.rm=na.rm) %()% lapply(args, abs)
+  arr <- cbind %()% lapply(args, unattr)
+  arr[cbind(seq_len(nrow(arr)), select)]
+}
+
+abs.pmax <- function(..., na.rm=FALSE) {
+  args <- list(...)
+  select <- which.pmax %<<% c(na.rm=na.rm) %()% lapply(args, abs)
+  arr <- cbind %()% lapply(args, unattr)
+  arr[cbind(seq_len(nrow(arr)), select)]
+}
+
 #compute columns for total "local" motion energy and total "global" motion energy
-recast_data <- function(data, number.factor=1) {
+recast_data <- function(data, number.factor=2,
+                        envelope.factor = number.factor,
+                        carrier.factor = number.factor) {
+  #all of content_local, content_global and
+  #content/spacing, should be similarly scaled _for full circle
+  #stimuli_. this helps keep model fitting on the right starting
+  #points.
+  #similar goes for spacing and number_shown_a_spacing
   chain(data,
         mutate_when_missing(
           eccentricity = 20/3,
@@ -559,12 +614,17 @@ recast_data <- function(data, number.factor=1) {
           content_ccw = (1 - content)/4,
           side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
         mutate(
-          content_global = content * target_number_shown,
           content_local = content / spacing,
+          content_global = content / 2/pi/eccentricity
+          * abs.pmin(
+            target_number_shown * carrier.factor,
+            target_number_all),
           full_circle = target_number_shown == target_number_all,
           extent = spacing * target_number_shown,
-          number_shown_as_spacing = (eccentricity*2*pi/
-                                     (number.factor*target_number_shown))))
+          number_shown_as_spacing =
+            2*pi*eccentricity / envelope.factor / abs.pmin(
+              target_number_shown,
+              target_number_all / envelope.factor)))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -574,6 +634,7 @@ seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
 `%^%` <- intersect
 `%call%` <- function(x, y) do.call(x, as.list(y), envir=parent.frame())
 mask.na <- function(x, f) `[<-`(x, !f(x), value=NA)
+invoke <- function(x, y) y %()% x
 
 ddply_along <-
   function(.data, .variables, .fun=NULL, ...
@@ -685,3 +746,111 @@ show_dup <- function(joined, which_dup = 1) {
   dups <- which(duplicated(joined$left.check))
   subset(joined, left.check %in% left.check[dups[which_dup]])
 }
+
+hosmerlem = function(model, newdata=model$data, groups=10) {
+  #Hosmer-Lemeshow statistic for goodness of fit, for a binomial
+  #response. We could use this in other ways, it's a
+  #deviance test essentially.
+  newdata$fit <- predict(model, newdata=newdata, type="response")
+  #make sure it is binary data and not grouped
+  newdata <- unmkrates(newdata, columns=c("fit"))
+  bind[y, yhat] <- newdata[c("response", "fit")]
+  cutyhat <- floor((order(yhat) - 1)/length(yhat) * groups)
+  obs = xtabs(cbind(1 - y, y) ~ cutyhat)
+  expect = xtabs(cbind(1 - yhat, yhat) ~ cutyhat)
+  chisq = sum((obs - expect)^2/expect)
+  P = pchisq(-chisq, groups - 1)
+  return(list(stat=chisq, dof=groups-1, p=P))
+}
+
+subset_deviance <- function(model, subset=TRUE, .enclos=parent.frame()) {
+  mask <- eval(substitute(subset), model$data, .enclos)
+  y <- model$y[mask]
+  mu <- model$fitted.values[mask]
+  wts <- model$prior.weights[mask]
+  sum(model$family$dev.resids(y, mu, wts))
+}
+
+normalize <- function(x) x / mean(x)
+standardize <- function(x) (x - mean(x)) / sd(x)
+shift_min <- function(x, ...) x - min(x, ...)
+normalize_min <- function(x) (x / min(x))
+
+colwise_mutate <- function(...) {
+  f <- colwise(...)
+  function(df) {
+    ff <- f(df)
+    df[names(ff)] <- ff
+    df
+  }
+}
+
+captureWarnings <- function(expr, print=TRUE) {
+  warnings <- NULL
+  i <- 0
+  result <- withCallingHandlers(
+    simpleWarning=function(w) {
+      if(print) message(w)
+      i <<- i + 1
+      warnings[[i]] <<- w
+      invokeRestart("muffleWarning")
+    },
+    tryCatch(
+      list(result=expr, warnings=warnings, error=NULL),
+      error=function(e) {
+        if(print) message(e)
+        list(result=NULL, warnings=warnings, error=e)
+    }))
+}
+
+functions.of <- function(..., .envir=parent.frame()) {
+  args <- quote_args(...)
+  function(...) {
+    lapply(quote_args(...), function(x) {
+      eval(template(function(.=...(args)) .(x)), .envir)
+    })
+  }
+}
+
+asisify <- function(df) {
+  quickdf(lapply(df, function(x) if (is.recursive(x)) I(x) else x))
+}
+
+nonrec <- function(df) {
+  #only nonrecursive columns
+  df[!vapply(df, is.recursive, FALSE)]
+}
+
+declare_data <- function(...) {
+  #make a data frame from a bunch of list arguments, automatically
+  #applyin asIs to recursive columns
+  chain(list(...), zip,
+        lapply(function(x) if(is.recursive(x)) I(x) else x),
+        quickdf)
+}
+
+qq <- template
+
+qe <- function(x, envir=parent.frame()) eval(
+                    template %()% list(substitute(x), parent.frame()),
+                    parent.frame())
+
+factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x)) {
+  if (filter(x)) factor(x, levels=unique(x)) else x
+}
+
+put <- macro(function(assignment, value) {
+  assignment_target <- function(x) {
+    switch(
+      class(x),
+      name=x,
+      character=as.name(x),
+      call = switch(head<- class(x[[1]]),
+        name = assignment_target(x[[2]]),
+        character = assignment_target(x[[2]]),
+        stop("that doesn't look like an assignment target")),
+      stop("that doesn't look like an assignment target"))
+  }
+  target <- assignment_target(assignment)
+  template((function() {.(assignment) <- .(value); .(target)})())
+})

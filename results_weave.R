@@ -1,5 +1,8 @@
 ## ----------------------------------------------------------------------
 ## @knitr results-libraries
+opts_chunk$set(cache.extra=file.info(
+    c("slopeModel.R", "latexing.R",
+      "slopeModel.RData", "motion_energy.csv"))$mtime)
 source("slopeModel.R")
 source("latexing.R")
 theme_set(theme_bw(10))

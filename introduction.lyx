@@ -357,7 +357,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{2in}{demo_single.mov}
+includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
 \end_layout
 
 \end_inset
@@ -381,7 +381,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{2in}{demo_counter.mov}
+includemovie[poster,repeat]{4in}{2in}{demo-multiple.mov}
 \end_layout
 
 \end_inset
@@ -517,8 +517,8 @@ From this demonstration it appears that having more than one target in a
  that the range of spatial interaction scales with the retinal eccentricity.
  A plausible explanation could be that the presence of flanking objects
  limits the ability to see movement of the envelope, allowing the carrier
- motion to determine the percept; that is, 'crowding' may be affecting how
- first-order and higher-order motion are combined.
+ motion to determine the percept; that is, 'crowding' may be affecting howfirst-
+order and higher-order motion are combined.
 \end_layout
 
 \begin_layout Standard

@@ -650,8 +650,8 @@ custom_geom_demo <- function() {
   source("scales.R")
   library(binom)
 
-  load("../modeling/data.Rdata")
-  load("../modeling/slopeModel.RData")
+  load("data.Rdata")
+  load("slopeModel.RData")
   segment <- subset(data, exp_type == "numdensity" & subject %in% names(models))
 
   #this just illustrates the combinations of number and density.

@@ -1,16 +1,31 @@
 ## @knitr density-setup
-opts_knit$set(stop_on_error=2L)
+library(knitr)
+opts_knit$set(
+  stop_on_error=2L)
+opts_chunk$set(
+  cache.extra=file.info(c(
+    "data.RData", "slopeModel.RData",
+    "numbers.RData", "density.modeling.RData",
+    "latexing.R", "icons.R", "scales.R", "slopeModel.R",
+    "density.modeling.R", "density.calibration.R", "contours.R"))$mtime)
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
 library(ggplot2)
 library(plyr)
 library(grid)
 library(ptools)
+
 source("latexing.R")
 source("icons.R")
 source("scales.R")
 source("slopeModel.R")
-source("library.R")
+source("density.modeling.R")
+source("density.calibration.R")
+source("contours.R")
+for (name in ls()) {
+  assign(name, get(name), globalenv())
+} #coz saved fucntion
 setup_theme()
+density.example.subjects <- c("pbm", "nj")
 
 ## @knitr do-not-run
 if (!interactive()) {
@@ -18,12 +33,11 @@ if (!interactive()) {
 }
 
 ## @knitr density-load
-load("data.Rdata")
+load("data.RData")
 load("slopeModel.RData")
 segment <- chain(  data
                  , subset(exp_type=="numdensity" & subject %in% names(models))
-                 , do.rename(folding=TRUE)
-                 )
+                 , do.rename(folding=TRUE))
 load("numbers.RData")
 load("density.modeling.RData")
 
@@ -81,143 +95,58 @@ unmatching <-
       + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
       + theme(legend.position="none"))
 
-## @knitr density-rates
-segment.rates <-
-  mkrates(  segment
-          , c(  segment.config.vars, segment.experiment.vars))
-segment.rates.sided <-
-  mkrates(  segment
-          , c(  segment.config.vars, segment.experiment.vars
-              , "side","eccentricity"))
-
-#sanity check:
-#I think that in each experiment the number of trials is meant to be
-#the same for each condition, at least for each side. Close to the same.
-#Sometimes a prematurely terminated experiment means one or two are different.
-mapply(rates=list(segment.rates, segment.rates.sided),
-       extra = list(c(), "side"), function(rates, extra) {
-  all(unlist(dlply(  rates
-                   , c(segment.experiment.vars, extra)
-                   , mkchain(`$`(n_obs), range, diff))) <= 2) || stop("oops")
-})
-
-# Compute a standard error bar over a nominal 50% rate.
-# I think this is bull though
-binom_se <- function(n, p) sqrt(p*(1-p)/n)
-
-# what we are going to do is look at predictions under conditions of
-# spacing-collapse and number-collapse. In the top of the figure there
-# should be a sample data set varying by spacing;
-
-density.prediction.displacement <- 0.1
-
-#using only a subset of the spacing values here, to be less busy.
-density.prediction.bins <- local({
-  model <- models$nj
-  chain(model$data,
-        subset(abs(content) == 0.4 & target_number_shown %in% c(6, 9, 12, 16, 20, 24)),
-        bin_along_resid(model, ., "response", splits, "displacement", fold=TRUE))
-})
-
-density.prediction.curves <-
-  makePredictions(models$nj, density.prediction.bins, fold=TRUE)
-
-print(ggplot(density.prediction.bins)
-      + displacement_scale
-      + proportion_scale
-      + spacing_color_scale
-      + aes(group=spacing)
-      + geom_point(size=2)
-      + ribbonf(density.prediction.curves)
-      + no_grid
-      + coord_cartesian(xlim=c(-0.75, 0.75))
-      + geom_vline(x=-density.prediction.displacement, linetype="11"))
-
-#combine this with the model predictions corresponding
-
-source("density.calibration.R")
-
-segment.plot.sided.gtables <-
-  dlply_along(segment.rates.sided, segment.experiment.vars, joinedplot)
-segment.plot.gtables <-
-  dlply_along(segment.rates, segment.experiment.vars, joinedplot)
-#grid.newpage()
-#grid.draw(segment.plot.gtables[[5]])
-
-## @knitr do-not-run
-if (!interactive()) {
-  lapply(segment.plot.gtables, graphics::plot)
-}
-
-## @knitr segment-diagnostics
-#here is how much data I have (incl. non-incongruent trials)
-print(summary(with(segment.trials, interaction(subject,trial.extra.side))))
-
-## @knitr segment-conditions
-(ggplot(segment.properties$tested)
- + aes(radians,trial.extra.nVisibleTargets,
-       shape=selected,size=selected)
- + geom_point()
- + scale_x_continuous("Element spacing (e)")
- + scale_y_continuous("No. moving elements", breaks=3:8,labels=3:8)
- + scale_shape_manual(breaks=c(F,T),values = c(42,19))
- + scale_size_manual(breaks=c(F,T),values = c(10,2))
- + theme(legend.position = "none")
- ) -> segment.conditions
-print(segment.conditions)
-
-## @knitr segment-rates
-chain(segment.trials
-      , refold(fold=TRUE)
-#      , subset(responseTime >= 0.4 & responseTime <= 0.9)
-      , ddply_keeping_unique_cols(
-        c(segment.splits, "side"), summarize,
-        correct=mean(response), n = length(correct))
-      ) -> segment.rates
-
-## @knitr segment-colormap
-(ggplot(subset(segment.rates))
- + aes(factor(spacing), factor(target_number_shown), fill=correct)
- + geom_point()
- + geom_tile()
- + scale_fill_gradient("Prop. long-range")
- + facet_grid(subject ~ side)
- + theme(aspect.ratio = 1,
-         axis.text.x = element_text(angle=45))
- + scale_x_discrete("Spacing (deg.)",
-                    labels=function(x) format(as.numeric(x),digits=2))
- + scale_y_discrete("No. moving elements")
- ) -> segment.colormap
-print(segment.colormap)
-
-
-## @knitr segment-by-spacing
-(ggplot(subset(segment.rates))
- + aes(spacing, correct, color=factor(target_number_shown))
- + geom_point()
- + geom_line()
- + facet_grid(subject ~ side)
+## @knitr density-measurements
+density.example.dataset <- subset(segment.folded.spindled.mutilated,
+                         subject %in% density.example.subjects)
+(plot.spacing %+% density.example.dataset
  + theme(aspect.ratio=1)
- + scale_x_continuous("Element spacing (deg)", breaks=c(2,3,4,5), labels=c(2,3,4,5))
- + scale_y_continuous("Prop. long-range")
- + scale_color_hue("No.\\\\moving\\\\elements")
- ) -> segment.by.spacing
+ + errorbars(density.example.dataset))
 
-## @knitr segment-by-elements
-(ggplot(subset(segment.rates))
- + aes(target_number_shown, correct, color=factor(spacing))
- + geom_point()
- + geom_line()
- + facet_grid(subject ~ side)
- + theme(aspect.ratio=1)
- + scale_x_continuous("No. moving elements", breaks=3:8,labels=3:8)
- + scale_y_continuous("Prop. long-range")
- + scale_color_hue("Element\\\\spacing", labels=function(x) format(as.numeric(x), digits=2))
- ) -> segment.by.elements
+##plot with spacing...
 
+## @knitr density-predictions
+(condition_prediction_plot(
+  quad.predictions, segment.folded.spindled.mutilated,
+  match=data.frame(subject=density.example.subjects),
+  orientation="over",
+  conditions=quad.conditions)
+ + theme(aspect.ratio=1))
 
-## @knitr segment-dualplots
-vp <- viewport(x=0,y=1, height=0.5, width=1, just=c("left", "top"))
-print(segment.by.spacing, vp=vp)
-vp <- viewport(x=0, y=0, height=0.5, just=c("left", "bottom"))
-print(segment.by.elements, vp=vp)
+## and calculate deviances
+unadjusted.deviances <- chain(quad.models,
+                   ddply(c("subject", names(quad.conditions)),
+                         summarize,
+                         deviance=vapply(model, chain, 0, extractAIC, `[`(2))),
+                   acast(carrier.local ~ envelope.local ~ subject, sum,
+                         value.var="deviance", margins=),
+                   put(names(dimnames(.)),
+                       c("carrier.local", "envelope.local", "subject")))
+ 
+unadjusted.winner <- chain(unadjusted.deviances,
+                           apply(names(quad.conditions), sum),
+                           melt(value.name="deviance"),
+                           arrange(deviance))
+
+each.unadjusted.winner <- chain(unadjusted.deviances,
+                                melt(value.name="deviance"),
+                                ddply(., "subject", chain,
+                                      arrange(deviance), .[1,]))
+
+adj.deviances <- chain(adj.models,
+                   ddply(c("subject", names(quad.conditions)),
+                         summarize,
+                         deviance=vapply(model, chain, 0, extractAIC, `[`(2))),
+                   acast(carrier.local ~ envelope.local ~ subject, sum,
+                         value.var="deviance", margins=),
+                   put(names(dimnames(.)),
+                       c("carrier.local", "envelope.local", "subject")))
+
+adj.winner <- chain(adj.deviances,
+                           apply(names(quad.conditions), sum),
+                           melt(value.name="deviance"),
+                           arrange(deviance))
+
+each.adj.winner <- chain(unadjusted.deviances,
+                         melt(value.name="deviance"),
+                         ddply(., "subject", chain,
+                               arrange(deviance), .[1,]))
