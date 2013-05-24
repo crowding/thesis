@@ -26,7 +26,7 @@ nonlinearTerm <- function(..., start=NULL) {
       expr <- substitute(expr)
       eval(template(structure(
         class="nonlin",
-        function(.=...(variables), start) {
+        function(.=...(variables), start, trace=FALSE) {
           ...( lapply(names(variables),
                       function(x) template( .(as.name(x))
                                            <- substitute(.(as.name(x))))))
@@ -35,9 +35,19 @@ nonlinearTerm <- function(..., start=NULL) {
                  , term = function(predLabels, varLabels) {
                    t = as.list(parse(text=c(predLabels, varLabels)))
                    names(t) <- .(c(names(predictors), names(variables)))
-                   deparse(substitute(.(expr), t))
+                   x <- paste(deparse(substitute(.(expr), t)), collapse="")
+                   if(trace) {
+                     print(formula)
+                     print(x)
+                   }
+                   x
                  }),
-            if (missing(start)) NULL else list(start=function(x) start[names(x)]))
+            if (missing(start)) NULL else list(start=function(x) {
+              if(trace) {
+                print(start[names(x)])
+              }
+              start[names(x)]
+            }))
         })))
     }
   }
@@ -874,4 +884,33 @@ print.if.nonempty <- function(d) {
     cat(name,":", "\n")
     print(d)
   }
+}
+
+evalqq <- function(x, envir=parent.frame())
+  eval(template(substitute(x), envir))
+
+exploreFun <- function(f, start=rep(1, length(formals(f))),
+                       min=start/4, max=start*4, mark=start,
+                       envir=parent.frame()) {
+  #make a plot of a function's parameters
+  anames <- chain(f, match.call(qq(f(...(start)))), .[-1], names)
+  fcall <- substitute(f)
+  text.all=deparse(as.call(c(list(fcall), put(names(start), anames))))
+  title(text.all)
+  screens = split.screen(c(1, length(anames)), erase=FALSE)
+  tryCatch(
+    Map(anames, start, min, max, mark, screens,
+        f=function(aname, st, min, max, mark, s) {
+          screen(s)
+
+          call <- template(f(...(ifelse(aname==anames,
+                                        list(as.name(aname)), start))))
+          textcall <- deparse(put(call[[1]], fcall))
+          cat(textcall, "\n")
+          qe(curve(.(call), .(min), .(max), xname=.(aname), ylab=""),
+             envir)
+          abline(v=mark, col="gray50", lty="11")
+        }
+        )
+    , finally=close.screen(screens))
 }

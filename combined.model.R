@@ -18,7 +18,7 @@ plotfile <- "combined.model.pdf"
 
 join <- function(...) suppressMessages(plyr::join(...))
 
-#We're going to try a nonlinear term for "surround size."
+ #We're going to try a nonlinear term for "surround size."
 #Define a "surround" term and a surround function
 
 #Relative summation strength as a function of width at narrow spacing.
@@ -42,22 +42,31 @@ bind[term=surroundTerm, fun=surroundFun] <-
       * (2*exp(extent/sqrt(width^2) * pi^2/3)
          / (1+exp(extent/sqrt(width^2) * pi^2/3)) - 1)))
 
+surroundDemo <- exploreFun %<<% dots(
+  surroundFun, c(width=10, strength=1, density=1, extent=10))
+
 bind[term=softMinSurroundTerm, fun=softMinSurroundFun] <-
   term_and_fun(
-      params = alist(width, strength, sharpness),
+      params = alist(width, strength),
       vars = alist(carrier, number, spacing),
       form = quote(
-        carrier/spacing #strength density
+        carrier*number*strength #strength density
         *(-log( #times soft-min of
-            exp(-1 * sharpness^2) #unity
-          + exp(-width/number/spacing * sharpness^2)) #< 1 if extent > field
-         /sharpness^2)))
+            exp(-1 * 10) #unity
+          + exp(-width/number/spacing * 10)) #< 1 if extent > field
+         /10)))
+
+softMinSurroundDemo <- exploreFun %<<% dots(
+  softMinSurroundFun, c(width=10, strength=1, carrier=1, number=5, spacing=2))
 
 bind[term=spacingDisplacementTerm, fun=spacingDisplacementFun] <-
   term_and_fun(
     params=alist(cs, beta_dx),
     vars=alist(spacing, displacement),
     form=quote(beta_dx * displacement * (2 - 2/(1+exp(-cs/spacing)))))
+
+spacingDisplacementDemo <- exploreFun %<<% dots(
+  spacingDisplacementFun, c(cs=2, beta_dx=1, spacing=2, displacement=1))
 
 bind[term=softMinDisplacementTerm, fun=softMinDisplacementFun] <-
   term_and_fun(
@@ -70,6 +79,10 @@ bind[term=softMinDisplacementTerm, fun=softMinDisplacementFun] <-
             + exp(-spacing/cs*dsharpness^2) #sensitivity limited by crowding
             )/dsharpness^2
       ))
+
+softMinDisplacementDemo <- exploreFun %<<% dots(
+  softMinDisplacementFun,
+  c(beta_dx=1, cs=5, dsharpness=3, displacement=1, spacing=5))
 
 #This is actually just a combination of soft-min displacement and number....
 bind[term=softNumberDisplacementTerm, fun=softNumberDisplacementFun] <-
@@ -86,76 +99,34 @@ bind[term=softNumberDisplacementTerm, fun=softNumberDisplacementFun] <-
                         ) / fsharpness^2 * csharpness^2)
              ))/csharpness^2))
 
-showSurrounds <- function() {
+softNumberDisplacementDemo <- exploreFun %<<% dots(
+  softNumberDisplacementFun, c(beta_dx=1, cs=2, field=10, csharpness=2,
+                                fsharpness=2, displacement=1, number=8, spacing=2)
+  )
 
-  layout(rbind(c(1,1,1,2,2, 2),
-               c(3,3,3,4,4, 4),
-               c(5,5,6,6,7, 7),
-               c(8,8,9,9,10,10)))
+softNumberDisplacement2Fun <- softNumberDisplacementFun
+softNumberDisplacement2Demo <- exploreFun %<<% dots(
+  softNumberDisplacementFun, c(beta_dx=1, cs=2, field=10, csharpness=2,
+                               fsharpness=2, displacement=1, number=100, spacing=2)
+  )
 
-  circumference <- 20/3*2*pi
+termDemos <- chain(l=ls(),
+                   str_match("(.*)Fun$"), .[,2], na.exclude,
+                   paste0("Demo"), intersect(l),
+                   mget(globalenv()))
 
-  curve(surroundFun(width, 1, 1, 10), 0, 20, xname="width",
-        ylab="Relative summation strength",
-        xlab="Field width")
-  title("Logit summation, stimulus extent=10")
-  abline(v=10, lty="11", col="gray50")
-
-  curve(softMinSurroundFun(width, 1, 3, 1, 5, 2), 0, 20, xname="width",
-        ylab="Relative summation strength",
-        xlab="Field width")
-  title("Soft-min summation, stimulus extent=10")
-  abline(v=10, lty="11", col="gray50")
-
-  curve(surroundFun(10, 1, 1, extent), 0, 20, xname="extent",
-        ylab="Relative summation strength",
-        xlab="Stimulus extent")
-  abline(v=10, lty="11", col="gray50")
-  title("Logit summation, field size=10")
-
-  curve(softMinSurroundFun(10, 1, 3, 1, extent, 1), 0, 20, xname="extent",
-        ylab="Relative summation strength",
-        xlab="Stimulus extent")
-  abline(v=10, lty="11", col="gray50")
-  title("Soft-min summation, field size=10")
-
-  
-  curve(spacingDisplacementFun(5, 1, spacing, 1), 0, 20, xname="spacing",
-        ylab="Displacement sensitivity",
-        xlab="Spacing")
-  title("Sigmoid displacement sensitivity, cs=5")
-  abline(v=5, lty="11", col="gray50")
-
-  curve(softMinDisplacementFun(1, 5, 3, 1, spacing), 0, 20, xname="spacing",
-        ylab="Soft-min sensitivity",
-        xlab="Spacing")
-  title("Soft-min displacement sensitivity, critical spacing=5")
-  abline(v=5, lty="11", col="gray50")
-
-  curve(softNumberDisplacementFun(1, 2, 10, 3, 3, 1, 10, spacing), 0, 10, xname="spacing",
-        ylab="displacement sensitivity",
-        xlab="Spacing")
-  title("Soft-min displacement sensitivity, 0 elements, \n critical number=5 in field of 10")
-  abline(v=5, lty="11", col="gray50")
-
-  curve(spacingDisplacementFun(cs, 1, 5, 1), 0, 20, xname="cs",
-        ylab="Displacement sensitivity, spacing=5",
-        xlab="Critical spacing")
-  title("Sigmoid displacement sensitivity, spacing=5")
-  abline(v=5, lty="11", col="gray50")
-
-  curve(softMinDisplacementFun(1, cs, 3, 1, 5), 0, 20, xname="cs",
-        ylab="Displacement sensitivity",
-        xlab="Critical Spacing")
-  title("Soft-min displacement sensitivity, spacing=5")
-  abline(v=5, lty="11", col="gray50")
-
-  curve(softNumberDisplacementFun(1, cs, 0.1, 3, 3, 1, 100, 5), 0, 20, xname="cs",
-        ylab="displacement sensitivity",
-        xlab="critical spacing")
-  title("Soft-field displacement sensitivity, 0 elements, \n critical spacing=5 in tiny field")
-  abline(v=5, lty="11", col="gray50")
-  
+showSurrounds <- function(new=FALSE) {
+  dev.new(pointsize=6)
+  par(mar=c(2.1, 2.1, 3.1, 0), mgp=c(1,0,0), tcl=0.2)
+  par(bg="transparent")
+  s = split.screen(c(length(termDemos), 1), erase=FALSE)
+  tryCatch({Map(s, termDemos, f=function(s, d) {
+    screen(s)
+    plot.new()
+    par(oma=c(0,0,1,0))
+    d()
+  })})
+  close.screen(s)
 }
 
 #things to try adding to the spacingish model to account for the
@@ -428,9 +399,6 @@ main <- function(infile="density.modeling.RData",
 
   #force some compaction
   save(file=outfile, list=ls())
-  rm(list=ls() %-% "outfile")
-  gc()
-  load(file="combined.model.RData")
 
   # Summarize the quality of fit across models...
   chain(many.fits,
@@ -439,7 +407,7 @@ main <- function(infile="density.modeling.RData",
 #       subset(n.warnings == 0),
         merge(data.frame(subset=c("bic", "deviance", "segment", "circle"))),
         ddply(c("type","addition"), mutate,
-              grpmean = sum(bic[type=="spacing" & is.finite(bic)])),
+              grpmean = mean(bic[type=="spacing" & is.finite(bic)])),
         arrange(desc(grpmean)),
         mutate(addition=factor_in_order(addition)),
         mutate(., stat = cbind(
@@ -491,6 +459,17 @@ main <- function(infile="density.modeling.RData",
   # and let's plot its fits across the segment data
   selected.model <- best.model.type
 
+  warned.fits <-
+    chain(many.fits, drop_recursive, as.data.frame,
+          subset(made.fit & n.warnings > 0),
+          melt(c("type", "addition","subject")),
+#          acast(type ~ addition ~ subject, length, margins=TRUE),
+          acast(type + addition ~ subject, margins=TRUE, length))
+
+  selected.model <-
+    data.frame(type="spacing", addition="soft_min_surround")
+  selected.subject <- data.frame(subject=="jb")
+
   # and lets' plot its fits across coefficient data
 
   #plot the predictions of some chosen model versus the data...
@@ -500,10 +479,13 @@ main <- function(infile="density.modeling.RData",
   selected.subject <- data.frame(subject="nj")
 
   theM <- chain(many.fits, merge(cbind(selected.model, selected.subject)), .$model[[1]])
-  print()
 
-  update(theM, . ~ . - content)
+  wat$terms
+  wat$constrain
+  coef(wat)
+  wat$coefficients
   
+
   #also as diagnostic, plot the predictions of the model on
   #a subject's full circle data.
   selected.model <- data.frame(type="spacing", addition="")
@@ -517,6 +499,22 @@ main <- function(infile="density.modeling.RData",
 
   save(file=outfile, list=ls())
 }
+
+if(FALSE) {  evalq(update(theM,
+                    formula=(
+                             cbind(n_cw, n_ccw)
+                             ~ displacement + content
+                             + softMinSurroundTerm( trace=TRUE,
+                                                          content, target_number_shown, spacing,
+                                                          start=c(width=pi*20/3, strength=6))),
+                    constrain=c( "width"),
+                    constrainTo=c(20),
+                    trace=TRUE,
+                    iterStart=2,
+                    iterMax=400),
+                   theM$original.env) -> wat
+                   }
+
 
 cut_extents <- function(dataset) {
   mutate(dataset,
