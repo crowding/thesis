@@ -45,12 +45,13 @@ bind[term=surroundTerm, fun=surroundFun] <-
 bind[term=softMinSurroundTerm, fun=softMinSurroundFun] <-
   term_and_fun(
       params = alist(width, strength, sharpness),
-      vars = alist(density, extent),
+      vars = alist(carrier, number, spacing),
       form = quote(
-        -strength * density *
-        (log(exp(-extent*sharpness^2) + exp(-width*sharpness^2))
-         /sharpness^2
-         /width)))
+        carrier/spacing #strength density
+        *(-log( #times soft-min of
+            exp(-1 * sharpness^2) #unity
+          + exp(-width/number/spacing * sharpness^2)) #< 1 if extent > field
+         /sharpness^2)))
 
 bind[term=spacingDisplacementTerm, fun=spacingDisplacementFun] <-
   term_and_fun(
@@ -63,24 +64,36 @@ bind[term=softMinDisplacementTerm, fun=softMinDisplacementFun] <-
     params=alist(beta_dx, cs, dsharpness),
     vars=alist(displacement, spacing),
     form=quote(
-      -displacement * beta_dx
-      * log(exp(-beta_dx*dsharpness^2)
-            + exp(-spacing/cs*dsharpness^2)/dsharpness^2)))
-
-#not used yet
-bind[term=softNumberDisplacementTerm, fun=softNumberDisplacementFun] <-
-  term_and_fun(
-    params=alist(beta_dx, cnum, field, dsharpness),
-    vars=alist(displacement, number, spacing),
-    form=quote(
-      NULL
-      #soft min of "number of elements" and "number of elements in field"
-      #soft min of...
-      #-displacement * log(exp(-beta_dx*dsharpness^2) + exp(-spacing/cs*dsharpness^2)/dsharpness^2)
+      -displacement * beta_dx #maximum sensitivity times didsplacement, times
+      * log( #soft min of
+        exp(-1*dsharpness^2) #sensitivity 1 (uncrowded or)
+            + exp(-spacing/cs*dsharpness^2) #sensitivity limited by crowding
+            )/dsharpness^2
       ))
 
+#This is actually just a combination of soft-min displacement and number....
+bind[term=softNumberDisplacementTerm, fun=softNumberDisplacementFun] <-
+  term_and_fun(
+    params=alist(beta_dx, cs, field, csharpness, fsharpness),
+    vars=alist(displacement, number, spacing),
+    form=quote(
+      displacement * beta_dx  #maximum sensitivity times displacement,
+      *-(log(                 #times soft min of
+             exp(-1 * csharpness^2)          #sensitivity 1 (uncrowded), or
+             + exp(-log(      #soft MAX of
+                        exp(field/cs/number * fsharpness^2) # less than 1 if number > "critical"
+                        + exp(spacing/cs * fsharpness^2) # Less than 1 if spacing > "critical"
+                        ) / fsharpness^2 * csharpness^2)
+             ))/csharpness^2))
+
 showSurrounds <- function() {
-  layout(rbind(c(1,2),c(3,4),c(5,6), c(7,8)))
+
+  layout(rbind(c(1,1,1,2,2, 2),
+               c(3,3,3,4,4, 4),
+               c(5,5,6,6,7, 7),
+               c(8,8,9,9,10,10)))
+
+  circumference <- 20/3*2*pi
 
   curve(surroundFun(width, 1, 1, 10), 0, 20, xname="width",
         ylab="Relative summation strength",
@@ -88,7 +101,7 @@ showSurrounds <- function() {
   title("Logit summation, stimulus extent=10")
   abline(v=10, lty="11", col="gray50")
 
-  curve(softMinSurroundFun(width, 1, 1, 1, 10), 0, 20, xname="width",
+  curve(softMinSurroundFun(width, 1, 3, 1, 5, 2), 0, 20, xname="width",
         ylab="Relative summation strength",
         xlab="Field width")
   title("Soft-min summation, stimulus extent=10")
@@ -100,35 +113,49 @@ showSurrounds <- function() {
   abline(v=10, lty="11", col="gray50")
   title("Logit summation, field size=10")
 
-  curve(softMinSurroundFun(10, 1, 1, 1, extent), 0, 20, xname="extent",
+  curve(softMinSurroundFun(10, 1, 3, 1, extent, 1), 0, 20, xname="extent",
         ylab="Relative summation strength",
         xlab="Stimulus extent")
   abline(v=10, lty="11", col="gray50")
   title("Soft-min summation, field size=10")
 
+  
   curve(spacingDisplacementFun(5, 1, spacing, 1), 0, 20, xname="spacing",
         ylab="Displacement sensitivity",
         xlab="Spacing")
   title("Sigmoid displacement sensitivity, cs=5")
   abline(v=5, lty="11", col="gray50")
 
-  curve(softMinDisplacementFun(1, 5, 2, 1, spacing), 0, 20, xname="spacing",
+  curve(softMinDisplacementFun(1, 5, 3, 1, spacing), 0, 20, xname="spacing",
         ylab="Soft-min sensitivity",
         xlab="Spacing")
   title("Soft-min displacement sensitivity, critical spacing=5")
   abline(v=5, lty="11", col="gray50")
 
-  curve(spacingDisplacementFun(cs, 1, 1, 5), 0, 20, xname="cs",
-        ylab="Displacement sensitivity, spacing=5",
-        xlab="Critical spacing")
-  title("Sigmoid displacement sensitivity, cs=5")
+  curve(softNumberDisplacementFun(1, 2, 10, 3, 3, 1, 10, spacing), 0, 10, xname="spacing",
+        ylab="displacement sensitivity",
+        xlab="Spacing")
+  title("Soft-min displacement sensitivity, 0 elements, \n critical number=5 in field of 10")
   abline(v=5, lty="11", col="gray50")
 
-  curve(softMinDisplacementFun(5, cs, 2, 1, 5), 0, 20, xname="cs",
+  curve(spacingDisplacementFun(cs, 1, 5, 1), 0, 20, xname="cs",
+        ylab="Displacement sensitivity, spacing=5",
+        xlab="Critical spacing")
+  title("Sigmoid displacement sensitivity, spacing=5")
+  abline(v=5, lty="11", col="gray50")
+
+  curve(softMinDisplacementFun(1, cs, 3, 1, 5), 0, 20, xname="cs",
         ylab="Displacement sensitivity",
         xlab="Critical Spacing")
-  title("Soft-min displacement sensitivity, cs=5")
+  title("Soft-min displacement sensitivity, spacing=5")
   abline(v=5, lty="11", col="gray50")
+
+  curve(softNumberDisplacementFun(1, cs, 0.1, 3, 3, 1, 100, 5), 0, 20, xname="cs",
+        ylab="displacement sensitivity",
+        xlab="critical spacing")
+  title("Soft-field displacement sensitivity, 0 elements, \n critical spacing=5 in tiny field")
+  abline(v=5, lty="11", col="gray50")
+  
 }
 
 #things to try adding to the spacingish model to account for the
@@ -140,16 +167,16 @@ model.types <- chain(
                  displacementTerm(spacing, displacement,
                                   start=c(cs=6, beta_dx=10))
                  + content + I(content * abs(content)))),
-    list("softSpacing", list(c()),
+    list("softSpacing", list(c(dsharpness=3)),
          (cbind(n_cw, n_ccw) ~
           softMinDisplacementTerm(spacing, displacement,
-                                 start=c(cs=5, beta_dx=14, dsharpness=2))
+                                 start=c(cs=5, beta_dx=14))
           + content + I(content * abs(content)))
          ),
-    list("number", list(c()),
+    list("softNumberSpacing", list(c(csharpness=sqrt(3), fsharpness=sqrt(3))),
          (cbind(n_cw, n_ccw) ~
-          displacementTerm(number_shown_as_spacing, displacement,
-                           start=c(cs=4, beta_dx=14))
+          softNumberDisplacementTerm(displacement, target_number_shown, spacing,
+                           start=c(cs=4, beta_dx=14, field=pi*20/3))
           + content + I(content * abs(content)))
          ),
     list("null", list(c()),
@@ -160,42 +187,42 @@ model.types <- chain(
 
 #here are all the different models we will consider.
 model.additions <- chain(
-  merge(data.frame(type=c("softSpacing", "spacing", "number"), stringsAsFactors=FALSE),
+  merge(data.frame(type=c("softSpacing", "spacing", "softNumberSpacing"), stringsAsFactors=FALSE),
         declare_data(
           list(addition = "none", constrain = list(c()),
                fmla = . ~ .),
           list("global", list(c()),
                . ~ . + content_global),
-          list("local", list(c()),
-               . ~ . + content_local),
+          ## list("local", list(c()),
+          ##      . ~ . + content_local),
           list("local_extent", list(c()),
                . ~ . + content_local:extent),
-          list("local_fullcircle", list(c()),
-               . ~ . + content_local + content_local:full_circle),
+          ## list("local_fullcircle", list(c()),
+          ##      . ~ . + content_local + content_local:full_circle),
           list("global_fullcircle", list(c()),
                . ~ . + content_global + content_global:full_circle),
-          list("global_fullcircle_displacement", list(c()),
-               . ~ . + displacement + content_global + content_global:full_circle),
-          list("local_global_fullcircle", list(c()),
-               . ~ . + content_global
-               + content_local + content_global:full_circle),
+          ## list("global_fullcircle_displacement", list(c()),
+          ##      . ~ . + displacement + content_global + content_global:full_circle),
+          ## list("local_global_fullcircle", list(c()),
+          ##      . ~ . + content_global
+          ##      + content_local + content_global:full_circle),
           #should actually be equivalent
-          list("local_global_fullcircle_2", list(c()),
-               . ~ . + content_global
-               + content_local + content_local:full_circle),
-          list("global_extent_fullcircle", list(c()),
-               . ~ . + content_global + extent + content_global:full_circle),
-          list("local_extent_fullcircle", list(c()),
-               . ~ . + content_local + extent + content_local:full_circle),
+          ## list("local_global_fullcircle_2", list(c()),
+          ##      . ~ . + content_global
+          ##      + content_local + content_local:full_circle),
+          ## list("global_extent_fullcircle", list(c()),
+          ##      . ~ . + content_global + extent + content_global:full_circle),
+          ## list("local_extent_fullcircle", list(c()),
+          ##      . ~ . + content_local + extent + content_local:full_circle),
           list("logit_surround", list(c()),
                . ~ . + surroundTerm(content_local, extent,
-                                    start = c(width=10, strength=6))),
-          list("soft_min_surround", c(sharpness=1),
-               . ~ . + softMinSurroundTerm(content_local, extent,
-                                   start = c(width=10, strength=6))),
+                                    start = c(width=pi*20/3, strength=6))),
+          list("soft_min_surround", c(sharpness=3),
+               . ~ . + softMinSurroundTerm(content, target_number_shown, spacing,
+                                   start = c(width=pi*20/3, strength=6))),
           list("soft_min_surround_sharp", list(c()),
-               . ~ . + softMinSurroundTerm(content_local, extent,
-                                   start = c(width=10, strength=6, sharpness=1)))
+               . ~ . + softMinSurroundTerm(content, target_number_shown, spacing,
+                                   start = c(width=pi*20/3, strength=6, sharpness=3)))
           #content:side not identifiable by GNM for some reason...
           ## list("global_fullcircle_contentside",
           ##      . ~ . + content_global
@@ -213,7 +240,6 @@ model.additions <- chain(
       )),
   colwise(factor_in_order)()
   )
-
 #with that setup, here are the fields which uniquely identify a "model type"
 model.identifiers <- (names(model.types)
                       %v% names(model.additions)
@@ -250,12 +276,21 @@ fit_many_models <- function(model.df, combined.data,
           bind[fmla=bind[fmla], constrain=bind[constrain], ...=addition.group] <- row
           print(cbind(model.group, start.group, addition.group))
           new.fmla <- update(starting.fmla, fmla)
-          bind[new.model, warnings=warnings, error=error] <- captureWarnings(
-             update(model, new.fmla, data=new.data, verbose=FALSE,
-                   family=model$family,
-                   constrain=(c(names(constrain) %||% character(0),
-                                names(dconstrain) %||% character(0))),
-                   constrainTo=c(constrain, dconstrain)))
+          bind[new.model, warnings=warnings, error=error] <- captureWarnings({
+            makeAModel <- function(fit.fmla, fit.data, fit.family, constrain, dconstrain) {
+              #holy crap model objects are annoyingly obtuse about
+              #scope, so fucking keep the scope I guess I'll have to capture the args
+              m <- gnm(fit.fmla, data=fit.data, verbose=FALSE,
+                     family=fit.family,
+                     constrain=(c(names(constrain) %||% character(0),
+                                  names(dconstrain) %||% character(0))),
+                          constrainTo=c(constrain, dconstrain))
+              if(!is.null(m)) m$original.env <- environment()
+              m
+            }
+            environment(makeAModel) <- globalenv()
+            makeAModel(new.fmla, new.data, model$family, constrain, dconstrain)
+          })
           #return the model with some statistics....
           if(!is.null(new.model)) {
             statify(data.frame(
@@ -334,16 +369,14 @@ main <- function(infile="density.modeling.RData",
   load(infile2)
   load(infile)
 
-  motion.energy <- add_energies(read.csv(grid))
+  motion.energy <- add_energies(read.csv(infile3))
 
   if (interactive()) {
     while(length(dev.list()) < 1) dev.new()
     plot.dev <- dev.list()[1]
-    detail.dev <- dev.list()[2]
   } else {
     cairo_pdf(plotfile, onefile=TRUE)
     plot.dev <- dev.cur()
-    detail.dev <- dev.cur()
     on.exit(dev.off(plot.dev), add=TRUE)
   }
 
@@ -352,14 +385,19 @@ main <- function(infile="density.modeling.RData",
 
   model.df <<- model.df
 
-  #all the data we have
-  splits <<- splits <- c(segment.config.vars, segment.experiment.vars, "side")
+  #all the data we have. We are casting the field size as 1 i.e. "full" since
+  #there are hopefulle momlineary terms that will fit it explicitly.
+  splits <<- splits <-
+    c(segment.config.vars, segment.experiment.vars, "side") %-% "exp_type"
   combined.data <<- combined.data <- chain(
     data,
     subset(exp_type %in% c("content", "spacing", "numdensity")),
-    mutate(side=factor(ifelse(exp_type %in% "numdensity", side, "all")),
-           ),
-    recast_data,
+    mutate(side=factor(ifelse(exp_type %in% "numdensity", side, "all"))),
+    recast_data(envelope.factor=2, carrier.factor=2),
+    rename(c(content_global="content_hemi",
+              number_shown_as_spacing="number_as_spacing_hemi")),
+    recast_data(envelope.factor=1),
+    cut_extents,
     mkrates(splits))
 
   prediction.dataset <<- prediction.dataset <- chain(
@@ -370,19 +408,29 @@ main <- function(infile="density.modeling.RData",
     recast_data)
 
   #collect a bunch of fits to compare.
-  many.fits <<- many.fits <- fit_many_models(model.df, combined.data)
-  gc()
+  {
+    many.fits <<- many.fits <- fit_many_models(model.df, combined.data)
+    gc()
+  }
 
   #attach the null deviance to each model
   many.fits <- chain(
     fits=many.fits,
     subset(type=="null"),
+    idata.frame,
     ddply(names(model.df) %-% "model", summarize,
           null.deviance.all=deviance.all,
           null.deviance.segment=deviance.segment,
-          null.deviance.circle = deviance.circle),
-    merge(fits, by=names(model.df) %-% "model"))
+          null.deviance.circle = {gc(); deviance.circle}),
+    merge(fits, by=names(model.df) %-% "model"),
+    idata.frame)
   if(interactive()) many.fits <<- many.fits
+
+  #force some compaction
+  save(file=outfile, list=ls())
+  rm(list=ls() %-% "outfile")
+  gc()
+  load(file="combined.model.RData")
 
   # Summarize the quality of fit across models...
   chain(many.fits,
@@ -391,7 +439,7 @@ main <- function(infile="density.modeling.RData",
 #       subset(n.warnings == 0),
         merge(data.frame(subset=c("bic", "deviance", "segment", "circle"))),
         ddply(c("type","addition"), mutate,
-              grpmean = mean(bic[type=="spacing" & is.finite(bic)])),
+              grpmean = sum(bic[type=="spacing" & is.finite(bic)])),
         arrange(desc(grpmean)),
         mutate(addition=factor_in_order(addition)),
         mutate(., stat = cbind(
@@ -409,7 +457,7 @@ main <- function(infile="density.modeling.RData",
         ) -> plotdata
 
   (ggplot(plotdata)
-   + aes(x=addition, y=stat, color=subject,# shape=subject,
+   + aes(x=addition, y=stat, color=subject, # shape=subject,
          #linetype=type, shape=type,
          group=interaction(subject, type))
    + facet_grid(subset ~ type)
@@ -423,47 +471,60 @@ main <- function(infile="density.modeling.RData",
     many.fits, drop_recursive,
     ddply(model.identifiers, summarize, complete=all(made.fit)),
     alply(data.frame(complete=c(FALSE, TRUE)), 1, merge, .))
+  print.if.nonempty(incomplete.model.types)
 
   bind[unproblematic.model.types, problematic.model.types] <- chain(
     many.fits, drop_recursive,
     ddply(model.identifiers, summarize,
           problematic=!all(made.fit & n.warnings==0 & na.coef==0)),
     alply(data.frame(problematic=c(FALSE, TRUE)), 1, merge, .))
+  print.if.nonempty(problematic.model.types)
 
   #okay, well, pick the best overall model type...
   best.model.type <- chain(
     many.fits, drop_recursive,
-    match_df(unproblematic.model.types),
+    merge(unproblematic.model.types),
     ddply(model.identifiers, summarize, total.bic=sum(bic)),
     arrange(total.bic), .[1,]
     )
 
   # and let's plot its fits across the segment data
-  selected.model <- data.frame(type="spacing", addition="global_extent_fullcircle")
   selected.model <- best.model.type
 
   # and lets' plot its fits across coefficient data
 
   #plot the predictions of some chosen model versus the data...
-  predictions <- predict_from_model_frame(
-    merge(many.fits, selected.model)
-    , newdata=prediction.dataset
-    , fold=TRUE, spindle=TRUE, collapse=TRUE)
-  #plot.spacing et al come from density.modeling.RData
-  print((plot.spacing %+% segment.folded.spindled.mutilated
-         + prediction_layers(predictions, connect="number")
-         ))
+  #I really want softMinSurround to work...
+  selected.model <- data.frame(type="spacing",
+                                     addition="soft_min_surround")
+  selected.subject <- data.frame(subject="nj")
 
+  theM <- chain(many.fits, merge(cbind(selected.model, selected.subject)), .$model[[1]])
+  print()
+
+  update(theM, . ~ . - content)
+  
   #also as diagnostic, plot the predictions of the model on
-  #previous data.
-  if(FALSE) {
-    circle.select <- data.frame(selected.model, subject="pbm")
-    model <- match_df(many.fits, circle.select)$model[[1]]
-    data <- chain(match_df(combined.data, circle.select, mutate("exp_type")))
-    plotPredictions(merge())
-  }
+  #a subject's full circle data.
+  selected.model <- data.frame(type="spacing", addition="")
+  plot_combined_fit(selected.model, selected.subject, prediction.dataset, combined.data)
+
+  #Wow!! That's terrible, in a good way.
+
+
+  #and finally, construct a frameof all the subjects' coefficients in
+  #the preferred model (or the model left over from circles...)
 
   save(file=outfile, list=ls())
+}
+
+cut_extents <- function(dataset) {
+  mutate(dataset,
+         cut_extent=cut(extent, c(0, 10, 11.5, 12.4, 14.5, 20, Inf)),
+         put(contrasts(.$cut_extent), "helmert"))
+  ## chain(d=dataset, count("extent", "n_obs"), arrange(extent),
+  ##       mutate(cut_extent=cut(extent, c(0, 10, 11.5, 12.4, 14.5, 20, 100))),
+  ##       ddply("cut_extent", mutate, cutsize=sum(freq)))
 }
 
 run_as_command()
@@ -510,4 +571,55 @@ FALSE && {
     data=test.data,
     family=binomial(link=logit.2asym(g=0.025, lam=0.025))
     )
+}
+
+plot_combined_fit <- function(selected.model,
+                           selected.subject = data.frame(),
+                           pdata=prediction.dataset,
+                           cdata=combined.data) {
+  selected.model.predictions <- predict_from_model_frame(
+    merge(many.fits, selected.model)
+    , newdata=pdata
+    , fold=TRUE, spindle=TRUE, collapse=TRUE)
+  #plot.spacing et al come from density.modeling.RData
+
+  selected.model.predictions <-
+    predict_from_model_frame(
+      merge(many.fits,
+            cbind(selected.model)),
+      pdata,
+      fold=TRUE, spindle=TRUE, collapse=TRUE)
+
+  while(length(dev.list()) < 3) dev.new()
+
+  dev.set(dev.list()[[1]])
+  print((plot.spacing %+% segment.folded.spindled.mutilated
+         + prediction_layers(selected.model.predictions, connect="number")
+         ))
+
+  splits <<- splits <- splits %-% "exp_type"
+  mmm <- chain(selected.model,
+               cbind(selected.subject),
+               merge(many.fits),
+               .$model[[1]])
+  ddd <- chain(selected.model,
+               cbind(selected.subject),
+               cbind(data.frame(full_circle=TRUE)),
+               merge(combined.data),
+               mutate(exp_type="Full circle"))
+
+  dev.set(dev.list()[[2]])
+  plot_fit(mmm, data=ddd, style="bubble", splits=splits, fold=TRUE)
+
+  #show me also profiles of the model fit?
+  dev.set(dev.list()[[3]])
+
+  local({
+    #fucking model objects, got to be breaking lexical scope all the time
+    assign("new.data", model$data, globalenv())
+    assign("model", mmm, globalenv())
+    prof <- profile(model) #fucking model objects
+    plot(prof)
+  })
+
 }

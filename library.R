@@ -597,15 +597,21 @@ abs.pmax <- function(..., na.rm=FALSE) {
 }
 
 #compute columns for total "local" motion energy and total "global" motion energy
-recast_data <- function(data, number.factor=2,
-                        envelope.factor = number.factor,
-                        carrier.factor = number.factor) {
+recast_data <- function(
+  data,
+  number.factor=if ("number.factor" %in% names(data)) unique(data$number.factor) else 2,
+  envelope.factor = if ("envelope.factor" %in% names(data))
+    unique(data$number.factor) else number.factor,
+  carrier.factor = if ("carrier.factor" %in% names(data))
+    unique(data$carrier.factor) else number.factor) {
   #all of content_local, content_global and
   #content/spacing, should be similarly scaled _for full circle
   #stimuli_. this helps keep model fitting on the right starting
   #points.
   #similar goes for spacing and number_shown_a_spacing
   chain(data,
+        mutate(envelope.factor=envelope.factor,
+               carrier.factor=carrier.factor),
         mutate_when_missing(
           eccentricity = 20/3,
           target_number_shown = round(2*pi*eccentricity/spacing),
@@ -785,19 +791,26 @@ colwise_mutate <- function(...) {
   }
 }
 
-captureWarnings <- function(expr, print=TRUE) {
+captureWarnings <- function(expr, print=TRUE, raise) {
   warnings <- NULL
   i <- 0
+  raiseMissing <- missing(raise)
   result <- withCallingHandlers(
     simpleWarning=function(w) {
-      if(print) message(w)
       i <<- i + 1
       warnings[[i]] <<- w
+      if (!raiseMissing && str_detect(w$message, raise)) {
+        stop(w)
+      }
+      if(print) message(w)
       invokeRestart("muffleWarning")
     },
     tryCatch(
       list(result=expr, warnings=warnings, error=NULL),
       error=function(e) {
+        if (!raiseMissing && str_detect(e$message, raise)) {
+          stop(e)
+        }
         if(print) message(e)
         list(result=NULL, warnings=warnings, error=e)
     }))
@@ -854,3 +867,11 @@ put <- macro(function(assignment, value) {
   target <- assignment_target(assignment)
   template((function() {.(assignment) <- .(value); .(target)})())
 })
+
+print.if.nonempty <- function(d) {
+  name <- substitute(d)
+  if (!empty(d)) {
+    cat(name,":", "\n")
+    print(d)
+  }
+}

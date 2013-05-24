@@ -31,7 +31,7 @@ makePredictions <-
            ) {
     r <- range(data[ordinate])
     if(fold) data <- refold(data, TRUE)
-    sampling <- merge(unique(data[splits]),
+    sampling <- merge(unique(data[splits %-% ordinate]),
                       quickdf(structure(list(ordinate.values),
                                         names=ordinate)),
                       by.x=c(), by.y=c())
@@ -70,7 +70,7 @@ plotPredictions <- function(...) {
 
 #perhaps make this go using predict_from_model.df
 plot_fit <- function(model, subject=model$data$subject[1],
-                     style=c("bubble", "binned"), fold=FALSE, data=model$data) {
+                     style=c("bubble", "binned"), fold=FALSE, data=model$data, ...) {
   style <- match.arg(style)
   subdata <- match_df(data,
                       data.frame(subject=subject, stringsAsFactors=FALSE),
@@ -86,7 +86,7 @@ plot_fit <- function(model, subject=model$data$subject[1],
          + proportion_scale
          + content_color_scale
          + facet_spacing_experiment
-         + plotPredictions(model, data=data, fold=fold)
+         + plotPredictions(model, data=data, fold=fold, ...)
          + geom_point()
          + (switch(style, bubble=balloon, binned=geom_point()))
          + labs(title = "Data and model fits for subject " %++% subject)
