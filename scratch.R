@@ -187,3 +187,22 @@ names(cbind(modelA$data, modelB$data))
  + facet_grid(content~.)
  + geom_point())
 
+function(.) {
+    . <- {
+        browser()
+        .
+    }
+    . <- mutate(., envelope.factor = envelope.factor, carrier.factor = carrier.factor)
+    . <- mutate_when_missing(., eccentricity = 20/3, target_number_shown = round(2 * 
+        pi * eccentricity/spacing), target_number_all = target_number_shown, 
+        content_cw = (content + 1/4), content_ccw = (1 - content)/4, 
+        side = factor("all", levels = c("all", "bottom", "left", 
+            "right", "top")))
+    . <- mutate(., content_local = content/spacing, content_global = content/2/pi/eccentricity * 
+        abs.pmin(target_number_all/carrier.factor, target_number_shown), 
+        full_circle = target_number_shown == target_number_all, 
+        extent = spacing * target_number_shown, number_shown_as_spacing = 2 * 
+            pi * eccentricity/envelope.factor/abs.pmin(target_number_shown, 
+            target_number_all/envelope.factor))
+    .
+}

@@ -12,9 +12,6 @@ setup_theme()
 use_folding <- TRUE
 
 options(width=130)
-infile <- "density.modeling.RData"
-outfile <- "combined.model.RData"
-plotfile <- "combined.model.pdf"
 
 join <- function(...) suppressMessages(plyr::join(...))
 
@@ -44,6 +41,19 @@ bind[term=surroundTerm, fun=surroundFun] <-
 
 surroundDemo <- exploreFun %<<% dots(
   surroundFun, c(width=10, strength=1, density=1, extent=10))
+
+#%should be the same as above but different parameterization%
+bind[term=logitSurroundTerm, fun=logitSurroundFun] <-
+  term_and_fun(
+    params = alist(width, strength),
+    vars = alist(global, spacing, number),
+    form = quote(
+      global*strength *
+      (2 * (exp(width/number/spacing * pi^2/3)
+            / (1+exp(width/number/spacing * pi^2/3))) - 1)))
+
+logitSurroundDemo <- exploreFun %<<% dots(
+  logitSurroundFun, c(width=10, strength=1, global=10, spacing=1, number=10))
 
 bind[term=softMinSurroundTerm, fun=softMinSurroundFun] <-
   term_and_fun(
@@ -116,8 +126,10 @@ termDemos <- chain(l=ls(),
                    mget(globalenv()))
 
 showSurrounds <- function(new=FALSE) {
-  dev.off()
-  quartz(pointsize=8, dpi=120, width=10, height=10)
+  if(interactive()) {
+    dev.off()
+    quartz(pointsize=8, dpi=120, width=10, height=10)
+  }
   par(mar=c(2.6, 2.1, 2.6, 0.1), mgp=c(0,0,0), tcl=0.2)
   par(bg="transparent")
   s = split.screen(c(length(termDemos), 1), erase=FALSE)
@@ -139,11 +151,11 @@ model.types <- chain(
                  displacementTerm(spacing, displacement,
                                   start=c(cs=6, beta_dx=10))
                  + content + I(content * abs(content)))),
-    list(type = "hemifield_number", dconstrain=list(c()),
-         fmla = (cbind(n_cw, n_ccw) ~
-                 displacementTerm(number_as_spacing_hemi, displacement,
-                                  start=c(cs=6, beta_dx=10))
-                 + content + I(content * abs(content)))),
+    ## list(type = "hemifield_number", dconstrain=list(c()),
+    ##      fmla = (cbind(n_cw, n_ccw) ~
+    ##              displacementTerm(number_as_spacing_hemi, displacement,
+    ##                               start=c(cs=6, beta_dx=10))
+    ##              + content + I(content * abs(content)))),
     ## list("softSpacing", list(c(dsharpness=3)),
     ##      (cbind(n_cw, n_ccw) ~
     ##       softMinDisplacementTerm(spacing, displacement,
@@ -164,7 +176,7 @@ model.types <- chain(
 
 #here are all the different models we will consider.
 model.additions <- chain(
-  merge(data.frame(type=c("softSpacing", "spacing", "softNumberSpacing"), stringsAsFactors=FALSE),
+  merge(data.frame(type=c("spacing", "hemifield_number"), stringsAsFactors=FALSE),
         declare_data(
           list(addition = "none", constrain = list(c()),
                fmla = . ~ .),
@@ -187,13 +199,20 @@ model.additions <- chain(
           ##      . ~ . + content_global + extent + content_global:full_circle),
           ## list("local_extent_fullcircle", list(c()),
           ##      . ~ . + content_local + extent + content_local:full_circle),
-          list("logit_surround", list(c()),
+          list("surround", list(c()),
                . ~ . + surroundTerm(content_local, extent,
-                                    start = c(width=pi*20/3, strength=6))),
-          list("logit_surround_global", list(c()),
+                                         start = c(width=15, strength=6))),
+          list("surround_global", list(c()),
                . ~ . + content_global +
                surroundTerm(content_local, extent,
-                            start = c(width=pi*20/3, strength=6)))
+                            start = c(width=15, strength=6)))
+          ## list("logit_surround", list(c()),
+          ##      . ~ . + logitSurroundTerm(content_global, spacing, target_number_shown,
+          ##                                start = c(width=pi*20/3, strength=6))),
+          ## list("logit_surround_global", list(c()),
+          ##      . ~ . + content_global +
+          ##      logitSurroundTerm(content_global, spacing, target_number_shown,
+          ##                   start = c(width=10, strength=6)))
           ## list("soft_min_surround", c(sharpness=3),
           ##      . ~ . + softMinSurroundTerm(content, target_number_shown, spacing,
           ##                          start = c(width=pi*20/3, strength=6)))
@@ -333,14 +352,11 @@ infile3 <- "motion_energy.csv"
 outfile <- "combined.model.RData"
 plotfile <- "combined.model.pdf"
 
-main <- function(infile="density.modeling.RData",
-                 infile2="slopeModel.RData",
+main <- function(infile="slopeModel.RData",
+                 infile2="density.modeling.RData",
                  infile3="motion_energy.csv",
                  outfile="combined.model.RData",
-                 plotfile="combined.model.pdf") {
-
-  old <- gcinfo(TRUE)
-  on.exit(gcinfo(old))
+                 aplotfile="combined.model.pdf") {
 
   load(infile2)
   load(infile)
@@ -354,7 +370,8 @@ main <- function(infile="density.modeling.RData",
     while(length(dev.list()) < 1) dev.new()
     plot.dev <- dev.list()[1]
   } else {
-    cairo_pdf(plotfile, onefile=TRUE)
+    cat("Writing plots to ", plotfile, "\n")
+    cairo_pdf(aplotfile, onefile=TRUE)
     plot.dev <- dev.cur()
     on.exit(dev.off(plot.dev), add=TRUE)
   }
@@ -364,19 +381,17 @@ main <- function(infile="density.modeling.RData",
 
   model.df <<- model.df
 
+  old <- gcinfo(TRUE)
+  on.exit(gcinfo(old))
+
   #all the data we have. We are casting the field size as 1 i.e. "full" since
-  #there are hopefulle momlineary terms that will fit it explicitly.
+  #there are hopefully nonlinear terms that will fit it explicitly.
   splits <<- splits <-
     c(segment.config.vars, segment.experiment.vars, "side") %-% "exp_type"
   combined.data <<- combined.data <- chain(
     data,
     subset(exp_type %in% c("content", "spacing", "numdensity")),
-    mutate(side=factor(ifelse(exp_type %in% "numdensity", side, "all"))),
-    recast_data(envelope.factor=2, carrier.factor=2),
-    rename(c(content_global="content_hemi",
-              number_shown_as_spacing="number_as_spacing_hemi")),
-    recast_data(envelope.factor=1),
-    cut_extents,
+    combined_model_recast,
     mkrates(splits))
 
   prediction.dataset <<- prediction.dataset <- chain(
@@ -452,7 +467,7 @@ main <- function(infile="density.modeling.RData",
         force
         ) -> plotdata
 
-  (ggplot(plotdata)
+  print(ggplot(plotdata)
    + aes(x=addition, y=stat, color=subject, # shape=subject,
          #linetype=type, shape=type,
          group=interaction(subject, type))
@@ -491,15 +506,23 @@ main <- function(infile="density.modeling.RData",
     chain(many.fits, drop_recursive, as.data.frame,
           subset(made.fit & n.warnings > 0),
           melt(c("type", "addition","subject")),
-#          acast(type ~ addition ~ subject, length, margins=TRUE),
           acast(type + addition ~ subject, margins=TRUE, length))
   print.if.nonempty(warned.fits)
 
   selected.model <- best.model.type
+  selected.model <- data.frame(type="spacing", addition="surround_global")
 
-  theM <- chain(many.fits, merge(cbind(selected.model, selected.subject)), .$model[[1]])
+  selected.coefs <- chain(many.fits, merge(selected.model), subset(made.fit),
+                          .[c("subject", "coef")], mutate(coef=rbind%()%coef),
+                          cbind(subject=.$subject, as.data.frame(.$coef)),
+                          print)
 
-  # and lets' plot its fits across coefficient data
+  #selected.subject <- data.frame(subject="pbm")
+  #theM <- chain(many.fits, merge(cbind(selected.model, selected.subject)), .$model[[1]])
+
+  #and lets' plot its fits extent data.
+
+  #make_extent_plots(combined.data, merge(many.fits, selected.model))
 
   #plot the predictions of some chosen model versus the data...
   #I really want softMinSurround to work...
@@ -507,17 +530,123 @@ main <- function(infile="density.modeling.RData",
   #also as diagnostic, plot the predictions of the model on
   #a subject's full circle data.
   #selected.model <- data.frame(type="spacing", addition="")
-  plot_combined_fit(selected.model, selected.subject, prediction.dataset, combined.data)
+  selected.fits <- subset(merge(many.fits, selected.model), made.fit)
 
-  #and finally, let's compare this to the "global" data....
+  print(plot_segment_fit(selected.fits, prediction.dataset))
+
+  #and can we profile the extents?
+  make_extent_plots(selected.fits, combined.data)
+
   save(file=outfile, list=ls())
+  for (i in ls()) assign(i, get(i), envir=globalenv())
 }
+
+make_extent_plots <- function(selected.fits, combined.data) {
+
+  #we calculate a "global content sensitivity" i.e. the change in
+  #response to an addition of a certaion abmount of blobal carrier
+  #strength, as a function of the carrier sensitivity.
+
+  #now let's calculate sensitivity
+  #coefficients and standard errors for each bin
+  measures <- chain(
+    m=selected.fits, vapply(is.recursive, FALSE), .[!.],
+    names, . %^% names(combined.data) %v% "model", m[.],
+    adply(., 1, function(row) {
+      bind[model=bind[model], ...=group] <- row
+      chain(combined.data, merge(group), d=subset(content != 0),
+            mutate(., model.fit=folding_predict(model, ., type="link", fold=TRUE)),
+            d=mutate(., model.csens=content_sensitivity(., model)),
+            glm(data=., formula=cbind(n_cw, n_ccw)
+                ~ offset(model.fit) + content +
+                cut_extent:content_global,
+                family=model$family),
+            folding_predict(type="terms", se.fit=TRUE, fold=TRUE),
+            data.frame %()% .,
+            cbind(d),
+            mutate(model=0),
+            ##.[c("extent", "model.csens", "cut_extent.content_global")],
+            ddply("cut_extent", summarize,
+                  extent=mean(extent),
+                  model.csens=mean(model.csens),
+                  adjustment = mean(fit.cut_extent.content_global/content_global),
+                  content.sensitivity=mean(
+                    model.csens +
+                    fit.cut_extent.content_global/content_global),
+                  content.sensitivity.se = mean(
+                    se.fit.cut_extent.content_global/abs(content_global))),
+            mutate(model=0),
+            force)
+    })
+    , mutate(label=paste("Observer", toupper(subject)))
+    )
+
+  nominal.ecc <- 20/3
+  fake.dataset <- chain(
+    expand.grid(subject=unique(data$subject),
+                exp_type="numdensity",
+                displacement=0,
+                content=1,
+                side="left",
+                spacing = seq(1, 2*pi*nominal.ecc/7, length.out=100),
+                target_number_shown=7
+                ),
+    mutate(target_number_all = 2*pi*nominal.ecc/spacing),
+    combined_model_recast)
+
+  predictions <-
+    chain(
+      m=selected.fits, vapply(is.recursive, FALSE), .[!.],
+      names, . %^% names(fake.dataset) %v% "model", m[.],
+      adply(., 1, function(row) {
+        bind[model=bind[model], ...=group] <- row
+        chain(fake.dataset, d=merge(group),
+              content_sensitivity(model),
+              cbind(content.sensitivity=., d, model=0))
+      }),
+      mutate(label=paste("Observer", toupper(subject))))
+
+  (ggplot(predictions)
+   + aes(x=extent, y=content.sensitivity)
+   + geom_line()
+   + facet_wrap(~label)
+   + geom_hline(y=0, color="gray50", linetype="11")
+   + geom_pointrange(data=measures,
+                     aes(ymin=content.sensitivity - content.sensitivity.se,
+                         ymax = content.sensitivity + content.sensitivity.se))
+   + labs(x="Stimulus extent", y="Carrier sensitivity")
+   )
+
+}
+
+take_content_columns <- mkchain(
+  x=.,
+  colnames,
+  str_match_matching("^fit\\..*content_.*"),
+  .[!grepl(".*I\\.content.*", .)],
+  .[!grepl("^fit\\.content$",.)],
+  x[,.])
+
+content_sensitivity <- function(dataset, model) {
+  ## cc <- as.list(coef(model))
+  chain(d=dataset,
+          folding_predict(model, ., type="terms", fold=TRUE),
+          list, data.frame(fit=.),
+          take_content_columns,
+          ## cbind(dataset[c("extent", "content_local", "content_global")]),
+          ## dlply("extent", force), .[[5]],
+          ## mutate(surr=surroundFun(cc$width, cc$strength, content_local, extent)
+          ##             +cc$content_global*content_global)
+          rowSums, ./dataset$content_global)
+}
+
+
 
 if(FALSE) {
 
   ddd <- chain(
     subset(combined.data, subject=="nj"),
-    mutate_when_missing(exp_type=ifelse(full_circle, "circle", "segment")))
+    mutate_when_missing(exp_type=ifelse(full_circle, "circle", "numdensity")))
 
   #Yuck! This is why we can't have nice things, look how it either
   #jumps off into the weeds!  I think that settles it, can't seriously
@@ -548,7 +677,7 @@ if(FALSE) {
   }) -> theIter
 
   print(theIter)
-  plot_fit(m2, data=subset(ddd, exp_type != "segment"), style="bubble", splits=splits, fold=TRUE)
+  plot_fit(m2, data=subset(ddd, exp_type != "numdensity"), style="bubble", splits=splits, fold=TRUE)
 
 }
 
@@ -571,19 +700,76 @@ if(FALSE) {
   print(theIter)
   ddd <- chain(m2$data,
                subset(full_circle==TRUE),
-               mutate(exp_type="Full circle"), cut_extent)
+               mutate(exp_type="numdensity"), cut_extent)
   plot_fit(m2, data=ddd, style="bubble", splits=splits, fold=TRUE)
 }
 
+cut_extents <- mkchain(
+  mutate(cut_extent=cut(extent, c(0, 10, 11.5, 12.4, 14.5, 20, Inf))),
+  put(contrasts(.$cut_extent), "contr.helmert"))
 
-cut_extents <- function(dataset) {
-  mutate(dataset,
-         cut_extent=cut(extent, c(0, 10, 11.5, 12.4, 14.5, 20, Inf)),
-         put(contrasts(.$cut_extent), "helmert"))
-  ## chain(d=dataset, count("extent", "n_obs"), arrange(extent),
-  ##       mutate(cut_extent=cut(extent, c(0, 10, 11.5, 12.4, 14.5, 20, 100))),
-  ##       ddply("cut_extent", mutate, cutsize=sum(freq)))
+combined_model_recast <- mkchain(
+  mutate(side=factor(ifelse(exp_type %in% "numdensity", side, "all"))),
+  recast_data(envelope.factor=2, carrier.factor=2),
+  rename(c(content_global="content_hemi",
+           number_shown_as_spacing="number_as_spacing_hemi")),
+  recast_data(envelope.factor=1, carrier.factor=1),
+  cut_extents)
+
+plot_segment_fit <- function(selected.models,
+                             pdata=prediction.dataset,
+                             plot.dataset=segment.folded.spindled.mutilated) {
+
+  selected.model.predictions <-
+    predict_from_model_frame(
+      selected.models,
+      pdata,
+      fold=TRUE, spindle=TRUE, collapse=TRUE)
+
+  (plot.spacing %+% plot.dataset
+        + prediction_layers(selected.model.predictions, connect="number")
+        )
 }
+
+plot_combined_fit <- function(selected.model,
+                           selected.subject = data.frame(),
+                           pdata=prediction.dataset,
+                           cdata=combined.data) {
+
+  if(interactive()) while(length(dev.list()) < 3) dev.new()
+
+  if(interactive()) dev.set(dev.list()[[1]])
+  plot_segment_fit(selected.model, pdata)
+
+  splits <<- splits <- splits %-% "exp_type"
+  mmm <- chain(selected.model,
+               cbind(selected.subject),
+               merge(many.fits),
+               .$model[[1]])
+  ddd <- chain(selected.model,
+               cbind(selected.subject),
+               cbind(data.frame(full_circle=TRUE)),
+               merge(combined.data),
+               mutate(exp_type="Full circle"))
+
+  if(interactive()) dev.set(dev.list()[[2]])
+  plot_fit(mmm, data=ddd, style="bubble", splits=splits, fold=TRUE)
+
+  #show me also profiles of the model fit?
+  if(interactive()) dev.set(dev.list()[[3]])
+
+  local({
+    #fucking model objects, got to be breaking lexical scope all the time
+    e <- mmm$original.env
+    for (n in ls(e)) {
+      assign(n, e[[n]], globalenv())
+    }
+    prof <- profile(mmm) #fucking model objects
+    plot(prof)
+  })
+
+}
+
 
 run_as_command()
 
@@ -615,8 +801,7 @@ FALSE && {
      + content + I(content * abs(content))
      + bias - 1),
     data=test.data,
-    family=binomial(link=logit.2asym(g=0.025, lam=0.025))
-    )
+    family=binomial(link=logit.2asym(g=0.025, lam=0.025)))
 
   number_factor_model <- gnm(
     (cbind(n_cw, n_ccw) ~
@@ -629,57 +814,4 @@ FALSE && {
     data=test.data,
     family=binomial(link=logit.2asym(g=0.025, lam=0.025))
     )
-}
-
-plot_combined_fit <- function(selected.model,
-                           selected.subject = data.frame(),
-                           pdata=prediction.dataset,
-                           cdata=combined.data) {
-  selected.model.predictions <- predict_from_model_frame(
-    merge(many.fits, selected.model)
-    , newdata=pdata
-    , fold=TRUE, spindle=TRUE, collapse=TRUE)
-  #plot.spacing et al come from density.modeling.RData
-
-  selected.model.predictions <-
-    predict_from_model_frame(
-      merge(many.fits,
-            cbind(selected.model)),
-      pdata,
-      fold=TRUE, spindle=TRUE, collapse=TRUE)
-
-  if(interactive()) while(length(dev.list()) < 3) dev.new()
-
-  if(interactive()) dev.set(dev.list()[[1]])
-  print((plot.spacing %+% segment.folded.spindled.mutilated
-         + prediction_layers(selected.model.predictions, connect="number")
-         ))
-
-  splits <<- splits <- splits %-% "exp_type"
-  mmm <- chain(selected.model,
-               cbind(selected.subject),
-               merge(many.fits),
-               .$model[[1]])
-  ddd <- chain(selected.model,
-               cbind(selected.subject),
-               cbind(data.frame(full_circle=TRUE)),
-               merge(combined.data),
-               mutate(exp_type="Full circle"))
-
-  if(interactive()) dev.set(dev.list()[[2]])
-  plot_fit(mmm, data=ddd, style="bubble", splits=splits, fold=TRUE)
-
-  #show me also profiles of the model fit?
-  if(interactive()) dev.set(dev.list()[[3]])
-
-  local({
-    #fucking model objects, got to be breaking lexical scope all the time
-    e <- mmm$original.env
-    for (n in ls(e)) {
-      assign(n, e[[n]], globalenv())
-    }
-    prof <- profile(mmm) #fucking model objects
-    plot(prof)
-  })
-
 }
