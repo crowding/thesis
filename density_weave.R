@@ -7,7 +7,8 @@ opts_chunk$set(
     "data.RData", "slopeModel.RData",
     "numbers.RData", "density.modeling.RData",
     "latexing.R", "icons.R", "scales.R", "slopeModel.R",
-    "density.modeling.R", "density.calibration.R", "contours.R"))$mtime)
+    "density.modeling.R", "density.calibration.R", "contours.R",
+    "combined.model.R", "combined.model.RData"))$mtime)
 options(width = 70, useFancyQuotes = FALSE, digits = 4, lyx.graphics.center=TRUE)
 library(ggplot2)
 library(plyr)
@@ -121,7 +122,7 @@ unadjusted.deviances <- chain(quad.models,
                          value.var="deviance", margins=),
                    put(names(dimnames(.)),
                        c("carrier.local", "envelope.local", "subject")))
- 
+
 unadjusted.winner <- chain(unadjusted.deviances,
                            apply(names(quad.conditions), sum),
                            melt(value.name="deviance"),
@@ -150,3 +151,22 @@ each.adj.winner <- chain(unadjusted.deviances,
                          melt(value.name="deviance"),
                          ddply(., "subject", chain,
                                arrange(deviance), .[1,]))
+
+## @knitr density-combined-model
+source("combined.model.R")
+load("combined.model.RData")
+
+## @knitr density-combined-model-plot
+source("combined.model.R")
+(plot_segment_fit(
+  subset(selected.fits, subject %in% density.example.subjects),
+  subset(prediction.dataset, subject %in% density.example.subjects),
+  subset(segment.folded.spindled.mutilated, subject %in% density.example.subjects))
+ + theme(aspect.ratio=1))
+
+## @density-extent-profile
+source("combined.model.R")
+(make_extent_plots(
+  subset(selected.fits, subject %in% density.example.subjects),
+  combined.data)
+ + theme(aspect.ratio=1))

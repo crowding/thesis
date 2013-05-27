@@ -1001,10 +1001,7 @@ reference "fig:density-stimulus"
  The flanking elements had zero envelope movement and null carrier direction
  (i.e.
  their carriers flickered in counterphase.) The flanking elements were positioned
- so that they were 
-between 
-\lang english
-
+ so that they were between 
 \begin_inset ERT
 status collapsed
 
@@ -1692,10 +1689,8 @@ local
  of slope and number.
  This suggests that if either motion mechanism depends on the global stimulus
  properties, it would have to have an interaction region larger than the
- largest stimulus we used in figure 2 (
- which spanned a circumferential distance 
-\lang english
-
+ largest stimulus we used in figure 2 ( which spanned a circumferential
+ distance 
 \begin_inset ERT
 status collapsed
 
@@ -1762,7 +1757,7 @@ reference "fig:density-predictions"
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -1778,15 +1773,12 @@ Sexpr{if(unadjusted.winner$carrier.local[1]) stop("nope") else "global"}
 \end_inset
 
  and the envelope motion mechanism is interpreted to be 
-
 \begin_inset Quotes eld
 \end_inset
 
 
-\lang english
-
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -1819,21 +1811,21 @@ reference "sec:results-number"
 
 \end_inset
 
- to be consistent with each other, the summation of carrier strength happens
- over a large region and the 
-\begin_inset Quotes eld
-\end_inset
-
-crowding
-\begin_inset Quotes erd
-\end_inset
-
- effect on envelope motion detection happens over a relatively smaller region.
+ to be consistent with each other, the summation of carrier motion happens
+ over a large region and the relevant region of influence of flankers on
+ envelope motion detection is smaller.
  
 \end_layout
 
 \begin_layout Subsubsection
-The size of the region of summation 
+The size of the region of summation for carrier motion
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:density-region"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1849,7 +1841,6 @@ critical spacing
 \end_inset
 
  between adjacent elements and not being affected by other elements.
- on the order of the size of the.
  On the other hand, it appears that the mechanism responsive to the carrier
  motion operates over a much larger scale.
  To reconcile the data from both experiments we will add a parameter to
@@ -1857,7 +1848,48 @@ critical spacing
 \end_layout
 
 \begin_layout Standard
-We start by computing the extent 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-combined-model
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-combined-model>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The IRLS/Newton-Raphson optimizer I'm using can't cope with the soft-min
+ function -- local gradient gets too flat and then it jumps off into the
+ weeds.
+ May try again using an MCMC model fitter
+\end_layout
+
+\end_inset
+
+ We start by computing the extent 
 \begin_inset Formula $E$
 \end_inset
 
@@ -1872,7 +1904,7 @@ We start by computing the extent
  is the number of elements shown.)
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 We replace the carrier motion summation term 
 \begin_inset Formula $M_{S}=\beta_{S}\frac{C}{S}$
 \end_inset
@@ -1890,7 +1922,7 @@ We replace the carrier motion summation term
  on the stimulus.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Formula 
 \[
 M_{S}=\beta_{S}\frac{C}{S}\mathrm{softmin}_{\sigma}\left(E,W\right)
@@ -1901,7 +1933,7 @@ M_{S}=\beta_{S}\frac{C}{S}\mathrm{softmin}_{\sigma}\left(E,W\right)
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Here 
 \begin_inset Formula $\mathrm{softmin}_{\sigma}\left(x,y\right)=-\frac{1}{\sigma}\log\left(e^{-\sigma x}+e^{-\sigma y}\right)$
 \end_inset
@@ -1935,11 +1967,123 @@ sharpness
 .
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
-We also considered alternative models including local summation of carrier
- motion, and a parameterization of˙†e effective size the region of interference
- for envelope motion, but the present model appeared to fit the data the
- best.
+We modeled the summation as occurring in a windowed region with width 
+\begin_inset Formula $W$
+\end_inset
+
+, this corresponding to two standard deviations of a summation profile having
+ the form of a logistic density function.
+ The carrier motion summation term then becomes (with 
+\begin_inset Formula $N$
+\end_inset
+
+ being the number of elements in the stimulus):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+M_{S}=\beta_{S}CN\left(2\dfrac{e^{\left(\frac{W}{NS}\cdot\frac{\pi^{2}}{3}\right)}}{1-e^{\left(\frac{W}{NS}\cdot\frac{\pi^{2}}{3}\right)}}-1\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ and 
+\begin_inset Formula $W$
+\end_inset
+
+ being the fitted parameters.
+ This summation term fit with a minimum value (for observer 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{toupper(selected.coefs$subject[which.min(abs(selected.coefs$width))])}
+\end_layout
+
+\end_inset
+
+) of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{format(minwidth <- min(abs(selected.coefs$width)),digits=2)}^
+\backslash
+circ$
+\end_layout
+
+\end_inset
+
+, which covers a fraction of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{format(minwidth/(2*pi*20/3), digits=1)}
+\end_layout
+
+\end_inset
+
+ of the visual field at the eccentricity used; the fitted values for summation
+ field width range from this value upward to the entire stimulus field.
+\end_layout
+
+\begin_layout Standard
+With the addition of parameters for the size and strength of the summation
+ region, a single model makes a good fit to data from both Experiment 1
+ and Experiment 2.
+ The predictions from this model for Experiment 2's data for two observers
+ are shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-combined-model"
+
+\end_inset
+
+ and the entire set are shown in the appendix.
+ The fit of this combined model to Experiment 1 data is shown in
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-combined-model"
+
+\end_inset
+
+ for two observers.
+ The entire set is shown in the appendix in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:everything-density-predictions"
+
+\end_inset
+
+.
+ The fit to data from Experiment 1 does not qualitatively change, so we
+ do not reproduce new versions of those fits here.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1950,13 +2094,25 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
+%density-combined-model-plot
+\end_layout
 
-\backslash
-missingfigure{insert plot here}
+\begin_layout Plain Layout
+
+<<density-combined-model-plot>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -1967,11 +2123,11 @@ missingfigure{insert plot here}
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:density-modeled"
+name "fig:density-combined-model"
 
 \end_inset
 
-Predictions from a model combiningh the data for two observers.
+Predictions for Experiment 2 from a model combining data from both experiments.
  The model here fits values from both 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -2007,13 +2163,25 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
+%density-extent-profile
+\end_layout
 
-\backslash
-missingfigure{insert plot here}
+\begin_layout Plain Layout
+
+<<density-extent-profile>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -2024,7 +2192,7 @@ missingfigure{insert plot here}
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:density-model-sensitivity"
+name "fig:density-profile"
 
 \end_inset
 
@@ -2033,17 +2201,8 @@ Sensitivity to carrier strength as a function of the stimulus extent
 \end_inset
 
 .
- This is the sum of contributions of the terms 
-\begin_inset Formula $\beta_{I_{A}}C$
-\end_inset
-
- and 
-\begin_inset Formula $\beta_{I}$
-\end_inset
-
-/ The first term contributes a constant repulsion effect, causing the sensitivit
-y to weak carrier motion to be negative for most stimuli.
- while the second adds more energy as the.
+ This evaluates the observers' sensitivity to a fixed increment of carrier
+ motion evenly spread over a reagion of a fixed size.
  The 
 \begin_inset Quotes eld
 \end_inset
@@ -2081,55 +2240,80 @@ Should just go ahead and re-plot the contours using this model for those
 \end_layout
 
 \begin_layout Standard
-As an empirical check on the model fit, we cast the parameter 
+To visualize the extent of the summation field, and whether it contains
+ center-surround structure, we plot the strength of summation as a function
+ of the stimulus extent 
+\begin_inset Formula $E=NS$
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:density-profile"
+
+\end_inset
+
+.
+ This evaluates the observers' sensitivity to total carrier strength as
+ a function of the extent of the stimulus; that is, the contribution of
+ the summation terms.
+ To compare the fit against the data, we bin 
 \begin_inset Formula $E$
 \end_inset
 
- to a discrete factor, with a number of the model to one in which the stimulus
- extents are grouped into 5 values, and add four linear terms 
-\begin_inset Formula $\beta_{S,i}E\delta_{i}$
+ to six bins, and evaluate carrier sensitivity for those subgroups of trials.
+ These grouped estimates are shown as points with error lines, while the
+ curved line shows the model prediction.
+ The measurement can be understood as the strength of a fixed increment
+ of carrier motion energy, if it were evenly distributed over the a region
+ of length parameterized on the abscissa.
+ Note this measurement does not include the repulsion terms parameterized
+ by 
+\begin_inset Formula $\beta_{I_{A}}$
 \end_inset
 
- where the 
-\begin_inset Formula $\delta_{i}$
+ and 
+\begin_inset Formula $\beta_{I_{B}}$
 \end_inset
 
-are dummy variables coded with reverse Helmert contrasts; 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-cite
-\end_layout
-
-\end_inset
-
- this effectively fits a piecewise linear function of carrier sensitivity
- depending on stimulus extent.
- This allows us to capture how much summation there is for each size of
- the stimulus, and compare to the model parameterization.
- Results from this procedure are shown in 
+ as these terms depend on neither the spacing or the number of elements.
+ Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:density-model-sensitivity"
+reference "fig:density-profile"
 
 \end_inset
 
-; the curved line corresponds to the fitted model parameterized by the field
- size, while the segmented line with error bars corresponds to the piecewise
- check.
- The vertical line corresponds to the size of the integration field that
- is fit by our model.
- 
+ shows this data for our two example observers while 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:everything-density-profile"
+
+\end_inset
+
+ shows all observers.
 \end_layout
 
 \begin_layout Standard
-With the addition of this single parameter for the size of the summation
- region, a single model makes a good fit to data from both Experiment 1
- and Experiment 2.
- The predictions from this model for two observers are shown in and hte
- entire set are shown in the appendix.
- 
+If the summation of carrier motion were entirely 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ and uniform, we would observe a flat horizontal line for sensitivity to
+ carrier motion as a function of stimulus extent.
+ On the other hand, if the summation of carrier motion were entirely local,
+ we would see large values on the ordinate for small extents, converging
+ to zero at larger extents.
+ What we do see appears to be different from both of these alternatives;
+ the strength of carrier motion summation often increases with stimulus
+ extent for small stimuli, but then decreases again as the stimulus extent
+ covers the entire circle.
+ However, different observers show different combinations of effects in
+ this measurement.
 \end_layout
 
 \begin_layout Standard

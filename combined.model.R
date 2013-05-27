@@ -201,11 +201,11 @@ model.additions <- chain(
           ##      . ~ . + content_local + extent + content_local:full_circle),
           list("surround", list(c()),
                . ~ . + surroundTerm(content_local, extent,
-                                         start = c(width=15, strength=6))),
+                                         start = c(width=10, strength=6))),
           list("surround_global", list(c()),
                . ~ . + content_global +
                surroundTerm(content_local, extent,
-                            start = c(width=15, strength=6)))
+                            start = c(width=10, strength=6)))
           ## list("logit_surround", list(c()),
           ##      . ~ . + logitSurroundTerm(content_global, spacing, target_number_shown,
           ##                                start = c(width=pi*20/3, strength=6))),
@@ -522,8 +522,6 @@ main <- function(infile="slopeModel.RData",
 
   #and lets' plot its fits extent data.
 
-  #make_extent_plots(combined.data, merge(many.fits, selected.model))
-
   #plot the predictions of some chosen model versus the data...
   #I really want softMinSurround to work...
 
@@ -535,7 +533,7 @@ main <- function(infile="slopeModel.RData",
   print(plot_segment_fit(selected.fits, prediction.dataset))
 
   #and can we profile the extents?
-  make_extent_plots(selected.fits, combined.data)
+  print(make_extent_plots(selected.fits, combined.data))
 
   save(file=outfile, list=ls())
   for (i in ls()) assign(i, get(i), envir=globalenv())
@@ -644,9 +642,9 @@ content_sensitivity <- function(dataset, model) {
 
 if(FALSE) {
 
-  ddd <- chain(
-    subset(combined.data, subject=="nj"),
-    mutate_when_missing(exp_type=ifelse(full_circle, "circle", "numdensity")))
+  for (x in ls(model$original.env)) {
+    assign(x, model$original.env[[x]], globalenv())
+  }
 
   #Yuck! This is why we can't have nice things, look how it either
   #jumps off into the weeds!  I think that settles it, can't seriously
@@ -654,23 +652,17 @@ if(FALSE) {
 
   ldply (c(1:20, 500), function(iter) {
 
-    m2 <<-
-      gnm(
+      m2 <- gnm(
         formula=(
-          cbind(n_cw, n_ccw)
-          ~ displacementTerm(spacing, displacement,
-                             start = c(cs = 2, beta_dx = 10))
-          + I(content * abs(content)) + content
-#          + content_global + I(content_global*full_circle)
+          cbind(n_cw, n_ccw) ~ displacementTerm(spacing, displacement,
+                                                start = c(cs = 6, beta_dx = 10))
+          + content + I(content * abs(content)) + content_global
           + surroundTerm(content_local, extent,
-                         start = c(width=pi*20/3, strength=6))
-          ## + softMinSurroundTerm(content, target_number_shown, spacing,
-          ##                       start=c(width=20, strength=0), trace=FALSE)
-          ),
-        data=ddd,
-#        constrain=c("sharpness"), constrainTo=c(3),
-        iterStart=10, iterMax=500,
-        family=binomial(logit.2asym(0.025, 0.025))
+                         start = c(width = 10, strength = 6))),
+        family = fit.family,
+        data = fit.data,
+        constrain = (c(names(constrain) %||% character(0)))
+#        iterStart=2, iterMax=500
         )
 
     coef(m2)
@@ -679,29 +671,6 @@ if(FALSE) {
   print(theIter)
   plot_fit(m2, data=subset(ddd, exp_type != "numdensity"), style="bubble", splits=splits, fold=TRUE)
 
-}
-
-if(FALSE) {
-  ldply (c(1:15, 500), function(iter) {
-    theM$original.env$iter <- iter
-    m2 <<- evalq(update(
-      theM,
-      formula=(
-        cbind(n_cw, n_ccw)
-        ~ displacementTerm(spacing, displacement,
-                           start = c(cs = 2, beta_dx = 10))
-        + I(content * abs(content)) + sign(content):cut_extent),
-      #      constrain=c("dsharpness"), constrainTo=c(3),
-      #                   trace=TRUE,
-      iterStart=0, iterMax=iter),
-                 theM$original.env)
-    coef(m2)
-  }) -> theIter
-  print(theIter)
-  ddd <- chain(m2$data,
-               subset(full_circle==TRUE),
-               mutate(exp_type="numdensity"), cut_extent)
-  plot_fit(m2, data=ddd, style="bubble", splits=splits, fold=TRUE)
 }
 
 cut_extents <- mkchain(
