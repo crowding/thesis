@@ -854,7 +854,7 @@ reference "sub:results-induced-modeling"
 \end_layout
 
 \begin_layout Subsection
-Predictions for single-circle data
+Predictions for partial circle stimuli from full circle simuli
 \end_layout
 
 \begin_layout Standard
@@ -869,9 +869,37 @@ status open
 
 \begin_layout Plain Layout
 
+<<everything-density-model, fig.width=7, fig.height=7,cache.extra=file.info(c("combi
+ned.model.RData", "combined.model.R")$mtime>>=
+\end_layout
 
-\backslash
-missingfigure{figure goes here}
+\begin_layout Plain Layout
+
+source("combined.model.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+load("combined.model.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+print(plot_segment_fit(selected.fits, prediction.dataset)
+\end_layout
+
+\begin_layout Plain Layout
+
+      + theme(aspect.ratio=1)) 
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -939,9 +967,41 @@ status open
 
 \begin_layout Plain Layout
 
+%everything-density-profile
+\end_layout
 
-\backslash
-missingfigure{figure goes here}
+\begin_layout Plain Layout
+
+<<everything-density-profile, fig.height=7, fig.width=7>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+(make_extent_plots(
+\end_layout
+
+\begin_layout Plain Layout
+
+  subset(selected.fits, subject %in% density.example.subjects),
+\end_layout
+
+\begin_layout Plain Layout
+
+  combined.data)
+\end_layout
+
+\begin_layout Plain Layout
+
+ + theme(aspect.ratio=1))
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -950,26 +1010,32 @@ missingfigure{figure goes here}
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-density-profile"
+
+\end_inset
+
 Sensitivity to carrier motion as a function of the stimulus extent.
  Data come from both 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand nameref
 reference "sec:results-basic"
 
 \end_inset
 
  and 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand nameref
 reference "sec:results-number"
 
 \end_inset
 
 .
  Curved lines show a model fit parameterized by the size of the summation
- field, which is indicated by the vertical dashed line.
- Segmented lines show values obtained by binning trials into five groups
- by extent.
+ field.
+ Point with standard error lines show values obtained by binning trials
+ into six groups by extent.
  The format of this figure is the same as 
 \begin_inset CommandInset ref
 LatexCommand ref

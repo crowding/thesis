@@ -2320,7 +2320,7 @@ global
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "xampl,bibliography"
-options "plain"
+options "apalike"
 
 \end_inset
 

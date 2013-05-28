@@ -255,7 +255,7 @@ key "Steinman:2000ap"
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 This is, uniquely, and perhaps presciently, a distinction based on sensation
@@ -273,18 +273,18 @@ key "Wertheimer:1912aa,Wertheimer:2012aa"
 
 \end_inset
 
- .
- these experiments generally involved the use of a tachistoscope to present
- two still images in rapid succession.
+.
+ Wertheimer's experiments generally involved the use of a tachistoscope
+ to present two still images in rapid succession.
  Spatial properties of the images were manipulated as well as the temporal
  interval between stimulus onsets.
- What Wertheimer did that remains unique, and which was to carefully catalogue,
+ What Wertheimer did that still calls it to relevance was to carefully catalogue
  not only a tally of responses suitable for psychophysical analysis but
  the observers' subjective, phenomenological impressions of the motion stimuli.
- Starting from near simultaneous and increasing, Wertheimer and his observers
- denoted a sequence of qualitatively different forms of stimuli, as well
- as the inter-stimulus interval increases, Wertheimer found the sequence
- of phenomena, in sequence: perceived simultaneity, ..., 
+ Starting from near simultaneous and increasing, Wertheimer described a
+ sequence of qualitatively different forms of stimuli.
+ As the inter-stimulus interval increased from zero, there was found: perceived
+ simultaneity, ..., 
 \begin_inset Quotes eld
 \end_inset
 
@@ -298,32 +298,72 @@ optimal
 \end_layout
 
 \begin_layout Standard
-Today we identify the phi-phenomenon with the earliest stages of the motion
- sensing system; this accords both with what we have learned of the psychophysic
-s, and with its subjective appearance as a form of motion that is without
- attachment to object or form.
-\end_layout
+What distinguishes the phi-phenomenon from the ordinary perception of motion
+ was that it is detached from.
+ An optimized demonstration due to 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Steinman:2000ap"
 
-\begin_layout Standard
-We engage in this historical discussion to raise the point that the separate
- motion systems are not on equal perceptual footing perceptually equal.
- While we have engaged in a more psychophysical analysis and task which
- attempts to put each component of our motion stimulus on equal footing,
- we are aware that these motions.
- Even though we engage in a form of 'nulling' by finding stimulus conditions
- in which, given a particular mixture of carrier and envelope, observers
- may, this does not mean that.
- In some experiments not detailed here, where observers adjusted the mixture
- of carrier and envelope, observers noted that the region of equivocation
- was not was the 
+\end_inset
+
+, called 
 \begin_inset Quotes eld
 \end_inset
 
-most confusing
+magni-phi,
 \begin_inset Quotes erd
 \end_inset
 
+ shows this most clearly; at high frame rates speeds, the motion caused
+ by the successive extinguishing of each of a circle of discs does not take
+ on the shape of the discs themselves, while at lower frame rates the motion
+ .
+\end_layout
 
+\begin_layout Standard
+Today we identify the phi-phenomenon with the early, 'first-order' motion
+ sensing system; this accords both with what we have learned of the physiology
+ and psychophysics, and with its subjective appearance as a form of motion
+ that is without attachment to object or form.
+\end_layout
+
+\begin_layout Standard
+\align right
+We engage in this historical discussion to raise the point that the separate
+ motion systems may contribute to the same bottom line in a psychophysical
+ experiment such as the one we conducted but are not perceptually equal.
+ While we have constructed task which attempts to put carrier and envelope
+ motion on equal footing, we are aware that these motions may not have the
+ same appearance.
+ Even though we engage in a form of 'nulling' by finding stimulus conditions
+ in which, given a particular mixture of carrier and envelope, observers
+ may equivocate between two alternatives, this does not mean that they perceive
+ no motion.
+ 
+\end_layout
+
+\begin_layout Standard
+\align right
+In some experiments not detailed here, observers adjusted the strength of
+ carrier motion versus a constant envelope, until they appeared to be equal.
+ The resulting stimuli sometimes had the appearance of a slower motion,
+ but at other times appeared to be composed of two layered motions, or other
+ percepts.
+ The region in which motions had similar strengths were better described
+ as 'confusing' than nulling.
+ Because of this confusion it was difficult for most observers to select
+ one envelope motion strength that balanced the carrier motion, so we were
+ not able to obtain precise information
+\end_layout
+
+\begin_layout Standard
+from the method of adjustment.
+\end_layout
+
+\begin_layout Standard
+Although it was not specifically called out in our instructions, most observers
+ commented on the two 
 \end_layout
 
 \begin_layout Subsubsection
@@ -331,16 +371,7 @@ Fourier and non-Fourier motion
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-This is a distinction based on an aspect of the stimulus...
-\end_layout
-
-\end_inset
-
-The distinction between Fourier and non-Fourier motion is tue to 
+due to 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Chubb:1988kx"
@@ -366,7 +397,7 @@ Short range and long range motion
 
 \begin_layout Paragraph
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 This is a stimulus-parameter-based delineation.
@@ -404,16 +435,6 @@ Reification of boundaries across domains, synecdoches, and other confusions.
 
 \begin_layout Paragraph
 Apparent motion 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-is a bullshit term
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -426,9 +447,9 @@ apparent motion.
 \begin_inset Quotes erd
 \end_inset
 
- In contemporary usage this tem is used to refer to a particular class of
- motion stimuli, that of discretely sampled motion stimuli, and more particularl
-y stimuli that translate in discrete jumps.
+ In contemporary usage this term is used to refer to a particular class
+ of motion stimuli, that of discretely sampled motion stimuli, and more
+ particularly stimuli that translate in discrete jumps.
  
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -459,26 +480,20 @@ apparent motion
 ; rather 
 \end_layout
 
-\begin_layout Paragraph
-Local and global 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-isa bullshit term -- in the domain of our experiment
-\end_layout
+\begin_layout Subsubsection
+Local and global motion 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:local-and-global-are-ill-defined"
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Subsubsection
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Our motion mechanisms are not 
+\begin_layout Standard
+A dichotomy that is often constructed to discuss competing processes or
+ dichotomies in spatial vision is 
 \begin_inset Quotes eld
 \end_inset
 
@@ -490,11 +505,578 @@ local
 \begin_inset Quotes eld
 \end_inset
 
-global,
+global.
 \begin_inset Quotes erd
 \end_inset
 
- or if they are, then it is the other way around from what you think
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anstis:2011vn,Majaj:2007aa,Tse:2006bq,Hedges:2004pr,Braddick:1997dk"
+
+\end_inset
+
+ Usually this refers to a difference in spatial scale, either between two
+ aspects of the stimulus used or between the mechanisms that are proposed
+ to respond to them.
+ There is an inherent sliding scale to these terms; we read 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ as referring to spatial scales that are on the small end of whatever comparison
+ is being made, with 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ referring to the stimulus or mechanism on the larger end.
+ A related but distinguishable usage of 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ describes motion stimuli that are in some way coherent across the entire
+ visual field 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Edwards:1995fk,Cassanello:2011uq,Anstis:2011vn,Bex:2002uq"
+
+\end_inset
+
+; often this usage is related to optic flow stimuli or to rigid-body motions
+ of large objects.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+Local
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ are convenient terms with which to frame discussions about spatial vision;
+ exploring differences in processing over spatial scales gives a useful
+ handle on a number of problems in visual perception.
+ However such a generally applicable distinction also also carries with
+ it some ambiguities about which particular version of that distinction
+ is applicable in any one work.
+ Some works use 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ motion to refer to motion mechanisms that pool or integrate many locally
+ defined signals into a coherent whole 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cropper:2001aa"
+
+\end_inset
+
+, such as combining several local orientation-specific motion signals to
+ compute overall pattern motion 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Movshon:1996aa"
+
+\end_inset
+
+, or in combining several small, noisy displacement signals across a larger
+ area in order to form a perception of the overall motion of a random dot
+ field 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Williams:1984aa,Braddick:1995aa,Newsome:1989aa"
+
+\end_inset
+
+.
+ Other works use the term 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ to refer to a higher-order aspect of a motion stimulus that would invisible
+ to the contrasted 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ detectors, such as drift-balanced or higher-order motion, or information
+ coming from shifts in position rather than position-independent motion
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Tse:2006bq,Hedges:2011aa"
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+rhythm requires another cite
+\end_layout
+
+\end_inset
+
+.
+ Another ambiguity is whether the distinction is stimulus-centered or mechanism-
+centered; it might describe the components of the stimulus being used, or
+ whether the neural mechanisms imputed to respond differentially to these
+ components.
+\end_layout
+
+\begin_layout Standard
+In the case of our stimulus, neither the carrier or envelope motion 
+\emph on
+as a stimulus
+\emph default
+ is constructed to be more local or global than the other.
+ For instance, the spatial scale of the step size
+\begin_inset Formula $\Delta x$
+\end_inset
+
+ that defines the envelope motion is similar to (and in uncrowded conditions,
+ smaller than) not only the size of the envelope but the spatial scale of
+ the oscillation in luminance 
+\begin_inset Formula $\frac{1}{f}$
+\end_inset
+
+ that defines the carrier motion.
+ Both components are local, in that they are defined within small areas
+ of the stimulus, so it is possible to extract the envelope motion from
+ the stimulus by considering only a small region of the scene barely larger
+ than the moving element; the same applies to carrier motion.
+ At the same time, both components are global, being consistent and coherent
+ over the entire range of the stimulus; both the carrier and envelope motion
+ are (independently) consistent with a single rotating ring of elements.
+ If a motion mechanism exists that could pool the motion of multiple features
+ over a large area, it should be able to globally pool envelope motion signals
+ in our stimulus; the same applies for carrier motion.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+(There is one sense in which the envelope motion we use is more global;
+ it has a longer timescale, being defined as a difference in position between
+ multiple flashes of an element, as opposed to being defined immediately
+ within any one element.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Carrier motion is integrated globally; envelope motion is local
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:local-and-global-are-also-backwards"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For stimuli like those in the present study, where one component of the
+ motion stimulus is given by a first-order, luminance-defined motion, and
+ the where a conflicting component of the motion is given by the shift of
+ an envelope, some authors choose 
+\begin_inset Quotes eld
+\end_inset
+
+global motion
+\begin_inset Quotes erd
+\end_inset
+
+ as the term with which to refer to the motion of the envelope, and 
+\begin_inset Quotes eld
+\end_inset
+
+local motion
+\begin_inset Quotes erd
+\end_inset
+
+ to describe the motion of the carrier 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Tse:2006bq,Hedges:2011aa"
+
+\end_inset
+
+.
+ Based on the results of our experiments, we assert the opposite: the carrier
+ motion mechanism is more global then the envelope motion mechanism.
+\end_layout
+
+\begin_layout Standard
+The assignment of 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ to the envelope motion intuitively accords with the theme that on a physiologic
+al level visual processing is thought to be more local in the early stages,
+ and more global in later stages; envelope motion detection is not evident
+ in early vision, so must be computed in one of the later, and by imputation
+ more global stages.
+ It also accords with the fact that envelope motion potentially carries
+ an object of interest across a large distance in the visual scene, so that
+ if information about an object is to be maintained or integrated as it
+ moves, that process must in some sense span as large a spatial distance
+ as the object travels.
+ Nonetheless, we disagree with assigning the name 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ to the carrier motion, based on the properties of carrier and envelope
+ motion detection we explored in the present study.
+\end_layout
+
+\begin_layout Standard
+As we discussed there may be multiple ways in the local versus global dichotomy
+ can be applied.
+ One is that a global mechanism can, or must, act over a larger region of
+ space than the local mechanism.
+ Our results indicate that carrier motion is computed over a larger spatial
+ field than the envelope motion.
+ Carrier motion appears to summate across regions of space; if one element
+ carrying carrier motion causes a certain bias in judgements of motion direction
+, two elements will cause twice as much change on observers' responses.
+ The region of space over which carrier motion summation is effective is
+ large, covering roughly an entire hemifield, with positive summation perhaps
+ being strongest over separations of roughly the same size as the retinal
+ eccentricity.
+ Within the large region of space that it effectively sums over, the mechanism
+ integrating carrier motion does not appear to particularly care where the
+ motion is located; rightward carrier motion coming from an element traveling
+ (in envelope) leftward causes as much effect on observers' responses as
+ the same rightward carrier motion coming from an element traversing rightward.
+ 
+\end_layout
+
+\begin_layout Standard
+\align block
+When two carrier motions are put next to one another, the identification
+ of the carrier of a single element is impaired by the flanker 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Bex:2005zm"
+
+\end_inset
+
+, reflecting a minimum spatial scale among which a distinct carrier motion
+ can be isolated; differing carrier motions belonging to target and flanker
+ pool within a a critical region.
+ Thus, in our task, carrier motion can pool globally (our task does not
+ ask about the motion of any particular element), and appears to pool at
+ at least medium scale when the task is to identify the carrier motion of
+ a particular element.
+ We see that carrier motion is not particularly specific to location, and
+ pools along a medium or large spatial scale depending on task; thus the
+ perception of carrier motion is 
+\emph on
+global.
+\end_layout
+
+\begin_layout Standard
+In contrast, envelope motion is defined by the change in 
+\emph on
+location
+\emph default
+ of distinct elements, so is intrinsically sensitive to their particular
+ locations (or changes thereof.) The envelope motion mechanism does not appear
+ to integrate global motion information available across the whole visual
+ field; it is equally sensitive to the motion of two targets as it is to
+ one target.
+ Nor is there a smaller region in which it is capable of integrating information
+ across space; in fact the opposite occurs; placing flanking elements closely
+ together does not cause summation of envelope motion but rather crowding;
+ the ability to identify the envelope motion is destroyed.
+ by adding additional elements.
+ 
+\end_layout
+
+\begin_layout Standard
+This is even a particularly strong form of crowding; in many instances
+ of crowding the loss in precision in discriminating an isolated feature
+ trades off against a pooling or summation of that feature within a region
+ defined by the critical spacing.
+ Like 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Bex:2005zm"
+
+\end_inset
+
+ found for carrier motion, and 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Mareschal:2010fk"
+
+\end_inset
+
+ for orientation, we find that there is a particular spatial scale within
+ which an envelope motion element must be isolated in order to be discriminated
+ with best sensitivity.
+ But unlike the case for carrier motion, we find no summation or pooling
+ of envelope motion within any region of integration.
+ In fact, our experiment always has flankers carrying the 
+\emph on
+identical 
+\emph default
+envelope motion as any element that may be considered the target; this is
+ a situation in which discrimination performance for carrier motion reflects
+ 
+\begin_inset Quotes eld
+\end_inset
+
+obligatory summation
+\begin_inset Quotes erd
+\end_inset
+
+ among crowded targets, thus no elevation of threshold as a function of
+ crowding.
+ Nonetheless, discrimination performance for envelope motion collapses under
+ crowded conditions, even when the flankers and target are in agreement.
+ So while envelope motion does not exhibit the long range summation that
+ carrier motion can, it also does not exhibit the medium-range summation
+ that carrier motion must.
+ Apparently the only thing that defines envelope motion is the shift of
+ the envelope of a 
+\emph on
+single
+\emph default
+ element; envelope motion detection appears to be completely 
+\emph on
+local 
+\emph default
+(though subject to nonlocal interference.)
+\emph on
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+and this is NOT due to bandwidth limitations of second order motion; our
+ critical spacings are larger than that?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The other sense in which distinctions have been drawn between 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ processing is hierarchical; global mechanisms integrate and combine the
+ inputs from many local feature detectors.
+ This does not appear to characterize the results of our experiment.
+ As captured by our model, carrier and envelope motion appear to have independen
+t contributions to observers' responses, without interaction.
+ A particular increment of carrier motion, depending on stimulus configuration
+ and spacing, results in a corresponding change in an observer's propensity
+ to respond clockwise, and the size of this change is independent of how
+ much envelope motion is also contributing to the observer's response.
+ 
+\end_layout
+
+\begin_layout Standard
+To clarify this statement a bit, we note that in our stimuli the envelope
+ motion is in a way composed of 
+\emph on
+nothing but
+\emph default
+ carrier motion signals, so in some sense anything that detects motion in
+ these stimuli must be using the carrier motion.
+ This is not the sense of integration we mean, however.
+ We mean that the 
+\emph on
+content
+\emph default
+ of the carrier motion signal does not appear to be used in the computation
+ of envelope motion, the presence or absence of carrier motion, or its agreement
+ or disagreement with the does not make observers more or less sensitive
+ to changes in the envelope motion; the content of carrier motion only facilitat
+es or impedes the perception of envelope motion in the gross sense that
+ they ultimately affect the same decision that the observer makes, but viewed
+ on the scale of log-odds of making a decision one way or the other, as
+ we have done in our model, there is no interaction between the two.
+ As far as the computation of and sensitivity to envelope motion goes, the
+ only information about the motion pulses that seems to be used by the envelope
+ motion mechanism is their change position -- which is also a feature that
+ is 
+\emph on
+not
+\emph default
+ used by the carrier motion mechanism itself.
+ So we would argue that in our task these two mechanisms are not hierarchically
+ related as local and global mechanisms would be, but instead operate relatively
+ independently.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+perhaps for a section about temporal coherence theory and temporal integration.
+\end_layout
+
+\end_inset
+
+ We noted earlier that the envelope motion mechanism does not integrate
+ information over large spatial scales.
+ However, it does appear to integrate over longer temporal scales than the
+ carrier motion mechanism.
+ There is one way in which envelope motion mechanism does integrate information
+ over a larger scale than the carrier motion mechanism, but it is a temporal
+ rather than spatial scale.
+ In some experiments not reported in the main body, we varied the number
+ of pulses of the motion elements from 2 to 5 (5 being the number that is
+ used in the other experiments, and envelope motion being undefined with
+ one pulse), while holding the observers' response time constant.
+ At least two pulses are required in principle to define the direction of
+ envelope motion; however we found that two pulses were insufficient to
+ create any perception of envelope motion; this required at least three
+ pulses.
+ On the other hand, observers responded well to carrier motion with 1 or
+ 2 pulses.
+ So we conclude that positional motion information is integrated over larger
+ temporal scales than first-order information, which accords with previous
+ findings (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "VerghesePreeti2002,Verghese:1999lq,Watamaniuk:1995qf"
+
+\end_inset
+
+.)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Perhaps for a section about multiple-object-tracking.
+\end_layout
+
+\end_inset
+
+ What about the sense in which the envelope motion mechanism allows object
+ identity and information to be persisted over a very large spatial scale?
+ While very large scale jumps of a visual object can be perceived as motion,
+ it is unlikely that this represents in integration of information over
+ a large scale; if information were integrated, we would expect information
+ about the object such as its color or shape to be preserved across the
+ jump; instead it is lost.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I'm thinking of MOT literature here.
+\end_layout
+
+\end_inset
+
+ When the same object makes a series of smaller jumps, information about
+ it can be tracked.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Perhaps for a section about neurophysiology of visual motion.
+\end_layout
+
+\end_inset
+
+ we have discussed elsewhere that the detection of envelope motion is difficult
+ to explain with what is known of early visual motion mechanisms such as
+ V1 or MT, while we propose that the detection of carrier motion largely
+ falls under that framework.
 \end_layout
 
 \end_inset
@@ -517,7 +1099,7 @@ The physiology of lower- and higher- order motion perception
 
 \begin_layout Subsubsection
 Higher order motion is not in MT, probably not in MST, but MT does seem
- ripe for out 
+ ripe for ou 
 \begin_inset Quotes eld
 \end_inset
 
@@ -847,14 +1429,14 @@ key "Bex:2005zm"
 
 \end_inset
 
-show that crowding applies to the identificaiton of direciton of motion
+show that crowding applies to the identification of direction of motion
  of a textured patch within a window.
  Since the stimulus in that study does not include a global direction component,
  it is not (all of our local motion features are identical.) Actually the
  format of this study shares many similarities to our own, but what they
  establish is the spatial interference of flanking (short-range) motion
- on identification of neighboring patches of (short--range) motion, wherewas
- what be identify in this study is the interference of flanking (short-range)
+ on identification of neighboring patches of (short--range) motion, whereas
+ what we identify in this study is the interference of flanking (short-range)
  motion in the identification of (long-range) motion -- this is an interesting
  distinction, as it shows that spatial interference happens in a way that
  prevents 
