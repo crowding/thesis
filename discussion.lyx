@@ -70,6 +70,14 @@ knitr
 Discussion
 \end_layout
 
+\begin_layout Subsection
+History of our displays
+\end_layout
+
+\begin_layout Subsection
+Displays which put lower level and higher level motion in conflict
+\end_layout
+
 \begin_layout Standard
 \begin_inset Wrap figure
 lines 0
@@ -123,18 +131,15 @@ key "Mather:1985rt"
 
 \end_layout
 
-\begin_layout Subsection
-Illusions driven by conflicts between first-order and higher-order motion
-\end_layout
-
 \begin_layout Standard
 Motion perception appears to be mediated by multiple processes that operated
  in different ways and may interact in some other ways.
  In most cases, the first order motion and higher order motion of a moving
- object will agree, however, constructing conflicts between the two m,ay
- reveal the interaction between two systems.
- We review some of the examples of conflicting first-order and higher order
- motions.
+ object will agree; however, when they conflict, the manner in which conflicts
+ are resolved may reveal an interaction between the two systems and help
+ our understanding of motion perception.
+ To put our studies in context we review some previous examples of the use
+ of conflicting first-order and higher order motions.
 \end_layout
 
 \begin_layout Standard
@@ -252,10 +257,11 @@ key "Chubb:1989fj"
  used a windowed contrast-reversing grating with widely spaced bars, so
  that the bars stepped (for instance) leftward while reversing contrast,
  as in reverse phi stimuli.
- They that direction of apparent motion reversed depending on viewing distance,
- with the apparent motion leftward (agreeing with the step direction) when
- viewed from near distances in central vision, but rightward when viewed
- from farther distances, or near distances in peripheral vision.
+ They found that the direction of apparent motion reversed depending on
+ viewing distance, with the apparent motion being leftward (agreeing with
+ the step direction) when viewed from near distances in central vision,
+ but rightward when viewed from farther distances, or near distances in
+ peripheral vision.
  
 \begin_inset CommandInset citation
 LatexCommand citeauthor
@@ -264,9 +270,9 @@ key "Chubb:1988kx"
 \end_inset
 
  explained the apparent motion opposite the step direction as being in accordanc
-e with the Fourier content of the stimulus, while they proposed a second
- order mechanism (rectifying the contrast before proceeding as normal motion
- analysis) for the other.
+e with the Fourier content of the stimulus, while they proposed a second-order
+ mechanism (rectifying the contrast before proceeding as normal motion analysis)
+ for the other.
  
 \begin_inset Note Note
 status open
@@ -281,21 +287,270 @@ Do I have anything clever to say about this? Moving right along...
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
+\begin_inset Wrap figure
+lines 0
+placement O
+overhang 1in
+width "50col%"
+status open
 
-
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Zanker:1993uq"
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ZankerSmall.pdf
+	width 35text%
 
 \end_inset
 
 
 \end_layout
 
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:zanker-stimulus"
+
+\end_inset
+
+Example stimulus used by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zanker:1993uq"
+
+\end_inset
+
+.
+ These sitmuli comprised a random-dot kinematogram (RDK) within a moving
+ window, against a backgrop of random dots.
+ The borders of the window may move in one direction (white arrow) while
+ the RDK may move in another (black arrow.) 
+\begin_inset Quotes eld
+\end_inset
+
+Theta motion
+\begin_inset Quotes erd
+\end_inset
+
+ denotes the condition in which the motion inside the window is opposite
+ the motion of the boundaries of the window.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zanker 
+\begin_inset CommandInset citation
+LatexCommand citeyearpar
+key "Zanker:1990aa,Zanker:1993uq"
+
+\end_inset
+
+ constructed stimuli consisting of a windowed random-dot kinematogram, where
+ the object motion (defined by the boundaries of the window) and random
+ dots were allowed to take different directions of motion.
+ Example 
+\begin_inset Formula $xt$
+\end_inset
+
+-plots of these stimuli are shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:zanker-stimulus"
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset citation
+LatexCommand citeauthor
+key "Zanker:1993uq"
+
+\end_inset
+
+ found that the object motion was readily perceived in central vision but
+ only the random dot motion was visible in peripheral vision.In psychophysics,
+ it was found that the propensity of reporting the object motion isn a theta
+ motion display was a sigmoid function of the displacement per frame of
+ the window, biased by the opposing random dot motion; we find similarly.
+ The stimuli for which the windowed RDK conflicted with the motion of the
+ window was termed 
+\begin_inset Quotes eld
+\end_inset
+
+theta motion
+\begin_inset Quotes erd
+\end_inset
+
+ and the class of stimuli was termed 
+\begin_inset Quotes eld
+\end_inset
+
+motion-defined motion
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zanker:1997vn"
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset citation
+LatexCommand citeauthor
+key "Zanker:1993uq"
+
+\end_inset
+
+ also analyzed all local, discrete functions of stimulus luminance and found
+ there was no single-layer motion detector (as enumerated over this function
+ space) that would serve to detect both Fourier motion and theta motion;
+ that is, neither first or second order (input rectifying) motion detectors
+ could explain the observations of rightward apparent motion from both Fourier
+ and theta motion with rightward moving windows.
+ A two layer network model was proposed to account for perception of both
+ Fourier and object motion.
+\end_layout
+
+\begin_layout Standard
+The issue of perception of higher order motion in peripheral vision was
+ was revisited by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zanker:1997vn"
+
+\end_inset
+
+.
+ Here the interior dots of theta motion were configured to move at right
+ angles to the object motion, rather than always opposing, so that they
+ would no oppose motion direction judgements.
+ Still it was found by measurement of noise thresholds that observers and
+ it was found that observers could still perform object motion detection
+ under these conditions (however, sensitivity to theta motion was still
+ much lower than that for Fourier motion conditions, and declined precipitously
+ in the periphery as compared to central vision.)
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Zanker:1997vn"
+
+\end_inset
+
+ finds that stimuli that oppose first-order and higher order motions make
+ the higher order motions invisible in the periphery, for even a single
+ moving object.
+ In contrast we find that higher order (envelope) motion is perfectly visible
+ in the periphery, and tends to override the carrier motion, as long as
+ the moving object is not crowded by flanking objects.
+ How can we reconcile these results? 
+\begin_inset CommandInset citation
+LatexCommand citeauthor
+key "Zanker:1997vn"
+
+\end_inset
+
+'s experiments had the object motion stimulus shown against a noise background,
+ so that the motion or flicker was the only cue by which the objects could
+ be detected.
+ Out experiment does not have a comparable measure; objects are shown against
+ a featureless background and are visible as spots that have high contrast
+ and a definite orientation.
+ Under these conditions the direction of object motion is clearly visible.
+ We saw that first order motion per se does not interfere with object motion
+ detection in our experiment; there is no amount of carrier motion that
+ interferes with the sensitivity to envelope motion, it only gives a bias.
+ 
+\end_layout
+
+\begin_layout Standard
+One way to reconcile 
+\begin_inset CommandInset citation
+LatexCommand citeauthor
+key "Zanker:1997vn"
+
+\end_inset
+
+'s results with our own might be to decide that the features available to
+ the higher order motion mechanism do not include first order motion itself.
+ To be more specific, the 
+\emph on
+location
+\emph default
+ of first order motion is not available to the higher order motion mechanisms.
+ This would lead to the observed result that pure 
+\begin_inset Quotes eld
+\end_inset
+
+motion-defined motion
+\begin_inset Quotes erd
+\end_inset
+
+ such as 
+\begin_inset CommandInset citation
+LatexCommand citeauthor
+key "Zanker:1997vn"
+
+\end_inset
+
+'s is not visible in the periphery, but other types of 
+\emph on
+feature-defined motion
+\emph default
+ (such as ours) are.
+ Indeed our indications in these experiments are that first order motion
+ exhibits obligatory summation over large portions of the visual field.
+ This is also consonant with the fact that receptive field sizes in MT which
+ may be the first place that first order motion information is available
+ to perceptual processes,
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Handwavy.
+ I'm trying to get at why MT feeds perception rather than V1 with its tiny
+ RFs.
+ Thinking of attentional modulation indices, which are present in MT but
+ absent in V1, as well as MT's correlation with perceptual decisions as
+ in perception of bimodal rotating cylinders 
+\end_layout
+
+\end_inset
+
+ are very large.
+ In our stimuli, moving objects have contrast and orientation which makes
+ objects salient, if the perceptual resolution for these static cues is
+ finer than that for first oder motion When other features such as contrast
+ or orientation are available to signal the presence of objects, higher
+ motion uses those features, and is limited by the same bottlenecks that
+ limit the localization of those features, i.e.
+ crowding.
+ This would explain why our observers have no difficulty with detecting
+ envelope motion even when carrier motions conflict, so long as flankers
+ are distant.
+\end_layout
+
 \begin_layout Subsection
-Distinguishing between types of motion stimuli and types of motion mechanisms.
+Dichotomies among motion stimuli, motion mechanisms, and motion appearances.
 \end_layout
 
 \begin_layout Standard
