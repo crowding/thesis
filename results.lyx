@@ -263,11 +263,8 @@ reference "mov:singles"
  not only of carrier strength of individual elements but of a spacing-dependent
  interaction between nearby elements.
  We explored this spatial interaction by examining the interactions between
- local and global motion as a function of both the distance betwee\SpecialChar \@.
-\SpecialChar \@.
-\SpecialChar \@.
-n elements
- and the carrier strength.
+ local and global motion as a function of both the distance between elements
+ and carrier strength.
 \end_layout
 
 \begin_layout Subsection
@@ -327,9 +324,17 @@ circ$
 \end_inset
 
  and used a complete circle of evenly spaced elements.
- For each session we chose a set of carrier strengths and spacings, and
- collected psychometric functions for each member of the set, with the abscissa
- of each function being the envelope motion.
+ We carried out two types of sessions.
+ One type was focused on the effect of spacing, and tested several spacings
+ at a single carrier strength (chosen based on preliminary data from that
+ subject).
+ The second type of session was focused on the effect of carrier strength,
+ and tested a fixed set of carrier strengths (0.1, 0.2, 0.4 and 1.0), at two
+ values of spacing (again chosen based on preliminary sessions with that
+ subject).
+ For each session we measured the probability of seeing motion in the direction
+ of the envelope motion for each presented combination of carrier strength
+ and envelope motion.
  As described above in 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -339,15 +344,8 @@ reference "sub:methods-staircase"
 
 , we used an interleaved staircase procedure to collect psychometric functions,
  with the staircase varying the speed of the envelope motion.
- There were two general types of sessions.
- One type was focused on the effect of spacing, and tested several spacings
- at a single carrier strength.
- chosen based on preliminary data from that subject.).
- Another type was focused on the effect of carrier strength, and tested
- a fixed set of carrier strengths (0.1, 0.2, 0.4 and 1.0), at two values of
- spacing.
- The particular values of spacing and direction content employed were selected
- based on preliminary sessions with that subject.
+ Here we plot these data as psychometric functions, with the abscissa of
+ each function being the envelope motion.
  There may be some adaptation when a single carrier strength or limited
  sets of spacings were used for an entire session.
  However, we find that a single model fits the both datasets adequately,
@@ -368,17 +366,9 @@ We first compare individual psychometric functions that illustrate the effects
 \end_layout
 
 \begin_layout Standard
-Note that since these graph present folded data, i.e., values shown here with
- a single value for carrier strength, which we nonetheless refer to as 
-\begin_inset Quotes eld
-\end_inset
-
-clockwise,
-\begin_inset Quotes erd
-\end_inset
-
- represent data collected from both that stimulus and its mirror image,
- and envelope motions and responses are mirrored correspondingly.
+Note that since these graph present folded data, i.e., values represent data
+ collected from both that stimulus and its mirror image, and responses are
+ mirrored correspondingly.
  So a point appearing below 
 \begin_inset Formula $P(cw)<0.5$
 \end_inset
@@ -401,7 +391,8 @@ counterclockwise
 
  to that stimulus's mirror image.
  Thus the presentation of folded data here averages out any static biases
- toward one direction that an observer may have
+ toward one direction that an observer may have.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -468,8 +459,9 @@ reference "sec:model"
 
  or 0.
  Since the curves plotted are overall model fits rather that fits to only
- the stimuli shown, we expect some degree of mismatch between model and
- data.
+ the stimuli shown, we expect more mismatch between model and data than
+ if psychometric functions were fitted to the subset of data shown in the
+ figure.
 \end_layout
 
 \begin_layout Standard
@@ -479,8 +471,9 @@ We consistently observe that reducing the spacing between elements also
  Thus, when elements are more closely packed together, it appears to be
  more difficult for observers to discriminate the direction of envelope
  motion.
- As elements become more closely spaced, nearby elements thus interfere
- with the ability to discriminate changes in elements position.
+ One interpretation of this is that as elements become more closely spaced,
+ nearby elements interfere with the ability to discriminate changes in each
+ elements position.
  
 \end_layout
 
@@ -613,21 +606,24 @@ name "sub:results-basic-summation"
 \begin_layout Standard
 Observers' responses to the carrier component of the motion were in some
  ways more complicated then their response to the envelope motion.
- Figure 2 shows the proportion of clockwise responses as a funciton of envelope
+ Figure 2 shows the proportion of clockwise responses as a function of envelope
  motion strength for two spacings (upper and lower panels) for two carrier
  strengths (red and blue lines).
 \end_layout
 
 \begin_layout Standard
 Once again, as described in the previous section, we see that subjects are
- more sensitive to envelopemotion at wide spacings, as evidenced by the
+ more sensitive to envelope motion at wide spacings, as evidenced by the
  steeper slopes in the lower panel.
  
 \end_layout
 
 \begin_layout Standard
-Our first observation is that the effect of carrier strength is larger when
- elements are closely spaced.
+Our first observation is that the effect of 
+\emph on
+carrier
+\emph default
+ strength is larger when elements are closely spaced.
  Compare the offsets between the blue (carrier strength = 0.1) and red (carrier
  strength = 0.4) curves in the upper and lower panels of Figure 2.
  In the upper panels, observers report 'clockwise' more frequently for the
@@ -648,8 +644,8 @@ Our second observation is that carrier motion can be repulsive; when there
 \end_inset
 
  axis at a value less than 0.5 (shaded quadrant), indicating that observers
- were more likely to perceive a stimulus with null envelope motion and clockwise
- carrier motion as actually moving counterclockwise.
+ tended to perceive a stimulus with null envelope motion and clockwise carrier
+ motion as actually moving counterclockwise.
  (Note that this was folded data, so this effect happened across both clockwise
  and counterclockwise directions.)
 \end_layout
@@ -766,9 +762,12 @@ n, maybe it should move up
 \end_inset
 
  Moving to the graphs in the upper row, we see that the psychometric functions
- no longer pass through the shaded quadrant- the repulsive effect is no
- longer evident.
+ no longer pass through the shaded quadrant- the repulsive effect is only
+ evident for wide spacings.
  
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
 status open
 
@@ -871,8 +870,8 @@ name "sub:results-contours"
 \end_layout
 
 \begin_layout Standard
-Our experiment examines how three parameters -- carrier strength, envelope
- motion and spacing -- affect the motion perceived by the observer.
+In summary, our experiment examines how three parameters -- carrier strength,
+ envelope motion and spacing -- affect the motion perceived by the observer.
  At this point, having given examples illustrating some of the effects that
  a model should capture, we attempt to present an overview both of the entire
  dataset, and how the model fits that data.
@@ -1141,7 +1140,7 @@ Model figure construction
 
 \begin_layout Standard
 Data from one observer is shown in Figure; the complete set of data for
- all observers is shown in an appendix.
+ all observers is shown in an Appendix.
  
 \end_layout
 
@@ -1223,7 +1222,7 @@ Upper left
 \noun default
  panel showing the slice direction of carrier strength vs.
  spacing, data are combined across all envelope motions).
- he points collected under one circle at a particular value of displacement
+ The points collected under one circle at a particular value of displacement
  can take any value in the unseen dimension (envelope motion).
  The final reason is that data are not evenly sampled throughout the stimulus
  configuration space.
@@ -1233,7 +1232,7 @@ Upper left
 \begin_layout Standard
 Using the Pearson residuals between the observed response probabilty and
  the model prediction allows us to quantify the difference between observers
- and models within this complex 3D space.
+ and models despite this complex non-uniform 3D sampling.
  
 \end_layout
 
@@ -1318,8 +1317,8 @@ reference "fig:results-contours"
 
 \end_inset
 
- illustrate each of the effects with have discussed with respect to carrier
- strength, direction content, and spacing.
+ illustrate each of the effects associated with carrier strength, direction
+ content, and spacing that were previously discussed.
  The lower left plot shows how the observer's response varies for stimuli
  with no carrier motion (i.e.
  with all elements flickering in counterphase.) The horizontal axis measures
@@ -1327,7 +1326,7 @@ reference "fig:results-contours"
  measures the inter-element spacing.
  When there is no carrier motion, observers tend to report clockwise apparent
  motion for envelope motions that are clockwise, and vice versa.
- This is reflected by the right half of the graph taking values > 0.5(in
+ This is reflected by the right half of the graph taking values > 0.5 (in
  red) and the left half of the graph taking values less than 0.5 (in blue).
  (Because the data are folded, this graph only shows circles where 
 \begin_inset Formula $\Delta x>0$
@@ -1352,7 +1351,7 @@ this is a subtlety to the folding: if you're going to fold so that carrier
 \end_layout
 
 \begin_layout Standard
-The effect captured by the lower left plot is that sensitivity to envelope
+The effect captured by the lower left plot is how sensitivity to envelope
  motion (graphically, how fast the transition is, in the horizontal direction,
  from deep blue to deep red) changes as a function of spacing.
  In our model this spacing-dependent sensitivity is described by the function
@@ -1377,14 +1376,14 @@ critical spacing
 \end_inset
 
 .
- The data that is observed, whose residuals are plotted in circles tend
- to concur with this behavior.
+ The data that is observed, whose residuals are plotted in circles shows
+ analogous behavior.
  Note that at smaller spacings, data has been collected over a wider range
  of envelope motions than at the largest spacings.
- This is a result of using the interleaved staircase procedure which will
- step over a wider range when the sensitivity is larger.
+ This is a result of using an interleaved staircase procedure which steps
+ over a wider range when the sensitivity is larger.
  Note that even at the smallest spacings most data has been collected with
- envelope step sizes quite a bit less than 0.5; so that inherent ambiguity
+ envelope step sizes significantly smaller than 0.5; so that inherent ambiguity
  with forming correspondences between element appearances (i.e.
  the wagon wheel illusion) should not contribute to the lessening of sensitivity.
  
@@ -1425,16 +1424,29 @@ reference "fig:results-3d"
 \end_inset
 
  we can imagine the surface formed by the set of stimuli for which observers
- equivocate; it takes a 90 degree twist as spacing decreases.
+ equivocate as to the direction of the stimulus; 
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+it takes a 90 degree twist as spacing decreases???
+\end_layout
+
+\end_inset
+
+.
  perception of motion is driven by envelope motion at wider spacings but
  by the carrier when spacing is narrow.
- 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
 A 3-d null surface plot might be one of the most confounding ways of presenting
  this data imaginable but we could try to draw it.
+ I think people will be fine.
 \end_layout
 
 \end_inset
@@ -1443,20 +1455,17 @@ A 3-d null surface plot might be one of the most confounding ways of presenting
 \end_layout
 
 \begin_layout Standard
-Another effect is included in the model which depends on the strength of
- carrier motion.
- This is the repulsion effect characterized by 
+Finally, the repulsion effect characterized by 
 \begin_inset Formula $M_{i}(C)$
 \end_inset
 
-.
+ can be observered.
  Its effect is to make weak carrier motions slightly repulsive; that is,
- adding a moderate amount of carrier motion that is clockwise tends to make
- observers report more counterclockwise apparent motion.
+ adding a moderate amount of clockwise carrier motion tends to make bias
+ observers towards reporting counterclockwise apparent motion.
  This effect is nonlinear as a function of carrier strength; carrier strengths
  less than 0.4 generally cause repulsion but as the carrier strength approaches
- 1 again, directed carrier motion instead causes observers to report apparent
- motion in the same direction.
+ 1 again, carrier motion once again becomes positive in strength.
 \end_layout
 
 \begin_layout Standard
@@ -1512,7 +1521,7 @@ key "Akaike:1974aa"
 \begin_layout Standard
 Similar patterns of behavior are found for most observers.
  The set of plots for all observers who participated in this experiment
- is included in an appendix (
+ is included in an Appendix (
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:everything"
@@ -1523,16 +1532,17 @@ reference "sec:everything"
 \end_layout
 
 \begin_layout Standard
-It is worth discussing the areas where the model does not do as good of
- a job in reproducing observers' data.
+It is worth discussing the areas where the model is not fully successful
+ at reproducing observers' data.
  We often find that the repulsion measured at a carrier strength of 0.2 is
- stronger than the model fit (and the repulsion at 0.4 is weaker.) So the
- functional parameterization we have chosen for 
+ stronger than the model fit (and the repulsion at 0.4 is weaker.) This suggests
+ that the functional parameterization we have chosen for 
 \begin_inset Formula $M_{i}(C)$
 \end_inset
 
- might need to be improved, however we do not have a mechanism in mind that
- would inspire a better parameterization.
+ might need to be improved, however with the current data we do not have
+ the power (or a potential mechanism in mind) that would inspire a better
+ parameterization.
 \end_layout
 
 \begin_layout Standard
@@ -1600,7 +1610,23 @@ Model components and measurement of effects
 
 \begin_layout Standard
 \align left
-We have described three separate effects: a reduction in the sensitivity
+Our model allows us to systematically describe the effect of three factors
+ - carrier strength, envelope motion and spacing - that clearly interact
+ in a complex way.
+ As described in the Discussion, this model also provides a parsimonous
+ explanation of large amounts of individual variation in the appearance
+ of these stimuli across individual subjects, since small changes in model
+ parameters can have dramatic effects on the predicted perception.
+ 
+\end_layout
+
+\begin_layout Standard
+[[ ok move this some where else
+\end_layout
+
+\begin_layout Standard
+\align left
+(We have described three separate effects: a reduction in the sensitivity
  to envelope motion as inter-element spacings reduce, a concurrent increase
  in the sensitivity to carrier strength, and an independent repulsion that
  depends nonlinearly on the carrier strength but not on the spacing.
@@ -1657,7 +1683,12 @@ We would like to distill out the distinct effects we see each into its own
  This will help us evaluate and provide some justification for the particular
  functional forms that have chosen in our model, as well as show how individual
  effects are consistent across observers.
- 
+ ]]
+\end_layout
+
+\begin_layout Standard
+This model also provides some insights into the properties of the mechanisms
+ underlying the task that are not immediately intuitively obvious.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1713,8 +1744,8 @@ reference "sec:model"
  particular element to arrive at a veridical perception of envelope motion;
  any element will do the same job.
  When distinct objects move concurrently, one can perceive the motion as
- of a larger element of which the distinct components are features, as in
- Ternus displays (e.g.
+ being of a larger element of which the distinct components are features,
+ as in Ternus displays (e.g.
  
 \begin_inset CommandInset citation
 LatexCommand citealp
@@ -1730,9 +1761,9 @@ key "Anstis:2011vn"
 
 \end_inset
 
-.) In our displays, the motion of all elements in the display is consistent
- with that of a wheel rotating around the fixation point, at least if you
- consider envelope and carrier motion separately.
+.) In our displays, both the envelope and the carrier motion are consistent
+ with that of a wheel rotating around the fixation point, but they are consisten
+t with different wheels (this might be a worse way of putting it).
  Knowing this, an ideal observer could in principle pool multiple envelope
  position signals in order to improve sensitivity to envelope motion.
  If that is the case than the sensitivity to envelope motion (i.e.
@@ -2060,7 +2091,8 @@ reference "fig:model"
 \begin_inset Formula $\beta_{\Delta x}^{S}$
 \end_inset
 
- for each distinct value of spacing tested, forming a modified model.
+ for each distinct value of spacing tested, forming a modified model [[
+ not sure why this is necessary, let's talk about it]].
  The fitted values of these coefficients constitute a measurement of the
  sensitivity to displacement as a function of spacing.
  The other components of the model (repulsion and carrier motion summation)
@@ -2315,8 +2347,8 @@ reference "sub:results-basic-summation"
  When elements are widely spaced, the response to carrier motion is then
  dominated by the repulsion term rather than the spacing-dependent assimilation
  term.
- Interestingly, while the assimilation seemed to be simply inversely related
- to the spacing, the repulsion effect appears to be independent of the spacing
+ Interestingly, while the assimilation seemed to be inversely related to
+ the spacing, the repulsion effect appears to be independent of the spacing
  between elements (and correspondingly with the number of elements on the
  screen.
 \end_layout
