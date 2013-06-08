@@ -26,7 +26,7 @@ nonlinearTerm <- function(..., start=NULL) {
       expr <- substitute(expr)
       eval(template(structure(
         class="nonlin",
-        function(.=...(variables), start) {
+        function(.=...(variables), start, trace=FALSE) {
           ...( lapply(names(variables),
                       function(x) template( .(as.name(x))
                                            <- substitute(.(as.name(x))))))
@@ -35,9 +35,19 @@ nonlinearTerm <- function(..., start=NULL) {
                  , term = function(predLabels, varLabels) {
                    t = as.list(parse(text=c(predLabels, varLabels)))
                    names(t) <- .(c(names(predictors), names(variables)))
-                   deparse(substitute(.(expr), t))
+                   x <- paste(deparse(substitute(.(expr), t)), collapse="")
+                   if(trace) {
+                     print(formula)
+                     print(x)
+                   }
+                   x
                  }),
-            if (missing(start)) NULL else list(start=function(x) start[names(x)]))
+            if (missing(start)) NULL else list(start=function(x) {
+              if(trace) {
+                print(start[names(x)])
+              }
+              start[names(x)]
+            }))
         })))
     }
   }
@@ -45,8 +55,10 @@ nonlinearTerm <- function(..., start=NULL) {
 
 binom.fam <- binomial(link=logit.2asym(g=0.025, lam=0.025))
 
-predict_from_model_frame <- function(models, newdata,
-                                     fold=TRUE, spindle=TRUE, collapse=FALSE) {
+drop_recursive <- function(df) df[!vapply(df, is.recursive, FALSE)]
+
+predict_from_model_frame <- function(
+  models, newdata, fold=TRUE, spindle=TRUE, collapse=FALSE) {
   ##take a data frame with a list of models, and the variables to
   ##match by, produce predictions for the folding data.
   newdata_missing <- missing(newdata)
@@ -67,9 +79,8 @@ predict_from_model_frame <- function(models, newdata,
         } else .)
 }
 
-drop_recursive <- function(df) df[!vapply(df, is.recursive, FALSE)]
-
-predict_from_model <- function(model, newdata=model$data, se.fit=TRUE) {
+predict_from_model <- function(
+  model, newdata=model$data, se.fit=TRUE) {
   #chunk prediction because predict.gnm does something odd
   newdata$.chunk <- floor(seq_len(nrow(newdata))/1000)
   ddply(newdata, ".chunk",
@@ -82,14 +93,49 @@ predict_from_model <- function(model, newdata=model$data, se.fit=TRUE) {
             cbind(chunk, pred[1:2], model=NA)
           } else {
             cbind(chunk
-                  , fit = predict(model, newdata=chunk, type="response")
-                  , se.fit = NA)
+                  , fit = predict(model, newdata=chunk, type="response"))
           }
         })
 }
 
-match_to <- function(x, from) {
-  vapply(x, function(x) from[which.min(abs(log(x) - log(from)))], 0)
+##We'll be modeling raw data, but plotting folded/spindled. Here's a
+##function that "re-folds" the predictions so that they can be plotted
+##on a folded plot.
+mutilate.predictions <-
+  function(pred,
+           fold=abs(diff(range(sign(pred$content)))) > 1,
+           spindle=length(unique(pred$side)) > 1,
+           collapse=FALSE) {
+    columns <- c(as.quoted(splits),
+                 if (spindle) NULL else as.quoted("side"))
+    chain(pred,
+          refold(fold),
+          ddply_keeping_unique_cols(
+            columns, summarize,
+            fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
+          if(collapse) collapse(.) else .,
+          labeler)
+  }
+
+folding_predict <- function(model, newdata=model$data, type="link", fold=FALSE, ...) {
+  pred <- predict(model, newdata=newdata, type=type, ...)
+  if(fold) {
+    pred2 <- predict(model, newdata=fold_trials(newdata, TRUE), type=type, ...)
+    switch(class(pred),
+           list = Map(a=pred, b=pred2, n = names(pred), f=function(a, b, n) {
+             switch(n,
+                    se.fit = (a + b) / 2 / sqrt(2),
+                    fit=switch(type,
+                      response=(a + (1-b)) / 2,
+                      terms = (a - b) / 2),
+                    a+b/2)
+           }),
+           switch(type,
+             response=(pred+(1-pred2))/2,
+             (pred - pred2) / 2))
+  } else {
+    pred
+  }
 }
 
 collapse <- function(data) {
@@ -118,23 +164,9 @@ collapse <- function(data) {
   ddply_keeping_unique_cols %()% args
 }
 
-##We'll be modeling raw data, but plotting folded/spindled. Here's a
-##function that "re-folds" the predictions so that they can be plotted
-##on a folded plot.
-mutilate.predictions <-
-  function(pred,
-           fold=abs(diff(range(sign(pred$content)))) > 1,
-           spindle=length(unique(pred$side)) > 1,
-           collapse=FALSE) {
-    columns <- c(as.quoted(splits),
-                 if (spindle) NULL else as.quoted("side"))
-    chain(pred,
-          refold(fold),
-          ddply_keeping_unique_cols(columns, summarize,
-                fit = mean(fit), se.fit = sqrt(sum(se.fit^2))),
-          if(collapse) collapse(.) else .,
-          labeler)
-  }
+match_to <- function(x, from) {
+  vapply(x, function(x) from[which.min(abs(log(x) - log(from)))], 0)
+}
 
 #label function for each facet
 labeler <- function(data) {
@@ -212,25 +244,6 @@ dlply_along <- function(.data, .variables, .fun=NULL, ...
         , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
         , .progress = .progress, .inform = .inform
         , .parallel = .parallel, .paropts = .paropts)
-}
-
-folding_predict <- function(model, newdata=model$data, type="link", ..., fold=FALSE) {
-  pred <- predict(model, newdata=newdata, type=type, ...)
-  if(fold) {
-    pred2 <- predict(model, newdata=fold_trials(newdata, TRUE), type=type, ...)
-    switch(class(pred),
-           list = Map(a=pred, b=pred2, n = names(pred), f=function(a, b, n) {
-             switch(n,
-                    se.fit = (a + b) / 2 / sqrt(2),
-                    fit=switch(type,
-                      response=(a + (1-b)) / 2,
-                      terms = (a - b) / 2),
-                    a+b/2)
-           }),
-           numeric=(pred+(1-pred2))/2)
-  } else {
-    pred
-  }
 }
 
 motion_energy_model <- function(model, energy) {
@@ -438,10 +451,12 @@ fold_trials <- function(data, fold.trial) {
     cw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_cw(.*)")
     ccw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_ccw(.*)")
     diff_cols <- str_match_matching(sort(colnames(trials)), "(.*)_diff(.*)")
+    content_cols <- str_match_matching(sort(colnames(trials)), "(.*)content(.*)")
     if (any(cw_cols[,c(2,3)] != ccw_cols[,c(2,3)])) stop("hmm")
     Map(a=cw_cols[,1], b=ccw_cols[,1],
         f=function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL})
-    lapply(diff_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
+    lapply(diff_cols[,1], function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
+    lapply(content_cols[,1], function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
     trials
   }
   #p <- NA
@@ -450,7 +465,6 @@ fold_trials <- function(data, fold.trial) {
                        xor(folded, fold.trial) else fold.trial)),
         #n_ccw and n_cw were already taken care of...
         mutate_when_has(
-          content = ifelse(folded, -content, content),
           displacement = (ifelse(folded, -displacement, displacement)),
           response = ifelse(folded, !response, response),
           fit = ifelse(folded, 1-fit, fit),
@@ -597,19 +611,27 @@ abs.pmax <- function(..., na.rm=FALSE) {
 }
 
 #compute columns for total "local" motion energy and total "global" motion energy
-recast_data <- function(data, number.factor=2,
-                        envelope.factor = number.factor,
-                        carrier.factor = number.factor) {
+recast_data <- function(
+  data,
+  number.factor=if ("number.factor" %in% names(data)) unique(data$number.factor) else 2,
+  envelope.factor = if ("envelope.factor" %in% names(data))
+    unique(data$number.factor) else number.factor,
+  carrier.factor = if ("carrier.factor" %in% names(data))
+    unique(data$carrier.factor) else number.factor) {
   #all of content_local, content_global and
   #content/spacing, should be similarly scaled _for full circle
   #stimuli_. this helps keep model fitting on the right starting
   #points.
   #similar goes for spacing and number_shown_a_spacing
   chain(data,
+        drop_columns(c("envelope.factor", "carrier.factor")),
+        mutate(carrier.factor=carrier.factor,
+               envelope.factor=envelope.factor,
+               check="foo"),
         mutate_when_missing(
           eccentricity = 20/3,
           target_number_shown = round(2*pi*eccentricity/spacing),
-          target_number_all = target_number_shown,
+          target_number_all = round(2*pi*eccentricity/spacing),
           content_cw = (content+1/4),
           content_ccw = (1 - content)/4,
           side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
@@ -617,8 +639,8 @@ recast_data <- function(data, number.factor=2,
           content_local = content / spacing,
           content_global = content / 2/pi/eccentricity
           * abs.pmin(
-            target_number_shown * carrier.factor,
-            target_number_all),
+            target_number_all / carrier.factor,
+            target_number_shown),
           full_circle = target_number_shown == target_number_all,
           extent = spacing * target_number_shown,
           number_shown_as_spacing =
@@ -785,19 +807,26 @@ colwise_mutate <- function(...) {
   }
 }
 
-captureWarnings <- function(expr, print=TRUE) {
+captureWarnings <- function(expr, print=TRUE, raise) {
   warnings <- NULL
   i <- 0
+  raiseMissing <- missing(raise)
   result <- withCallingHandlers(
     simpleWarning=function(w) {
-      if(print) message(w)
       i <<- i + 1
       warnings[[i]] <<- w
+      if (!raiseMissing && str_detect(w$message, raise)) {
+        stop(w)
+      }
+      if(print) message(w)
       invokeRestart("muffleWarning")
     },
     tryCatch(
       list(result=expr, warnings=warnings, error=NULL),
       error=function(e) {
+        if (!raiseMissing && str_detect(e$message, raise)) {
+          stop(e)
+        }
         if(print) message(e)
         list(result=NULL, warnings=warnings, error=e)
     }))
@@ -854,3 +883,40 @@ put <- macro(function(assignment, value) {
   target <- assignment_target(assignment)
   template((function() {.(assignment) <- .(value); .(target)})())
 })
+
+print.if.nonempty <- function(d) {
+  name <- substitute(d)
+  if (!empty(d)) {
+    cat(name,":", "\n")
+    print(d)
+  }
+}
+
+evalqq <- function(x, envir=parent.frame())
+  eval(template(substitute(x), envir))
+
+exploreFun <- function(f, start=rep(1, length(formals(f))),
+                       min=start/4, max=start*4, mark=start,
+                       envir=parent.frame()) {
+  #make a plot of a function's parameters
+  anames <- chain(f, match.call(qq(f(...(start)))), .[-1], names)
+  fcall <- substitute(f)
+  text.all=deparse(as.call(c(list(fcall), put(names(start), anames))))
+  title(text.all)
+  screens = split.screen(c(1, length(anames)), erase=FALSE)
+  tryCatch(
+    Map(anames, start, min, max, mark, screens,
+        f=function(aname, st, min, max, mark, s) {
+          screen(s)
+
+          call <- template(f(...(ifelse(aname==anames,
+                                        list(as.name(aname)), start))))
+          textcall <- deparse(put(call[[1]], fcall))
+          cat(textcall, "\n")
+          qe(curve(.(call), .(min), .(max), xname=.(aname), ylab=""),
+             envir)
+          abline(v=mark, col="gray50", lty="11")
+        }
+        )
+    , finally=close.screen(screens))
+}

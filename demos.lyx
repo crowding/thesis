@@ -272,6 +272,13 @@ Sexpr{paste(getwd(),"/demo_single.mov",sep="")}}
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:wheels"
+
+\end_inset
+
+
 \begin_inset Caption
 
 \begin_layout Plain Layout

@@ -202,7 +202,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<results-loadData,cache=TRUE,echo=FALSE,results="hide">>=
+<<results-loadData,cache=TRUE,echo=FALSE,results="hide",cache.extra=cache.extra=fi
+le.info(c("slopeModel.RData", "motion_energy.csv")$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -264,7 +265,7 @@ reference "mov:singles"
  interaction between nearby elements.
  We explored this spatial interaction by examining the interactions between
  local and global motion as a function of both the distance between elements
- and carrier strength.
+ and the carrier strength.
 \end_layout
 
 \begin_layout Subsection

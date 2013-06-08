@@ -232,14 +232,14 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##the "content" sensitivity trades off with the spacing
   ##sensitivity. Slope with respect to spacing is an odd metric
   ##though, as it's drawing off the nonlinear term of the model.
-  
+
   bind[models=adj.models, predictions=adj.predictions] <-
     recast_all_models(
       circle.models, conditions=quad.conditions,
       carrier.field.guess=2, envelope.field.guess=2,
       inform=TRUE, inform.data=segment,
       inform.fmla = . ~ . + content + content_global)
-  
+
   print(
     condition_prediction_plot(
       adj.predictions, segment.folded.spindled.mutilated,

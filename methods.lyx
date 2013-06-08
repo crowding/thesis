@@ -1442,15 +1442,8 @@ To measure the sensitivity of observers to envelope motion, we collected
 
 .
  For each psychometric function we used two interleaved staircases, one
- 2-up-1-down and the other 2-down-1-up, to bracket 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:methods-staircase"
-
-\end_inset
-
-the particular displacement at which subjects were equivocal about perceived
- direction (PSE).
+ 2-up-1-down and the other 2-down-1-up, to bracket the particular displacement
+ at which subjects were equivocal about perceived direction (PSE).
  In a typical session, 6-8 such staircases were collected concurrently,
  with each staircase operating independently and trials from all staircases
  being randomly interleaved.

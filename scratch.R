@@ -1,77 +1,5 @@
 #scratchpad for testing/debugging code I'm refining elsewhere
 
-source("icons.R")
-
-#we can also show it in colormap form if you're curious....
-
-
-#the thing is that this experiment doesn't have a whole lot of
-#leverage; these are the most informative observers
-
-(ggplot(plot.spacing) %+% subset(plotdata, type="data"))
-
-#for the sake of argument, present the same thing in color map form...
-
-#let's make up any values for this...
-source("scales.R")
-
-#an attempt at a high saturation colormap. Answer: need to think
-#about saturation as a perceptual variable.
-  
-colorful.colors <- chain(
-  c("blue", "red", "orange", "yellow"
-    )
-  , col2rgb, t, ./255, RGB, as("XYZ") #get color names into colorspace
-  , coords, apply(., 2, `/`, .[,"Y"]), XYZ #equalize luminance
-  , as("RGB"), coords, sRGB, coords, ./max(.), sRGB, hex #conflate RGB as sRGB because colorRamp is linear in sRGB...
-  , colorRamp, .(seq(0,1,length=100)) , RGB
-  )
-
-colorful.tints <- chain(
-  colorful.colors, as("XYZ"), coords
-  , apply(., 2, '-', .[,"Y"]), XYZ, as("RGB")
-  )
-
-colorful.levels = chain(
-  c("black", "white"), colorRamp(space="Lab"),
-  .(seq(0,1,length=chain(colorful.colors,coords,dim, `[`(1)))),
-  ./255, sRGB)
-
-colorful.gradient <- pushRGB(colorful.levels, colorful.tints, pointwise=TRUE)
-
-## library(reshape2)
-## (ggplot(melt(volcano), aes(x=Var1, y=Var2, fill=value)) + geom_raster()
-##  +     scale_fill_gradientn(colours=hex(colorful.gradient),
-##                             space="rgb"))
-
-
-predict_from_model_frame <- function(models, newdata,
-                                     fold=TRUE, spindle=TRUE, collapse=FALSE) {
-  ##take a data frame with a list of models, and the variables to
-  ##match by, produce predictions for the folding data.
-  newdata_missing <- missing(newdata)
-
-  test <- chain(models,
-        adply(1, function(row) {
-          browser()
-          bind[model=bind[model], ...=group] <- as.list(row)
-          if (newdata_missing) {
-            newdata <- predict_from_model(model)
-          } else {
-            predict_from_model(model,
-                               match_df(newdata, quickdf(group),
-                                        on = names(newdata) %^% names(group)))
-          }
-        })
-## ,
-        ## drop_recursive,
-        ## if (any(fold, spindle, collapse)) {
-        ##   mutilate.predictions(., fold=fold, spindle=spindle, collapse=collapse)
-        ## } else .
-                )
-  
-}
-
 ##########
 ## something about GNM is fucked and sensitive to different ways of contrasting...
 
@@ -258,3 +186,23 @@ names(cbind(modelA$data, modelB$data))
  + aes(spacing, content_global, color=target_number_shown)
  + facet_grid(content~.)
  + geom_point())
+
+function(.) {
+    . <- {
+        browser()
+        .
+    }
+    . <- mutate(., envelope.factor = envelope.factor, carrier.factor = carrier.factor)
+    . <- mutate_when_missing(., eccentricity = 20/3, target_number_shown = round(2 * 
+        pi * eccentricity/spacing), target_number_all = target_number_shown, 
+        content_cw = (content + 1/4), content_ccw = (1 - content)/4, 
+        side = factor("all", levels = c("all", "bottom", "left", 
+            "right", "top")))
+    . <- mutate(., content_local = content/spacing, content_global = content/2/pi/eccentricity * 
+        abs.pmin(target_number_all/carrier.factor, target_number_shown), 
+        full_circle = target_number_shown == target_number_all, 
+        extent = spacing * target_number_shown, number_shown_as_spacing = 2 * 
+            pi * eccentricity/envelope.factor/abs.pmin(target_number_shown, 
+            target_number_all/envelope.factor))
+    .
+}
