@@ -479,7 +479,7 @@ decreasing the spacing between elements has opposite effects on the first-order
 
 \begin_layout Standard
 One addition to this basic model is required to account for a repulsion
- effect we observe when carrier motion velocity disagrees with envelope
+ effect I observed when carrier motion velocity disagrees with envelope
  velocity.
  In 
 \begin_inset CommandInset ref
@@ -581,7 +581,7 @@ number/density experiment)
 \begin_layout Standard
 These three components contribute to the modeled subjects' responses according
  to a probabilistic rule; 
-\end_layout
+s\end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
