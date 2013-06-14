@@ -684,6 +684,10 @@ figure <- function(label, ...) {
   }
 }
 
+strip_extension <- function(filename) {
+  sub(  "((.)\\.[^.]*|)$", "\\2", filename)
+}
+
 replace_extension <- function(filename, new_extension, append="") {
   sub(  "((.)\\.[^.]*|)$"
       , paste("\\2", append, ".", new_extension, sep="")

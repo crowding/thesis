@@ -1,6 +1,5 @@
 source("library.R")
 library(rstan)
-set_cppo('fast')
 
 `%+%` <- union
 
@@ -54,13 +53,16 @@ factorify_col <- function(x) {
 
 infile <- "data.RData"
 grid <- "motion_energy.csv"
-model <- "StanModel.RData"
+modelfile <- "StanModel.RData"
 outfile <- "StanModel.RData"
 
 main <- function(infile="data.RData",
                  grid="motion_energy.csv",
-                 
-                 outfile="StanModel.RData") {
+                 modelfile="StanModel_model.RData",
+                 outfile="StanModel_fit.RData"
+                 ) {
+
+  bind[model=model] <- as.list(load2env(modelfile))
 
   local({
     e <- load2env(infile)
@@ -70,12 +72,11 @@ main <- function(infile="data.RData",
 
   stan_data <- stan_format(data)
 
-  {
-    model <- stan_model(file="StanModel.stan",
-                        model_name="SlopeModel", verbose=FALSE)
-    fit <- sampling(model, data=stan_data)
-  }
+  fit <- sampling(model, data=stan_data)
+
+  print(fit)
 
   save(file=outfile, list=ls())
-
 }
+
+run_as_command()
