@@ -69,6 +69,19 @@
 --output --mkdir --listing contours/contours_folded.list TRUE
 --phony --output --invisible intermediate_pdf
 
+#how about markov chain monte carlo?
+--command RScript --input compileStan.R
+--input --match (.*)\.stan$
+--output {0}_model.RData 
+--invisible --phony stan
+
+--command Rscript --input --match StanModel\.R$
+--input data.RData
+--input motion_energy.csv
+--input StanModel_model.RData
+--output StanModel_fit.RData
+--invisible --phony fit
+
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
 '$$(' cat --input --match --listing contours/contours.list ')'
