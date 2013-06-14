@@ -11,9 +11,10 @@ splits <- c("subject", "content",
 
 relevant <- splits %+% c("n_cw", "n_obs")
 
+model_split <- "subject"
+
 filter_data <- mkchain(
     subset(exp_type %in% c("spacing", "content"))
-    , subset(subject %in% "pbm")
     )
 
 format_data <- mkchain[., energy](
@@ -70,13 +71,18 @@ main <- function(infile="data.RData",
     chain(e$data, filter_data, format_data(menergy))
   }) -> data
 
-  stan_data <- stan_format(data)
-
-  fit <- sampling(model, data=stan_data)
-
-  print(fit)
+  fits <- ddply_along(data, model_split, function(split, chunk) {
+    print(split)
+    stan_data <- stan_format(chunk)
+    fit <- sampling(model, data=stan_data, warmup=1000, iter=2000)
+    print(split)
+    print(fit)
+    quickdf(list(fit = list(fit)))
+  })
+  fits <- asisify(fits)
 
   save(file=outfile, list=ls())
+  invisible(fits)
 }
 
 run_as_command()
