@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
   #library(R.devices)
   library(stringr)
   library(psyphy)
+  library(ptools)
 })
 
 ## function to build a nonlinear term as used by the gnm package.
