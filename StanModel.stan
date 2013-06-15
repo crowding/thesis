@@ -1,7 +1,9 @@
 data {
   int<lower=0> N;
-  int subject_n;
-  int subject_ix[N];
+  int<lower=0> N_data;
+  int i_data[N_data];
+  int i_predict[N - N_data];
+
   int target_number_all[N];
   int target_number_shown[N];
   real displacement[N];
@@ -32,18 +34,43 @@ parameters {
 
 model {
   real crowdedness;
+  real link_displacement;
+  real link_repulsion;
+  real link_summation;
+  real link;
+  int n; 
 
-  for (n in 1:N) {
+  for (id in 1:N_data) {
+    n <- i_data[id];
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
+    link_displacement <- beta_dx * displacement[n] * crowdedness;
+    link_repulsion <- (content_repulsion * content[n]
+                       + content_nonlinearity * (content[n] * abs(content[n])));
+    link_summation <- target_number_all[n] * content[n] * content_global_summation;
+    link <- link_displacement + link_repulsion + link_summation;
 
-    n_cw[n] ~ binomial(
-      n_obs[n],
-      inv_logit(
-        beta_dx * displacement[n] * crowdedness
-        + target_number_all[n] * content[n] * content_global_summation
-        + content_repulsion * content[n]
-        + content_nonlinearity * (content[n] * abs(content[n]))
-        + bias
-        ) .* (1-lapse) + lapse/2);
+    n_cw[n] ~ binomial( n_obs[n],
+      inv_logit( link + bias ) .* (1-lapse) + lapse/2);
+  }
+}
+
+generated quantities {
+  real predict_link[N - N_data];
+  real predict_displacement[N - N_data];
+  real predict_repulsion[N - N_data];
+  real predict_link[N - N_data];
+
+  for (ip in 1:N - N_data) {
+    n <- i_predict[ip];
+    crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
+    predict_link_displacement[ip] <- beta_dx * displacement[n] * crowdedness;
+    predict_link_repulsion[ip] <-
+        (content_repulsion * content[n]
+         + content_nonlinearity * (content[n] * abs(content[n])));
+    predict_link_summation[ip] <-
+        target_number_all[n] * content[n] * content_global_summation;
+    predict_link[ip] <-
+        predict_link_displacement[ip] +
+            predict_link_repulsion[ip] + predict_link_summation[ip];
   }
 }
