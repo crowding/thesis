@@ -28,20 +28,14 @@ format_data <- mkchain[., energy](
     , recast_data
     )
 
-stan_format <- mkchain[., prediction=.](
-                              rbind.fill(mutate(., isdata=TRUE),
-                                         mutate(prediction, isdata=FALSE)),
-                              subset(select=c(relevant, "isdata")),
-                              as.list,
-                              factorify,
-                              put(names(.), gsub('\\.', '_', names(.))),
-                              within({
-                                N <- length(subject_ix)
-                                N_data <- sum(isdata)
-                                i_data <- which(isdata)
-                                i_predict <- which(!isdata)
-                                rm(isdata)
-                              }))
+stan_format <- mkchain(
+    subset(select=relevant),
+    as.list,
+    factorify,
+    put(names(.), gsub('\\.', '_', names(.))),
+    within({
+      N <- length(subject_ix)
+    }))
 
 factorify <- mkchain(
     lapply(function(x)
@@ -77,10 +71,7 @@ main <- function(infile="data.RData",
     chain(e$data, filter_data, format_data(menergy))
   }) -> data
 
-  chunk <- subset(data, subject=="pbm")
-
   fits <- ddply_along(data, model_split, function(split, chunk) {
-
     print(split)
     stan_data <- stan_format(chunk)
     fit <- sampling(model, data=stan_data, warmup=1000, iter=2000)
@@ -90,9 +81,6 @@ main <- function(infile="data.RData",
   })
   fits <- asisify(fits)
 
-  filter_data <- filter_data
-  format_data <- format_data
-  stan_format <- stan_format
   save(file=outfile, list=ls())
   invisible(fits)
 }
