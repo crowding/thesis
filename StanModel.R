@@ -1,15 +1,13 @@
 source("library.R")
 library(rstan)
 
-`%+%` <- union
-
 splits <- c("subject", "content",
             "displacement",
             "target_number_all",
             "target_number_shown",
             "spacing", "eccentricity", "bias")
 
-relevant <- splits %+% c("n_cw", "n_obs")
+relevant <- splits %v% c("n_cw", "n_obs")
 
 model_split <- "subject"
 
@@ -28,15 +26,6 @@ format_data <- mkchain[., energy](
     , recast_data
     )
 
-stan_format <- mkchain(
-    subset(select=relevant),
-    as.list,
-    factorify,
-    put(names(.), gsub('\\.', '_', names(.))),
-    within({
-      N <- length(subject_ix)
-    }))
-
 factorify <- mkchain(
     lapply(function(x)
            switch(class(x),
@@ -54,16 +43,17 @@ factorify_col <- function(x) {
 
 infile <- "data.RData"
 grid <- "motion_energy.csv"
-modelfile <- "StanModel.RData"
-outfile <- "StanModel.RData"
+modelfile <- "SlopeModel.stan.RData"
+outfile <- "SlopeModel.fit.RData"
 
 main <- function(infile="data.RData",
                  grid="motion_energy.csv",
-                 modelfile="StanModel_model.RData",
-                 outfile="StanModel_fit.RData"
+                 modelfile="SlopeModel.stan.RData",
+                 outfile="SlopeModel.fit.RData",
+                 iter=2000
                  ) {
 
-  bind[model=model] <- as.list(load2env(modelfile))
+  load(modelfile) #contains as least 'model', 'stan_predict'
 
   local({
     e <- load2env(infile)
@@ -74,14 +64,14 @@ main <- function(infile="data.RData",
   fits <- ddply_along(data, model_split, function(split, chunk) {
     print(split)
     stan_data <- stan_format(chunk)
-    fit <- sampling(model, data=stan_data, warmup=1000, iter=2000)
+    fit <- sampling(model, data=stan_data, warmup=iter/2, iter=iter)
     print(split)
     print(fit)
     quickdf(list(fit = list(fit)))
   })
   fits <- asisify(fits)
 
-  save(file=outfile, list=ls())
+  save(file=outfile, list=ls() %-% names(match.call()))
   invisible(fits)
 }
 

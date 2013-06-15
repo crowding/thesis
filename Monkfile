@@ -71,15 +71,15 @@
 
 #how about markov chain monte carlo?
 --command RScript --input compileStan.R
---input --match (.*)\.stan$
---output {0}_model.RData 
+--input --match (.*\.stan)\.R$
+--output {0}.RData 
 --invisible --phony stan
 
---command Rscript --input --match StanModel\.R$
+--command Rscript --input StanModel.R
 --input data.RData
 --input motion_energy.csv
---input StanModel_model.RData
---output StanModel_fit.RData
+--input --match (.*).stan\.RData$
+--output {0}.fit.RData
 --invisible --phony fit
 
 --command pdfjoin %--rotateoversize 'false'

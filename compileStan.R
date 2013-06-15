@@ -3,11 +3,14 @@ library(rstan)
 source("library.R")
 set_cppo('fast')
 
+infile <- "SlopeModel.stan.R"
+outfile <- "SlopeModel.stan.RData"
+
 main <- function(infile, outfile) {
-  model <- stan_model(file=infile,
-                      model_name=strip_extension(infile),
-                      verbose=FALSE)
-  save(file=outfile, model)
+  local({
+    source(infile, local=TRUE)
+    save(file=outfile, list=ls())
+  })
 }
 
 run_as_command()
