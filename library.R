@@ -616,38 +616,40 @@ recast_data <- function(
   data,
   number.factor=if ("number.factor" %in% names(data)) unique(data$number.factor) else 2,
   envelope.factor = if ("envelope.factor" %in% names(data))
-    unique(data$number.factor) else number.factor,
+      unique(data$envelope.factor) else number.factor,
   carrier.factor = if ("carrier.factor" %in% names(data))
-    unique(data$carrier.factor) else number.factor) {
+      unique(data$carrier.factor) else number.factor) {
   #all of content_local, content_global and
   #content/spacing, should be similarly scaled _for full circle
   #stimuli_. this helps keep model fitting on the right starting
   #points.
   #similar goes for spacing and number_shown_a_spacing
-  chain(data,
-        drop_columns(c("envelope.factor", "carrier.factor")),
-        mutate(carrier.factor=carrier.factor,
-               envelope.factor=envelope.factor,
-               check="foo"),
-        mutate_when_missing(
-          eccentricity = 20/3,
-          target_number_shown = round(2*pi*eccentricity/spacing),
-          target_number_all = round(2*pi*eccentricity/spacing),
-          content_cw = (content+1/4),
-          content_ccw = (1 - content)/4,
-          side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
-        mutate(
-          content_local = content / spacing,
-          content_global = content / 2/pi/eccentricity
-          * abs.pmin(
-            target_number_all / carrier.factor,
-            target_number_shown),
-          full_circle = target_number_shown == target_number_all,
-          extent = spacing * target_number_shown,
-          number_shown_as_spacing =
-            2*pi*eccentricity / envelope.factor / abs.pmin(
-              target_number_shown,
-              target_number_all / envelope.factor)))
+  test <- chain(
+    .=data
+    , drop_columns(c("envelope.factor", "carrier.factor"))
+    , mutate(
+      carrier.factor=carrier.factor
+      , envelope.factor=envelope.factor
+      , check="foo")
+    , mutate_when_missing(
+      eccentricity = 20/3
+      , target_number_shown = round(2*pi*eccentricity/spacing)
+      , target_number_all = round(2*pi*eccentricity/spacing)
+      , content_cw = (content+1/4)
+      , content_ccw = (1 - content)/4
+      , side = factor("all", levels=c("all", "bottom", "left", "right", "top")))
+    , mutate(
+      content_local = content / spacing
+      , content_global = (content / 2/pi/eccentricity
+                          * abs.pmin(
+                            target_number_all / carrier.factor,
+                            target_number_shown))
+      , full_circle = target_number_shown == target_number_all
+      , extent = spacing * target_number_shown
+      , number_shown_as_spacing = (
+        2*pi*eccentricity / envelope.factor / abs.pmin(
+          target_number_shown,
+          target_number_all / envelope.factor))))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -848,6 +850,21 @@ functions.of <- function(..., .envir=parent.frame()) {
 
 asisify <- function(df) {
   quickdf(lapply(df, function(x) if (is.recursive(x)) I(x) else x))
+}
+
+factorify <- mkchain(
+    lapply(function(x)
+           switch(class(x),
+                  character=factorify_col(factor(x)),
+                  factor=factorify_col(x),
+                  list(x))),
+    unlist(recursive=FALSE)
+    )
+
+factorify_col <- function(x) {
+  list(n = length(x),
+       #levels = levels(x),
+       ix = as.numeric(x))
 }
 
 nonrec <- function(df) {

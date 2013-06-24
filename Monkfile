@@ -82,6 +82,13 @@
 --output {0}.fit.RData
 --invisible --phony fit
 
+--command Rscript --input FullCirclePlots.R
+--input --match (.*)\.fit\.RData
+--input motion_energy.csv
+--output {0}.plots.pdf
+--invisible --phony plot
+--invisible --phony pdf
+
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
 '$$(' cat --input --match --listing contours/contours.list ')'

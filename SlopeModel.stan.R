@@ -15,7 +15,7 @@ stan_format <- mkchain(
       N <- length(subject_ix)
     }))
 
-model <- stan_model(model_name="SlopeModel", model_code = '
+model_code <- '
 data {
   int<lower=0> N;
   int target_number_all[N];
@@ -64,20 +64,22 @@ model {
       inv_logit( link + bias ) .* (1-lapse) + lapse/2);
   }
 
-}')
+}'
 
-stan_predict <- mkchain[., coefs](
-    mutate(frac_spacing = 2*pi*target_number_all),
-    with(coefs, summarize(
-      df
-      , link_displacement = (beta_dx * displacement
-                             * (2 - 2/(1+exp(-cs/frac_spacing)))),
-      , link_repulsion = (content_repulsion * content
-                          + content_nonlinearity * (
-                            content * abs(content))),
-      , link_summation = (target_number_all
-                          * content
-                          * content_global_summation),
-      , link = link_displacement + link_repulsion + link_summation,
-      , response = link_displacement + link_repulsion + link_summation
-      )))
+ stan_predict <- mkchain[., coefs](
+   mutate(frac_spacing = 2*pi/target_number_all)
+   , with(coefs, summarize(
+     .
+     , link_displacement = (beta_dx * displacement
+                            * (2 - 2/(1+exp(-cs/frac_spacing))))
+     , link_repulsion = (content_repulsion * content
+                         + content_nonlinearity * (
+                           content * abs(content)))
+     , link_summation = (target_number_all
+                         * content
+                         * content_global_summation)
+     , link = link_displacement + link_repulsion + link_summation
+     , response = (
+       plogis((link_displacement + link_repulsion + link_summation))
+       * (1-lapse) + lapse/2)
+     )))
