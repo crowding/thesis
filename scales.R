@@ -81,7 +81,7 @@ proportion_scale <-
          #, labels=replace_arrows
          ),
        coord_cartesian(ylim=c(-0.1,1.1)),
-       theme(axis.text.y=element_text(angle=90)))
+       theme(axis.text.y=element_text(angle=0)))
 
 facet_labeller <- function(v, value)
   switch(v,
@@ -97,15 +97,17 @@ facet_spacing_experiment <-
     list(facet_grid(spacing ~ exp_type,
                     labeller=facet_labeller
                     ),
-         theme(axis.text.y = element_text(angle=90, size=rel(0.6))))
+         theme(axis.text.y = element_text(size=rel(0.7)),
+               strip.text.y=element_text(size=rel(0.7))))
 
 facet_spacing_rows <-
     list(facet_grid(spacing ~ ., labeller=facet_labeller),
-         theme(axis.text.y = element_text(angle=90, size=rel(0.6))))
+         theme(axis.text.y = element_text(size=rel(0.7)),
+               strip.text.y=element_text(size=rel(0.7))))
 
 facet_spacing_subject <-
     list(facet_grid(spacing ~ subject, labeller=facet_labeller),
-         theme(axis.text.y = element_text(angle=90, size=rel(0.6))))
+         theme(axis.text.y = element_text(size=rel(0.6))))
 
 
 prediction_layer <- function(predictions)

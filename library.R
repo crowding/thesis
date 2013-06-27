@@ -280,7 +280,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
                                     bins=6, restrict, fold=FALSE) {
   # if we are binning "folded"
   missing.restrict <- missing(restrict)
-  data <- unmkrates(data)
+  data <- unmkrates(data, splits)
   data$fit <- predict(model, newdata=data, type="response")
   chain(
     data,
@@ -525,9 +525,9 @@ is_rates <- function(data,
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type"), keep_unique=TRUE) {
-  is <- is_rates(data, splits)
+  is <- is_rates(data, splits=splits)
   if (is.na(is)) {
-    data <- unmkrates(data)
+    data <- unmkrates(data, splits=splits)
   } else if (is) {
     return(data)
   }
@@ -546,7 +546,9 @@ mkrates <- function(data,
 }
 
 #undo mkrates, convert counted yes/no data into binary data.
-unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data)) {
+unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data),
+                      splits=c("displacement", "content",
+                      "spacing", "subject", "exp_type")) {
   is <- is_rates(data, splits)
   if (!is.na(is)) {
     if (!is) {

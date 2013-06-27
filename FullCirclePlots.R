@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
   source("library.R")
   source("scales.R")
   theme_set(theme_bw())
-  theme_update(panel.border=element_blank())
+  #theme_update(panel.border=element_blank())
 })
 
 prediction_dataset <-
@@ -101,7 +101,7 @@ main <- function(infile="SlopeModel.fit.RData", grid="motion_energy.csv",
   class(e) <- c("stanenv", class(e));
   menergy <- read.csv(grid)
   cairo_pdf(plotfile, onefile=TRUE)
-  fullCirclePlots(e)
+  fullCirclePlots(e, fold=TRUE)
   crossPlots(e)
   on.exit(dev.off)
 }
@@ -114,7 +114,7 @@ makeTitle <- function(...) {
         sep=", ")
 }
 
-fullCirclePlots <- function(e, ...) {
+fullCirclePlots <- function(e, fold=FALSE, ...) {
   extraArgs <- dots(...)
   (Map %<<% e$fits)(function(...) {
     bind[fit=fit, optimized=optimized, ...=group] <- list(...)
@@ -122,7 +122,7 @@ fullCirclePlots <- function(e, ...) {
     print(title)
     chunk <- merge(e$data, group)
     fullCirclePlot(predictable(e), data=chunk, group=group,
-                   optimized=optimized, splits=e$splits)
+                   optimized=optimized, splits=e$splits, fold=fold)
   })
 }
 
@@ -146,10 +146,10 @@ fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
          + content_color_scale
          + facet_spacing_rows
          + prediction_layer(predictions)
-         + geom_point()
          + (switch(style, bubble=balloon, binned=geom_point()))
          + labs(title = "Data and model fits for observer "
                 %++% toupper(group$subject))
+         + theme(aspect.ratio=0.25)
          ))
 
 }
