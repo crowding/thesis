@@ -668,7 +668,9 @@ ddply_along <-
     split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
     rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
     s <- as.list(seq_len(length(split)))
-    attributes(s) <- attributes(split)
+    attrs <- attributes(split)
+    attrs[c("names", "class")] <- NULL
+    attributes(s) <- attrs
     class(s) <- c("split", "list")
     ldply(  .data=s
           , .fun=function(i) .fun(rows[[i]], split[[i]], ...)

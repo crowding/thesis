@@ -5,27 +5,27 @@ suppressPackageStartupMessages({
   library(ptools)
   library(reshape2)
   source("library.R")
+  source("scales.R")
+  theme_set(theme_bw())
+  theme_update(panel.border=element_blank())
 })
 
 prediction_dataset <-
-    mkchain[
-            .,
-            fold=FALSE,
-            ordinate = "displacement",
-            ordinate.values = get_sampling(e$data, menergy, ordinate),
-            menergy](
-              e=.,
-              .$data,
-              .[e$splits %v% e$model_split %-% ordinate],
-              unique,
-              merge(quickdf(structure(list(ordinate.values),
-                                      names=ordinate)),
-                    by=c()),
-              if(fold) refold(.) else .
-              )
+    function(fit, data=fit$data,
+             fold=FALSE,
+             ordinate = "displacement",
+             menergy=data,
+             ordinate.values = get_sampling(fit$stanenv$data, menergy, ordinate)){
+      chain(data, .[fit$stanenv$splits %v% fit$stanenv$model_split %-% ordinate],
+            unique,
+            merge(quickdf(structure(list(ordinate.values),
+                                    names=ordinate)),
+                  by=c()),
+            if(fold) refold(.) else .)
+    }
 
-get_sampling = function(data, grid, ordinate) {
-  unique(data[[ordinate]], grid[[ordinate]])
+get_sampling = function(data, grid=data, ordinate) {
+  unique(c(data[[ordinate]], grid[[ordinate]]))
 }
 
 maxll <- function(stanenv, split) {
@@ -36,7 +36,14 @@ maxll <- function(stanenv, split) {
     )
 }
 
+colwise_se <- mkchain(colwise(sd)(.), put(names(.), paste0(names(.), ".sd")))
+
+colwise_se_frame <- mkchain(colwise(sd)(.))
+
 optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {
+  if ("optimized" %in% ls(stanenv)) {
+    return(stanenv$optimized)
+  }
   #obtain coefficients by gradient descent from the starting point.
   data <- merge(stanenv$data, split)
   model <- merge(stanenv$fits, split)$fit[[1]]
@@ -45,7 +52,6 @@ optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {
   l = optimizing(model@stanmodel, standata, init=startpoint)
   c(l$par, list(l$lp__))
 }
-optimized(e, data.frame(subject="pbm"))
 
 column_quantiles <- mkchain(
   lapply(.,
@@ -54,29 +60,35 @@ column_quantiles <- mkchain(
       put(names(.), c("min", "max")))),
   unlist(recursive=FALSE))
 
-predict.stanenv <- function(stanenv, newdata=stanenv$data,
+predict.stanenv <- function(object, newdata=object$data,
                             #function that selects some "canonical" coefs
                             selector=optimized,
                             #function that computes summary data along all coefs
                             summary=NULL,
-                            samples=250
+                            samples=Inf
                             ) {
-  ddply_along(newdata, e$model_split, .progress="text", function(split, chunk) {
-    fit <- merge(stanenv$fits, split)$fit[[1]]
-    coefs <- as.data.frame(fit)
-    #usually we select the canonical model by optimization
-    selected_coefs <- selector(stanenv, split)
-    #note that we expect stan_predict to work on EITHER single coefs
-    #and many data or single data and many coefs
-    fit <- stanenv$stan_predict(coefs=selected_coefs, chunk)
-    if (!is.null(summary)) {
-      summary <- adply(chunk, 1, mkchain(e$stan_predict(coefs=coefs), column_quantiles)
-                       , .progress="text")
-      cbind(chunk, fit=fit, summary)
-    } else {
-      cbind(chunk, fit=fit)
-    }
-  })
+  ddply_along(
+    newdata, object$model_split, .progress=if(!is.null(summary)) "text" else "none",
+    function(split, chunk) {
+      fit <- merge(object$fits, split)$fit[[1]]
+      coefs <- as.data.frame(fit)
+      #usually we select the canonical model by optimization
+      #note that we expect stan_predict to work on EITHER single coefs
+      #and many data or single data and many coefs
+      if (!is.null(summary)) {
+        #we either summarize over all coefs, or select one set of coefs
+        #selected_coefs <- selector(object, split)
+        ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
+        subset_coefs <- coefs[ix,]
+        summary <- adply(chunk, 1, mkchain(object$stan_predict(coefs=subset_coefs), summary)
+                         , .progress="text")
+        cbind(chunk, summary)
+      } else {
+        selected_coefs <- selector(object, split)
+        fit <- object$stan_predict(coefs=selected_coefs, chunk)
+        cbind(chunk, fit)
+      }
+    })
 }
 
 infile <- "SlopeModel.fit.RData"
@@ -88,15 +100,14 @@ main <- function(infile="SlopeModel.fit.RData", grid="motion_energy.csv",
   e <- load2env(infile);
   class(e) <- c("stanenv", class(e));
   menergy <- read.csv(grid)
-  pred_dataset <- prediction_dataset(e, menergy=menergy, fold=TRUE)
   cairo_pdf(plotfile, onefile=TRUE)
+  fullCirclePlots(e)
   crossPlots(e)
-#  fullCirclePlots(e)
   on.exit(dev.off)
 }
 
 makeTitle <- function(...) {
-  bind[fit=fit, ...=group] <- list(...)
+  bind[fit=fit, optimized=, ...=group] <- list(...)
   paste(fit@model_name,
         paste(names(group), toupper(as.character(group)),
               collapse=", "),
@@ -106,49 +117,70 @@ makeTitle <- function(...) {
 fullCirclePlots <- function(e, ...) {
   extraArgs <- dots(...)
   (Map %<<% e$fits)(function(...) {
-    bind[fit=fit, ...=group] <- list(...)
+    bind[fit=fit, optimized=optimized, ...=group] <- list(...)
     title <- makeTitle(...)
-    chunk <- match_df(fits$data, group)
-    fullCirclePlot(predictable, data=chunk)
+    print(title)
+    chunk <- merge(e$data, group)
+    fullCirclePlot(predictable(e), data=chunk, group=group,
+                   optimized=optimized, splits=e$splits)
   })
 }
 
-predictable <- function(stanenv, data) {
-  put(class(list(stanenv=stanenv, data=data)), "predictable")
-}
-
-predict.predictable <- function (object, newdata=object$data, ...) {
-  predict(object$stanenv, newdata, ...)
-}
-
-fullCirclePlot <- function(fits, data, pred.dataset,
+fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
                            style=c("bubble", "binned"), fold=FALSE) {
-    style <- match.arg(style)
-  subdata <- match_df(data,
-                      data.frame(subject=subject, stringsAsFactors=FALSE),
-                      on="subject")
+  style <- match.arg(style)
+
   switch(style, bubble = {
-    plotdata <- mkrates(refold(subdata, fold=fold))
+    plotdata <- mkrates(refold(data, fold=fold), splits=splits)
   }, binned = {
-    plotdata <- bin_along_resid(model, subdata,
+    plotdata <- bin_along_resid(model, data,
                                 "response", splits, "displacement", fold=fold)
   })
+
+  predictions <- chain(data, x=prediction_dataset(fit=fits),
+                             predict(fits, ., type="response", se.fit=TRUE), cbind(x),
+                             refold(fold=fold))
   print((ggplot(plotdata)
          + displacement_scale
          + proportion_scale
          + content_color_scale
-         + facet_spacing_experiment
-         + plotPredictions(model, data=data, fold=fold, ...)
+         + facet_spacing_rows
+         + prediction_layer(predictions)
          + geom_point()
          + (switch(style, bubble=balloon, binned=geom_point()))
-         + labs(title = "Data and model fits for subject " %++% subject)
+         + labs(title = "Data and model fits for observer "
+                %++% toupper(group$subject))
          ))
+
 }
+
+predictable <- function(stanenv, data=stanenv$data) {
+  structure(list(stanenv=stanenv, data=data), class="predictable")
+}
+
+#pretend to act something like "glm.predict"
+predict.predictable <- function (
+  object, newdata=object$data,
+  se.fit=FALSE, type=c("response", "terms", "link"), ...) {
+  type <- match.arg(type)
+  if (se.fit) {
+    df <- predict(object$stanenv, newdata, select=optimized)
+    dfse <- predict(object$stanenv, newdata, summary=colwise_se_frame)
+    switch(type,
+           response=list(fit=df$response, se.fit=dfse$response),
+           link=list(fit=df$link, se.fit=dfse$link),
+           terms=list(fit=df, se.fit=dfse))
+  } else {
+    df = predict(object$stanenv, newdata)
+    switch(type, response=df$response, link=df$link, terms=df)
+  }
+}
+
 
 crossPlots <- function(e, ...) {
   extraArgs <- dots(...)
   (Map %<<% e$fits)(function(...) {
-    bind[fit=fit, ...=group] <- list(...)
+    bind[fit=fit, ...=group, optimized=] <- list(...)
     title <- paste(e$model@model_name,
                    paste(names(group), toupper(as.character(group)),
                          collapse=", "),

@@ -62,10 +62,7 @@ makePredictions <-
 
 plotPredictions <- function(...) {
   predictions = makePredictions(...)
-  with_arg(data=predictions,
-           geom_ribbon(color="transparent", alpha=0.2,
-                       aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
-           geom_line(aes(y=fit)))
+  prediction_layer(predictions)
 }
 
 #perhaps make this go using predict_from_model.df
