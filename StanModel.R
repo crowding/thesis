@@ -31,7 +31,7 @@ main <- function(infile="data.RData",
     # then also get the max-likelihood parameters. And the Hessian? Nah.
     startpoint <- maxll(as.data.frame(fit))
     l = optimizing(e$model, stan_data, init=startpoint)
-    optimized = c(l$par, list(l$lp__))
+    optimized = c(l$par, lp__=list(l$value))
 
     quickdf(list(fit = list(fit), optimized=list(optimized)))
   })

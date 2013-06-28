@@ -82,6 +82,10 @@
 --output {0}.fit.RData
 --invisible --phony fit
 
+#some models are not baked yet.
+#--command
+#--output --match --invisible (SoftMinModel)\.fit\.RData$ 100
+
 --command Rscript --input FullCirclePlots.R
 --input --match (.*)\.fit\.RData
 --input motion_energy.csv

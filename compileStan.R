@@ -12,7 +12,7 @@ main <- function(infile, outfile) {
   local({
     source("stanFunctions.R", local=TRUE)
     source(infile, local=TRUE)
-    model <- stan_model(model_name="SlopeModel", model_code=model_code)
+    model <- stan_model(model_name=strip_extension(infile), model_code=model_code)
     save(file=outfile, list=ls())
   })
 }

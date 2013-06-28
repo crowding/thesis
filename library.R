@@ -691,7 +691,7 @@ figure <- function(label, ...) {
 }
 
 strip_extension <- function(filename) {
-  sub(  "((.)\\.[^.]*|)$", "\\2", filename)
+  sub(  "((.)\\..*|)$", "\\2", filename)
 }
 
 replace_extension <- function(filename, new_extension, append="") {
