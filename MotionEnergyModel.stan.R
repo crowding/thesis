@@ -4,9 +4,7 @@ splits <- c("subject", "content",
             "target_number_shown",
             "spacing", "eccentricity", "bias")
 
-dsharpness <- 10
-
-relevant <- splits %v% c("n_cw", "n_obs")
+relevant <- splits %v% c("n_cw", "n_obs", "energy_diff", "norm_diff")
 
 stan_format <- mkchain(
     subset(select=relevant),
@@ -15,31 +13,7 @@ stan_format <- mkchain(
     put(names(.), gsub('\\.', '_', names(.))),
     within({
       N <- length(subject_ix)
-      dsharpness <- dsharpness
     }))
-
-stan_predict <- mkchain[., coefs](
-  mutate(frac_spacing = 2*pi/target_number_all)
-  , with(coefs, summarize(
-    .
-    , crowdedness= -log(                                #soft min of
-                        exp(-1*dsharpness)              #sensitivity 1 (uncrowded) or
-                        + exp(-spacing/cs/2*dsharpness) #sensitivity limited by crowding
-                        )/dsharpness
-    , link_displacement = (beta_dx * displacement
-                           * (2 - 2/(1+exp(-cs/frac_spacing))))
-    , link_repulsion = (content_repulsion * content
-                        + content_nonlinearity * (
-                          content * abs(content)))
-    , link_summation = (target_number_all
-                        * content
-                        * content_global_summation)
-    , link = link_displacement + link_repulsion + link_summation
-    , response = (
-      plogis((crowdedness*link_displacement + link_repulsion + link_summation))
-      * (1-lapse) + lapse/2)
-    )))
-
 
 model_code <- '
 data {
@@ -50,9 +24,10 @@ data {
   real content[N];
   real spacing[N];
   real eccentricity[N];
+  real energy_diff[N];
+  real norm_diff[N];
   int n_cw[N];
   int n_obs[N];
-  real dsharpness;
 }
 
 transformed data {
@@ -69,6 +44,7 @@ parameters {
 
   real<lower=0,upper=2*pi()> cs;
   real content_global_summation;
+  real energy_summation;
   real content_repulsion;
   real content_nonlinearity;
 }
@@ -81,19 +57,33 @@ model {
   real link;
 
   for (n in 1:N) {
-
-    crowdedness <- -log(              //soft min of
-          exp(-1*dsharpness)          //sensitivity 1 (uncrowded or)
-        + exp(-frac_spacing[n]/cs/2*dsharpness) //sensitivity limited by crowding
-    )/dsharpness;
-
+    crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
     link_displacement <- beta_dx * displacement[n] * crowdedness;
     link_repulsion <- (content_repulsion * content[n]
                        + content_nonlinearity * (content[n] * abs(content[n])));
     link_summation <- target_number_all[n] * content[n] * content_global_summation;
-    link <- link_displacement + link_repulsion + link_summation;
+    energy_summation <- energy_diff[n] * energy_summation;
+    link <- link_displacement + link_repulsion + link_summation + energy_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link + bias ) .* (1-lapse) + lapse/2);
   }
 
 }'
+
+ stan_predict <- mkchain[., coefs](
+   mutate(frac_spacing = 2*pi/target_number_all)
+   , with(coefs, summarize(
+     .
+     , link_displacement = (beta_dx * displacement
+                            * (2 - 2/(1+exp(-cs/frac_spacing))))
+     , link_repulsion = (content_repulsion * content
+                         + content_nonlinearity * (
+                           content * abs(content)))
+     , link_summation = (target_number_all
+                         * content
+                         * content_global_summation)
+     , link = link_displacement + link_repulsion + link_summation
+     , response = (
+       plogis((link_displacement + link_repulsion + link_summation))
+       * (1-lapse) + lapse/2)
+     )))
