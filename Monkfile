@@ -72,14 +72,14 @@
 #how about markov chain monte carlo?
 --command RScript --input compileStan.R
 --input --match (.*\.stan)\.R$
---output {0}.RData 
+--output {0}.RData
 --invisible --phony stan
 
 --command Rscript --input StanModel.R
 --input data.RData
 --input motion_energy.csv
 --input --match (.*).stan\.RData$
---output {0}.fit.RData
+--output {0}.fit.RData 500
 --invisible --phony fit
 
 #some models are not baked yet.
@@ -92,6 +92,10 @@
 --output {0}.plots.pdf
 --invisible --phony plot
 --invisible --phony pdf
+
+--command --once Rscript --input --once CompareStanFits.R
+--output --once StanComparisonPlots.pdf
+--input --match (.*)\.fit\.RData$
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
@@ -113,7 +117,7 @@
 --command --invisible --input --match (.*)_weave\.R$
 --output --invisible --once {0}.tex
 
---command ( cd ./{0} && latexmk 
+--command ( cd ./{0} && latexmk
 %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match --invisible ((?:.*/)?)([^_].*)\.tex$ {1}.tex
 #--input --listing --invisible {0}.in

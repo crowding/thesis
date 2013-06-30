@@ -894,20 +894,41 @@ factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x
   if (filter(x)) factor(x, levels=unique(x)) else x
 }
 
-put <- macro(function(assignment, value) {
-  assignment_target <- function(x) {
-    switch(
+assignment_target <- function(x) {
+  switch(
       class(x),
       name=x,
       character=as.name(x),
       call = switch(head<- class(x[[1]]),
-        name = assignment_target(x[[2]]),
-        character = assignment_target(x[[2]]),
-        stop("that doesn't look like an assignment target")),
+                    name = assignment_target(x[[2]]),
+                    character = assignment_target(x[[2]]),
+                    stop("that doesn't look like an assignment target")),
       stop("that doesn't look like an assignment target"))
-  }
+}
+
+put <- macro(function(assignment, value) {
   target <- assignment_target(assignment)
-  template((function() {.(assignment) <- .(value); .(target)})())
+  template(
+      (
+          function(`.(target)`) {
+            .(assignment) <- .(value);
+            .(target)
+          }
+      )(.(target))
+  )
+})
+
+alter <- macro(function(assignment, ...) {
+  target <- assignment_target(assignment)
+  template(
+      (
+          function(`.(target)`) {
+            .(assignment) <-
+                .(ptools:::chain_function(alist(`.`=))(list(...)))(.(assignment));
+            .(target)
+          }
+      )(.(target))
+  )
 })
 
 print.if.nonempty <- function(d) {
