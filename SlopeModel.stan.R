@@ -58,18 +58,18 @@ model {
     link_displacement <- beta_dx * displacement[n] * crowdedness;
     link_repulsion <- (content_repulsion * content[n]
                        + content_nonlinearity * (content[n] * abs(content[n])));
-    link_summation <- target_number_all[n] * content[n] * content_global_summation;
-    link <- link_displacement + link_repulsion + link_summation;
+    link_summation <- target_number_shown[n] * content[n] * content_global_summation;
+    link <- bias + link_displacement + link_repulsion + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
-      inv_logit( link + bias ) .* (1-lapse) + lapse/2);
+      inv_logit( link ) .* (1-lapse) + lapse/2);
   }
 
 }'
 
  stan_predict <- mkchain[., coefs](
-   mutate(frac_spacing = 2*pi/target_number_all)
+     mutate(frac_spacing = 2*pi/target_number_all)
    , with(coefs, summarize(
-     .
+       .
      , link_displacement = (beta_dx * displacement
                             * (2 - 2/(1+exp(-cs/frac_spacing))))
      , link_repulsion = (content_repulsion * content
@@ -78,8 +78,6 @@ model {
      , link_summation = (target_number_all
                          * content
                          * content_global_summation)
-     , link = link_displacement + link_repulsion + link_summation
-     , response = (
-       plogis((link_displacement + link_repulsion + link_summation))
-       * (1-lapse) + lapse/2)
+     , link = bias + link_displacement + link_repulsion + link_summation
+     , response = plogis(link) * (1-lapse) + lapse/2
      )))

@@ -62,13 +62,14 @@ collect_fit_data <- function(model, extract,
 violinPlot <- function(samples, optimized) {
   #shows the posterior distributions over each parameter for each subject
   bind[samples, optimized] = shift_likelihoods(samples, optimized, "subject")
-  ( ggplot(samples)
-  + aes(subject, value, fill=model_name, color=model_name)
-  + facet_wrap("variable", scales="free")
-  + geom_violin( size=0.1, alpha=0.5
-               , position="identity")
-  + geom_point(data=optimized, shape=4)
-  )
+  print(
+    ggplot(samples)
+    + aes(subject, value, fill=model_name, color=model_name)
+    + facet_wrap("variable", scales="free")
+    + geom_violin( size=0.1, alpha=0.5
+                  , position="identity")
+    + geom_point(data=optimized, shape=4)
+    )
 }
 
 #given a long format data frame, match each variable against the other

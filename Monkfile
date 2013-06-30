@@ -96,6 +96,8 @@
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonPlots.pdf
 --input --match (.*)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony pdf
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf

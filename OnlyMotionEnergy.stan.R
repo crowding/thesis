@@ -44,11 +44,8 @@ parameters {
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
-  real content_global_summation;
   real energy_summation;
-  real content_repulsion;
   real energy_repulsion;
-  real content_nonlinearity;
   real energy_nonlinearity;
 }
 
@@ -56,9 +53,7 @@ model {
   real crowdedness;
   real local_energy;
   real link_displacement;
-  real link_repulsion;
   real link_energy_repulsion;
-  real link_summation;
   real link_energy_summation;
   real link;
 
@@ -66,15 +61,12 @@ model {
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
     local_energy <- norm_diff[n] / target_number_shown[n];
     link_displacement <- beta_dx * displacement[n] * crowdedness;
-    link_repulsion <- (content_repulsion * content[n]
-                       + content_nonlinearity * (content[n] * abs(content[n])));
     link_energy_repulsion <- (energy_repulsion * local_energy
                               + energy_nonlinearity * local_energy * abs(local_energy));
-    link_summation <- target_number_all[n] * content[n] * content_global_summation;
     link_energy_summation <- norm_diff[n] * energy_summation;
     link <- bias + link_displacement
-            + link_repulsion + link_energy_repulsion
-            + link_summation + link_energy_summation;
+            + link_energy_repulsion
+            + link_energy_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
   }
@@ -87,16 +79,10 @@ stan_predict <- mkchain[., coefs](
       .
     , link_displacement = (beta_dx * displacement
                            * (2 - 2/(1+exp(-cs/frac_spacing))))
-    , link_repulsion = (content_repulsion * content
-                        + content_nonlinearity * (
-                          content * abs(content)))
     , link_energy_repulsion = (energy_repulsion * local_energy
                                + energy_nonlinearity * (
                                  local_energy * abs(local_energy)))
-    , link_summation = (target_number_all
-                        * content
-                        * content_global_summation)
-    , link_energy_summation = energy_diff * energy_summation
+    , link_energy_summation = norm_diff * energy_summation
     , link = (bias + link_displacement
               + link_repulsion + link_energy_repulsion
               + link_summation + link_energy_summation)
