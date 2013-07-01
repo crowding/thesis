@@ -336,7 +336,13 @@ stat.funs <- functions.of(model)(
 statify <- function(model.frame, functions=stat.funs) {
   stats <- ldply(
     model.frame$model,
-    function(model) quickdf(lapply(functions, function(y) y(model))))
+    function(model) {
+      #print(model)
+      quickdf(lapply(functions, function(y) {
+        #print(y)
+        y(model)
+      }))
+    })
   model.frame[names(stats)] <- stats
   model.frame
 }

@@ -786,7 +786,7 @@ hosmerlem = function(model, newdata=model$data, groups=10) {
   #deviance test essentially.
   newdata$fit <- predict(model, newdata=newdata, type="response")
   #make sure it is binary data and not grouped
-  newdata <- unmkrates(newdata, columns=c("fit"))
+  newdata <- unmkrates(newdata, columns=c("fit"), splits=splits)
   bind[y, yhat] <- newdata[c("response", "fit")]
   cutyhat <- floor((order(yhat) - 1)/length(yhat) * groups)
   obs = xtabs(cbind(1 - y, y) ~ cutyhat)
