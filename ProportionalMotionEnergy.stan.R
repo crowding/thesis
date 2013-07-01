@@ -49,7 +49,7 @@ transformed data {
 
 parameters {
   real beta_dx;
-  real<lower=0, upper=0.2 > lapse;
+  real<lower=0, upper=0.05> lapse;
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
@@ -68,6 +68,8 @@ model {
   real link_summation;
   real link;
 
+  //lapse ~ beta(1.5, 40); //what the shit, this explodes the bias
+
   for (n in 1:N) {
     local_energy <- normalized_energy[n] / target_number_shown[n] * energy_weight
                     + content[n] * (1-energy_weight);
@@ -83,7 +85,7 @@ model {
             + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
-  }
+    }
 }'
 
 stan_predict <- mkchain[., coefs](

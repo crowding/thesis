@@ -37,7 +37,7 @@ transformed data {
 
 parameters {
   real beta_dx;
-  real<lower=0, upper=0.2> lapse;
+  real<lower=0, upper=0.05> lapse;
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
@@ -52,6 +52,8 @@ model {
   real link_repulsion;
   real link_summation;
   real link;
+
+  //lapse ~ beta(1.5, 40); //what the shit, this explodes the bias
 
   for (n in 1:N) {
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
