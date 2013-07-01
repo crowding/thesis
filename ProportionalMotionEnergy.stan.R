@@ -49,7 +49,7 @@ transformed data {
 
 parameters {
   real beta_dx;
-  real<lower=0, upper=0.1> lapse;
+  real<lower=0, upper=0.2 > lapse;
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
@@ -91,7 +91,7 @@ stan_predict <- mkchain[., coefs](
            normalized_energy = norm_diff / motion_energy_scale,
            local_energy = normalized_energy / target_number_shown * energy_weight
                           + content * (1-energy_weight),
-           global_energy = normalized_energy / target_number_shown * energy_weight
+           global_energy = normalized_energy * energy_weight
                            + content * target_number_shown * (1-energy_weight)
            )
   , with(coefs, summarize(

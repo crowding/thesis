@@ -4,16 +4,24 @@ splits <- c("subject", "content",
             "target_number_shown",
             "spacing", "eccentricity", "bias")
 
-relevant <- splits %v% c("n_cw", "n_obs", "energy_diff", "norm_diff")
+relevant <- splits %v% c("n_cw", "n_obs", "normalized_energy")
+
+# the constant 0..... determined by regression on norm_diff
+# me <- chain("motion_energy.csv", read.csv, add_energies)
+# lm( norm_diff ~ I(content*target_number_all) - 1, data=data)$coef
+motion_energy_scale <- 0.05136
 
 stan_format <- mkchain(
     add_energies,
+    mutate(normalized_energy =
+           (norm_diff / motion_energy_scale)),
     subset(select=relevant),
     as.list,
     factorify,
     put(names(.), gsub('\\.', '_', names(.))),
     within({
       N <- length(subject_ix)
+      motion_energy_scale <- motion_energy_scale
     }))
 
 model_code <- '
@@ -25,11 +33,11 @@ data {
   real content[N];
   real spacing[N];
   real eccentricity[N];
-  real energy_diff[N];
-  real norm_diff[N];
+  real normalized_energy[N];
   int n_cw[N];
   int n_obs[N];
-}
+  real motion_energy_scale;
+ }
 
 transformed data {
   real frac_spacing[N];
@@ -40,33 +48,36 @@ transformed data {
 
 parameters {
   real beta_dx;
-  real<lower=0, upper=0.1> lapse;
+  real<lower=0, upper=0.2> lapse;
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
-  real energy_summation;
-  real energy_repulsion;
-  real energy_nonlinearity;
+  real summation;
+  real repulsion;
+  real nonlinearity;
 }
 
 model {
   real crowdedness;
   real local_energy;
+  real global_energy;
   real link_displacement;
-  real link_energy_repulsion;
-  real link_energy_summation;
+  real link_repulsion;
+  real link_summation;
   real link;
 
   for (n in 1:N) {
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
-    local_energy <- norm_diff[n] / target_number_shown[n];
+    local_energy <- normalized_energy[n] / target_number_shown[n];
+    global_energy <- normalized_energy[n];
     link_displacement <- beta_dx * displacement[n] * crowdedness;
-    link_energy_repulsion <- (energy_repulsion * local_energy
-                              + energy_nonlinearity * local_energy * abs(local_energy));
-    link_energy_summation <- norm_diff[n] * energy_summation;
-    link <- bias + link_displacement
-            + link_energy_repulsion
-            + link_energy_summation;
+    link_repulsion <- ( repulsion * local_energy
+                             + nonlinearity * local_energy * abs(local_energy));
+    link_summation <- global_energy * summation;
+    link <- bias
+            + link_displacement
+            + link_repulsion
+            + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
   }
@@ -74,17 +85,23 @@ model {
 
 stan_predict <- mkchain[., coefs](
     mutate(frac_spacing = 2*pi/target_number_all,
-           local_energy = norm_diff / target_number_shown)
+           local_energy = normalized / target_number_shown,
+           global_energy = normalized_energy * energy_weight
+           )
   , with(coefs, summarize(
       .
-    , link_displacement = (beta_dx * displacement
-                           * (2 - 2/(1+exp(-cs/frac_spacing))))
-    , link_energy_repulsion = (energy_repulsion * local_energy
-                               + energy_nonlinearity * (
-                                 local_energy * abs(local_energy)))
-    , link_energy_summation = norm_diff * energy_summation
-    , link = (bias + link_displacement
-              + link_repulsion + link_energy_repulsion
-              + link_summation + link_energy_summation)
+    , link_displacement = ( beta_dx
+                          * displacement
+                          * (2 - 2/(1+exp(-cs/frac_spacing)))
+                          )
+    , link_repulsion = ( repulsion * local_energy
+                       + nonlinearity * (local_energy * abs(local_energy))
+                       )
+    , link_summation = global_energy * summation
+    , link = ( bias
+             + link_displacement
+             + link_repulsion
+             + link_summation
+             )
     , response = plogis(link) * (1-lapse) + lapse/2
     )))

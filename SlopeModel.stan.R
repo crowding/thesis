@@ -37,7 +37,7 @@ transformed data {
 
 parameters {
   real beta_dx;
-  real<lower=0, upper=0.1> lapse;
+  real<lower=0, upper=0.2> lapse;
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
