@@ -1,5 +1,6 @@
 suppressPackageStartupMessages({
   source("library.R")
+  source("stanFunctions.R")
   library(rstan)
 })
 
@@ -9,6 +10,24 @@ modelfile <- "SlopeModel.stan.RData"
 outfile <- "SlopeModel.fit.RData"
 
 maxll <- mkchain(as.data.frame, .[which.max(.$lp__)[[1]],])
+
+#take a vector of coefficients with the weird names that Stan produces
+#and put it into the list data structure that seems to be implied
+normalize_coefs <- function(coefs) {
+  e <- new.env()
+  vars <- lapply(names(coefs), mkchain(parse(text=.), .[[1]]))
+  mapply(coefs, vars, FUN=function(c, v) {
+    if (length(v) > 1) {
+      n <- as.character(v[[2]])
+      v[[2]] <- call("$", quote(e), v[[2]])
+      if (!n %in% ls(e)) e[[n]] <- c()
+    } else {
+      v <- call("$", quote(e), v)
+    }
+    eval(bquote(.(v) <- .(c)))
+  })
+  as.list(e)
+}
 
 main <- function(infile="data.RData",
                  grid="motion_energy.csv",
@@ -29,7 +48,7 @@ main <- function(infile="data.RData",
     print(fit)
 
     # then also get the max-likelihood parameters. And the Hessian? Nah.
-    startpoint <- maxll(as.data.frame(fit))
+    startpoint <- normalize_coefs(maxll(as.data.frame(fit)))
     l = optimizing(e$model, stan_data, init=startpoint)
     optimized = c(l$par, lp__=list(l$value))
 

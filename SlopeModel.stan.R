@@ -41,9 +41,9 @@ parameters {
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
-  real content_global_summation;
-  real content_repulsion;
-  real content_nonlinearity;
+  real summation;
+  real repulsion;
+  real nonlinearity;
 }
 
 model {
@@ -56,9 +56,9 @@ model {
   for (n in 1:N) {
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
     link_displacement <- beta_dx * displacement[n] * crowdedness;
-    link_repulsion <- (content_repulsion * content[n]
-                       + content_nonlinearity * (content[n] * abs(content[n])));
-    link_summation <- target_number_shown[n] * content[n] * content_global_summation;
+    link_repulsion <- (repulsion * content[n]
+                       + nonlinearity * (content[n] * abs(content[n])));
+    link_summation <- target_number_shown[n] * content[n] * summation;
     link <- bias + link_displacement + link_repulsion + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
@@ -72,12 +72,9 @@ model {
        .
      , link_displacement = (beta_dx * displacement
                             * (2 - 2/(1+exp(-cs/frac_spacing))))
-     , link_repulsion = (content_repulsion * content
-                         + content_nonlinearity * (
-                           content * abs(content)))
-     , link_summation = (target_number_all
-                         * content
-                         * content_global_summation)
+     , link_repulsion = (repulsion * content
+                         + nonlinearity * (content * abs(content)))
+     , link_summation = (target_number_all * content * summation)
      , link = bias + link_displacement + link_repulsion + link_summation
      , response = plogis(link) * (1-lapse) + lapse/2
      )))
