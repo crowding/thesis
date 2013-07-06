@@ -58,6 +58,8 @@ binom.fam <- binomial(link=logit.2asym(g=0.025, lam=0.025))
 
 drop_recursive <- function(df) df[!vapply(df, is.recursive, FALSE)]
 
+unfactor <- colwise(function(x) if (is.factor(x)) as.character(x) else x)
+
 predict_from_model_frame <- function(
   models, newdata, fold=TRUE, spindle=TRUE, collapse=FALSE) {
   ##take a data frame with a list of models, and the variables to
@@ -70,7 +72,7 @@ predict_from_model_frame <- function(
             newdata <- predict_from_model(model)
           } else {
             predict_from_model(model,
-                               match_df(newdata, quickdf(group),
+                               match_df(newdata, unfactor(quickdf(group)),
                                         on = names(newdata) %^% names(group)))
           }
         }),
