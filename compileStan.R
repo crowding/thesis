@@ -1,6 +1,7 @@
 suppressPackageStartupMessages({
   library(ptools)
   library(rstan)
+  library(digest)
   source("library.R")
 })
 set_cppo('fast')
