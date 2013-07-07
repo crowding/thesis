@@ -2,10 +2,11 @@ suppressPackageStartupMessages({
   library(grid)
   library(plyr)
   library(ggplot2)
+  library(akima)
   library(rstan)
   library(ptools)
   library(reshape2)
-  source("library.R")
+  expr=source("library.R")
   source("scales.R")
   theme_set(theme_bw())
   #theme_update(panel.border=element_blank())
@@ -115,23 +116,48 @@ predict.stanenv <- function(object, newdata=object$data,
     })
 }
 
-
-interpolator <- function(menergy) {
-  menergy <- chain(menergy, subset(grid=TRUE), add_energies)
-  model <- gam(data=menergy, norm_diff ~ te(content, displacement, target_number_shown))
+interpolator <- function(
+    menergy,
+    interpolating=c("target_number_shown", "content", "displacement"),
+    interpolated=c("norm_diff"),
+    matched=c()
+    ) {
+  menergy <- chain(menergy, subset(grid==TRUE), add_energies,
+                   .[c(interpolating, interpolated, matched)])
   function(data) {
-    put(data$norm_diff, predict(model, data))
+    #a hack -- can't find a 3-d interpolator at the moment.
+    #Just ask what plane we're operating over.
+    bind[inplane, inplane[2], ...=outofplane] <-
+        chain(menergy, .[interpolating],
+              vapply(mkchain(unique, length), 0), sort, names)
+    ddply(data, outofplane, function(chunk) {
+      ldply(interpolated, function(interp.var) {
+        interp.over <- merge(menergy, unique(chunk[outofplane]))
+        grid <- acast(interp.over, lapply(inplane, mkchain(as.name, as.quoted)),
+                      value.var=interp.var)
+        interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
+                           y=as.numeric(dimnames(grid)[[2]]),
+                           z=grid)
+        loc <- do.call("cbind", chunk[inplane])
+        interp <- interp.surface(interp.obj, loc)
+        put(data[[interp.var]], interp)
+      })
+    })
+    mutate(data, spacing)
   }
 }
 
-interpolator <- function(menergy) {
-  menergy <- chain(menergy, subset(grid=TRUE), add_energies)
-  model <- gam(data=menergy, norm_diff ~ te(content, displacement, target_number_shown))
-  function(data) {
-    put(data$norm_diff, predict(model, data))
-  }
+itp <- interpolator(menergy)
+
+test_interpolator <- function() {
+  (chain(menergy, add_energies, subset(grid==TRUE & content == 0.20),
+         interpolator(menergy)(),
+         ggplot)
+   + aes(displacement, target_number_shown, color=norm_diff)
+   + geom_point(size=3))
 }
 
+test_interpolator()
 
 makeTitle <- function(...) {
   bind[fit=fit, optimized=, ...=group] <- list(...)
