@@ -6,6 +6,7 @@ splits <- c("subject", "content",
 
 relevant <- splits %v% c("n_cw", "n_obs")
 
+blur <- 0.2
 lapse_limit <- 0.05
 
 stan_format <- mkchain(
@@ -15,6 +16,7 @@ stan_format <- mkchain(
     put(names(.), gsub('\\.', '_', names(.))),
     within({
       N <- length(subject_ix)
+      blur <- blur
       lapse_limit <- lapse_limit
     }))
 
@@ -29,6 +31,7 @@ data {
   real eccentricity[N];
   int n_cw[N];
   int n_obs[N];
+  real blur;
   real lapse_limit;
 }
 
@@ -40,18 +43,18 @@ transformed data {
 }
 
 parameters {
-  real beta_dx;
+  real spacing_sensitivity;
   real<lower=0, upper=lapse_limit> lapse;
   real bias;
 
-  real<lower=0,upper=2*pi()> cs;
+  real<lower=0,upper=pi()> cs;
   real summation;
   real repulsion;
   real nonlinearity;
 }
 
 model {
-  real crowdedness;
+  real beta_dx;
   real link_displacement;
   real link_repulsion;
   real link_summation;
@@ -60,8 +63,10 @@ model {
   //lapse ~ beta(1.5, 40); //what the shit, this explodes the bias
 
   for (n in 1:N) {
-    crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
-    link_displacement <- beta_dx * displacement[n] * crowdedness;
+    beta_dx <- -blur * spacing_sensitivity
+                * log(  exp(- frac_spacing[n] / blur)
+                      + exp(- cs / blur));
+    link_displacement <- beta_dx * displacement[n];
     link_repulsion <- (repulsion * content[n]
                        + nonlinearity * (content[n] * abs(content[n])));
     link_summation <- target_number_shown[n] * content[n] * summation;
@@ -75,7 +80,9 @@ model {
  stan_predict <- mkchain[., coefs](
      mutate(frac_spacing = 2*pi/target_number_all)
    , with(coefs, summarize(
-       .
+       beta_dx = (-blur * spacing_sensitivity
+                  * log(  exp(- frac_spacing / blur)
+                        + exp(- cs / blur)))
      , link_displacement = (beta_dx * displacement
                             * (2 - 2/(1+exp(-cs/frac_spacing))))
      , link_repulsion = (repulsion * content

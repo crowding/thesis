@@ -10,6 +10,7 @@ relevant <- splits %v% c("n_cw", "n_obs", "normalized_energy")
 # me <- chain("motion_energy.csv", read.csv, add_energies)
 # lm( norm_diff ~ I(content*target_number_all) - 1, data=data)$coef
 motion_energy_scale <- 0.05136
+lapse_limit <- 0.05
 
 stan_format <- mkchain(
     add_energies,
@@ -22,6 +23,7 @@ stan_format <- mkchain(
     within({
       N <- length(subject_ix)
       motion_energy_scale <- motion_energy_scale
+      lapse_limit <- lapse_limit
     }))
 
 model_code <- '
@@ -37,6 +39,7 @@ data {
   int n_cw[N];
   int n_obs[N];
   real motion_energy_scale;
+  real lapse_limit;
  }
 
 transformed data {
@@ -48,7 +51,7 @@ transformed data {
 
 parameters {
   real beta_dx;
-  real<lower=0, upper=0.05> lapse;
+  real<lower=0, upper=lapse_limit> lapse;
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
@@ -87,6 +90,7 @@ model {
 
 stan_predict <- mkchain[., coefs](
     mutate(frac_spacing = 2*pi/target_number_all,
+           normalized_energy = (norm_diff / motion_energy_scale),
            local_energy = normalized_energy / target_number_shown,
            global_energy = normalized_energy
            )

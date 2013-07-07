@@ -1,7 +1,8 @@
 suppressPackageStartupMessages({
+  library(rstan)
+  library(plyr)
   source("library.R")
   source("stanFunctions.R")
-  library(rstan)
 })
 
 infile <- "data.RData"
