@@ -1,5 +1,6 @@
 suppressPackageStartupMessages({
   library(grid)
+  library(plyr)
   library(ggplot2)
   library(rstan)
   library(ptools)
@@ -9,6 +10,28 @@ suppressPackageStartupMessages({
   theme_set(theme_bw())
   #theme_update(panel.border=element_blank())
 })
+
+infile <- "OnlyMotionEnergy.fit.RData"
+grid <- "motion_energy.csv"
+plotfile <- "OnlyMotionEnergy.plots.pdf"
+
+main <- function(infile="OnlyMotionEnergy.fit.RData",
+                 grid="motion_energy.csv",
+                 plotfile="OnlyMotionEnergy.plots.pdf") {
+  e <- load2env(infile)
+  class(e) <- c("stanenv", class(e))
+  #inject a motion-energy interpolator if necessary. An interpolator modifies
+  #a data frame. This one interpolates over "norm_diff"
+  if (!exists("interpolator", e, inherits=FALSE)) {
+    print("building interpolator for motion energy...")
+    menergy <- read.csv(grid)
+    e$interpolator <- interpolator(menergy)
+  }
+  cairo_pdf(plotfile, onefile=TRUE)
+  fullCirclePlots(e, fold=TRUE)
+  crossPlots(e)
+  on.exit(dev.off)
+}
 
 prediction_dataset <-
     function(fit, data=fit$data,
@@ -41,8 +64,8 @@ colwise_se <- mkchain(colwise(sd)(.), put(names(.), paste0(names(.), ".sd")))
 colwise_se_frame <- mkchain(colwise(sd)(.))
 
 optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {
-  if ("optimized" %in% ls(stanenv)) {
-    return(stanenv$optimized)
+  if ("optimized" %in% names(stanenv$fits)) {
+    return(merge(stanenv$fits, split)$optimized[[1]])
   }
   #obtain coefficients by gradient descent from the starting point.
   data <- merge(stanenv$data, split)
@@ -80,7 +103,8 @@ predict.stanenv <- function(object, newdata=object$data,
         #selected_coefs <- selector(object, split)
         ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
         subset_coefs <- coefs[ix,]
-        summary <- adply(chunk, 1, mkchain(object$stan_predict(coefs=subset_coefs), summary)
+        summary <- adply(chunk, 1,
+                         mkchain(object$stan_predict(coefs=subset_coefs), summary)
                          , .progress="text")
         cbind(chunk, summary)
       } else {
@@ -91,20 +115,23 @@ predict.stanenv <- function(object, newdata=object$data,
     })
 }
 
-infile <- "SlopeModel.fit.RData"
-grid <- "motion_energy.csv"
-plotfile <- "SlopeModel.plots.pdf"
 
-main <- function(infile="SlopeModel.fit.RData", grid="motion_energy.csv",
-                 plotfile="SlopeModel.plots.pdf") {
-  e <- load2env(infile);
-  class(e) <- c("stanenv", class(e));
-  menergy <- read.csv(grid)
-  cairo_pdf(plotfile, onefile=TRUE)
-  fullCirclePlots(e, fold=TRUE)
-  crossPlots(e)
-  on.exit(dev.off)
+interpolator <- function(menergy) {
+  menergy <- chain(menergy, subset(grid=TRUE), add_energies)
+  model <- gam(data=menergy, norm_diff ~ te(content, displacement, target_number_shown))
+  function(data) {
+    put(data$norm_diff, predict(model, data))
+  }
 }
+
+interpolator <- function(menergy) {
+  menergy <- chain(menergy, subset(grid=TRUE), add_energies)
+  model <- gam(data=menergy, norm_diff ~ te(content, displacement, target_number_shown))
+  function(data) {
+    put(data$norm_diff, predict(model, data))
+  }
+}
+
 
 makeTitle <- function(...) {
   bind[fit=fit, optimized=, ...=group] <- list(...)
@@ -163,6 +190,9 @@ predict.predictable <- function (
   object, newdata=object$data,
   se.fit=FALSE, type=c("response", "terms", "link"), ...) {
   type <- match.arg(type)
+  if (exists("interpolator", object$stanenv, inherits=FALSE)) {
+    newdata <- object$stanenv$interpolator(newdata)
+  }
   if (se.fit) {
     df <- predict(object$stanenv, newdata, select=optimized)
     dfse <- predict(object$stanenv, newdata, summary=colwise_se_frame)
