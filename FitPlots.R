@@ -180,16 +180,25 @@ fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
                                 "response", splits, "displacement", fold=fold)
   })
 
-  predictions <- chain(data, x=prediction_dataset(fit=fits),
-                       predict(fits, ., type="response", se.fit=TRUE), cbind(x),
-                       refold(fold=fold))
+  preddata <- prediction_dataset(plotdata, fit=fits)
+  predictions <- chain(preddata,
+                       predict(fits, ., type="response", se.fit=TRUE))
+  if (fold) {
+    predictions2 <- chain(preddata, fold_trials(fold=TRUE),
+                          predict(fits, ., type="response", se.fit=TRUE))
+    predictions$fit <- (predictions$fit + (1-predictions2$fit))/2
+    predictions$se.fit <- (predictions$se.fit + predictions2$se.fit)/2
+  }
+  predictions <- cbind(preddata, predictions)
+
+  #if folding need to average folded and unfolded predictions
   print((ggplot(plotdata)
          + displacement_scale
          + proportion_scale
          + content_color_scale
          + facet_spacing_rows
-#         + prediction_layer(predictions)
-         + (switch(style, bubble=balloon, binned=geom_point()))
+         + prediction_layer(predictions)
+         + switch(style, bubble=balloon, binned=geom_point())
          + labs(title = "Data and model fits for observer "
                 %++% toupper(group$subject))
          + theme(aspect.ratio=0.25)
