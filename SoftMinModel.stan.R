@@ -80,11 +80,11 @@ model {
  stan_predict <- mkchain[., coefs](
      mutate(frac_spacing = 2*pi/target_number_all)
    , with(coefs, summarize(
-       beta_dx = (-blur * spacing_sensitivity
+       .
+     , beta_dx = (-blur * spacing_sensitivity
                   * log(  exp(- frac_spacing / blur)
                         + exp(- cs / blur)))
-     , link_displacement = (beta_dx * displacement
-                            * (2 - 2/(1+exp(-cs/frac_spacing))))
+     , link_displacement = (beta_dx * displacement)
      , link_repulsion = (repulsion * content
                          + nonlinearity * (content * abs(content)))
      , link_summation = (target_number_all * content * summation)

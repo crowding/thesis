@@ -2,7 +2,8 @@ suppressPackageStartupMessages({
   library(grid)
   library(plyr)
   library(ggplot2)
-  library(akima)
+  library(fields)
+  library(data.table)
   library(rstan)
   library(ptools)
   library(reshape2)
@@ -12,9 +13,9 @@ suppressPackageStartupMessages({
   #theme_update(panel.border=element_blank())
 })
 
-infile <- "SlopeModel.fit.RData"
+infile <- "OnlyMotionEnergy.fit.RData"
 grid <- "motion_energy.csv"
-plotfile <- "SlopeModel.plots.pdf"
+plotfile <- "OnlyMotionEnergy.plots.pdf"
 
 main <- function(infile="OnlyMotionEnergy.fit.RData",
                  grid="motion_energy.csv",
@@ -166,7 +167,9 @@ fullCirclePlots <- function(e, fold=FALSE, ...) {
     chunk <- merge(e$data, group)
     fullCirclePlot(predictable(e), data=chunk, group=group,
                    optimized=optimized, splits=e$splits, fold=fold)
+    NULL
   })
+  NULL
 }
 
 fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,

@@ -84,8 +84,12 @@
 
 #some models are not baked yet, or need extra samples
 --command
---output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 6000
+--output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 200 #6000
  
+#some models are not baked yet, or need extra samples
+--command
+--output --match --invisible (Hemifield)\.fit\.RData$ 200
+
 --command Rscript --input FitPlots.R
 --input --match (.*)\.fit\.RData
 --input motion_energy.csv
