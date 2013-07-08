@@ -94,19 +94,19 @@ model {
 stan_predict <- mkchain[., coefs](
     mutate(frac_spacing = 2*pi/target_number_all,
            normalized_energy = norm_diff / motion_energy_scale,
-           local_energy = normalized_energy / target_number_shown * coefs$energy_weight
-                          + content * (1-coefs$energy_weight),
-           global_energy = normalized_energy * coefs$energy_weight
-                           + content * target_number_shown * (1-coefs$energy_weight)
            )
   , with(coefs, summarize(
       .
+    , local_energy = normalized_energy / target_number_shown * coefs$energy_weight
+      + content * (1-coefs$energy_weight)
+    , global_energy = normalized_energy * coefs$energy_weight
+      + content * target_number_shown * (1-coefs$energy_weight)
     , link_displacement = (beta_dx * displacement
                            * (2 - 2/(1+exp(-cs/frac_spacing))))
-    , link_repulsion = (energy_repulsion * local_energy
-                               + energy_nonlinearity * (
+    , link_repulsion = (repulsion * local_energy
+                               + nonlinearity * (
                                  local_energy * abs(local_energy)))
-    , link_summation = norm_diff * energy_summation
+    , link_summation = norm_diff * summation
     , link = (bias + link_displacement + link_repulsion + link_summation)
     , response = plogis(link) * (1-lapse) + lapse/2
     )))
