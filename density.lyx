@@ -240,7 +240,7 @@ name "sec:results-number"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -313,23 +313,28 @@ reference "sec:model"
 \begin_inset Formula $\beta_{S}\frac{C}{S}$
 \end_inset
 
-, which could be wriutten equivalently as 
+, which could be written equivalently as 
 \begin_inset Formula $\beta_{N}CN$
 \end_inset
 
- with 
+, with 
 \begin_inset Formula $N$
 \end_inset
 
  being the number of elements in the scene.
- We sketched an interpretation in 
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We sketched an interpretation in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:model-visual-schematic"
 
 \end_inset
 
- in which this term is described as being summed over a window surrounding
+ in which this term is described as a summation over a window surrounding
  one attentively tracked element.
  However as far as the data from 
 \begin_inset CommandInset ref
@@ -345,62 +350,28 @@ reference "sec:results-basic"
  was.
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
-A parallel concern is that we describe the decline in sensitivity to envelope
+A parallel concern is that we formulated the decline in sensitivity to envelope
  motion, described by the term 
 \begin_inset Formula $\beta_{\Delta x}\left(S\right)$
 \end_inset
 
-, as being due to the number of elements in the stimulus.
- Equivalently, we could have parameterized it in terms of the number of
- elements on screen, in which case we would be talking about a decline in
- sensitivity with increasing numbers of elements.
+, as being due to the spacing between elements.
+ Equivalently, we could have parameterized it as 
+\begin_inset Formula $\beta_{\Delta x}\left(\frac{1}{N}\right)$
+\end_inset
+
+, in terms of the number of elements on screen, in which case we would be
+ talking about a decline in sensitivity with the increasing number of elements.
  Therefore we wish to distinguish these two possibilities.
 \end_layout
 
 \begin_layout Standard
-Similarly, our model in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:model"
-
-\end_inset
-
- characterized the response to carrier strength as being proportional to
- the product of the carrier direction content with the element density (i.e.
- the inverse of the spacing); in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
-
-\end_inset
-
-.
- This factor can be interpreted as a summation of the carrier strength of
- elements in some region, indicated by the red circle in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:model-visual-schematic"
-
-\end_inset
-
-.
- This raises the question of how large that region is.
- In particular, we wonder if the region of summation is of a similar size
- as the 
-\begin_inset Quotes eld
-\end_inset
-
-critical distance
-\begin_inset Quotes erd
-\end_inset
-
- controlled by the parameter 
-\begin_inset Formula $S_{C}$
-\end_inset
-
- in our model.
- 
 \begin_inset Note Note
 status collapsed
 
@@ -409,7 +380,7 @@ status collapsed
 status open
 
 \begin_layout Plain Layout
-more discussion atmo 
+more discussion 
 \end_layout
 
 \end_inset
@@ -430,9 +401,10 @@ obligatory summation
 \end_inset
 
  
-\end_layout
+\begin_inset Note Note
+status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Our model also included terms controlling a repulsive effect.
  This effect did not appear to depend on the density 
 \begin_inset Note Note
@@ -447,10 +419,22 @@ did I talk about this in the earlier section?
  it may either reflect a sort of normalized average of the motion energy
  across the visual field, or the influence of the carrier motion of an isolated
  element on itself.
- where am I going with this>:
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+where am I going with this>:
 \end_layout
 
-\begin_layout Standard
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \begin_inset Note Note
 status collapsed
 
@@ -632,21 +616,24 @@ A third reason concerns the induced motion effect we observed at larger
 \end_layout
 
 \begin_layout Standard
-Therefore we wished to know whether the loss of ability to track changes
- in position (i.e.
- envelope motion) could be better explained as a function of element spacing
- or of element number.
- Our approach to both of these questions was to modify the stimulus to cover
+Our approach to both of these questions was to modify the stimulus to cover
  only a portion of the scene, so that spacing and number can be varied independe
 ntly.
- The necessarily involves varying the 
+ This involves varying the 
 \emph on
 extent
 \emph default
- of the stimulus, which is the area in the visual scene spanned by all moving
- objects.
- We measure this as a distance along the circle at constant eccentricity
- on which elements are located.
+ 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ of the stimulus.
+ We define 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ as the circumferential distance along the circle on which elements are
+ placed.
  Any two of these variables (spacing, number, and extent) determine the
  third, so to some extent our choice in favoring one pair of these variables
  over another is arbitrary, but we hope to choose the description that makes
@@ -656,10 +643,11 @@ extent
 
 \begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
-It probably turns out we can't say anything useful on left vs.
+We also chose left versus right...
+ It probably turns out we can't say anything useful on left vs.
  right, because we aren't measuring thresholds.
  Response rates aren't really accurate for quantifying whether there's more
  or less interference.
@@ -782,28 +770,30 @@ reference "sec:results-basic"
 
 ; The stimulus was fixed at 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
-
+$
 \backslash
-Sexpr{sprintf("%.2f",numbers$segment.ecc)}
+Sexpr{sprintf("%.2f",numbers$segment.ecc)}^
+\backslash
+circ$
 \end_layout
 
 \end_inset
 
- degrees eccentricity.
- The stimulus consisted of a number of moving elements, identically specified
- to those in 
+ eccentricity.
+ The stimulus consisted of evenly spaced moving elements, identical to those
+ in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:results-basic"
 
 \end_inset
 
- but instead of being evenly distributed around a circle, the elements were
- distributed in a limited area on either the left or right wide of the display.
+, but instead of being distributed around a circle, the elements were distribute
+d in a limited area on either the left or right wide of the display.
  We varied both the spacing and the number of elements used; accordingly,
  the total spatial extent of the stimulus varied from trial to trial.
  The values of spacing and element count we used are shown in 
@@ -816,8 +806,8 @@ reference "fig:density-conditions"
 .
  This stimulus set was constructed so that each value of element spacing
  was tested using more than one value for the element count, and vice versa.
- We chose a set of stimuli that were symmetrically arranged in number and
- density, spanning a similar range for both variables (covering a factor
+ We chose a set of stimuli that were symmetrically arranged in element number
+ and spacing, spanning a similar range for both variables (spanning a factor
  of 
 \begin_inset ERT
 status collapsed
@@ -986,6 +976,59 @@ reference "movie:density-stimuli"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-choices"
+
+\end_inset
+
+ The displacement and carrier strength was fixed, with the particular settings
+ chosen to maximize sensitivity to both spacing and carrier summation effects.
+ The setting chosen for observer 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{what.observer}
+\end_layout
+
+\end_inset
+
+ is shown here, with reference to the fitted model
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing single
 We found it necessary to include two stationary flanking elements, indicated
  in 
 \begin_inset CommandInset ref
@@ -995,13 +1038,13 @@ reference "fig:density-stimulus"
 \end_inset
 
 .
- These served to hide the displacement of the moving elements at either
- end of the display, which would otherwise be easier to discern lacking
- a crowding flanker on one side.
- The flanking elements had zero envelope movement and null carrier direction
+ These served to hide the displacement of outermost moving elements, which
+ would otherwise be easy to discern, as the outermost elements lack a flanker
+ on one side.
+ The flanking elements had zero envelope movement and null carrier strength
  (i.e.
- their carriers flickered in counterphase.) The flanking elements were positioned
- so that they were between 
+ counterphase.) The flanking elements were positioned so that they were between
+ 
 \begin_inset ERT
 status collapsed
 
@@ -1032,8 +1075,9 @@ degree$
 \end_inset
 
  away from the adjacent moving element at its closest approach; this allowed
- that there was not a conspicuous gap opening or closing between the flanker
- and moving elements as the moving elements underwent envelope displacement.
+ that there were not conspicuous gaps opening or closing between the flankers
+ and the outermost moving elements while the moving elements underwent brief
+ envelope displacement.
  The flankers spanned an angle that was at least 
 \begin_inset ERT
 status collapsed
@@ -1064,8 +1108,7 @@ degree$
 
 \end_inset
 
- (in terms of the angle formed by two segments each connecting one of the
- outermost moving elements to the fixation point.
+ measured around the fixation point.
  The movie shown in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1086,10 +1129,10 @@ reference "fig:density-conditions"
 
 \begin_layout Standard
 The particular values of direction content and envelope motion were chosen
- for each subject based on preliminary findings of Experiment 1.
- We selected stimuli with the goal of finding a setting where both envelope
+ for each observer based on preliminary findings of Experiment 1.
+ We selected stimuli with the goal of choosing a setting where both envelope
  and carrier motion mechanisms would be sensitive to changes in spacing
- and/or number.
+ and/or number of elements.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1106,7 +1149,7 @@ reference "fig:results-contours"
 \end_inset
 
 .
- Some subjects were tested using more than one value of envelope displacement
+ Some observers were tested using more than one value of envelope displacement
  and/or carrier strength, but results were qualitatively similar between
  the configurations tested, so we show them here averaged (while our model
  still accounts for the particular values used.)
@@ -1121,13 +1164,15 @@ key "Feng:2007lr"
 
 \end_inset
 
-, we tested stimuli positioned in the left and right visual fields.
+, we tested stimuli positioned in both left and right visual fields.
+ In preliminary experiments we found that having the stimulus appear randomly
+ in one hemifield or the other on each trial was detrimental to observers'
+ performance, as they could not anticipate where to direct their attention
+ for the brief stimulus, so we chose to alternate stimulus hemifields in
+ blocks.
  Each session used an equal number of stimuli positioned in the left and
  right hemifields, with the position alternating in blocks of 100 to 200
  trials.
- In preliminary experiments we found that having the stimulus appear randomly
- between trials was detrimental to observer's performance as they could
- not anticipate where to direct their attention for the brief stimulus.
 \end_layout
 
 \begin_layout Standard
@@ -1210,7 +1255,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -1382,7 +1427,7 @@ At first glance
 status open
 
 \begin_layout Plain Layout
-editorializing....
+this is so discussion
 \end_layout
 
 \end_inset

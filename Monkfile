@@ -69,6 +69,39 @@
 --output --mkdir --listing contours/contours_folded.list TRUE
 --phony --output --invisible intermediate_pdf
 
+#how about markov chain monte carlo?
+--command RScript --input compileStan.R
+--input --match (.*\.stan)\.R$
+--output {0}.RData
+--invisible --phony stan
+
+--command Rscript --input StanModel.R
+--input data.RData
+--input motion_energy.csv
+--input --match (.*).stan\.RData$
+--output {0}.fit.RData
+--invisible --phony fit
+
+#some models are not baked yet, or need extra samples
+--command
+--output --match --invisible (Hemifield)\.fit\.RData$ 100
+
+--command
+--output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 4000
+ 
+--command Rscript --input FitPlots.R
+--input --match (.*)\.fit\.RData
+--input motion_energy.csv
+--output {0}.plots.pdf
+--invisible --phony plot
+--invisible --phony pdf
+
+--command --once Rscript --input --once CompareStanFits.R
+--output --once StanComparisonPlots.pdf
+--input --match (.*)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony pdf
+
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
 '$$(' cat --input --match --listing contours/contours.list ')'
@@ -89,7 +122,7 @@
 --command --invisible --input --match (.*)_weave\.R$
 --output --invisible --once {0}.tex
 
---command ( cd ./{0} && latexmk 
+--command ( cd ./{0} && latexmk
 %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match --invisible ((?:.*/)?)([^_].*)\.tex$ {1}.tex
 #--input --listing --invisible {0}.in

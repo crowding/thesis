@@ -129,6 +129,10 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
        + errorbars(segment.folded.spindled.mutilated)
        + labs(title="Number/spacing raw data"))
 
+  print(plot.extent %+% segment.folded.spindled.mutilated
+       + errorbars(segment.folded.spindled.mutilated)
+       + labs(title="Number/spacing raw data"))
+
   #For the next step, I need to incorporate realistic spacing. Since we
   #know that at wide spacings, there is no change in displacement
   #sensitivity with number of elements (no pooling,) then we expect the

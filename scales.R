@@ -81,7 +81,7 @@ proportion_scale <-
          #, labels=replace_arrows
          ),
        coord_cartesian(ylim=c(-0.1,1.1)),
-       theme(axis.text.y=element_text(angle=90)))
+       theme(axis.text.y=element_text(angle=0)))
 
 facet_labeller <- function(v, value)
   switch(v,
@@ -94,15 +94,27 @@ facet_labeller <- function(v, value)
          exp_type = paste(as.character(value), "experiment"))
 
 facet_spacing_experiment <-
-  facet_grid(spacing ~ exp_type,
-               labeller=facet_labeller
-             )
+    list(facet_grid(spacing ~ exp_type,
+                    labeller=facet_labeller
+                    ),
+         theme(axis.text.y = element_text(size=rel(0.7)),
+               strip.text.y=element_text(size=rel(0.7))))
 
 facet_spacing_rows <-
-  facet_grid(spacing ~ ., labeller=facet_labeller)
+    list(facet_grid(spacing ~ ., labeller=facet_labeller),
+         theme(axis.text.y = element_text(size=rel(0.7)),
+               strip.text.y=element_text(size=rel(0.7))))
 
 facet_spacing_subject <-
-  facet_grid(spacing ~ subject, labeller=facet_labeller)
+    list(facet_grid(spacing ~ subject, labeller=facet_labeller),
+         theme(axis.text.y = element_text(size=rel(0.6))))
+
+
+prediction_layer <- function(predictions)
+      with_arg(data=predictions,
+           geom_ribbon(color="transparent", alpha=0.2,
+                       aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+           geom_line(aes(y=fit)))
 
 balloon <- list(geom_point(aes(size=n_obs))
                 , scale_size_area("N")
@@ -118,9 +130,6 @@ balloon <- list(geom_point(aes(size=n_obs))
       , identity_scale(continuous_scale("spacing", "spacing",
                                         identity, name="Spacing")))
 }
-
-
-
 
 decision_contour <-
   list(

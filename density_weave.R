@@ -96,6 +96,12 @@ unmatching <-
       + geom_text(aes(label=label), fontface="bold", na.rm=TRUE)
       + theme(legend.position="none"))
 
+## @knitr density-specifications
+#just make one of our famous contour plots with a big yellow star on it.
+menergy <- read.csv("motion_energy.csv")
+#
+#x <- plot_contours()
+
 ## @knitr density-measurements
 density.example.dataset <- subset(segment.folded.spindled.mutilated,
                          subject %in% density.example.subjects)

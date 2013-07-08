@@ -79,7 +79,7 @@ Discussion
 \end_layout
 
 \begin_layout Itemize
- Review of results
+Review of results
 \end_layout
 
 \begin_deeper
@@ -347,6 +347,34 @@ Motion perception appears to be mediated by multiple processes that operated
  our understanding of motion perception.
  To put our studies in context we review some previous examples of the use
  of conflicting first-order and higher order motions.
+\end_layout
+
+\begin_layout Paragraph
+Contrast reversing apparent motion stimuli
+\end_layout
+
+\begin_layout Standard
+Anstis 1970; Braddick 1974; anstis and Rogers 1974
+\end_layout
+
+\begin_layout Standard
+must mention 
+\begin_inset Quotes eld
+\end_inset
+
+flicker motion
+\begin_inset Quotes erd
+\end_inset
+
+ (anstis 1980? 
+\begin_inset Quotes eld
+\end_inset
+
+in preparation
+\begin_inset Quotes erd
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Paragraph
@@ -759,11 +787,23 @@ To us it appears the most salient distinction between theta motion stimuli
 \begin_inset Quotes eld
 \end_inset
 
-object;
+object.
 \begin_inset Quotes erd
 \end_inset
 
- reverse-phi stimuli were typically presented as repeating patterns or gratings.
+ Reverse-phi stimuli were typically presented as repeating patterns or gratings,
+ in which case we would expect the first-order motion component to dominate
+ and the higher order motion to be obscured by crowding.
+ Notably, a reverse-phi stimulus containing only one luminance edge had
+ apparent motion consistent with the movement of the edge and not the first-orde
+r motion energy 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anstis:1981aa"
+
+\end_inset
+
+.
  As we have found in our experiments, the sensitivity to envelope (i.e.
  object) motion depends critically on the spacing between the putative objects,
  with critical spacings larger than the typical spacing of the repetition
@@ -921,9 +961,8 @@ Another way to construct a stimulus that opposes first-order and higher
  as Gabor functions whose envelopes progressively change position.
  We treat these as the same class of stimuli because they share in common
  the fact that there is a localized contrast cue to their changing position,
- and because the the carrier motion component is narrowband compared to
- the random dot kinematograms used in theta motion.
- Compared to theta motion stimuli these are also narrowband.
+ and because the carrier motion component is narrowband compared to the
+ random dot kinematograms used in theta motion.
 \end_layout
 
 \begin_layout Standard
@@ -936,7 +975,61 @@ key "Tse:2006aa"
 \end_inset
 
  presented an illusion which combined vertical translation of Gabor-like
- envelopes in the periphery wiht a horizontal motion of the carrier
+ envelopes with a horizontal motion of the carrier.
+ A similar illusion was presented by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Shapiro:2009aa"
+
+\end_inset
+
+.
+ When viewed in the periphery, these stimuli appear to travel at a steep
+ angle away from fixation a combination of both carrier.
+ This motion seems to carry the perceived location of the object far away
+ from the veridical location.
+ It is not clear whether this apparently change in position is measurable
+ by a behavioral assay.
+ 
+\end_layout
+
+\begin_layout Standard
+It is clear from viewing these stimuli that their appearance can be markedly
+ different between central and peripheral vision.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+it is less clear that this change in appearance is due to a functional differenc
+e between central and peripheral vision, or only due to a parameteric difference
+ (i.e.
+ more cortex for the center).
+ Ref studies debating whether crowding happens in central vision.
+\end_layout
+
+\end_inset
+
+ We noticed that the perceived direction of motion could be affected not
+ only by the retinal eccentricity but by the proximity of the object to
+ nearby objects.
+ The fact was was was noticed by us (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Meilstrup:2008aa"
+
+\end_inset
+
+; demonstrated in figures ) A similar display was constructed independently
+ by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Shapiro:2008aa"
+
+\end_inset
+
+ .
+ 
 \end_layout
 
 \begin_layout Paragraph
@@ -964,7 +1057,7 @@ key "Rashbass:1961la"
 \end_inset
 
  was used, with the target stepping into the periphery before moving in
- the opposite direction; so the results of this experiment speak to processing
+ the opposite direction, so the results of this experiment speak to processing
  of higher order motion in the periphery.
  It was found that observers could initiate pursuit to targets whose object
  motion disagreed with their Fourier motion.
@@ -1005,8 +1098,8 @@ reference "par:reconcile-zanker"
 
 \end_inset
 
- we prefer to class these stimuli with windowed envelope/carrier motion
- stimuli rather than with theta motion stimuli.
+ we think these stimuli are more comparable to windowed envelope/carrier
+ motion stimuli than to theta motion stimuli.
  
 \begin_inset CommandInset citation
 LatexCommand citeauthor
@@ -1014,12 +1107,38 @@ key "Hawken:2001bs"
 
 \end_inset
 
- found that pursuit velocities were impaired for slowly moving targets (
+ found that the carrier motion condition (agreeing, disagreeing, or neutral
+ with respect to the envelope motion) affected the initial pursuit velocity
+ for targets with slow envelope motion (
 \begin_inset Formula $1^{\circ}\mathrm{s}^{-1}$
 \end_inset
 
-) for stimuli with in drift-balanced or conflicting conditions.
- For faster st
+.) For faster (
+\begin_inset Formula $6^{\circ}\mathrm{s}^{-1}$
+\end_inset
+
+) envelope motions, they reported that the effect of carrier motion velocity
+ on initial pursuit velocity was was a smaller proportion of the envelope
+ motion; it actually appears to be a similar absolute value, which tends
+ to agree with our finding that carrier and envelope motion appear to contribute
+ independently to the judgement of motion direction.
+\end_layout
+
+\begin_layout Standard
+Most of these studies found that oculomotor responses to envelope motion
+ were delayed with respect to the response to first-order motion.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Not sure whether I want to get into the effects of stimulsu sdiration or
+ response time we've seen.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1056,7 +1175,7 @@ status collapsed
  designated as the target, we found that the precision of the saccade endpoint
  and the postsaccadic pursuit velocity was limited by target-flanker spacing;
  when flankers were less than about half the eccentricity from the target,
- saccade endpoint errors became large and pursuit velocities started top
+ saccade endpoint errors became large and pursuit velocities started to
  follow the carrier motion rather than the envelope.
 \end_layout
 
@@ -1454,12 +1573,87 @@ drift balanced
 Short range and long range motion
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Braddick:1974dq"
+
+\end_inset
+
+ found that in viewing two-frame random dot kinematograms, there was an
+ upper limit on the distance over which a region could be displaced while
+ an observer identified the orientation of the displaced shape.
+ The spatial limit appeared to be robust to variations in element size and
+ inter-stimulus interval, so the putative process underlying performance
+ on this task was called a 
+\begin_inset Quotes eld
+\end_inset
+
+short range
+\begin_inset Quotes erd
+\end_inset
+
+ process.
+ 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
-This is a stimulus-parameter-based delineation.
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Braddick:1980cr"
+
+\end_inset
+
+ is clearer about what he means by 
+\begin_inset Quotes eld
+\end_inset
+
+long-range
+\begin_inset Quotes erd
+\end_inset
+
+; the long range process is constrained by the short range process.
+ For example in the Ternus display, the short range process signals 
+\begin_inset Quotes eld
+\end_inset
+
+no movement
+\begin_inset Quotes erd
+\end_inset
+
+ in the two retinotopically stationary bars, so the long range process,
+ after some latency, covers the remainder.
+ And there is no inherent way that the long range mechanism is excluded
+ from processing short range movements.
+ Any impression otherwise -- i/e/ that the 
+\begin_inset Quotes eld
+\end_inset
+
+long range
+\begin_inset Quotes erd
+\end_inset
+
+ process processes long range stimuli analaogously to how the short range
+ process processes short range stimuli -- is due to people who don't read
+ the lit carefully.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Braddick et al.
+ This is a stimulus-parameter-based delineation.
  The danger is reification into mechanism -- there is not a specifically
  long-range mechanism, just a mechamism that is more effective at long displacem
 ents BUT IS ACTIVE AND PARTICIPATES AT ALL DISPLACEMENTS
@@ -1568,17 +1762,10 @@ global.
 \begin_inset Quotes erd
 \end_inset
 
- 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Anstis:2011vn,Majaj:2007aa,Tse:2006bq,Hedges:2004pr,Braddick:1997dk"
-
-\end_inset
-
  Usually this refers to a difference in spatial scale, either between two
  aspects of the stimulus used or between the mechanisms that are proposed
- to respond to them.
- There is an inherent sliding scale to these terms; we read 
+ to respond to them; when differentiating two mechanisms or hypotheses,
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1586,16 +1773,14 @@ local
 \begin_inset Quotes erd
 \end_inset
 
- as referring to spatial scales that are on the small end of whatever comparison
- is being made, with 
-\begin_inset Quotes eld
+ refers to the one with a smaller spatial extent.
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Majaj:2007ge,Braddick:1997dk,Braddick:1974dq,Bex:2002uq"
+
 \end_inset
 
-global
-\begin_inset Quotes erd
-\end_inset
-
- referring to the stimulus or mechanism on the larger end.
  A related but distinguishable usage of 
 \begin_inset Quotes eld
 \end_inset
@@ -1608,7 +1793,7 @@ global
  field 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Edwards:1995fk,Cassanello:2011uq,Anstis:2011vn,Bex:2002uq"
+key "Edwards:1995fk,Cassanello:2011uq,Anstis:2011vn"
 
 \end_inset
 
@@ -1638,7 +1823,7 @@ global
  However such a generally applicable distinction also also carries with
  it some ambiguities about which particular version of that distinction
  is applicable in any one work.
- Some works use 
+ Many works use 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1658,7 +1843,7 @@ key "Cropper:2001aa"
  compute overall pattern motion 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Movshon:1996aa"
+key "Movshon:1996aa,Majaj:2007ge"
 
 \end_inset
 
@@ -1667,7 +1852,7 @@ key "Movshon:1996aa"
  field 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Williams:1984aa,Braddick:1995aa,Newsome:1989aa"
+key "Braddick:1974dq,Williams:1984aa,Newsome:1989aa"
 
 \end_inset
 
@@ -1689,22 +1874,11 @@ local
 \begin_inset Quotes erd
 \end_inset
 
- detectors, such as drift-balanced or higher-order motion, or information
- coming from shifts in position rather than position-independent motion
- 
+ detectors, such as drift-balanced motion, or motion better characterized
+ by shifts in position rather than Fourier components 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Tse:2006bq,Hedges:2011aa"
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-rhythm requires another cite
-\end_layout
+key "Tse:2006bq,Shapiro:2010aa,Hedges:2011aa"
 
 \end_inset
 
@@ -1713,6 +1887,18 @@ rhythm requires another cite
 centered; it might describe the components of the stimulus being used, or
  whether the neural mechanisms imputed to respond differentially to these
  components.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+But the most generic term is just one of differing spatial scales.
+ 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1736,9 +1922,10 @@ as a stimulus
  of the stimulus, so it is possible to extract the envelope motion from
  the stimulus by considering only a small region of the scene barely larger
  than the moving element; the same applies to carrier motion.
- At the same time, both components are global, being consistent and coherent
- over the entire range of the stimulus; both the carrier and envelope motion
- are (independently) consistent with a single rotating ring of elements.
+ At the same time, both components are global, existing and being consistent
+ and coherent over the entire range of the stimulus; both the carrier and
+ envelope motion are (independently) consistent with a single rotating ring
+ of elements.
  If a motion mechanism exists that could pool the motion of multiple features
  over a large area, it should be able to globally pool envelope motion signals
  in our stimulus; the same applies for carrier motion.
@@ -1995,7 +2182,7 @@ not
 \end_layout
 
 \begin_layout Standard
-\align left
+\align block
 The other sense in which distinctions have been drawn between 
 \begin_inset Quotes eld
 \end_inset

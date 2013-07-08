@@ -2,6 +2,7 @@ suppressPackageStartupMessages({
   #library(R.devices)
   library(stringr)
   library(psyphy)
+  library(ptools)
 })
 
 ## function to build a nonlinear term as used by the gnm package.
@@ -57,6 +58,8 @@ binom.fam <- binomial(link=logit.2asym(g=0.025, lam=0.025))
 
 drop_recursive <- function(df) df[!vapply(df, is.recursive, FALSE)]
 
+unfactor <- colwise(function(x) if (is.factor(x)) as.character(x) else x)
+
 predict_from_model_frame <- function(
   models, newdata, fold=TRUE, spindle=TRUE, collapse=FALSE) {
   ##take a data frame with a list of models, and the variables to
@@ -69,7 +72,7 @@ predict_from_model_frame <- function(
             newdata <- predict_from_model(model)
           } else {
             predict_from_model(model,
-                               match_df(newdata, quickdf(group),
+                               match_df(newdata, unfactor(quickdf(group)),
                                         on = names(newdata) %^% names(group)))
           }
         }),
@@ -279,7 +282,7 @@ bin_along_resid.default <- function(model, data, responsevar, split, along,
                                     bins=6, restrict, fold=FALSE) {
   # if we are binning "folded"
   missing.restrict <- missing(restrict)
-  data <- unmkrates(data)
+  data <- unmkrates(data, splits)
   data$fit <- predict(model, newdata=data, type="response")
   chain(
     data,
@@ -524,9 +527,9 @@ is_rates <- function(data,
 mkrates <- function(data,
                     splits=c("displacement", "content",
                       "spacing", "subject", "exp_type"), keep_unique=TRUE) {
-  is <- is_rates(data, splits)
+  is <- is_rates(data, splits=splits)
   if (is.na(is)) {
-    data <- unmkrates(data)
+    data <- unmkrates(data, splits=splits)
   } else if (is) {
     return(data)
   }
@@ -545,7 +548,9 @@ mkrates <- function(data,
 }
 
 #undo mkrates, convert counted yes/no data into binary data.
-unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data)) {
+unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data),
+                      splits=c("displacement", "content",
+                      "spacing", "subject", "exp_type")) {
   is <- is_rates(data, splits)
   if (!is.na(is)) {
     if (!is) {
@@ -615,38 +620,40 @@ recast_data <- function(
   data,
   number.factor=if ("number.factor" %in% names(data)) unique(data$number.factor) else 2,
   envelope.factor = if ("envelope.factor" %in% names(data))
-    unique(data$number.factor) else number.factor,
+      unique(data$envelope.factor) else number.factor,
   carrier.factor = if ("carrier.factor" %in% names(data))
-    unique(data$carrier.factor) else number.factor) {
+      unique(data$carrier.factor) else number.factor) {
   #all of content_local, content_global and
   #content/spacing, should be similarly scaled _for full circle
   #stimuli_. this helps keep model fitting on the right starting
   #points.
   #similar goes for spacing and number_shown_a_spacing
-  chain(data,
-        drop_columns(c("envelope.factor", "carrier.factor")),
-        mutate(carrier.factor=carrier.factor,
-               envelope.factor=envelope.factor,
-               check="foo"),
-        mutate_when_missing(
-          eccentricity = 20/3,
-          target_number_shown = round(2*pi*eccentricity/spacing),
-          target_number_all = round(2*pi*eccentricity/spacing),
-          content_cw = (content+1/4),
-          content_ccw = (1 - content)/4,
-          side = factor("all", levels=c("all", "bottom", "left", "right", "top"))),
-        mutate(
-          content_local = content / spacing,
-          content_global = content / 2/pi/eccentricity
-          * abs.pmin(
-            target_number_all / carrier.factor,
-            target_number_shown),
-          full_circle = target_number_shown == target_number_all,
-          extent = spacing * target_number_shown,
-          number_shown_as_spacing =
-            2*pi*eccentricity / envelope.factor / abs.pmin(
-              target_number_shown,
-              target_number_all / envelope.factor)))
+  test <- chain(
+    .=data
+    , drop_columns(c("envelope.factor", "carrier.factor"))
+    , mutate(
+      carrier.factor=carrier.factor
+      , envelope.factor=envelope.factor
+      , check="foo")
+    , mutate_when_missing(
+      eccentricity = 20/3
+      , target_number_shown = round(2*pi*eccentricity/spacing)
+      , target_number_all = round(2*pi*eccentricity/spacing)
+      , content_cw = (content+1/4)
+      , content_ccw = (1 - content)/4
+      , side = factor("all", levels=c("all", "bottom", "left", "right", "top")))
+    , mutate(
+      content_local = content / spacing
+      , content_global = (content / 2/pi/eccentricity
+                          * abs.pmin(
+                            target_number_all / carrier.factor,
+                            target_number_shown))
+      , full_circle = target_number_shown == target_number_all
+      , extent = spacing * target_number_shown
+      , number_shown_as_spacing = (
+        2*pi*eccentricity / envelope.factor / abs.pmin(
+          target_number_shown,
+          target_number_all / envelope.factor))))
 }
 
 seq_range <- function(range, ...) seq(from=range[[1]], to=range[[2]], ...)
@@ -665,7 +672,9 @@ ddply_along <-
     split <- plyr:::splitter_d(.data, as.quoted(.variables), drop=.drop)
     rows <- plyr:::splitter_a(attr(split, "split_labels"), 1)
     s <- as.list(seq_len(length(split)))
-    attributes(s) <- attributes(split)
+    attrs <- attributes(split)
+    attrs[c("names", "class")] <- NULL
+    attributes(s) <- attrs
     class(s) <- c("split", "list")
     ldply(  .data=s
           , .fun=function(i) .fun(rows[[i]], split[[i]], ...)
@@ -681,6 +690,10 @@ figure <- function(label, ...) {
     R.devices:::devNew(...)
     R.devices:::devSetLabel(label=label)
   }
+}
+
+strip_extension <- function(filename) {
+  sub(  "((.)\\..*|)$", "\\2", filename)
 }
 
 replace_extension <- function(filename, new_extension, append="") {
@@ -775,7 +788,7 @@ hosmerlem = function(model, newdata=model$data, groups=10) {
   #deviance test essentially.
   newdata$fit <- predict(model, newdata=newdata, type="response")
   #make sure it is binary data and not grouped
-  newdata <- unmkrates(newdata, columns=c("fit"))
+  newdata <- unmkrates(newdata, columns=c("fit"), splits=splits)
   bind[y, yhat] <- newdata[c("response", "fit")]
   cutyhat <- floor((order(yhat) - 1)/length(yhat) * groups)
   obs = xtabs(cbind(1 - y, y) ~ cutyhat)
@@ -845,6 +858,21 @@ asisify <- function(df) {
   quickdf(lapply(df, function(x) if (is.recursive(x)) I(x) else x))
 }
 
+factorify <- mkchain(
+    lapply(function(x)
+           switch(class(x),
+                  character=factorify_col(factor(x)),
+                  factor=factorify_col(x),
+                  list(x))),
+    unlist(recursive=FALSE)
+    )
+
+factorify_col <- function(x) {
+  list(n = length(x),
+       #levels = levels(x),
+       ix = as.numeric(x))
+}
+
 nonrec <- function(df) {
   #only nonrecursive columns
   df[!vapply(df, is.recursive, FALSE)]
@@ -868,20 +896,41 @@ factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x
   if (filter(x)) factor(x, levels=unique(x)) else x
 }
 
-put <- macro(function(assignment, value) {
-  assignment_target <- function(x) {
-    switch(
+assignment_target <- function(x) {
+  switch(
       class(x),
       name=x,
       character=as.name(x),
       call = switch(head<- class(x[[1]]),
-        name = assignment_target(x[[2]]),
-        character = assignment_target(x[[2]]),
-        stop("that doesn't look like an assignment target")),
+                    name = assignment_target(x[[2]]),
+                    character = assignment_target(x[[2]]),
+                    stop("that doesn't look like an assignment target")),
       stop("that doesn't look like an assignment target"))
-  }
+}
+
+put <- macro(function(assignment, value) {
   target <- assignment_target(assignment)
-  template((function() {.(assignment) <- .(value); .(target)})())
+  template(
+      (
+          function(`.(target)`) {
+            .(assignment) <- .(value);
+            .(target)
+          }
+      )(.(target))
+  )
+})
+
+alter <- macro(function(assignment, ...) {
+  target <- assignment_target(assignment)
+  template(
+      (
+          function(`.(target)`) {
+            .(assignment) <-
+                .(ptools:::chain_function(alist(`.`=))(list(...)))(.(assignment));
+            .(target)
+          }
+      )(.(target))
+  )
 })
 
 print.if.nonempty <- function(d) {
