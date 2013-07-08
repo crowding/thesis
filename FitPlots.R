@@ -6,15 +6,15 @@ suppressPackageStartupMessages({
   library(rstan)
   library(ptools)
   library(reshape2)
-  expr=source("library.R")
+  source("library.R")
   source("scales.R")
   theme_set(theme_bw())
   #theme_update(panel.border=element_blank())
 })
 
-infile <- "OnlyMotionEnergy.fit.RData"
+infile <- "SlopeModel.fit.RData"
 grid <- "motion_energy.csv"
-plotfile <- "OnlyMotionEnergy.plots.pdf"
+plotfile <- "SlopeModel.plots.pdf"
 
 main <- function(infile="OnlyMotionEnergy.fit.RData",
                  grid="motion_energy.csv",
@@ -123,41 +123,31 @@ interpolator <- function(
     matched=c()
     ) {
   menergy <- chain(menergy, subset(grid==TRUE), add_energies,
-                   .[c(interpolating, interpolated, matched)])
+                   .[c(interpolating, interpolated, matched)],
+                   data.table)
   function(data) {
     #a hack -- can't find a 3-d interpolator at the moment.
     #Just ask what plane we're operating over.
-    bind[inplane, inplane[2], ...=outofplane] <-
-        chain(menergy, .[interpolating],
+    bind[...=outofplane, inplane, inplane[2]] <-
+        chain(data, .[interpolating],
               vapply(mkchain(unique, length), 0), sort, names)
+    setkeyv(menergy, outofplane)
     ddply(data, outofplane, function(chunk) {
       ldply(interpolated, function(interp.var) {
-        interp.over <- merge(menergy, unique(chunk[outofplane]))
-        grid <- acast(interp.over, lapply(inplane, mkchain(as.name, as.quoted)),
+        interp.over <- menergy[unique(chunk[outofplane])]
+        grid <- acast(interp.over,
+                      lapply(inplane, mkchain(as.name, as.quoted)),
                       value.var=interp.var)
         interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
                            y=as.numeric(dimnames(grid)[[2]]),
                            z=grid)
         loc <- do.call("cbind", chunk[inplane])
         interp <- interp.surface(interp.obj, loc)
-        put(data[[interp.var]], interp)
+        put(chunk[[interp.var]], interp)
       })
     })
-    mutate(data, spacing)
   }
 }
-
-itp <- interpolator(menergy)
-
-test_interpolator <- function() {
-  (chain(menergy, add_energies, subset(grid==TRUE & content == 0.20),
-         interpolator(menergy)(),
-         ggplot)
-   + aes(displacement, target_number_shown, color=norm_diff)
-   + geom_point(size=3))
-}
-
-test_interpolator()
 
 makeTitle <- function(...) {
   bind[fit=fit, optimized=, ...=group] <- list(...)
@@ -191,20 +181,19 @@ fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
   })
 
   predictions <- chain(data, x=prediction_dataset(fit=fits),
-                             predict(fits, ., type="response", se.fit=TRUE), cbind(x),
-                             refold(fold=fold))
+                       predict(fits, ., type="response", se.fit=TRUE), cbind(x),
+                       refold(fold=fold))
   print((ggplot(plotdata)
          + displacement_scale
          + proportion_scale
          + content_color_scale
          + facet_spacing_rows
-         + prediction_layer(predictions)
+#         + prediction_layer(predictions)
          + (switch(style, bubble=balloon, binned=geom_point()))
          + labs(title = "Data and model fits for observer "
                 %++% toupper(group$subject))
          + theme(aspect.ratio=0.25)
          ))
-
 }
 
 predictable <- function(stanenv, data=stanenv$data) {
@@ -216,9 +205,11 @@ predict.predictable <- function (
   object, newdata=object$data,
   se.fit=FALSE, type=c("response", "terms", "link"), ...) {
   type <- match.arg(type)
+  newdata$.order <- seq_len(nrow(newdata))
   if (exists("interpolator", object$stanenv, inherits=FALSE)) {
     newdata <- object$stanenv$interpolator(newdata)
   }
+  newdata <- newdata[order(newdata$.order),]
   if (se.fit) {
     df <- predict(object$stanenv, newdata, select=optimized)
     dfse <- predict(object$stanenv, newdata, summary=colwise_se_frame)
@@ -232,6 +223,12 @@ predict.predictable <- function (
   }
 }
 
+interpolate <- function(...) UseMethod("interpolate")
+
+interpolate.predictable <- function(
+    object, newdata=object$data) {
+  object$stanenv$interpolator(newdata)
+}
 
 crossPlots <- function(e, ...) {
   extraArgs <- dots(...)
