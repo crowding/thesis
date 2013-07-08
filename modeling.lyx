@@ -558,7 +558,7 @@ These three components contribute to the modeled subjects' responses according
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\mathrm{logit}(\beta(S)\Delta_{x}+\beta_{S}M_{S}+\beta_{I}M_{I}+k)
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\mathrm{logit}(\beta(S)\Delta_{x}+\beta_{S}M_{S}+M_{I}+k)
 \]
 
 \end_inset
