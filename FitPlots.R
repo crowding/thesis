@@ -9,13 +9,14 @@ suppressPackageStartupMessages({
   library(reshape2)
   source("library.R")
   source("scales.R")
+  source("density_library.R")
   theme_set(theme_bw())
   #theme_update(panel.border=element_blank())
 })
 
-infile <- "OnlyMotionEnergy.fit.RData"
+infile <- "Hemifield.fit.RData"
 grid <- "motion_energy.csv"
-plotfile <- "OnlyMotionEnergy.plots.pdf"
+plotfile <- "Hemifield.plots.pdf"
 
 main <- function(infile="OnlyMotionEnergy.fit.RData",
                  grid="motion_energy.csv",
@@ -30,16 +31,38 @@ main <- function(infile="OnlyMotionEnergy.fit.RData",
     e$interpolator <- interpolator(menergy)
   }
   cairo_pdf(plotfile, onefile=TRUE)
+  if (any(e$data$exp_type == "numdensity")) {
+    numdensity_plot(e)
+  }
   fullCirclePlots(e, fold=TRUE)
   crossPlots(e)
   on.exit(dev.off)
+}
+
+numdensity_plot <- function(object) {
+  segment.data <- extract_segment(object$data, subjects=object$fits$subject,
+                                  splits=object$splits)
+  folded.segment.data <- extract_segment(object$data, subjects=object$fits$subject,
+                                         splits=object$splits,
+                                         fold=TRUE, spindle=TRUE, collapse=TRUE)
+  x <- predictable(object)
+  predictions <- cbind(segment.data, predict(x, segment.data, se.fit=TRUE))
+
+  folded.predictions <- mutilate.predictions(
+      predictions, fold=TRUE, spindle=TRUE, collapse=TRUE)
+
+  (plot.spacing %+% segment.data + facet_wrap(~ subject+displacement+content)
+   + density_prediction_layers(predictions, connect="number")
+   + theme(strip.text.x=element_text(size=)))
+  (plot.spacing %+% folded.segment.data + facet_wrap(~ label)
+   + density_prediction_layers(folded.predictions, connect="number"))
 }
 
 prediction_dataset <-
     function(fit, data=fit$data,
              fold=FALSE,
              ordinate = "displacement",
-             menergy=data,
+             menergy = data,
              ordinate.values = get_sampling(fit$stanenv$data, menergy, ordinate)){
       chain(data, .[fit$stanenv$splits %v% fit$stanenv$model_split %-% ordinate],
             unique,
@@ -175,6 +198,7 @@ fullCirclePlots <- function(e, fold=FALSE, ...) {
 fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
                            style=c("bubble", "binned"), fold=FALSE) {
   style <- match.arg(style)
+  data <- subset(data, target_number_shown == target_number_all)
 
   switch(style, bubble = {
     plotdata <- mkrates(refold(data, fold=fold), splits=splits)
@@ -224,7 +248,9 @@ predict.predictable <- function (
   newdata <- newdata[order(newdata$.order),]
   if (se.fit) {
     df <- predict(object$stanenv, newdata, select=optimized)
+    df <- df[order(df$.order),]
     dfse <- predict(object$stanenv, newdata, summary=colwise_se_frame)
+    dfse <- dfse[order(df$.order),]
     switch(type,
            response=list(fit=df$response, se.fit=dfse$response),
            link=list(fit=df$link, se.fit=dfse$link),

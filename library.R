@@ -173,39 +173,33 @@ match_to <- function(x, from) {
 
 #label function for each facet
 labeler <- function(data) {
-  l <- if ("exp_type" %in% names(data)) {
-    unlist(use.names=FALSE, dlply(data, "exp_type", with, {
-      monodisp <- exists("displacement") && length(unique(displacement))==1
-      monocon <- exists("content") && length(unique(content))==1
-      switch(
+  data <- mutate_when_missing(data,
+      exp_type = ifelse(target_number_shown < target_number_all,
+                        "numdensity", "spacing"))
+  ddply(data, "exp_type", function(chunk) {
+    monodisp <- exists("displacement") && length(unique(displacement))==1
+    monocon <- exists("content") && length(unique(content))==1
+     put(chunk$label, with(chunk, switch(
         as.character(exp_type[[1]]),
         numdensity = {
           paste0(
-            if (!monodisp && !monocon) "Observer " else "",
-            sprintf("%s", toupper(subject) ),
-            if (monodisp) paste0(" d=", format(displacement, digits=2)) else "",
-            if (monocon) paste0(" C=", format(content, digits=2)) else ""
-            )
+              if (!monodisp && !monocon) "Observer " else "",
+              sprintf("%s", toupper(subject) ),
+              if (monodisp) paste0(" d=", format(displacement, digits=2)) else "",
+              if (monocon) paste0(" C=", format(content, digits=2)) else ""
+              )
         },
         content = sprintf("Content, observer %s", toupper(subject)),
-        spacing = sprintf("Spacing, observer %s", toupper(subject)))
-    }))
-  } else {
-    with(data,
-         if (exists("full_circle") && length(unique(full_circle)) > 1) {
-           sprintf("Observer %s", toupper(subject))
-         } else {
-           sprintf("Observer %s", toupper(subject))
-         })
-  }
-  cbind(data, label=l)
+        spacing = sprintf("Spacing, observer %s", toupper(subject)))))
+  })
 }
 
 zip <- function(l, collate=c) {
   do.call("mapply", c(list(FUN=collate, SIMPLIFY=FALSE), l))
 }
 
-#' Try to bin values coming from staircase data into fewer
+
+#' #' Try to bin values coming from staircase data into fewer
 #' values.
 #'
 #' Uses individually-counted data, not trial data. (because everyone
@@ -464,7 +458,7 @@ fold_trials <- function(data, fold.trial) {
   }
   #p <- NA
   chain(data,
-        mutate(folded=(if (exists("folded"))
+        mutate(folded=(if (exists("folded", inherits=FALSE))
                        xor(folded, fold.trial) else fold.trial)),
         #n_ccw and n_cw were already taken care of...
         mutate_when_has(
