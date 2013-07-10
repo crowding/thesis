@@ -26,17 +26,25 @@ main <- function(infile="OnlyMotionEnergy.fit.RData",
   #inject a motion-energy interpolator if necessary. An interpolator modifies
   #a data frame. This one interpolates over "norm_diff"
   if (!exists("interpolator", e, inherits=FALSE)) {
-    print("building interpolator for motion energy...")
+    message("building interpolator for motion energy...")
     menergy <- read.csv(grid)
     e$interpolator <- interpolator(menergy)
   }
   cairo_pdf(plotfile, onefile=TRUE)
-  if (any(e$data$exp_type == "numdensity")) {
+  if (any(with(e$data, target_number_shown < target_number_all))) {
+    message("plotting number/density data...")
     numdensity_plot(e)
   }
+  message("plotting psychometric functions...")
   fullCirclePlots(e, fold=TRUE)
+  message("plotting contours...")
+  contourPlots(e, fold=TRUE)
   crossPlots(e)
   on.exit(dev.off)
+}
+
+contourPlots <- function(object, fold=fold) {
+
 }
 
 numdensity_plot <- function(object) {
@@ -51,11 +59,13 @@ numdensity_plot <- function(object) {
   folded.predictions <- mutilate.predictions(
       predictions, fold=TRUE, spindle=TRUE, collapse=TRUE)
 
-  (plot.spacing %+% segment.data + facet_wrap(~ subject+displacement+content)
-   + density_prediction_layers(predictions, connect="number")
-   + theme(strip.text.x=element_text(size=)))
-  (plot.spacing %+% folded.segment.data + facet_wrap(~ label)
-   + density_prediction_layers(folded.predictions, connect="number"))
+  print(plot.spacing %+% segment.data
+        + density_prediction_layers(predictions, connect="number")
+        + errorbars(facet="label", segment.data))
+  print(plot.spacing %+% folded.segment.data + facet_wrap(~ label)
+        + density_prediction_layers(folded.predictions, connect="number")
+        + errorbars(facet="label", folded.segment.data))
+  NULL
 }
 
 prediction_dataset <-

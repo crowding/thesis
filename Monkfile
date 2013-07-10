@@ -83,8 +83,8 @@
 --invisible --phony fit
 
 #some models are not baked yet, or need extra samples
-#--command
-#--output --match --invisible (Hemifield)\.fit\.RData$ 100
+--command
+--output --match --invisible (SummationField)\.fit\.RData$ 100
 
 --command
 --output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 4000
