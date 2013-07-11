@@ -43,7 +43,7 @@ knitr
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -83,6 +83,34 @@ status collapsed
 (IF) You're flipping between short-range, long-range, local global.
  Choose one for each and stay consistent, when you flip it's hard for the
  reader to know that the change of term isn't significant.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+none of these terms are really satisfactory -- but I'll settle on 
+\begin_inset Quotes eld
+\end_inset
+
+first order
+\begin_inset Quotes erd
+\end_inset
+
+ vs.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+higher order
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -97,7 +125,8 @@ Accurate motion perception is essential for visually guided movement; complex
  object, and to anticipate its trajectory through space.
  Psychological research on motion perception has established that local
  and global motion are processed by separate mechanisms, an idea that dates
- back to Wertheimer's phenomenological distinction between fast 
+ back to Wertheimer's phenomenological distinction between the sensations
+ elicited by faster 
 \begin_inset Quotes eld
 \end_inset
 
@@ -113,103 +142,96 @@ beta
 \begin_inset Quotes erd
 \end_inset
 
- motion 
+ stimuli (
 \begin_inset CommandInset citation
-LatexCommand citep
+LatexCommand citealt
+key "Wertheimer:1912aa"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand citeyear
+key "Wertheimer:2012aa"
+
+\end_inset
+
+; 
+\begin_inset CommandInset citation
+LatexCommand citealp
 key "Steinman:2000ap"
 
 \end_inset
 
-.
- It is believed that local (or short range) mechanisms respond to the motion
- of visual features defined by luminance, or by motion energy in the Fourier
- domain 
+).
+ The goal of this thesis is to examine how separate mechanisms contribute
+ to a unified perception of motion.
+\end_layout
+
+\begin_layout Standard
+It is generally believed that there are at multiple classes of motion mechanisms.
+ One of these, the 
+\noun on
+first-order
+\noun default
+ motion mechanism, seems to respond to local spatiotemporal correlations
+ in luminance contrast, at relatively short timescales and in small regions
+ of space.
+ It is generally agreed that the first-order motion mechanism originates
+ with the direction selective response of cells in area V1.
+ Classic models of first-order motion detection use linear filters tuned
+ to certain combinations spatial and temporal frequencies, with the outputs
+ of several such filters being combined nonlinearly 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Adelson:1985ea"
-
-\end_inset
-
-, at short temporal and spatial scales.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-MS suggests something adding something about what is known of the mechanisms
- here as well as the stimuli.
- 
-\begin_inset Quotes eld
-\end_inset
-
-we need to set up the idea that the variety of motion systems can be thought
- of in these terms.
- One process is comprised of local nonlinear filters that extract directional
- signals from space-time correlations in luminance contrast in a small region
- of space (Reichardt; Adelson; Simoncelli; Ullman 
-\backslash
-& Marr; others).
- Other processes are best viewed as tracking a corresponding object over
- distances larger than what can be achieved through these filters.
- We can admit up front that the size of the filters in the first process
- is not known, but it might be associated with the size of a classic RF
- of a V1 neuron, or a fraction of this (e.g., <180 deg phase shift with respect
- to its characteristic period).
- This definition conforms at least roughly to the distinction between short
- and long range motion systems.''
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-It is thought that the first-order motion mechanism originates with the
- direction selective response of cells in V1.
- Classic models of local motion include local, linear filters that extract
- directional signals from space-time correlations in luminance contrast
- in a small region of space, in a way similar to what has been observed
- to drive the activity of cells in V1 
-\begin_inset Marginal
-status collapsed
-
-\begin_layout Plain Layout
-cites:(Reichardt; Adelson; Simoncelli; Ullman 
-\backslash
-& Marr; others)
-\end_layout
+key "Adelson:1985ea,Watson:1985aa"
 
 \end_inset
 
 .
- Psychophysical data are consistent with the notion that the size of the
- local motion filters are similar in size of the classical receptive field
- of a V1 neuron.
- 
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-cites
-\end_layout
+ With some embellishments, the responses observed from cells in area V1
+ are largely compatible with this type of model 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Movshon:1978qq,Rust:2005vu"
 
 \end_inset
 
+.
+ Moreover, the size and bandwidth of motion sensing channels inferred from
+ psychophysical measurements are similar to those observed of V1 neurons
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anderson:1987oq,Anderson:1989nx,Banks:1991kl,Anderson:1991tg,Watson:1995fh"
+
+\end_inset
+
+.
  
 \end_layout
 
 \begin_layout Standard
-However, the perception of motion does not necessarily require features
- to differ in mean luminance from the background, does not necessarily require
- motion energy in the Fourier domain.
- Moving stimuli can be constructed that would not be consistently detectable
- to first-order mechanisms, yet nonetheless elicit strong perceptions of
- movement.
- These higher-order stimuli can be constructed variously by modulations
+However, these first-order mechanisms cannot by themselves fully explain
+ human motion perception.
+ For example, perceiving visual motion does not necessarily require features
+ to differ in mean luminance from the background, and does not require motion
+ energy in the Fourier domain.
+ Many forms of 
+\noun on
+higher order
+\noun default
+ motion stimuli have been constructed that would not be consistently detectable
+ to first-order mechanisms, but these stimuli still elicit strong sensations
+ of movement 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Derrington:1985aa,Chubb:1988kx,Zanker:1990aa"
+
+\end_inset
+
+.
+ These higher order stimuli can be constructed variously by modulations
  in contrast, texture, or other stimulus features, but generally
 \change_deleted 232785317 1349734913
  
@@ -223,114 +245,216 @@ key "Lu:1995la"
 \end_inset
 
 .
- There is evidence that global motion may have a different neural substrate
- from local motion.
- For example, adding higher-order motion to a display does not appear to
- change the threshold of detection for first-order motion 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Edwards:1995fk,Cassanello:2011uq"
-
-\end_inset
-
-, and there is some neuropsychological evidence of while a combination of
- linear spatiotemporal filters and output nonlinearities is successful at
- predicting the detection of first order motion, and corresponds to neural
- response properties in V1, stimuli can also be designed to be invisible
- to such a mechanism.
- Higher order motion stimuli can be created these stimuli nonetheless elicit
- a strong sensation of motion can also be created without any Fourier motion
- signal, by using stimuli that modulate contrast, texture, or other features
- - such stimuli being invisible to a system that relies on linear filter
- 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-ISTR Simoncelli's chapter in Gazzaniga had some discussion?
-\end_layout
-
-\end_inset
-
-; Another difference between long-range and short-range motion is that the
- former seems to be capable of tracking a feature object over distances
- larger than what can be achieved through individual local filters.
- Interestingly, the anatomical substrate of higher-order motion mechanism
- is still unclear.
- While area MT and MST have been proposed as candidates, response properties
- of cells in those regions do not appear to explain our sensations of higher
- order motion 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Ilg:2004qc"
-
-\end_inset
-
-.
- 
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-can provide more cites on this point.
-\end_layout
-
-\end_inset
-
-
+ These higher order stimuli have been used to provide evidence for and character
+ize motion sensing systems separate from the first-order mechanisms.
 \end_layout
 
 \begin_layout Standard
 One possible reason for having multiple motion estimation systems is that
- local motion signals are not always a reliable indication of the global
- motion.
+ first-order motion signals are not always a reliable indication of the
+ veridical motion of an object.
  In a complicated visual world, motion can come from many sources, and accurate
- perception of the movement of objects requires disambiguating those motion
- signals attributable to the object from irrelevant motions in the background
- or of other objects.
+ perception of the movement of objects requires disambiguating motion signals
+ attributable to the object from irrelevant motions in the background or
+ of other objects.
  Consider the task of trying to track the movement of a zebra among a background
  of waving grass.
- While many of the local signals will correctly signal the motion of the
- zebra, the motion of the grass creates a subset of local motion signals
- that are substantially incorrect.
+ The first problem is that a motion energy sensor with a limited receptive
+ field size will report the component of the zebra's motion orthogonal to
+ its stripes, rather than the veridical motion of the zebra, an instance
+ of the so-called 
+\begin_inset Quotes eld
+\end_inset
 
-\change_deleted 232785317 1349734913
- 
-\change_unchanged
- significant proportion of these individual receptive fields provide an
- incorrect signal , and a simple pooling of their signals over space might
- also be incorrect.
- To track the zebra requires integrating local motion signals over space
- and time in a way that is consistent with the global change in position
- of an object, while discarding local signals that are inconsistent with
- the object's trajectory.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Despite the fact that these two motions systems clearly interact in determining
- our impression of the moving world, little is known as yet about how these
- two motion systems combine information - ANY LITERATURE?
-\end_layout
-
+aperture problem
+\begin_inset Quotes erd
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "mov:demo"
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Ilildreth:1982aa,Adelson:1982jr"
 
 \end_inset
 
- shows an example of stimuli that combine a first-order motion component
- with an independent higher-order (position-tracking) component.
+ Combining the component motion signals from V1 cells spanning a larger
+ area might allow disambiguation of the true velocity.
+ This extraction of first-order pattern motion from component motion appears
+ to be one of the roles of visual area MT 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Movshon:1985hb,Simoncelli:1998hb,Rust:2006el"
+
+\end_inset
+
+.
+ However, this computation of pattern motion cannot completely explain motion
+ perception either, as it introduces a problem in the loss of spatial selectivit
+y.
+ If motion information is pooled over a large area, the motion of the background
+ grass will create a subset of the pooled signals that are substantially
+ incorrect; an MT cell analyzing the motion of the zebra will mix together
+ signals from the zebra's stripes with signals from the grassy background.
  
+\end_layout
+
+\begin_layout Standard
+A related problem is that in computing an accurate velocity of a pattern
+ discards information about the location of the stimulus.
+ The computation in MT resolves texture motion but appears to lose information
+ about where the motion is occurring within the large MT receptive fields
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Majaj:2007aa"
+
+\end_inset
+
+.
+ This is puzzling because often the ostensible purpose served by motion
+ perception to track and anticipate the change in position of a physical
+ object.
+ Consider tracking an animal moving through obscuring tall grass, or watching
+ waves pass over choppy water.
+ The stalks of grass, or the foam and texture on the water, do not progressively
+ change position; they only oscillate in place as the movement passes under
+ them.
+ A computation based on first-order or pattern motion would generally track
+ the oscillation of the surface texture rather than that of the underlying
+ movement.
+ However it is the underlying movement that is more relevant, and we are
+ generally able to perceive.
+ 
+\end_layout
+
+\begin_layout Standard
+Literature on visual motion processing has drawn many different demarcations
+ between types of motion.
+ Various papers have discussed first-order versus second-order, short-range
+ vs.
+ long-range, local vs.
+ global, textural versus figural, and so on, based on particular distinctions
+ drawn among stimulus properties or proposed mechanisms 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Nishida:2011kx"
+
+\end_inset
+
+.
+ For the purposes of this thesis I will also have to pick a demarcation.
+ The tension in the problem of motion perception alluded to by the examples
+ of animals in the grass and waves on the water is that of combining information
+ about first-order signals, for which we are reasonably confident of the
+ mechanism, with information about spatial position.
+ This information about the changing spatial position of an object is what
+ I will be referring to as higher-order motion.
+ Tracking the zebra might require integrating locally occurring first-order
+ motion signals motion signals over space and time in a way that is consistent
+ with the global change in position of an object, while discarding adjacent
+ signals that are inconsistent with the object's trajectory.
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing single
+There is evidence that perception of higher order motion stimuli may have
+ a separate neural substrate from first order motion.
+ For example, adding higher order motion to a display does not appear to
+ change the threshold of detection for first-order motion, and any effects
+ in the other direction are weak and nonselective (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Edwards:1995fk,Nishida:1997aa,Cassanello:2011uq"
+
+\end_inset
+
+, but see 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Hedges:2011aa"
+
+\end_inset
+
+).
+ When differing first-order and higher order components are present in a
+ stimulus, the motion after-effect is always directed against the first
+ order component, whereas perception of the stimulus is often determined
+ by the higher order component 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Derrington:1985aa,Chubb:1989fj,Nishida:1992aa"
+
+\end_inset
+
+.
+ Neuropsychological evidence suggests a double dissociation between first-order
+ and higher-order motion processing deficits in a number of patients 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Vaina:1996pi,Vaina:2004kx"
+
+\end_inset
+
+, suggesting that different motion mechanisms may have anatomically distinct
+ pathways.
+ Another difference between first-order and higher-order stimuli that suggests
+ different mechanisms is that the former seems to be capable of tracking
+ objects through a feature object over distances larger than what can be
+ achieved through individual local filters.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+Long-range
+\begin_inset Quotes erd
+\end_inset
+
+ apparent motion stimuli span a distance greater than the classical receptive
+ field size in V1, eliciting sensations of motion without explicit direction
+ selective activity in V1.
+\end_layout
+
+\begin_layout Standard
+Interestingly, the physiological substrate of higher-order motion processing
+ is still unclear.
+ Cortical area MT (or somewhere downstream) has been proposed as a locus
+ of integration between motion and position information 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Nishida:1999aa,McGraw:2004aa,Mather:2009aa"
+
+\end_inset
+
+.
+ While the receptive fields of areas MT and MST are large enough that they
+ might be able to integrate information about objects that change position,
+ recordings of cells in these areas find that responses are dominated by
+ first-order motion and show little to no selectivity to higher-order, position-
+defined motion, even when the higher-order motion corresponds better to
+ the experience of viewing these stimuli 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Livingstone:2001ao,Ilg:2004qc,Hedges:2011aa"
+
+\end_inset
+
+.
+ So while signals present in MT have an influence on perceived position,
+ MT does not itself appear to track perceived position.
+ Despite the fact that these two motion systems clearly both contribute
+ to determining our impression of the moving world, the question of whether
+ and how they interact to produce a single coherent percept of motion remains
+ open 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Nishida:2011kx"
+
+\end_inset
+
+.
+ In this thesis I examine the combination of these two types of motion using
+ a simple display that contains first-order and higher-order components
+ whose direction of motion can be independently manipulated.
 \end_layout
 
 \begin_layout Standard
@@ -341,15 +465,15 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="1">
+<lyxtabular version="3" rows="3" columns="1">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-(A) 
+A 
 \begin_inset ERT
 status open
 
@@ -357,7 +481,31 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
+includemovie[poster,repeat]{5in}{2in}{demo-carent.mov}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+B 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{5in}{2in}{demo-single.mov}
 \end_layout
 
 \end_inset
@@ -373,7 +521,7 @@ includemovie[poster,repeat]{4in}{2in}{demo-single.mov}
 \begin_inset Text
 
 \begin_layout Plain Layout
-(B) 
+C 
 \begin_inset ERT
 status open
 
@@ -381,7 +529,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{4in}{2in}{demo-multiple.mov}
+includemovie[poster,repeat]{5in}{2in}{demo-multiple.mov}
 \end_layout
 
 \end_inset
@@ -409,25 +557,43 @@ name "mov:demo"
 
 \end_inset
 
-(A)
+Examples of carrier/envelope stimuli.
+ 
+\series bold
+A.
+
+\series default
+ At left, an element contains carrier (first-order) motion in the absence
+ of higher order motion.
+ At right, an element whose carrier motion is balanced, but the envelope
+ moves (higher order motion.) 
+\series bold
+B.
+\series default
+
 \begin_inset CommandInset label
 LatexCommand label
 name "mov:demo-single"
 
 \end_inset
 
- Single motion elements, moving alone.
+ Single motion elements, moving in circles.
  At left, the carrier motion is opposite the envelope motion.
  At right, the carrier motion is in the same direction as the envelope motion.
- (B) 
+ 
+\series bold
+C.
+
+\series default
+ 
 \begin_inset CommandInset label
 LatexCommand label
 name "mov:demo-multiple"
 
 \end_inset
 
- Five elements, each identical to the single element in A, distributed around
- each fixation point.
+ Five elements, each identical to the single element in subfigure B, distributed
+ around each fixation point.
  When elements are closely spaced, there is an eccentricity-dependent change
  in appearance.
  The appearance of the wheel on the left (with opposing carrier and envelope
@@ -445,21 +611,84 @@ name "mov:demo-multiple"
 \end_layout
 
 \begin_layout Standard
+Figure 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "mov:demo"
 
 \end_inset
 
- demonstrates how first order and higher order motion can interact.
- The movie shows two wheels, each composed of five moving elements.
- The elements are Gabor-like stimuli that window a moving carrier inside
- of a spatial envelope.
- The envelope moves independently of the carrier, so that the carrier produces
- first order motion while the envelope produces higher order motion.
- On the right side of the display, the local and global motion components
- move in the same direction; on the left side the local and global components
- are in opposite directions.
+ provides examples of first order and higher order motion, and how they
+ can interact.
+ The elements are Gabor-like stimuli that can be understood as a carrier
+ crating windowed by a spatial envelope.
+ The envelope moves independently of the carrier, so that the 
+\emph on
+carrier
+\emph default
+ provides 
+\emph on
+first order motion
+\emph default
+ while the 
+\emph on
+envelope
+\emph default
+ produces 
+\emph on
+higher order motion
+\emph default
+.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:demo"
+
+\end_inset
+
+A illustrates the difference between first-order and higher order motion.
+ On the left is a single element with carrier (i.e.
+ first order) motion but no envelope motion.
+ On the right side, the element has envelope motion but its carrier motion
+ is balanced.
+ The higher order motion on the right is seen as a clear progressive change
+ in position, while the first order motion has the appearance of a 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+ passing over a stationary element.
+ (The position of the element on the left does appear to shift slightly,
+ opposite its first-order motion.
+ This is an example of motion-induced position shift ) 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+which is OPPOSITE the normal direction of effect, what gives with these
+ pulsated patches?
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:demo"
+
+\end_inset
+
+B, elements have both carrier and envelope motion.
+ On the left, the carrier and envelope components move in the same direction;
+ on the right the carrier and envelope motions are in opposite directions.
  Full details of the construction of this display are given in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -468,67 +697,94 @@ reference "sub:methods-stimuli"
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-When the elements are viewed in isolation, as in 
+ Figure 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "mov:demo-single"
+LatexCommand ref
+reference "mov:demo"
 
 \end_inset
 
-, the appearance of the motion of the elements is consistent with the motion
- of the envelope.
- The carrier motion causes a change in the perception of 
+C is the same but with five elements around each fixation point.
+\end_layout
+
+\begin_layout Standard
+When elements with combined envelope and carrier motions are viewed in isolation
+, as in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "mov:demo"
+
+\end_inset
+
+B, the appearance of the direction of motion is consistent with the motion
+ of the envelope, and independent of the direction of the carrier.
+ The carrier motion causes a change in the sense of 
 \begin_inset Quotes eld
 \end_inset
 
-smoothness
+smoothness,
 \begin_inset Quotes erd
 \end_inset
 
- but does not strongly affect the apparent direction or even the apparent
- speed of the motion.
- However, when multiple elements are placed in proximity, but not overlapping,
- as in 
+ with the having a more jittery appearance, but does not strongly affect
+ the apparent direction or even the apparent speed of the motion.
+ However, in Figure 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "mov:demo-multiple"
+LatexCommand ref
+reference "mov:demo"
 
 \end_inset
 
-, the apparent motion depends on whether the stimulus is viewed centrally
+C, when multiple elements are placed in proximity, but not overlapping,
+ the apparent motion depends on whether the stimulus is viewed centrally
  or peripherally.
  When the five-element stimulus on the left is viewed centrally, the apparent
  direction of motion is consistent with the envelope.
- When the ring is viewed in the periphery, the apparent direction of motion
- matches that of the carrier.
- If the observer keeps attention on that stimulus while moving the eyes
- so as to move the stimulus from central to peripheral vision it is possible
- to make the apparent motion reverse.
+ When the same element ring is viewed in the periphery, the apparent direction
+ of rotation matches that of the carrier.
+ If the observer maintains attention on the leftward ring, which has carrier
+ and envelope in conflict, while moving their eyes so as to move the stimulus
+ from central to peripheral vision, the apparent motion may appear to reverse
+ in concert with the eye movement.
 \end_layout
 
 \begin_layout Standard
-From this demonstration it appears that having more than one target in a
- given region of space affects how first-order and higher-order motion are
- combined.
+From this demonstration it appears that having more than one element in
+ a given region of space affects how first-order and higher-order motion
+ are combined.
  That the appearance changes with retinal eccentricity of the stimulus suggests
- that the range of spatial interaction scales with the retinal eccentricity.
+ that the range of spatial interaction scales with retinal eccentricity.
  A plausible explanation could be that the presence of flanking objects
- limits the ability to see movement of the envelope, allowing the carrier
- motion to determine the percept; that is, 'crowding' may be affecting howfirst-
-order and higher-order motion are combined.
+ limits the ability to see movement of the envelope, thereby allowing the
+ carrier motion to determine the percept; that is, 
+\begin_inset Quotes eld
+\end_inset
+
+crowding
+\begin_inset Quotes erd
+\end_inset
+
+ may be affecting how first-order and higher-order motion are combined.
 \end_layout
 
 \begin_layout Standard
-In this paper we examine how first-order and higher order mechanisms interact
+In this thesis I examine how first-order and higher order mechanisms interact
  in forming an overall perception of motion.
- In Experiment 1 we quantify how element spacing or 'crowding' affects the
- apparent direction of motion and present a simple mixture model that assumes
- that global and local motion signals are combined In Experiment 2 we vary
- the number of elemnents independently of the spacing of targets and uncover
- a separate effect due to the number of targets on the screen.
+ In Experiment 1 I quantify how element spacing or 
+\begin_inset Quotes eld
+\end_inset
+
+crowding
+\begin_inset Quotes erd
+\end_inset
+
+ controls the sensitivity to first-order and higher order motions and present
+ a simple model to capture the results, wherein first-order and higher-order
+ motion signals are processed separately and combined at a decision stage.
+ In Experiment 2 we vary the number of elements independently of the spacing
+ of targets and determine that first-order motion sums inputs over a large
+ area, while higher order motion perception is sensitive to the spacing
+ between elements and flankers.
 \end_layout
 
 \begin_layout Standard
