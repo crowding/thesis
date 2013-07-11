@@ -17,7 +17,7 @@ knitr
 \maintain_unincluded_children false
 \language english
 \language_package default
-\inputencoding auto
+\inputencoding utf8
 \fontencoding global
 \font_roman default
 \font_sans default
@@ -66,13 +66,74 @@ knitr
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
-\author 232785317 "Peter" 
 \end_header
 
 \begin_body
 
 \begin_layout Section
 Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%knitr options
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-options,include=FALSE, cache=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -120,9 +181,10 @@ higher order
 
 \begin_layout Standard
 Accurate motion perception is essential for visually guided movement; complex
- behaviors such as chasing prey or catching a thrown ball require that an
- organism be able to rapidly determine the position and velocity of a moving
- object, and to anticipate its trajectory through space.
+ behaviors such as chasing prey, escaping predators, running while avoiding
+ obstacles, or catching a thrown ball require that an organism be able to
+ rapidly determine the position and velocity of a moving object, and to
+ anticipate its trajectory through space.
  Psychological research on motion perception has established that local
  and global motion are processed by separate mechanisms, an idea that dates
  back to Wertheimer's phenomenological distinction between the sensations
@@ -174,13 +236,13 @@ It is generally believed that there are at multiple classes of motion mechanisms
 \noun on
 first-order
 \noun default
- motion mechanism, seems to respond to local spatiotemporal correlations
+ motion mechanism, seems to respond to local spatiotemporal correlations
  in luminance contrast, at relatively short timescales and in small regions
  of space.
  It is generally agreed that the first-order motion mechanism originates
  with the direction selective response of cells in area V1.
  Classic models of first-order motion detection use linear filters tuned
- to certain combinations spatial and temporal frequencies, with the outputs
+ to certain combinations of spatial and temporal frequencies, with the outputs
  of several such filters being combined nonlinearly 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -189,7 +251,7 @@ key "Adelson:1985ea,Watson:1985aa"
 \end_inset
 
 .
- With some embellishments, the responses observed from cells in area V1
+ With some embellishments, the responses observed from cells in area V1
  are largely compatible with this type of model 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -214,12 +276,12 @@ key "Anderson:1987oq,Anderson:1989nx,Banks:1991kl,Anderson:1991tg,Watson:1995fh"
 \begin_layout Standard
 However, these first-order mechanisms cannot by themselves fully explain
  human motion perception.
- For example, perceiving visual motion does not necessarily require features
- to differ in mean luminance from the background, and does not require motion
- energy in the Fourier domain.
+ For example, perceiving visual motion does not necessarily require moving
+ features to differ in mean luminance from the background, and does not
+ require motion energy in the Fourier domain.
  Many forms of 
 \noun on
-higher order
+higher-order
 \noun default
  motion stimuli have been constructed that would not be consistently detectable
  to first-order mechanisms, but these stimuli still elicit strong sensations
@@ -231,13 +293,11 @@ key "Derrington:1985aa,Chubb:1988kx,Zanker:1990aa"
 \end_inset
 
 .
- These higher order stimuli can be constructed variously by modulations
- in contrast, texture, or other stimulus features, but generally
-\change_deleted 232785317 1349734913
- 
-\change_unchanged
- involve the change in position, over time, of some feature in the image
- 
+ These higher order stimuli have been used to provide evidence for and character
+ize motion sensing systems separate from the first-order mechanisms.
+ They have been constructed variously by modulations in contrast, texture,
+ or other stimulus features, but generally involve the change in position,
+ over time, of some feature in the image 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Lu:1995la"
@@ -245,24 +305,23 @@ key "Lu:1995la"
 \end_inset
 
 .
- These higher order stimuli have been used to provide evidence for and character
-ize motion sensing systems separate from the first-order mechanisms.
+ 
 \end_layout
 
 \begin_layout Standard
-One possible reason for having multiple motion estimation systems is that
- first-order motion signals are not always a reliable indication of the
- veridical motion of an object.
+One possible reason for having multiple motion systems is that first-order
+ motion signals are not always a reliable indication of the veridical motion
+ of an object.
  In a complicated visual world, motion can come from many sources, and accurate
  perception of the movement of objects requires disambiguating motion signals
  attributable to the object from irrelevant motions in the background or
  of other objects.
  Consider the task of trying to track the movement of a zebra among a background
  of waving grass.
- The first problem is that a motion energy sensor with a limited receptive
- field size will report the component of the zebra's motion orthogonal to
- its stripes, rather than the veridical motion of the zebra, an instance
- of the so-called 
+ One challenge this task presents is that a motion energy sensor with a
+ limited receptive field size will report the component of the zebra's motion
+ orthogonal to its stripes, rather than the veridical motion of the zebra,
+ an instance of the so-called 
 \begin_inset Quotes eld
 \end_inset
 
@@ -358,7 +417,7 @@ key "Nishida:2011kx"
 \begin_layout Standard
 \paragraph_spacing single
 There is evidence that perception of higher order motion stimuli may have
- a separate neural substrate from first order motion.
+ a separate neural substrate from first-order motion.
  For example, adding higher order motion to a display does not appear to
  change the threshold of detection for first-order motion, and any effects
  in the other direction are weak and nonselective (
@@ -377,9 +436,9 @@ key "Hedges:2011aa"
 
 ).
  When differing first-order and higher order components are present in a
- stimulus, the motion after-effect is always directed against the first
- order component, whereas perception of the stimulus is often determined
- by the higher order component 
+ stimulus, the motion after-effect is always directed against the first-order
+ component, whereas perception of the stimulus is often determined by the
+ higher order component 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Derrington:1985aa,Chubb:1989fj,Nishida:1992aa"
@@ -464,16 +523,26 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="1">
+<lyxtabular version="3" rows="3" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-A 
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -481,7 +550,11 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{5in}{2in}{demo-carent.mov}
+includemovie[poster,repeat]{1
+\backslash
+linewidth}{0.4
+\backslash
+linewidth}{demo_carenv.mov}
 \end_layout
 
 \end_inset
@@ -493,11 +566,19 @@ includemovie[poster,repeat]{5in}{2in}{demo-carent.mov}
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-B 
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -505,7 +586,11 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{5in}{2in}{demo-single.mov}
+includemovie[poster,repeat]{1
+\backslash
+linewidth}{0.4
+\backslash
+linewidth}{demo_single.mov}
 \end_layout
 
 \end_inset
@@ -517,11 +602,19 @@ includemovie[poster,repeat]{5in}{2in}{demo-single.mov}
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-C 
+C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -529,7 +622,11 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{5in}{2in}{demo-multiple.mov}
+includemovie[poster,repeat]{1
+\backslash
+linewidth}{0.4
+\backslash
+linewidth}{demo_counter.mov}
 \end_layout
 
 \end_inset
@@ -611,7 +708,6 @@ name "mov:demo-multiple"
 \end_layout
 
 \begin_layout Standard
-Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:demo"
@@ -639,20 +735,21 @@ envelope
 higher order motion
 \emph default
 .
- Figure 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:demo"
 
 \end_inset
 
-A illustrates the difference between first-order and higher order motion.
+A illustrates the difference between first-order and higher-order motion.
  On the left is a single element with carrier (i.e.
- first order) motion but no envelope motion.
+ first-order) motion but no envelope motion.
  On the right side, the element has envelope motion but its carrier motion
  is balanced.
  The higher order motion on the right is seen as a clear progressive change
- in position, while the first order motion has the appearance of a 
+ in position, while the first order motion has an appearance more like a
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -663,7 +760,14 @@ wind
  passing over a stationary element.
  (The position of the element on the left does appear to shift slightly,
  opposite its first-order motion.
- This is an example of motion-induced position shift ) 
+ This is an example of motion-induced position shift; 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "De-Valois:1991jt,Ramachandran:1990aa"
+
+\end_inset
+
+) 
 \begin_inset Note Note
 status open
 
@@ -679,7 +783,7 @@ which is OPPOSITE the normal direction of effect, what gives with these
 \end_layout
 
 \begin_layout Standard
-In Figure 
+In 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:demo"
@@ -689,15 +793,17 @@ reference "mov:demo"
 B, elements have both carrier and envelope motion.
  On the left, the carrier and envelope components move in the same direction;
  on the right the carrier and envelope motions are in opposite directions.
- Full details of the construction of this display are given in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:methods-stimuli"
+ Full details of the construction of this display are given in Methods.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+link!
+\end_layout
 
 \end_inset
 
-.
- Figure 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:demo"
@@ -718,7 +824,7 @@ reference "mov:demo"
 
 B, the appearance of the direction of motion is consistent with the motion
  of the envelope, and independent of the direction of the carrier.
- The carrier motion causes a change in the sense of 
+ The conflicting carrier motion causes a change in the sense of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -728,7 +834,7 @@ smoothness,
 
  with the having a more jittery appearance, but does not strongly affect
  the apparent direction or even the apparent speed of the motion.
- However, in Figure 
+ However, in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:demo"
@@ -738,11 +844,11 @@ reference "mov:demo"
 C, when multiple elements are placed in proximity, but not overlapping,
  the apparent motion depends on whether the stimulus is viewed centrally
  or peripherally.
- When the five-element stimulus on the left is viewed centrally, the apparent
+ When the five-element ring on the left is viewed centrally, the apparent
  direction of motion is consistent with the envelope.
  When the same element ring is viewed in the periphery, the apparent direction
  of rotation matches that of the carrier.
- If the observer maintains attention on the leftward ring, which has carrier
+ If an observer maintains attention on the leftward ring, which has carrier
  and envelope in conflict, while moving their eyes so as to move the stimulus
  from central to peripheral vision, the apparent motion may appear to reverse
  in concert with the eye movement.
@@ -764,27 +870,47 @@ crowding
 \begin_inset Quotes erd
 \end_inset
 
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Levi:2008la,Pelli:2008nx"
+
+\end_inset
+
  may be affecting how first-order and higher-order motion are combined.
 \end_layout
 
 \begin_layout Standard
 In this thesis I examine how first-order and higher order mechanisms interact
  in forming an overall perception of motion.
- In Experiment 1 I quantify how element spacing or 
-\begin_inset Quotes eld
+ In Experiment 1
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+link@
+\end_layout
+
 \end_inset
 
-crowding
-\begin_inset Quotes erd
+ I quantify how element spacing determines the sensitivity to first-order
+ and higher order motions and present a simple model to capture the results,
+ wherein first-order and higher-order motion signals are processed separately
+ and combined at a decision stage.
+ In Experiment 2
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+link!
+\end_layout
+
 \end_inset
 
- controls the sensitivity to first-order and higher order motions and present
- a simple model to capture the results, wherein first-order and higher-order
- motion signals are processed separately and combined at a decision stage.
- In Experiment 2 we vary the number of elements independently of the spacing
- of targets and determine that first-order motion sums inputs over a large
- area, while higher order motion perception is sensitive to the spacing
- between elements and flankers.
+ we vary the number of elements independently of the spacing of targets
+ and determine that first-order motion sums inputs over a large area, while
+ higher order motion perception is sensitive to the spacing between elements
+ and flankers.
 \end_layout
 
 \begin_layout Standard
