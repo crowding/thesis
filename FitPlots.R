@@ -59,7 +59,7 @@ numdensity_plot <- function(object) {
   folded.predictions <- mutilate.predictions(
       predictions, fold=TRUE, spindle=TRUE, collapse=TRUE)
 
-  print(plot.spacing %+% segment.data
+  print(plot.spacing %+% segment.data + facet_wrap(~ subject + displacement + content)
         + density_prediction_layers(predictions, connect="number")
         + errorbars(facet="label", segment.data))
   print(plot.spacing %+% folded.segment.data + facet_wrap(~ label)
@@ -152,8 +152,8 @@ predict.stanenv <- function(object, newdata=object$data,
 
 interpolator <- function(
     menergy,
-    interpolating=c("target_number_shown", "content", "displacement"),
-    interpolated=c("norm_diff"),
+    interpolating=c("target_number_shown", "target_number_all", "content", "displacement"),
+    interpolated=c("norm_diff", "energy_diff"),
     matched=c()
     ) {
   menergy <- chain(menergy, subset(grid==TRUE), add_energies,
@@ -313,7 +313,7 @@ crossPlot <- function(fit, ..., subsample=1000) {
   (ggplot(plotdata)
    + aes(x=x, y=y)
    + facet_grid(facet.y ~ facet.x, scales="free")
-   + geom_point(size=0.5, alpha=0.2)
+   + geom_point(size=0.15)
    + theme_bw()
    + theme(strip.text.x=element_text(angle=-90, hjust=1),
            strip.text.y=element_text(angle=0, hjust=0),
