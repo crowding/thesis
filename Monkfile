@@ -83,12 +83,12 @@
 --invisible --phony fit
 
 #some models are not baked yet, or need extra samples
-##--command
-##--output --match --invisible (SummationField)\.fit\.RData$ 100
+#--command
+#--output --match --invisible (OnlyOpponentMotion|CenterSurroundModel)\.fit\.RData$ 100
 
 --command
 --output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 4000
- 
+
 --command Rscript --input FitPlots.R
 --input --match (.*)\.fit\.RData
 --input motion_energy.csv
@@ -115,6 +115,8 @@
 --input --match (Hemifield|SummationField)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony pdf
+
+#--command Rscript --input --once StanResiduals.R
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
