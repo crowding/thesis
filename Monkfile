@@ -84,7 +84,7 @@
 
 #some models are not baked yet, or need extra samples
 --command
---output --match --invisible (CenterSurroundModel)\.fit\.RData$ 100
+--output --match --invisible (CenterSurroundModel)\.fit\.RData$ 1000
 
 --command
 --output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 4000
