@@ -14,13 +14,13 @@ suppressPackageStartupMessages({
   #theme_update(panel.border=element_blank())
 })
 
-infile <- "OnlyOpponentMotion.fit.RData"
+infile <- "CenterSurroundModel.fit.RData"
 grid <- "motion_energy.csv"
-plotfile <- "OnlyOpponentMotion.plots.pdf"
+plotfile <- "CenterSurroundModel.plots.pdf"
 
-main <- function(infile="OnlyOpponentMotion.fit.RData",
+main <- function(infile="CenterSurroundModel.fit.RData",
                  grid="motion_energy.csv",
-                 plotfile="OnlyOpponentMotion.plots.pdf") {
+                 plotfile="CenterSurroundModel.plots.pdf") {
   e <- load2env(infile)
   class(e) <- c("stanenv", class(e))
   #inject a motion-energy interpolator if necessary. An interpolator modifies
@@ -40,7 +40,7 @@ main <- function(infile="OnlyOpponentMotion.fit.RData",
   message("plotting contours...")
   contourPlots(e, fold=TRUE)
   crossPlots(e)
-  on.exit(dev.off)
+  on.exit(dev.off) 
 }
 
 contourPlots <- function(object, fold=fold) {

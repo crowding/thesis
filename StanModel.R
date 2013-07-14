@@ -41,7 +41,6 @@ main <- function(infile="data.RData",
   d <- load2env(infile)
   menergy <- read.csv(grid)
   chain(d$data, (e$filter_data)(), (e$format_data)(menergy)) -> e$data
-
   fits <- ddply_along(e$data, e$model_split, function(split, chunk) {
     stan_data <- e$stan_format(chunk)
     fit <- sampling(e$model, data=stan_data, warmup=iter/2, iter=iter)

@@ -1,7 +1,7 @@
 #scratchpad for testing/debugging code I'm refining elsewhere
 
 ##########
-## something about GNM is fucked and sensitive to different ways of contrasting...
+ ## something about GNM is fucked and sensitive to different ways of contrasting...
 
   #a fit that ain't working for whatever reason
   model1 <- match_df(many.fits, cbind(bad.fits[3,], subject="nj", type="spacing"))$model[[1]]
@@ -206,3 +206,13 @@ function(.) {
             target_number_all/envelope.factor))
     .
 }
+
+
+logliks <- mkchain(.$fits, put(.$fit, NULL), mutate(optimized=lapply(optimized, `[[`, "lp__")))
+merge(logliks(a), logliks(b), "subject")
+
+
+a$stan_predict <- stan_predict
+environment(a$stan_predict) <- a
+test <- predict(a, a$data[1,])
+test <- predict(a, a$data[1:5,], summary=colwise_se_frame)

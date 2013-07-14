@@ -1,3 +1,10 @@
+filter_data <- mkchain(
+    subset(exp_type %in% c("spacing", "content", "numdensity"))
+  , ddply("subject", function(x)if ("numdensity" %in% x$exp_type) x else data.frame())
+  , match_df(., subset(count(., "subject"), freq>2000), on="subject")
+    , subset(subject %in% c("pbm", "nj"))
+  )
+
 splits <- c("subject", "content",
             "displacement",
             "target_number_all",
@@ -45,10 +52,13 @@ parameters {
   real bias;
 
   real<lower=0,upper=2*pi()> cs;
-  real<lower=0> summation;
-  real<upper=0> repulsion;
+  real<lower=-5, upper=5> summation; #cap it to keep it from running away
+//  real<lower=-5, upper=0> repulsion; #if there are no number/density trials
   real<lower=0, upper=pi()> summation_width;
-  real<lower=0, upper=pi()> repulsion_width;
+
+//  real<lower=0, upper=pi()> repulsion_width;
+//  real overall;
+  real local;
   real nonlinearity;
 }
 
@@ -57,13 +67,14 @@ model {
     real crowdedness;
     real link_displacement;
     real link_summation;
-    real link_repulsion;
-    real link_nonlinearity;
+//    real link_repulsion;
+    real link_local;
+//    real link_overall;
     real link;
     real response;
 
     link_summation <- 0;
-    link_repulsion <- 0;
+    //link_repulsion <- 0;
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
     link_displacement <- beta_dx * displacement[n] * crowdedness;
 
@@ -88,19 +99,25 @@ model {
         }
         link_summation <- link_summation
           + summation * multiplicity * content[n]
-            * exp(normal_log(distance, 0, summation_width));
-        link_repulsion <- link_repulsion
-          + repulsion * multiplicity * content[n]
-            * exp(normal_log(distance, 0, repulsion_width));
+            * ( exp(-(distance*distance)/2/(summation_width*summation_width))
+                / sqrt(2*pi()*summation_width*summation_width)); //normal_log(distance,  0, summation_width));
+
+//        link_repulsion <- link_repulsion
+//          + repulsion * multiplicity * content[n]
+//            * exp(normal_log(distance, 0, repulsion_width));
     }
     //Average the influence over each element
     link_summation <- link_summation / target_number_shown[n];
-    link_repulsion <- link_repulsion / target_number_shown[n];
-    link_nonlinearity <- link_nonlinearity * content[n] * abs(content[n]);
-
-    link <- bias + link_displacement + link_summation + link_repulsion + link_nonlinearity;
+//   link_repulsion <- link_repulsion / target_number_shown[n];
+//   link_overall <- nonlinearity * content[n] * target_number_shown[n];
+    link_local <- local * content[n] + nonlinearity * content[n] * abs(content[n]);
+    link <- bias
+            + link_displacement
+            + link_summation
+            + link_local;
+//          + link_repulsion + link_overall;
     response <- inv_logit( link ) .* (1-lapse) + lapse/2;
-    n_cw[n] ~ binomial( n_obs[n], response);
+    n_cw[n] ~ binomial(n_obs[n], response);
   }
 }'
 
@@ -121,19 +138,19 @@ model {
                           rep(coefs$summation_width, length(distance)))
                     * multiplicity,
                     nrow=length(distance)))
-     raw_repulsion <- (
-         rep(1, length(multiplicity))
-         %*% matrix(dnorm(distance, 0,
-                          rep(coefs$repulsion_width, length(distance)))
-                    * multiplicity,
-                    nrow=length(distance)))
+     ## raw_repulsion <- (
+     ##     rep(1, length(multiplicity))
+     ##     %*% matrix(dnorm(distance, 0,
+     ##                      rep(coefs$repulsion_width, length(distance)))
+     ##                * multiplicity,
+     ##                nrow=length(distance)))
      cbind(group, data.frame(
          link_summation =
              (group$content * coefs$summation
               * as.vector(raw_summation)/group$target_number_shown)
-       , link_repulsion =
-             (group$content * coefs$repulsion
-              * as.vector(raw_repulsion)/group$target_number_shown)
+       ## , link_repulsion =
+       ##       (group$content * coefs$repulsion
+       ##        * as.vector(raw_repulsion)/group$target_number_shown)
          ))
    })
    , .[order(.$.n), ]
@@ -141,6 +158,8 @@ model {
        .
      , link_displacement = beta_dx * displacement
                              * (2 - 2/(1+exp(-cs/frac_spacing)))
-     , link = bias + link_displacement + link_repulsion + link_summation
+     , link_local = local * content + nonlinearity * (content * abs(content))
+     ## , link_overall = content * target_number_shown
+     , link = bias + link_displacement + link_repulsion + link_summation + link_local
      , response = plogis(link) * (1-lapse) + lapse/2
        )))
