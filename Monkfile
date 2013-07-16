@@ -131,6 +131,9 @@
 --command '$(LYX)' %-e knitr --input --match ([^_].*)\.lyx
 --output --invisible {0}.Rnw
 
+--command '$(LYX)' %-e latex --input --match (_master)\.lyx
+--output --invisible {0}.tex
+
 --command Rscript %-e "\"library(knitr); knit('{0}{1}.Rnw', '{1}.tex')\""
 --input --invisible --match ((?:.*/)?)([^_].*)\.Rnw
 --output --invisible --once {0}{1}.tex

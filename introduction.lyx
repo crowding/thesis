@@ -76,7 +76,7 @@ Introduction
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -237,7 +237,14 @@ It is generally believed that there are at multiple classes of motion mechanisms
 first-order
 \noun default
  motion mechanism, seems to respond to local spatiotemporal correlations
- in luminance contrast, at relatively short timescales and in small regions
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:demo-single"
+
+\end_inset
+
+luminance contrast, at relatively short timescales and in small regions
  of space.
  It is generally agreed that the first-order motion mechanism originates
  with the direction selective response of cells in area V1.
@@ -907,10 +914,10 @@ link!
 
 \end_inset
 
- I vary the number of elements independently of the spacing between elements
- and determine that the first-order motion system sums inputs over a large
- area, while the higher order system perception is controlled by the spacing
- between elements and flankers.
+ we vary the number of elements independently of the spacing of targets
+ and determine that first-order motion sums inputs over a large area, while
+ higher order motion perception is sensitive to the spacing between elements
+ and flankers.
 \end_layout
 
 \begin_layout Standard
