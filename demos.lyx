@@ -8,6 +8,7 @@
 \usepackage{movie15}
 
 \usepackage{hyperref}
+\usepackage{SIunits}
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
@@ -154,11 +155,11 @@ external=TRUE,results="hide",echo=FALSE)
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Greyedout
-status open
+\begin_inset Note Note
+status collapsed
 
 \begin_layout Plain Layout
-Structurally I view this section as a sort of 
+This section is sort of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -170,8 +171,6 @@ Experiment 0
  To me it has the fewest sequencing problems I describe the stimulus before
  this section, and if I describe the task after this section.
  So task description would go into submethods for experiment 1.
- If I have had some demonstrations before motivating Experiment 1, and for
- the demonstrations to follow a description of how the stimuli are constructed.
 \end_layout
 
 \begin_layout Plain Layout
@@ -194,136 +193,60 @@ what kind of motion system is this stimulating?
 \end_layout
 
 \begin_layout Standard
-The phenomenon that motivates this thesis is the density-driven reversal
- of the apparent direction of motion that occurs when envelope and carrier
- motion are incongruent.
- When elements are widely spaced, the apparent direction of motion follows
- that of the envelopes; as element spacing decreases, the direction of motion
- changes to agree with that of the carrier.
- A model of visual processing of this class of stimuli responses will need
+A model of visual processing of this class of stimuli responses will need
  to account for changes in the direction of apparent motion.
- 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Quotes eld
-\end_inset
-
-apparent motion
-\begin_inset Quotes erd
-\end_inset
-
- means the subjective appearance of motion.
- If you think it refers to an operational class of sampled stimuli, you're
- wrong.
- I can blame Watson and Ahumada for this terminological confusion, but read
- Wertheimer.
- The 
-\begin_inset Quotes eld
-\end_inset
-
-problem
-\begin_inset Quotes erd
-\end_inset
-
- of apparent motion that Watson and Ahumada responded to was, in all previous
- literature, how a sampled stimulus could _have_ 
-\begin_inset Quotes eld
-\end_inset
-
-apparent motion.
-\begin_inset Quotes erd
-\end_inset
-
- Not how 
-\begin_inset Quotes eld
-\end_inset
-
-an apparent motion stimulus
-\begin_inset Quotes erd
-\end_inset
-
- could have apparent motion.
- Sure the confusion started by Watson and Ahumada has been well entrenched
- for almost 30 years, but I can still say it is wrong, because the current
- usage _makes no sense._ Apparent means something that appears.
-\end_layout
-
-\end_inset
-
- I will proceed to quantify this reversal effect.
+ When elements are isolated, the apparent direction of motion follows that
+ of the envelopes; when multiple elements are placed in proximity, the direction
+ of apparent motion changes to agree with that of the carrier.
+ I will proceed to quantify this reversal effect in subsequent sections.
  In order to do so I asked naïve observers to make binary classifications
- of their impressions of a stimulus's overall direction (clockwise or counterclo
-ckwise.) However, binary responses collapse together a number of perceptual
+ of their impressions of the overall direction of motion (clockwise or countercl
+ockwise.) However, binary responses collapse together a number of perceptual
  qualities, so that these simple direction judgments do not fully capture
- the elements of the subjective appearance of these stimuli.
-\end_layout
-
-\begin_layout Standard
-The demonstration in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "mov:demo"
-
-\end_inset
-
- showed that multiple elements placed in proximity in peripheral vision
- interfered in such a way that the carrier motion became more perceptually
- salient and the envelope motion less so.
- I drew a comparison between the spacing-dependent interference and the
- phenomenon of crowding in peripheral vision.
- If this is an instance of crowding the degree of interference between neighbori
-ng elements should be a function of cortical distance 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Pelli:2008nx"
-
-\end_inset
-
-.
- Since cortical magnification outside foveal vision scales roughly inversely
- with viewing eccentricity 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Rovamo:1979nq"
-
-\end_inset
-
-, the effective range of spatial interference (or 
-\begin_inset Quotes eld
-\end_inset
-
-critical spacing
-\begin_inset Quotes erd
-\end_inset
-
-) should scale with eccentricity.
- Thereby for this display it should be relatively robust to viewing distance.
+ the appearance of these stimuli.
 \end_layout
 
 \begin_layout Standard
 Below are three demonstrations that place the fixation point in the center
  of the screen and the moving elements on a circle of constant eccentricity.
- The motion of the individual elements is the same in each demo, with carrier
- motion directed counterclockwise and envelope motion directed clockwise;
- only the spacing and number of elements changes.
- 
+ The motion of the individual elements is the same in each demo; only the
+ spacing and number of elements changes.
+ These movies are arranged to loop, however the psychophysics I will discuss
+ in subsequent sections is based on brief (
+\begin_inset Formula $~500\milli\second$
+\end_inset
+
+) presentations of motion.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 spacing and such
 \end_layout
 
-\begin_layout Subparagraph
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 wide
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 \paragraph_spacing single
 \begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:middle"
+LatexCommand ref
+reference "mov:uncrowded"
 
 \end_inset
 
@@ -332,19 +255,15 @@ reference "mov:middle"
 \end_inset
 
  measured circumferentially.
- For most observers the direction of motion perceived is clockwise.
- clearly with the 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "mov:uncrowded"
-
-\end_inset
-
-.
- This illustrates that higher order motion can be clearly seen in the periphery.
- At these wide element spacings the envelope motion dominates the perception.
- It becomes difficult to even tell the direction of motion of the carrier
- The envelope motion 
+ In this demonstration the carrier motion is clockwise and the envelope
+ motion is counterclockwise.
+ For all observers I have shown this stimulus to, the perceived direction
+ of motion is clockwise, in agreement with the envelope motion.
+ This illustrates that higher order motion can be clearly seen in the periphery,
+ and that at these wide element spacings the envelope motion dominates the
+ perception.
+ Compared to other stimuli it is relatively difficult to tell the direction
+ of motion of the carrier, so we could say that the envelope motion 
 \begin_inset Quotes eld
 \end_inset
 
@@ -360,33 +279,117 @@ key "Hedges:2011aa"
 \end_inset
 
 .
- However, stimuli for which carrier motion opposes envelope have more flicker
- than stimuli where the two motions are congruent, as can be seen in 
+ For the greatest values values of carrier strength, (for these demonstrations,
+ the carrier strength as defined in 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+link!
+\end_layout
+
+\end_inset
+
+Methods is 
+\begin_inset Formula $100\%$
+\end_inset
+
+,) the carrier motion might appear as a 
+\begin_inset Quotes eld
+\end_inset
+
+wind
+\begin_inset Quotes erd
+\end_inset
+
+ which overlays the moving envelopes, somewhat similar to the appearance
+ of a low-contrast moving grating superposed on a stationary pedestal grating
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lu:2001fv"
+
+\end_inset
+
+.
+ Notably, when carrier motions are directed opposite to envelope motion,
+ as can be seen in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:demo-single"
 
 \end_inset
 
-.
- 
+, the elements appear to have more flicker, and the perceived motion, while
+ agreeing in direction with the envelope, seems less smooth.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\paragraph_spacing single
+ In some experiments not reported further here I tried to correlate this
+ sense of subjective smoothness of motion to judgements of instantaneous
+ position, without much success.
 \end_layout
 
-\begin_layout Subparagraph
-medium
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-As the inter-element spacing decreases, we approach a 
-\begin_inset Quotes eld
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{3in}{3in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_circle_6.mov",sep="")}}
+\end_layout
+
 \end_inset
 
-critical spacing.
-\begin_inset Quotes erd
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:uncrowded"
+
 \end_inset
 
- Generally the carrier motion becomes more visible and observers begin to
- equivocate in their reports of perceived motion direction.
+ An example motion stimulus similar to those used in my experiments.
+ There are six elements, with the carrier motion clockwise and the envelope
+ counterclockwise.
+ The envelope motion dominates the subjective appearance.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As the number of elements in the display increases and the spacing between
+ elements decreases, the appearance of the motion changes.
  The demonstration in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -399,93 +402,165 @@ reference "mov:middle"
 \begin_inset Formula $0.39e$
 \end_inset
 
-.
- The subjective appearances at moderate spacings are varied.
- For many observers this produces some combination of perception of both
- the carrier and envelope motion.
- At times, these stimuli appear to first move in the direction of the carrier,
- and then to reverse direction shortly after stimulus onset.
- When collexting data on binary classifications we observed a correlation
- between response times and agreement between carrier or envelope motion,
- which motivated limiting the viewing duration and response time deadline
- in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:results-basic"
-
+, which seems close to the 
+\begin_inset Quotes eld
 \end_inset
 
-.
- 
+critical spacing
+\begin_inset Quotes erd
+\end_inset
+
+ for many observers.
+ Generally the carrier motion becomes more visible and observers begin to
+ equivocate in their reports of perceived motion direction.
+ The perception is a mixture of both carrier and envelope motions, but the
+ form of this mixture can take on several different appearances.
+ Observers viewing stimuli near the critical spacing described a number
+ of different qualitative impressions of the stimulus: 
+\end_layout
+
+\begin_layout Itemize
+Transparent motion, in which different layers seemed to slide over each
+ other in opposite directions;
+\end_layout
+
+\begin_layout Itemize
+Windowed motion, in which the elements appear to be rotating aperture through
+ which a moving background is seen.
+\end_layout
+
+\begin_layout Itemize
+Motion that changes direction over time.
+ In these cases the immediate perception was usually in agreement with the
+ carrier motion while the later percept was in agreement with the envelope
+ motion.
+\end_layout
+
+\begin_layout Itemize
+A non-uniform appearance where one side of the wheel appears to move one
+ direction and the other side in the other direction.
+\end_layout
+
+\begin_layout Itemize
+A few isolated elements move in agreement with the envelope motion and can
+ be attentively tracked, but non-attended regions of the wheel seem to move
+ in the opposite direction.
 \end_layout
 
 \begin_layout Standard
-appear to move clockwise in some parts of the circle and counterclockwise
- elsewhere.
- Although both the carrier and envelope motions are (considered separately)
- consistent with an underlying rigid rotation of a surface around the fixation
- point, or alternately a rotation of the observer, the perception never
- appears to obey a rigid body constraint.
- 
+The subjective speed of the motion can change as spacing is brought near
+ critical; if carrier motion opposes envelope motion, the perceived speed
+ of the stimulus reaches a minimum at a certain spacing, being faster in
+ the direction of envelope motion when spacing is larger and faster in the
+ direction of carrier motion when spacing is smaller.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Greyedout
+The tendency was for motion to be seen with the carrier immediately after
+ stimulus onset but then to change to be more in agreements with the envelope
+ motion.
+ Observers performing a direction-discrimination task under time pressure,
+ such as in 
+\begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-Further, when motion direction appears to reverse after stimulus onset,
- the perceptual reversal (and its behavioral correlate) occurs much faster
- than the perceptual change that occurs when separate moving objects are
- reinterpreted as a smaller number of rigidly moving bodies 
+link!
+\end_layout
+
+\end_inset
+
+Experiment 1, often reported cases where they gave a mistaken response (i.e.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ 
+\end_layout
+
+\end_inset
+
+ they gave a response but their perception of motion changed immediately
+ afterwards.) In preliminary experiments we noted a correlation between response
+ direction and response time, for some but not all observers.
+\end_layout
+
+\begin_layout Standard
+One perceptual phenomenon that did 
+\emph on
+not
+\emph default
+ seem to occur is bistability.
+ Both the carrier motions and envelope motions are individually consistent
+ with a global rotation of the display around the fixation point, so that
+ we might have anticipated perceptions exclusively consistent one rigid
+ movement or the other 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Anstis:2011vn"
 
 \end_inset
 
-
-\emph on
 .
-
-\emph default
- Nor is the perception of movement bistable; a change in perceived direction
- for some element of the circle does not, in general, cause the perceived
- motion of the entire stimulus switch direction.
- Attention does play a role; for incongruent displays with closely spaced
- elements, it is possible to direct attention to one (or sometimes several)
- elements in the circle.
- These elements are seen to move in the direction of envelope motion, but
- the rest of the circle is seen to move in the contrary direction, making
- for a somewhat paradoxical percept wherein movement is in opposite directions,
- but individual elements are not seen to cross over or collide.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subparagraph
-narrow
+ However, the appearances of critically spaced stimuli tended to reflect
+ a mixture of two motions rather than one overriding motion, and there was
+ never the spontaneous all-at-once switch that occurs in perceptually bistable
+ stimuli.
 \end_layout
 
 \begin_layout Standard
-When elements are closely spaced in the periphery, it is generally impossible
- to see the direction of envelope motion; the overall impression is of motion
- in the direction of the carrier.
- There is not the sense of two separate motions when short and long range
- motion are incongruent.
- However, the amount of subjective flicker does appear to differ between
- incongruent and congruent motion, with incongruent motion having more flicker,
- as can bee seen in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "mov:demo-multiple"
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{3in}{3in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_circle_16.mov",sep="")}}
+\end_layout
 
 \end_inset
 
-.
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:middle"
+
+\end_inset
+
+Same stimulus as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:uncrowded"
+
+\end_inset
+
+ with sixteen elements.
+ The appearance may be a mixture of carrier and envelope motions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -503,78 +578,77 @@ reference "mov:dominated"
 .
  For most observers it becomes difficult to see the envelope motion at this
  density especially at short viewing durations.
+ When elements are closely spaced in the periphery, it is generally impossible
+ to see the direction of envelope motion; the overall impression is of motion
+ in the direction of the carrier.
+ There is not as much of the appearance of two separate motions, but one
+ seems to dominate.
+ However, the amount of subjective flicker does appear to increase when
+ carrier motion is incongruent with envelope motion.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includemovie[poster,repeat]{3in}{3in}{
+\backslash
+Sexpr{paste(getwd(),"/demo_circle_22.mov",sep="")}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:dominated"
+
+\end_inset
+
+A stimulus with 22 identical elements.
+ In most observers, carrier motion dominates the appearance.
  
 \end_layout
 
-\begin_layout Standard
-Increasing the spacings further to where element motion tends to dominate,
- observers often describe the motion contained in the stimulus as belonging
- to two components, one belonging to the motion of the elements themselves,
- and the other being a kind of 
-\begin_inset Quotes eld
 \end_inset
 
-wind
-\begin_inset Quotes erd
-\end_inset
 
- overlaid on top of the elements.
- This seems similar to the perception elicited by a moving grating superposed
- on a stationary pedestal 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Lu:2001fv"
+\end_layout
 
 \end_inset
 
-.
+
 \end_layout
 
 \begin_layout Standard
-The subjective speed of the elements also changes with the element spacing.
- At spacings near the critical distance the elements almost appear to be
- at a near standstill over the brief duration of the stimulus.
- As element spacing is increased, the perceived speed of element motion
- (as distinguished from the 
-\begin_inset Quotes eld
-\end_inset
+While I did not describe the stimulus construction in detail to naïve observers,
+ all observers after having practiced at the task employed in 
+\begin_inset Note Note
+status open
 
-wind
-\begin_inset Quotes erd
-\end_inset
-
-) also seems to increase.
+\begin_layout Plain Layout
+link!
 \end_layout
-
-\begin_layout Subparagraph
-overall
-\end_layout
-
-\begin_layout Standard
-Thus at very narrow and very wide element spacings the motion signal does
- not provide a particularly good cue for congruent vs.
- incongruent motion, though the sensation of subjective flicker and smoothness
- of movement does tend to differentiate the two stimuli.
- Incongruent stimuli have more flicker, at both narrow and wide element
- spacings, and appear to move less smoothly.
- I have attempted to correlate this sensation of smoothness or lack thereof
- with reports of the instantaneous position of the elements, without much
- success.
-\end_layout
-
-\begin_layout Standard
-While I did not inform naive observers of the details particulars of experiment
- design and stimulus construction beyond what they needed to know to perform
- their task, I did ask them to describe the subjective appearance of the
- stimuli.
- All observers after having practiced at the task employed in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:results-basic"
 
 \end_inset
 
- commented spontaneously on the two forms of motion being employed.
+Experiment 1 commented spontaneously on the two forms of motion being employed.
  More than one observer described the envelope motion as the 
 \begin_inset Quotes eld
 \end_inset
@@ -591,22 +665,34 @@ fake.
 \begin_inset Quotes erd
 \end_inset
 
-
+ However the two motions are not equally salient or distinguishable in all
+ conditions; the carrier motion appears less salient when spacing is wide,
+ with few elements on screen, and envelope motion is more difficult to discern
+ in the contrary situation.
+ Motion after-effects appear to always be directed opposite the carrier
+ motion regardless the spacing or the envelope motion.
+ 
 \end_layout
 
 \begin_layout Standard
-There is a large degree of individual variation as to how relatively strong
+There seems to be some individual variation as to how relatively strong
  carrier and envelope motions are.
- For some subjects I was able to find a configuration of carrier strength,
- envelope motion, and spacing which I would but the observer would perceive
- as counterclockwise.
- Sometimes I could even find a stimulus, where both the carrier and envelope
- motion were clockwise but whose appearance was counterclockwise, which
- suggests.
- that perceived direction might not be a simple monotonic combination of
- carrier and envelope motion.
+ For some observers I was able to find a configuration of carrier strength,
+ envelope motion, and spacing which I would perceive as clearly being clockwise
+ but the observer would perceive as counterclockwise.
+ While appearance was affected by carrier motion, it was not always affected
+ in the 
+\emph on
+direction
+\emph default
+ of carrier motion; I sometimes found that adding carrier motion in one
+ direction to a stimulus prompted a report that the stimulus was now moving
+ in the opposite direction to the change.
+ Sometimes I could even find a stimulus where both the carrier and envelope
+ motion were clockwise but whose appearance was counterclockwise.
  An effort at modeling the processes underlying this behavior will therefore
- have to capture this individual variation and its nonlinearities.
+ have to capture this individual variation and the apparent nonlinearity
+ in carrier motion perception.
 \begin_inset Note Note
 status collapsed
 
@@ -699,265 +785,105 @@ key "Kitaoka:2007fv"
 
 \end_layout
 
-\begin_layout Paragraph
-adjustment and crowding
-\end_layout
-
 \begin_layout Standard
-I found that for stimuli with smaller spacings and more elements, the appearance
- of rotation was in the same direction as the carrier and independent of
- the envelope motion; the converse held for stimuli with larger spacings
- and fewer Adjusting the spacing from wide to narrow by adding more elements
- produced an impression of motion going one direction and then the other.
- Noting the density at which the appearance seemed to change, I found that
- it was robust to changes in viewing distance, which would indicate
-\end_layout
-
-\begin_layout Standard
-The other diagnostic of visual crowding proposed by 
+There are too many stimulus parameters to explore the entire configuration
+ space in detail, but I can report some impressions as to the robustness
+ of the appearance of the stimulus.
+ In particular I wondered whether the density-driven reversal of apparent
+ motion was robust to changes in stimulus properties such as element size
+ and eccentricity.
+ A scaling of critical spacing with eccentricity and robustness of critical
+ spacing against changes in target size target size have been proposed as
+ two diagnostic tests of visual crowding 
 \begin_inset CommandInset citation
-LatexCommand citeauthor
+LatexCommand citep
 key "Pelli:2008nx"
 
 \end_inset
 
- is that the degree of spatial interference does not depend on the size
- of the elements.
- Adjusting displays similar to 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "mov:middle"
-
-\end_inset
-
- I noted the spacing which triggered an apparent reversal and found that
- this critical spacing changed little when the size of the elements increased
- or decreased by a factor of 2.
- I found similar robustness against changes to the carrier spatial frequency,
- temporal frequency, envelope velocity, and eccentricity (where critical
- spacing scales, and the critical number of elements remains constant).
- For some of the extremes of the space of stimulus configurations the motion
- that appeared to reverse was buried under other perceptual clutter such
- as perceptions of transparent or occluded motion as described earlier.
- (I have tried to implement an adjustment procedure with naïve observers
- without much success; one observer described it as trying to adjust the
- stimulus so that it was 
-\begin_inset Quotes eld
-\end_inset
-
-most confusing.
-\begin_inset Quotes erd
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemovie[poster,repeat]{4in}{2in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_counter.mov",sep="")}}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "mov:uncrowded"
-
-\end_inset
-
- A single stimulus similar to the ones our observers viewed.
- There are six elements, with the carrier motion moving at a strength of
- 40% and the envelope counterclockwise.
- The envelope motion dominates the subjective appearance
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemovie[poster,repeat]{4in}{2in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_single.mov",sep="")}}
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "mov:demo-spacing"
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "mov:middle"
-
-\end_inset
-
-Same stimulus as 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "mov:uncrowded"
-
-\end_inset
-
- with sixteen elements, a figure closer to the critical spacing for many
- observers.
- The perception may be a mixture of carrier and envelope motions
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemovie[poster,repeat]{4in}{2in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_eyemovements.mov",sep="")}}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "mov:dominated"
-
-\end_inset
-
-A stimulus with twenty-four identical elements.
- In most observers, envelope motion.
+.
  
 \end_layout
 
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "mov:demo-spacing"
-
-\end_inset
-
-Demonstrations of the appearance of different element spacings at the same
- eccentricity.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
+\begin_layout Standard
+Adjusting the spacing from wide to narrow by adding more elements revealed
+ a point at which the appearance of motion changed from envelope-dominated
+ to carrier-dominated.
+ I noted the spacing (or equivalently the number of elements) at which the
+ appearance seemed to change, while varying other stimulus parameters.
+ I found that I could vary the eccentricity, size, and velocity of the envelopes
+ by a factor of 2 in either direction, while the critical spacing required
+ to induce a change in motion appearance remained roughly the same.
+ Similarly I could vary the spatial frequency and temporal frequency of
+ the carrier by a factor of 2 in either direction without much affecting
+ the critical spacing.
+ At the extremes of the configuration space, the change in character of
+ the motion was present among other percepts of motion, and could become
+ hard to distinguish.
+ The largest effect seemed to be for spatial frequency, where a change factor
+ of four (going from 0.67 to 2.67 cycles per degree at 10 degrees eccentricity)
+ only modestly changed the number of elements required for reversal, from
+ 13 to 18.
+ Scaling all spatial parameters (element size, eccentricity, velocity, spatial
+ frequency) at once did not affect the spacing at reversal; the critical
+ spacing scaled with eccentricity.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
-start by describing narrow spacings, then intermediate, then wide.
- I might want specific looping demonstrations of narrow/intermediate/wide
- spacings.
+I have the observations written down, so I can talk numbers, but it's one-observ
+er data with an informal method of adjustment.
+ Implementing a formal method of adjustment with naive observers did not
+ go so well.
+ (one observer described it as trying to adjust the stimulus so that it
+ was 
+\begin_inset Quotes eld
+\end_inset
+
+most confusing;
+\begin_inset Quotes erd
+\end_inset
+
+ it is difficult to describe looking for the reversal of perceived motion
+ ignoring the other perceptual effects without seeming like you're instructing
+ the observer how to answer.) (I also have binary-response psychophysical
+ data on different eccentricities and spatial frequencies but have not tried
+ to add it to the model it)
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The demonstrations shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:demo"
+
+\end_inset
+
+ and in this section suggest that multiple motion elements placed in proximity
+ in peripheral vision interfere in such a way that the carrier motion becomes
+ more perceptually salient and the envelope motion less so.
+ When the two types of motion are put into conflict, the inter-element spacing
+ (scaled according to cortical distance) appears to be the most reliable
+ determinant of which element wins.
+ In the following sections I will describe psychophysical experiments designed
+ to capture and model the determining factors explaining perceived motion
+ direction.
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "bibliography"
-options "plain"
+options "apalike"
 
 \end_inset
 
