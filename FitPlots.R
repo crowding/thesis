@@ -31,6 +31,7 @@ main <- function(infile="CenterSurroundModel.fit.RData",
     e$interpolator <- do.call(interpolator, c(list(menergy), e$interpolator.args))
   }
   cairo_pdf(plotfile, onefile=TRUE)
+  on.exit(dev.off)
   if (any(with(e$data, target_number_shown < target_number_all))) {
     message("plotting number/density data...")
     numdensity_plot(e)
@@ -40,7 +41,6 @@ main <- function(infile="CenterSurroundModel.fit.RData",
   message("plotting contours...")
   contourPlots(e, fold=TRUE)
   crossPlots(e)
-  on.exit(dev.off) 
 }
 
 contourPlots <- function(object, fold=fold) {
@@ -151,51 +151,58 @@ predict.stanenv <- function(object, newdata=object$data,
     })
 }
 
+
 interpolator <- function(
     menergy,
-    interpolating=c("target_number_shown", "target_number_all", "content", "displacement"),
+    interpolating=c("displacement", "content", "spacing", "extent", "fullcircle"),
     interpolated=c("norm_diff", "energy_diff"),
     matched=c()
     ) {
-  menergy <- chain(menergy, subset(grid==TRUE), add_energies,
-                   .[c(interpolating, interpolated, matched)],
+  menergy <- chain(menergy, add_energies,
+                   mutate(extent = 2*pi*(target_number_shown/target_number_all),
+                          spacing = 2*pi*eccentricity/target_number_all,
+                          fullcircle = target_number_all == target_number_shown),
                    data.table)
-  function(data) {
-    #a hack -- can't find a 3-d interpolator at the moment.
-    #Just ask what plane we're operating over.
-    bind[...=outofplane, inplane, inplane[2]] <-
+  x <- function(data) {
+    data <- chain(data,
+                  mutate(extent=2*pi*(target_number_shown/target_number_all),
+                         spacing = 2*pi*eccentricity/target_number_all,
+                         fullcircle = target_number_all == target_number_shown))
+    bind[inplane, inplane[2], ...=outofplane] <-
         chain(data, .[interpolating],
-              vapply(mkchain(unique, length), 0), sort, names)
+              vapply(mkchain(unique, length), 0), .[.>1], names)
     setkeyv(menergy, outofplane)
-    ddply(data, outofplane, function(chunk) {
+    chunker <- function(chunk) {
       interp <- sapply(
           interpolated, USE.NAMES=TRUE, simplify=FALSE,
           function(interp.var) {
-        interp.over <- menergy[unique(chunk[outofplane])]
-        grid <- acast(interp.over,
-                      lapply(inplane, mkchain(as.name, as.quoted)),
-                      value.var=interp.var)
-        active.dims <-  which(dim(grid) > 1)
-        inactive.dims <- which(dim(grid) == 1)
-        switch(length(active.dims), {
-          #interpolating over one dim. Assert other dim matches exactly
-          (all(unique(chunk[inplane[[inactive.dims]]])
-               %in% interp.over[[inplane[inactive.dims]]])) || stop("oops")
-          x <- as.numeric(dimnames(grid)[[active.dims]])
-          loc <- chunk[[inplane[[active.dims]]]]
-          approx(x, grid, loc)$y
-        }, {
-          #interpolating over two dims
-          interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
-                             y=as.numeric(dimnames(grid)[[2]]),
-                             z=grid)
-          loc <- do.call("cbind", chunk[inplane])
-          interp.surface(interp.obj, loc)
-        })
-      })
+            interp.over <- menergy[unique(chunk[outofplane])]
+            grid <- acast(interp.over,
+                              lapply(inplane, mkchain(as.name, as.quoted)),
+                              value.var=interp.var, fun.aggregate=mean)
+            active.dims <-  which(dim(grid) > 1)
+            inactive.dims <- which(dim(grid) == 1)
+            switch(length(active.dims), {
+              #interpolating over one dim. Assert other dim matches exactly
+              (all(unique(chunk[inplane[[inactive.dims]]])
+                   %in% interp.over[[inplane[inactive.dims]]])) || stop("oops")
+              x <- as.numeric(dimnames(grid)[[active.dims]])
+              loc <- chunk[[inplane[[active.dims]]]]
+              approx(x, grid, loc)$y
+            }, {
+              #interpolating over two dims
+              interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
+                                 y=as.numeric(dimnames(grid)[[2]]),
+                                 z=grid)
+              loc <- do.call("cbind", chunk[inplane])
+              interp.surface(interp.obj, loc)
+            })
+          })
       cbind(chunk, quickdf(interp))
-    })
+    }
+    ddply(data, outofplane, chunker)
   }
+  x
 }
 
 makeTitle <- function(...) {

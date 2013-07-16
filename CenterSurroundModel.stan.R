@@ -59,6 +59,7 @@ parameters {
 //  real<lower=0, upper=pi()> repulsion_width;
 //  real overall;
   real local;
+  real global;
   real nonlinearity;
 }
 
@@ -69,7 +70,7 @@ model {
     real link_summation;
 //    real link_repulsion;
     real link_local;
-//    real link_overall;
+    real link_global;
     real link;
     real response;
 
@@ -109,13 +110,14 @@ model {
     //Average the influence over each element
     link_summation <- link_summation / target_number_shown[n];
 //   link_repulsion <- link_repulsion / target_number_shown[n];
-//   link_overall <- nonlinearity * content[n] * target_number_shown[n];
+   link_global <- global * content[n] * target_number_shown[n];
     link_local <- local * content[n] + nonlinearity * content[n] * abs(content[n]);
     link <- bias
             + link_displacement
             + link_summation
-            + link_local;
-//          + link_repulsion + link_overall;
+            + link_local
+            + link_global;
+//          + link_repulsion;
     response <- inv_logit( link ) .* (1-lapse) + lapse/2;
     n_cw[n] ~ binomial(n_obs[n], response);
   }
@@ -159,7 +161,7 @@ model {
      , link_displacement = beta_dx * displacement
                              * (2 - 2/(1+exp(-cs/frac_spacing)))
      , link_local = local * content + nonlinearity * (content * abs(content))
-     ## , link_overall = content * target_number_shown
-     , link = bias + link_displacement + link_repulsion + link_summation + link_local
+     , link_global = global * content * target_number_shown
+     , link = bias + link_displacement + link_summation + link_local
      , response = plogis(link) * (1-lapse) + lapse/2
        )))

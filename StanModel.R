@@ -45,7 +45,7 @@ main <- function(infile="data.RData",
     stan_data <- e$stan_format(chunk)
     fit <- sampling(e$model, data=stan_data, warmup=iter/2, iter=iter)
     print(split)
-    print(fit)
+     print(fit)
 
     # then also get the max-likelihood parameters. And the Hessian? Nah.
     startpoint <- normalize_coefs(maxll(as.data.frame(fit)))

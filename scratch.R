@@ -216,3 +216,12 @@ a$stan_predict <- stan_predict
 environment(a$stan_predict) <- a
 test <- predict(a, a$data[1,])
 test <- predict(a, a$data[1:5,], summary=colwise_se_frame)
+
+
+{
+  e <- load2env("CenterSurroundModel.fit.RData")
+  e$stan_predict <- stan_predict;
+  environment(e$stan_predict) <- e
+  save(list=ls(e), envir=e, file="CenterSurroundModel.fit.RData")
+}
+
