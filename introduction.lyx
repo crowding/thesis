@@ -541,6 +541,8 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 A
 \end_layout
 
@@ -577,6 +579,8 @@ linewidth}{demo_carenv.mov}
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 B
 \end_layout
 
@@ -613,6 +617,8 @@ linewidth}{demo_single.mov}
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 C
 \end_layout
 

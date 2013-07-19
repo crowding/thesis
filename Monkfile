@@ -161,7 +161,7 @@
 
 #compile graffle figures...
 --command osascript --input og-export.applescript 
-$(abspath --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
+$(abspath --input --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
 $(abspath --output {0}.pdf ) pdf
 --phony --invisible graffles 
 --phony --invisible intermediate_pdf

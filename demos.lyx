@@ -578,11 +578,9 @@ reference "mov:dominated"
 .
  For most observers it becomes difficult to see the envelope motion at this
  density especially at short viewing durations.
- When elements are closely spaced in the periphery, it is generally impossible
- to see the direction of envelope motion; the overall impression is of motion
+ When elements are this closely spaced the overall impression is of motion
  in the direction of the carrier.
- There is not as much of the appearance of two separate motions, but one
- seems to dominate.
+ There is not as much of the appearance of two separate motions.
  However, the amount of subjective flicker does appear to increase when
  carrier motion is incongruent with envelope motion.
 \end_layout
@@ -820,13 +818,13 @@ Adjusting the spacing from wide to narrow by adding more elements revealed
  At the extremes of the configuration space, the change in character of
  the motion was present among other percepts of motion, and could become
  hard to distinguish.
- The largest effect seemed to be for spatial frequency, where a change factor
- of four (going from 0.67 to 2.67 cycles per degree at 10 degrees eccentricity)
- only modestly changed the number of elements required for reversal, from
- 13 to 18.
- Scaling all spatial parameters (element size, eccentricity, velocity, spatial
- frequency) at once did not affect the spacing at reversal; the critical
- spacing scaled with eccentricity.
+ The largest effect seemed to be for spatial frequency and element size,
+ where a change of a factor of four (going from 0.67 to 2.67 cycles per degree
+ at 10 degrees eccentricity, the element size scaling inversely) only modestly
+ increased the number of elements required for reversal, from 13 to 18.
+ Scaling all spatial parameters (element size, eccentricity, envelope velocity,
+ spatial frequency) at once did not affect the spacing at reversal; the
+ critical spacing scaled with eccentricity.
 \end_layout
 
 \begin_layout Standard
