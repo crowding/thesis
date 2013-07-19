@@ -224,4 +224,3 @@ test <- predict(a, a$data[1:5,], summary=colwise_se_frame)
   environment(e$stan_predict) <- e
   save(list=ls(e), envir=e, file="CenterSurroundModel.fit.RData")
 }
-
