@@ -31,7 +31,7 @@ main <- function(infile="CenterSurroundModel.fit.RData",
     e$interpolator <- do.call(interpolator, c(list(menergy), e$interpolator.args))
   }
   cairo_pdf(plotfile, onefile=TRUE)
-  on.exit(dev.off)
+  on.exit(dev.off, add=TRUE)
   if (any(with(e$data, target_number_shown < target_number_all))) {
     message("plotting number/density data...")
     numdensity_plot(e)

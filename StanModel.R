@@ -1,6 +1,7 @@
 suppressPackageStartupMessages({
   library(rstan)
   library(plyr)
+  library(R.cache)
   source("library.R")
   source("stanFunctions.R")
 })
@@ -36,6 +37,8 @@ main <- function(infile="data.RData",
                  outfile="SlopeModel.fit.RData",
                  iter=2000
                  ) {
+  #interrupting one of these model fits shoud fail fast...
+  options(error=NULL)
   iter <- as.numeric(iter)
   e <- load2env(modelfile) #contains as least 'model', 'stan_predict'
   d <- load2env(infile)
@@ -43,9 +46,9 @@ main <- function(infile="data.RData",
   chain(d$data, (e$filter_data)(), (e$format_data)(menergy)) -> e$data
   fits <- ddply_along(e$data, e$model_split, function(split, chunk) {
     stan_data <- e$stan_format(chunk)
-    fit <- sampling(e$model, data=stan_data, warmup=iter/2, iter=iter)
+    fit <- memoizedCall(sampling, e$model, data=stan_data, warmup=iter/2, iter=iter)
     print(split)
-     print(fit)
+    print(fit)
 
     # then also get the max-likelihood parameters. And the Hessian? Nah.
     startpoint <- normalize_coefs(maxll(as.data.frame(fit)))

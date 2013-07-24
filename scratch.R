@@ -224,3 +224,38 @@ test <- predict(a, a$data[1:5,], summary=colwise_se_frame)
   environment(e$stan_predict) <- e
   save(list=ls(e), envir=e, file="CenterSurroundModel.fit.RData")
 }
+
+
+switch2 <- function(EXPR, ...) {
+  if (is.character(EXPR)) {
+      argNames <- names(substitute(list(...)))[-1]
+      EXPR <- pmatch(EXPR, argNames)
+  }
+  eval(substitute(function(...) x, list(x=as.name(paste0("..", EXPR)))))(...)
+}
+
+switch3 <- function(EXPR, ...) dots(...)[[EXPR]]this
+
+using <- macro(function(...) {
+  bind[...=files, expr] <- dots(...)
+  arg_name <- names(files)[[1]]
+  files <- files[-1]
+
+  template((function(x, y) {
+    closer <- closer(x)
+    on.exit(x())
+    y
+  })(...(
+      if (!is.null(arg_name)), {
+        template(`.(arg_name)` = )closer <- function() `.(arg_name)` <- template(.{})
+      } else {
+
+      }
+    `.(empla_name)`
+    .(if(length(files) > 0) Recall(...))
+    on.exit(close(x))
+
+      )))
+})
+
+closer <- function(x) {force(x); function()close(x)}
