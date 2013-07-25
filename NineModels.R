@@ -12,51 +12,68 @@ set_cppo('fast')
 scenarios <- list(d=list(
     soft_local=list(
         displacement_parameter='
-          real <lower=0,upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
+          real <lower=spacing_sensitivity*min(frac_spacing),
+                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
         displacement_var = '',
         displacement_computation = '
-          displacement_factor <- -blur * displacement_sensitivity * spacing_sensitivity
-             * log(  exp(- frac_spacing[n] / blur)
-                   + exp(- max_sensitivity / spacing_sensitivity * 2 * pi() / blur));',
+          displacement_factor <-
+             -blur * displacement_sensitivity * spacing_sensitivity
+              * log(  exp(- frac_spacing[n] / blur)
+                    + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi() / blur));',
         displacement_R_computation = alist(
             displacement_factor = (
                 -blur * displacement_sensitivity * spacing_sensitivity
                 * log(   exp(- frac_spacing / blur)
-                      + exp(- max_sensitivity / spacing_sensitivity * 2 * pi / blur))))),
+                      + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi / blur))))),
     soft_global=list(
         displacement_parameter='
-          real <lower=0,upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
+          real <lower=spacing_sensitivity*min(frac_spacing),
+                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
         displacement_var = '
           real inverse_number;',
         displacement_computation = '
           inverse_number <- 2*pi() / target_number_shown[n];
-          displacement_factor <- -blur * displacement_sensitivity * spacing_sensitivity
-             * log(  exp(- inverse_number / blur)
-                   + exp(- max_sensitivity / spacing_sensitivity * 2 * pi() / blur));',
+          displacement_factor <-
+             -blur * displacement_sensitivity * spacing_sensitivity
+              * log(  exp(- inverse_number / blur)
+                    + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi() / blur));',
         displacement_R_computation = alist(
             inverse_number = 2*pi/target_number_shown,
             displacement_factor = (
                 -blur * displacement_sensitivity * spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
-                      + exp(- max_sensitivity / spacing_sensitivity * 2 * pi / blur)))))
-    ## ,
-    ## soft_windowed=list(
-    ##     displacement_parameter='
-    ##       real <lower=0,upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
-    ##     displacement_var = '
-    ##       real inverse_number;',
-    ##     displacement_computation = '
-    ##       inverse_number <- 2*pi() / target_number_shown[n];
-    ##       displacement_factor <- -blur * displacement_sensitivity * spacing_sensitivity
-    ##          * log(  exp(- inverse_number / blur)
-    ##                + exp(- max_sensitivity / spacing_sensitivity * 2 * pi() / blur));',
-    ##     displacement_R_computation = alist(
-    ##         inverse_number = 2*pi/target_number_shown,
-    ##         displacement_factor = (
-    ##             -blur * spacing_sensitivity
-    ##             * log(  exp(- inverse_number / blur)
-    ##                   + exp(- max_sensitivity / spacing_sensitivity * 2 * pi / blur)))
-    ##     ))
+                      + exp(- max_sensitivity /
+                              spacing_sensitivity * 2 * pi / blur)))))
+    ,
+    soft_windowed=list(
+        displacement_parameter='
+          real <lower=spacing_sensitivity*min(frac_spacing),
+                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
+          real <lower=0, upper=2*pi()> displacement_field;',
+        displacement_var = '
+          real inverse_number; // equivalent spacing',
+        displacement_computation = '
+          //maximum of actual spacing and field width divided by targets shown
+          inverse_number <- blur*log(
+              exp(displacement_field / target_number_shown[n] / blur)
+            + exp(2*pi() / target_number_shown[n] / blur));
+          displacement_factor <-
+            -blur * displacement_sensitivity * spacing_sensitivity
+             * log(  exp(- inverse_number / blur)
+                   + exp(- max_sensitivity / spacing_sensitivity
+                           * 2 * pi() / blur));',
+        displacement_R_computation = alist(
+            inverse_number = blur*log(
+                  exp(displacement_field / target_number_shown / blur)
+                + exp(2*pi() / target_number_shown / blur)),
+            displacement_factor = (
+                -blur * spacing_sensitivity
+                * log(  exp(- inverse_number / blur)
+                      + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi / blur)))))
     ),
                   #carrier
     c=list(

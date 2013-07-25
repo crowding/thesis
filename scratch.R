@@ -259,3 +259,7 @@ using <- macro(function(...) {
 })
 
 closer <- function(x) {force(x); function()close(x)}
+
+hook <- function(data, fn1, fn2, ...) {
+  fn2(fn1(data), data, ...)
+}

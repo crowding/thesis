@@ -91,7 +91,7 @@
 --output --match --invisible (CenterSurroundModel)\.fit\.RData$ 500
 
 --command
---output --match --invisible (models/.*)\.fit\.RData$ 1000
+--output --match --invisible (models/.*)\.fit\.RData$ 1000 --invisible --phony nine
 
 --command
 --output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 4000
