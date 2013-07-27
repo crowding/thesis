@@ -165,16 +165,18 @@ model {
 }'
 
 predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
-    mutate(frac_spacing = 2*pi/target_number_all)
+    mutate(.
+           , frac_spacing = 2*pi/target_number_all
+           , ...(displacement_R_computation)
+           , ...(carrier_R_computation)
+           )
     , with(coefs, summarize(
         .
-        , ...(displacement_computation)
-        , ...(carrier_computation)
         , link_displacement = (displacement_factor * displacement)
         , link_repulsion = (repulsion * content
                             + nonlinearity * (content * abs(content)))
-        , link_content = (content * carrier_sensitivity)
-        , link = bias + link_displacement + link_repulsion + link_summation
+        , link_carrier = (content * carrier_sensitivity)
+        , link = bias + link_displacement + link_repulsion + link_carrier
         , response = plogis(link) * (1-lapse) + lapse/2))))
 
 otherFunctions <- quote({
