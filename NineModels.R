@@ -22,7 +22,7 @@ scenarios <- list(d=list(
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
         displacement_R_computation = alist(
-            displacement_factor = (
+            displacement_factor <- (
                 -blur * displacement_sensitivity * spacing_sensitivity
                 * log(   exp(- frac_spacing / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
@@ -41,8 +41,8 @@ scenarios <- list(d=list(
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
         displacement_R_computation = alist(
-            inverse_number = 2*pi/target_number_shown,
-            displacement_factor = (
+            inverse_number <- 2*pi/target_number_shown,
+            displacement_factor <- (
                 -blur * displacement_sensitivity * spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
                       + exp(- max_sensitivity /
@@ -66,10 +66,10 @@ scenarios <- list(d=list(
                    + exp(- max_sensitivity / spacing_sensitivity
                            * 2 * pi() / blur));',
         displacement_R_computation = alist(
-            inverse_number = blur*log(
+            inverse_number <- blur*log(
                   exp(displacement_field / target_number_shown / blur)
                 + exp(2*pi() / target_number_shown / blur)),
-            displacement_factor = (
+            displacement_factor <- (
                 -blur * spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
@@ -83,14 +83,14 @@ scenarios <- list(d=list(
             carrier_computation=
                 'carrier_factor <- target_number_all[n] * carrier_sensitivity;',
             carrier_R_computation=alist(
-                carrier_factor = target_number_all * carrier_sensitivity)),
+                carrier_factor <- target_number_all * carrier_sensitivity)),
         local=list(
             carrier_parameter = '',
             carrier_var = '',
             carrier_computation =
                 'carrier_factor <- 2*pi()*frac_spacing[n] * carrier_sensitivity;',
             carrier_R_computation=alist(
-                carrier_factor = 2*pi* frac_spacing * carrier_sensitivity)),
+                carrier_factor <- 2*pi* frac_spacing * carrier_sensitivity)),
         windowed=list(
             carrier_parameter = 'real<lower=0, upper=2*pi()> carrier_field;',
             carrier_var = '
@@ -105,10 +105,10 @@ scenarios <- list(d=list(
                     target_number_all[n] * frac_in_carrier_field * carrier_sensitivity;
                 ',
             carrier_R_computation=alist(
-                frac_shown = target_number_shown[n] / target_number_all[n],
-                frac_in_carrier_field = -blur * log(
+                frac_shown <- target_number_shown[n] / target_number_all[n],
+                frac_in_carrier_field <- -blur * log(
                     exp(-frac_shown/blur) + exp(-2*pi*carrier_field/blur)),
-                carrier_factor =
+                carrier_factor <-
                     target_number_all * frac_in_carrier_field * carrier_sensitivity))
         ))
 
@@ -165,19 +165,20 @@ model {
 }'
 
 predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
-    mutate(.
-           , frac_spacing = 2*pi/target_number_all
-           , ...(displacement_R_computation)
-           , ...(carrier_R_computation)
-           )
-    , with(coefs, summarize(
-        .
-        , link_displacement = (displacement_factor * displacement)
-        , link_repulsion = (repulsion * content
-                            + nonlinearity * (content * abs(content)))
-        , link_carrier = (content * carrier_sensitivity)
-        , link = bias + link_displacement + link_repulsion + link_carrier
-        , response = plogis(link) * (1-lapse) + lapse/2))))
+    with(coefs, within(., {
+      frac_spacing <- 2*pi/target_number_all
+      ...(displacement_R_computation)
+      ...(carrier_R_computation)
+    }))
+    , with(coefs, with(., within(list(), {
+      link_displacement <- (displacement_factor * displacement)
+      link_repulsion <- (repulsion * content
+                         + nonlinearity * (content * abs(content)))
+      link_carrier <- (content * carrier_sensitivity)
+      link <- bias + link_displacement + link_repulsion + link_carrier
+      response <- plogis(link) * (1-lapse) + lapse/2
+    })))
+    , as.data.frame))
 
 otherFunctions <- quote({
   filter_data <- mkchain(
@@ -206,6 +207,25 @@ otherFunctions <- quote({
         blur <- blur
         lapse_limit <- lapse_limit
       }))
+
+  summarizeData <- function(.data, ...) {
+    env <- list2env(.data, parent = parent.frame())
+    cols <- eval(substitute(alist(...)))
+    for (col in names(cols)) {
+      env[[col]] <- eval(cols[[col]], env)
+    }
+    dput(mget(ls(env), env))
+  }
+
+  mutateList <- function (.data, ...) {
+    env <- list2env(.data, parent = parent.frame())
+    cols <- eval(substitute(alist(...)))
+    for (col in names(cols)) {
+      env[[col]] <- eval(cols[[col]], env)
+    }
+    mget(ls(env), env)
+  }
+
 })
 
 makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),

@@ -1,4 +1,4 @@
-suppressPackageStartupMessages({
+ suppressPackageStartupMessages({
   library(grid)
   library(plyr)
   library(ggplot2)
@@ -354,5 +354,8 @@ crossPlot <- function(fit, ..., subsample=1000) {
    + list(...)
    )
 }
+
+
+try_command <- function(line) chain(line, strsplit(" +"), .[-1:-2], main %()% .)
 
 run_as_command()

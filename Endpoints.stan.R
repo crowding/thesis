@@ -23,24 +23,25 @@ stan_format <- mkchain(
       lapse_limit <- lapse_limit
     }))
 
-
+#this difficilty is ti
 stan_predict <- mkchain[., coefs](
      mutate(frac_spacing = 2*pi/target_number_all,
             frac_extent = spacing * target_number_shown / eccentricity,
 )
-   , with(coefs, mutate(
-       , frac_covered = pmin(frac_extent, field)
-       , content_in_field = content / spacing * frac_covered
-       , content_outside_field = content / spacing * (frac_extent-frac_covered)
-       , crowdedness = (2 - 2/(1+exp(-cs/frac_spacing)))
-       , endpoints = ifelse(target_number_shown == target_number_all, 0, 2)
-       , envelope_interior = (beta_dx^2 * displacement *
-                              crowdedness^2 * target_number_shown)
-       , envelope_endpoint = endpoints * beta_endpoint * displacement
-       , envelope_norm = (  endpoints * beta_endpoint
-                          + target_number_shown[n] * beta_dx * crowdedness)
-
-       ))
+    , with(coefs, within(as.list(.), {
+      frac_extent = spacing * target_number_shown/eccentricity
+      frac_covered = pmin(frac_extent, field)
+      content_in_field = content / spacing * frac_covered
+      content_outside_field = content / spacing * (frac_extent-frac_covered)
+      crowdedness = (2 - 2/(1+exp(-cs/frac_spacing)))
+      endpoints = ifelse(target_number_shown == target_number_all, 0, 2)
+      envelope_interior = (beta_dx^2 * displacement *
+                            crowdedness^2 * target_number_shown)
+      envelope_endpoint = endpoints * beta_endpoint * displacement
+      envelope_norm = (  endpoints * beta_endpoint
+                        + target_number_shown * beta_dx * crowdedness)
+    }))
+   , as.data.frame
    , with(coefs, summarize(
        .
      , link_displacement = (envelope_interior + envelope_endpoint) / envelope_norm
