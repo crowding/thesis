@@ -87,8 +87,8 @@
 --invisible --phony fit
 
 #some models are not baked yet, or need extra samples
---command
---output --match --invisible (CenterSurroundModel)\.fit\.RData$ 500
+#--command
+#--output --match --invisible (CenterSurroundModel)\.fit\.RData$ 500
 
 --command
 --output --match --invisible (models/.*)\.fit\.RData$ 1000 --invisible --phony nine
@@ -112,16 +112,32 @@
 --invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
+--output --once StanComparisonCircles.pdf
+--input --match (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony pdf
+
+--command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonEnergies.pdf
 --input --match (ProportionalMotionEnergy|SlopeModel|MotionEnergyRepulsion|OnlyMotionEnergy)\.fit\.RData$
 --invisible --phony plot
+--invisible --phony compare
 --invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonCombined.pdf
 --input --match (Hemifield|SummationField)\.fit\.RData$
 --invisible --phony plot
+--invisible --phony compare
 --invisible --phony pdf
+
+--command --once Rscript --input --once CompareStanFits.R
+--output --once models/comparison_d_{0}.pdf
+--input --match models/d_([a-z_]*)_c_([a-z_]*)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony compare
+--invisible --phony pdf
+
 
 #--command Rscript --input --once StanResiduals.R
 

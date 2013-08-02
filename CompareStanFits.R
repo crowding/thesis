@@ -190,4 +190,6 @@ main <- function(outfile, ...) {
   plotStanFits(c(...))
 }
 
+try_command <- mkchain(strsplit(" +"), unlist, .[-1:-2], main %()% .)
+
 run_as_command()

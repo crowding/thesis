@@ -52,7 +52,7 @@ scenarios <- list(d=list(
         displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
-          real <lower=0, upper=2*pi()> displacement_field;',
+          real <lower=min(frac_spacing), upper=2*pi()> displacement_field;',
         displacement_var = '
           real inverse_number; // equivalent spacing',
         displacement_computation = '
@@ -68,7 +68,7 @@ scenarios <- list(d=list(
         displacement_R_computation = alist(
             inverse_number <- blur*log(
                   exp(displacement_field / target_number_shown / blur)
-                + exp(2*pi() / target_number_shown / blur)),
+                + exp(2*pi / target_number_shown / blur)),
             displacement_factor <- (
                 -blur * spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
