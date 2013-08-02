@@ -36,7 +36,7 @@ knitr
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -54,7 +54,7 @@ knitr
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes true
+\tracking_changes false
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
@@ -127,23 +127,43 @@ reference "fig:model"
 \end_inset
 
 .
- Conceptually the model combines three signals to produce decisions about
+ Conceptually the model combines two signals to produce decisions about
  motion direction: 
+\begin_inset Formula $\bar{M_{\Delta}}$
+\end_inset
+
+ is an estimate of the change of position of a tracked target, corresponding
+ to envelope motion in these stimuli, computed within a restricted region
+ illustrated as the smaller, black dotted circle.
+ 
 \begin_inset Formula $M_{s}$
 \end_inset
 
- is a sum of first order motion energy inside a relatively restricted region
- (shown by the smaller, green dashed circle), 
-\begin_inset Formula $\bar{\Delta_{x}}$
+ is a sum of first order motion energy (carrier motion in these stimuli)
+ inside a larger region illustrated by the green dashed outline.
+ As can be seen in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:stimuli"
+
 \end_inset
 
- is an estimate of the change of position of a tracked target, within the
- same restricted region (indicated by a black line,) 
+, a rightward carrier on a stationary envelope may produce a perception
+ of leftward motion.
+ In the schematic 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:model-visual-schematic"
+
+\end_inset
+
+D, when carrier and envelope motion signals are combined, and the two velocity
+ measures disagree, the difference is amplified in favor of envelope motion.
+ In our model this appears as a nonlinear repulsion 
 \begin_inset Formula $M_{I}$
 \end_inset
 
- is a repulsion due to first order motion signals integrated across a wider
- region of space (shown by the larger, red dashed circle).
+.
 \end_layout
 
 \begin_layout Standard
@@ -151,8 +171,8 @@ For
 \begin_inset Formula $M_{S}$
 \end_inset
 
-, we begin by assuming that the strength of the local motion signal is linear
- with respect to carrier direction content 
+, we begin by assuming that the strength of the first order motion signal
+ is linear with respect to carrier strength 
 \begin_inset Formula $C$
 \end_inset
 
@@ -160,19 +180,28 @@ For
  However, as spacing decreases and there are more elements within the summation
  region, we expect signals from multiple elements to sum, so that the local
  motion signal is proportionate to the direction content of individual elements
- and inversely proportional to the spacing (since the number of elements
- near the integration field is inversely proportional to the spacing.)
+ and inversely proportional to the spacing.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-M_{S}=\frac{C}{S}
-\]
+\begin{align*}
+M_{S} & =\beta_{S}\frac{2\pi C}{S}\intertext{\,\, or\,\,}M_{s}=\beta_{S}CN
+\end{align*}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Note that 
+\begin_inset Formula $M_{S}$
+\end_inset
+
+can be expressed in terms of either element number or spacing, since the
+ two are inversely related in Experiment 1.
+ In Experiment 2 we will attempt to disentangle these alternatives.
 \end_layout
 
 \begin_layout Standard
@@ -203,87 +232,82 @@ name "fig:model"
 \end_inset
 
  Schematic of motion model.
- (A)
+ 
+\series bold
+A.
+\series default
+
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-visual-schematic"
 
 \end_inset
 
- A typical motion stimulus is shown.
- The motion stimulus contains three sources of information: the positional
- displacement of an individual, attended element, a summation of first order
- motion energy within a local region, illustrated by the green dashed circle,
- and a summation of motion energy over most or all of the visual field,
- illustrated by the red dashed line.
- (B)
+ The background shows a typical motion stimulus.
+ The motion stimulus contains two sources of information.
+ The positional displacement of an individual, attended element is computed
+ within a limited region, as illustrated by the smaller, black dashed circle.
+ Firoder motion energy is summed over a larger region, a summation of motion
+ energy over most or all of the visual field, illustrated by the red dashed
+ line.
+ 
+\series bold
+B.
+\series default
+
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-uncertainty"
 
 \end_inset
 
- Envelope motion is estimated by taking two successive noisy estimates of
- the position of a given element.
- Due to 
-\begin_inset Quotes eld
-\end_inset
-
-crowding
-\begin_inset Quotes erd
-\end_inset
-
- the uncertainty in position 
-\begin_inset Formula $\nicefrac{1}{\beta(S)}$
-\end_inset
-
- increases as a function of the flanker spacing 
-\begin_inset Formula $S$
-\end_inset
-
- .
- The form of 
+ The higher order motion mechanism takes differences of a noisy estimate
+ of the envelope position of a given element.
+ Crowding interferes with estimates of position so that the sensitivity
+ to changes in position position 
 \begin_inset Formula $\beta(S)$
 \end_inset
 
- is a sigmoid, as in (B).
- Its parameters are 
-\begin_inset Formula $\beta_{0}$
+ is an increasing function of the flanker spacing 
+\begin_inset Formula $S$
 \end_inset
 
-, reflecting the sensitivity in position of an uncrowded target, and 
-\begin_inset Formula $S_{C}$
+.
+ We illustrate a 
+\begin_inset Quotes eld
 \end_inset
 
-, which is the distance at which discrimination thresholds for envelope
- motion double.
- (C)
+critical region
+\begin_inset Quotes erd
+\end_inset
+
+ as the black dashed circle where interference occurs between elements.
+ 
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:model-summation"
 
 \end_inset
 
- Observers attempt to determine the direction of envelope motion but their
- perceptions are biased by the first-order motion content of the stimulus.
- This has two components, a local summation, and a background average.
- The local component is a summation of all motion energy within a local
- region of fixed size around the attended object, as illustrated by the
- green dashed circle.
- As the spacing between targets decreases, more targets are brought into
- the summation region, causing the bias to move toward the direction of
- the carrier motion (shaded green region of panel C).
- The second contribution of carrier motion is to an average over much of
- the visual field.
- When local summation is weak (target spacing is wide) we find that subjects
- are biased against the carrier motion.
- Therefore there is a change between summation and repulsion as a function
- of spacing (green and red shaded region of the graph in panel C.) The strength
- of repulsion is a function of the average motion energy content of elements
- in the scene.
- Observers' responses are modeled as a thresholded sum of the noisy position-dis
-placement measurement and the biases due to short-range and long range motion
- energy.
+ 
+\series bold
+C.
+
+\series default
+ The first order mechanism sums motion energy over a large field.
+ This mechanism is not subject to crowding; more elements in this field
+ contribute more to the first-order motion signal.
+ This summation region is outlined in green.
+ 
+\series bold
+D.
+
+\series default
+ The lower order and higher order signals are combined to yield a decision.
+ Both carrier and envelope contribute positively to the decision, but difference
+s between carrier and envelope velocity are amplified in favor of the envelope.
+ Thus, at wide spacings adding carrier motion to a stationary envelope may
+ result in repulsion (shaded red region of panel C.) 
 \end_layout
 
 \end_inset
@@ -297,19 +321,20 @@ placement measurement and the biases due to short-range and long range motion
 \end_layout
 
 \begin_layout Standard
-For dX, we assume that envelope motion is computed by taking two successive
- noisy estimates of the position of a given element.
- The strength of the envelope motion estimate therefore has uncertainty
- proportional to the uncertainty of the successive position estimates.
- The sensitivity to displacements, 
-\begin_inset Formula $\beta_{\Delta_{x}}$
+For 
+\begin_inset Formula $M_{\Delta}$
 \end_inset
 
- will be inversely proportional to this uncertainty.
+, we assume that envelope motion is computed by taking the difference between
+ successive noisy estimates of the position of a given element.
+ The sensitivity to envelope motion 
+\begin_inset Formula $\beta_{\Delta}$
+\end_inset
+
+ will then be inversely proportional to the uncertainty in element position.
  We assume that as flanking elements come closer to the tracked element,
- the the visual system will be less able to isolate a single element to
- determine its position,, so the sensitivity to changes in position will
- collapse.
+ the visual system will be less able to isolate a single element to determine
+ its position, so the sensitivity to changes in position will decline.
  We model this by making 
 \begin_inset Formula $\beta_{\Delta_{x}}(S)$
 \end_inset
@@ -340,20 +365,13 @@ the
 
 \end_inset
 
- function of the spacing between elements (
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:model-uncertainty"
-
-\end_inset
-
-): : 
+ function of the spacing between elements:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)
+\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\intertext{\,\, or\,\,}\beta_{\Delta_{x}}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
 \]
 
 \end_inset
@@ -367,19 +385,20 @@ This function results in sensitivity that approaches
 \end_inset
 
  at large spacings and approaches zero at small spacings, as plotted in
- the lower graph of 
+ the 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:model-uncertainty"
 
 \end_inset
 
-.
+B.
  
 \begin_inset Formula $\beta_{0}$
 \end_inset
 
- is the sensitivity to envelope displacement for uncrowded targets; 
+ is the sensitivity to envelope displacement for isolated, uncrowded targets;
+ 
 \begin_inset Formula $S_{C}$
 \end_inset
 
@@ -400,14 +419,23 @@ critical distance
 \begin_inset Quotes erd
 \end_inset
 
- in crowding.
- As can be seen from this function, our model assumes that sensitivity to
- envelope motion approaches an asymptote above 
-\begin_inset Formula $S_{C}$
+ in crowding 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(cites)
+\end_layout
+
 \end_inset
 
-, and therefore does not change as a function of the number of targets,
- once the targets are sufficiently far apart.
+.
+ As can be seen from this function, our model has envelope motion reaching
+ an asymptote for large spacing, and therefore does not change as a function
+ of the number of targets, once the targets are sufficiently far apart.
+ Again, the dependence of envelope sensitivity on envelope spacing may also
+ be expressed as a function of the number of elements, as along as elements
+ are distributed evenly around the circle.
  
 \end_layout
 
@@ -432,40 +460,50 @@ This formula for
 \end_layout
 
 \begin_layout Standard
-In other words, decreasing the spacing between elements has opposite effects
- on the strengths of the carrier and the envelope motion.
- For the carrier motion estimate, cramming more elements into the summation
- region increases the strength of the carrier motion signal, which is a
- simple summation of motion energy within that region.
- For the envelope motion estimate, cramming more elements into the summation
+In other words, 
+\emph on
+decreasing the spacing between elements has opposite effects on the first-order
+ and higher-order motion
+\emph default
+ mechanisms.
+ For the carrier motion signal, cramming more elements into the summation
+ region increases the strength of the signal, since it is a simple summation
+ of motion energy within that region.
+ For the envelope motion signal, cramming more elements into the summation
  region makes it difficult to estimate the position of any individual element,
  and thereby weakens the signal.
  Thus, decreasing the spacing results in carrier motion having a stronger
- influence on the final percept, and envelope motion having a weaker influence.
+ influence on the perceived motion, and envelope motion having a weaker
+ influence.
 \end_layout
 
 \begin_layout Standard
-One addition to this basic model is required to account for the effect of
- first order motion signals outside our small summation region.
- The third component 
+One addition to this basic model is required to account for a repulsion
+ effect we observe when carrier motion velocity disagrees with envelope
+ velocity.
+ In 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:stimuli"
+
+\end_inset
+
+, it appears that carrier motion leftward, with a stationary envelope, results
+ in perceived motion rightward, and vice versa.
+ We account for this by a third component in the model 
 \begin_inset Formula $M_{I}$
 \end_inset
 
- is an 
-\begin_inset Quotes eld
+, which is a function of the average carrier strength per element.
+ It has a linear term controlled by a coefficient 
+\begin_inset Formula $\beta_{I_{a}}$
 \end_inset
 
-induced motion
-\begin_inset Quotes erd
+and a second-order, nonlinear term controlled by 
+\begin_inset Formula $\beta_{I_{b}}$
 \end_inset
 
- effect, whereby the perceived direction of motion of an attended target
- is also influenced by the motion-energy of the full display.
- The influence of this process is generally repulsive; carrier motion outside
- the integration field biases observers towards perceiving the individual
- elements as moving in the opposite direction.
- However, this effect can have a nonlinearity, which (see Results).
- We modeled this using a function defined as: 
+: 
 \begin_inset Formula 
 \[
 M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
@@ -473,17 +511,7 @@ M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 
 \end_inset
 
-that is, a linear component controlled by the coefficient 
-\begin_inset Formula $\beta_{I_{a}}$
-\end_inset
-
- and a second-order, odd-symmetric component controlled by the coefficient
- 
-\begin_inset Formula $\beta_{I_{b}}$
-\end_inset
-
-.
- This second component was necessary to account for the nonmonotonic effect
+The nonlinear component was necessary to account for a nonmonotonic effect
  of direction content on subjects' responses (see 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -558,7 +586,7 @@ These three components contribute to the modeled subjects' responses according
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\mathrm{logit}(\beta(S)\Delta_{x}+\beta_{S}M_{S}+M_{I}+k)
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\mathrm{logit}(M_{\Delta}+M_{S}+M_{I}+k)
 \]
 
 \end_inset
@@ -581,24 +609,35 @@ where
 \end_inset
 
 , 
-\begin_inset Formula $\beta_{Ia}$
+\begin_inset Formula $\beta_{I_{a}}$
+\end_inset
+
+, 
+\begin_inset Formula $\beta_{I_{b}}$
 \end_inset
 
 , and 
-\begin_inset Formula $\beta_{Ib}$
-\end_inset
-
-.
- We only use 
 \begin_inset Formula $k$
 \end_inset
 
- as necessary account for an overall clockwise or counterclockwise bias;
- for subjects with no such bias we use 
-\begin_inset Formula $k=0$
+.
+ The bias term 
+\begin_inset Formula $k$
 \end_inset
 
-.
+ accounts for an overall clockwise or counterclockwise bias, which some
+ observers exhibit.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "bibliography"
+options "apalike"
+
+\end_inset
+
+
 \end_layout
 
 \end_body

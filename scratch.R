@@ -1,7 +1,7 @@
 #scratchpad for testing/debugging code I'm refining elsewhere
 
 ##########
-## something about GNM is fucked and sensitive to different ways of contrasting...
+ ## something about GNM is fucked and sensitive to different ways of contrasting...
 
   #a fit that ain't working for whatever reason
   model1 <- match_df(many.fits, cbind(bad.fits[3,], subject="nj", type="spacing"))$model[[1]]
@@ -205,4 +205,61 @@ function(.) {
             pi * eccentricity/envelope.factor/abs.pmin(target_number_shown, 
             target_number_all/envelope.factor))
     .
+}
+
+
+logliks <- mkchain(.$fits, put(.$fit, NULL), mutate(optimized=lapply(optimized, `[[`, "lp__")))
+merge(logliks(a), logliks(b), "subject")
+
+
+a$stan_predict <- stan_predict
+environment(a$stan_predict) <- a
+test <- predict(a, a$data[1,])
+test <- predict(a, a$data[1:5,], summary=colwise_se_frame)
+
+
+{
+  e <- load2env("CenterSurroundModel.fit.RData")
+  e$stan_predict <- stan_predict;
+  environment(e$stan_predict) <- e
+  save(list=ls(e), envir=e, file="CenterSurroundModel.fit.RData")
+}
+
+
+switch2 <- function(EXPR, ...) {
+  if (is.character(EXPR)) {
+      argNames <- names(substitute(list(...)))[-1]
+      EXPR <- pmatch(EXPR, argNames)
+  }
+  eval(substitute(function(...) x, list(x=as.name(paste0("..", EXPR)))))(...)
+}
+
+switch3 <- function(EXPR, ...) dots(...)[[EXPR]]this
+
+using <- macro(function(...) {
+  bind[...=files, expr] <- dots(...)
+  arg_name <- names(files)[[1]]
+  files <- files[-1]
+
+  template((function(x, y) {
+    closer <- closer(x)
+    on.exit(x())
+    y
+  })(...(
+      if (!is.null(arg_name)), {
+        template(`.(arg_name)` = )closer <- function() `.(arg_name)` <- template(.{})
+      } else {
+
+      }
+    `.(empla_name)`
+    .(if(length(files) > 0) Recall(...))
+    on.exit(close(x))
+
+      )))
+})
+
+closer <- function(x) {force(x); function()close(x)}
+
+hook <- function(data, fn1, fn2, ...) {
+  fn2(fn1(data), data, ...)
 }

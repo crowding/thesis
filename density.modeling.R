@@ -17,21 +17,13 @@ source("icons.R")
 source("scales.R")
 source("library.R")
 source("slopeModel.R")
+source("density_library.R")
 
 datafile <- "data.RData"
 modelfile <- "slopeModel.RData"
 plotfile <- "density.modeling.pdf"
 savefile <- "density.modeling.RData"
 
-#these are the columns which define each "experiment" (facet on the
-#unfolded graph)
-segment.experiment.vars <-
-  c("subject", "displacement", "content", "eccentricity")
-#within an experiment these are the vars which separate each "stimulus
-#condition" (data point on the graph)
-segment.config.vars <-
-  c("spacing", "target_number_shown", "target_number_all")
-splits <- c(segment.config.vars, segment.experiment.vars)
 main <- function(datafile="data.RData", modelfile="slopeModel.RData",
                  plotfile="density.modeling.pdf",
                  savefile = "density.modeling.RData") {
@@ -63,7 +55,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   ##levels of folding/spindling
   bind[segment, segment.folded, segment.folded.spindled,
        segment.folded.spindled.mutilated] <-
-    Map(extract_segment, list(data),
+     Map(extract_segment, list(data),
         fold = c(FALSE, TRUE, TRUE, TRUE),
         spindle = c(FALSE, FALSE, TRUE, TRUE),
         collapse = c(FALSE, FALSE, FALSE, TRUE))
@@ -71,50 +63,6 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   segment.trials <-
     extract_segment(data, fold=FALSE, spindle=FALSE,
                                     collapse=FALSE, count=FALSE)
-
-  axes.basic <- list(proportion_scale[-1]
-                     , spacing_texture_scale[-1]
-                     , number_color_alt_scale[-1]
-                     , theme(strip.text=element_text(size=8))
-                     )
-  #
-  plot.basic <- (ggplot(segment.folded.spindled) + aes(y=p)
-                 + axes.basic)
-  #
-  plot.wrap <- list(facet_wrap(~label))
-  #
-  by.number <- list(aes(x=target_number_shown),
-                    geom_line(aes(group=factor(spacing),
-                                  linetype=factor(spacing))),
-                    geom_point(aes(group=factor(spacing),
-                                  linetype=factor(spacing)), size=1))
-  #
-  by.spacing <- list(  aes(x=spacing), labs(x="Spacing")
-                     , geom_line(aes(  group = factor(target_number_shown)
-                                     , color = factor(target_number_shown)))
-                     , geom_point(aes( group = factor(target_number_shown),
-                                       color = factor(target_number_shown)),
-                                  size=1))
-  #
-  by.extent <- list(aes(x = extent,
-                        group = factor(target_number_shown),
-                        color = factor(target_number_shown),
-                        fill = factor(target_number_shown))
-                    , geom_line(linetype=1)
-                    , geom_line(aes(group = factor(spacing),
-                                    linetype = factor(spacing)),
-                                color="black", fill="black")
-                    , geom_point(size=1))
-
-  #plot with x-axis of target number, lines of constant spacing
-  plot.number <- plot.basic + by.number + plot.wrap
-  #
-  #plot with x-axis of target spacing, lines of constant number
-  plot.spacing <- plot.basic + by.spacing + plot.wrap
-  plot.spacing <<- plot.spacing
-  #
-  #plot with x-axis of "extent"
-  plot.extent <- plot.basic + by.extent + plot.wrap
 
   ## Let's start by descriptively modeling the segment data. We see from
   ## the graphs that there is a response to changing spacing, and a
@@ -293,7 +241,7 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
      unfolded.prediction.plot <-
        (ggplot(subset(predict_from_model(model.descriptive), content != 0))
         + axes.basic + by.spacing
-        + prediction_layers(connect="number") + aes(y=fit)
+        + density_prediction_layers(connect="number") + aes(y=fit)
         + facet_grid(content ~ side ~ displacement, labeller=pretty_strip))
      #
      #if (interactive()) figure("source")
@@ -376,7 +324,7 @@ condition_prediction_plot <- function(predictions, data, match, conditions,
         , expanded.data=merge(data)
         , plot.spacing %+% .
         , +facet_grid(facet.fmla, labeller=condition_facet_labeller)
-        , +prediction_layers(predictions)
+        , +density_prediction_layers(predictions)
         , +labs(title="Predictions for Experiment 2 from Experiment 1")
         , +errorbars(expanded.data,
                      facet=c("carrier.local", "envelope.local", "subject")))
@@ -428,67 +376,11 @@ modelmerge <- function(
   merge(x, y, by=intersect(names(x), names(y)) %-% c("model"), suffixes=suffixes)
 }
 
-errorbars <- function(segment, x.axis="spacing", facet="label") {
-  ddply(segment, facet, here(summarize),
-        y = 0.5,
-        x = max(
-          switch(x.axis,
-                 number=target_number_shown,
-                 spacing=spacing,
-                 extent=extent)),
-        ymax = 0.5 + binom_se(min(n_obs), 0.5),
-        ymin = 0.5 - binom_se(min(n_obs), 0.5)) -> errorbar
-  with_arg(data = errorbar
-           , inherit.aes = FALSE
-           , mapping = aes(x = x, y = y, ymin = ymin, ymax = ymax)
-           , show_guide = FALSE, geom_errorbar(width=0.2)
-           #, geom_point(size = 4, shape = "+")
-           )
-}
-
-## we like to plot with folded data, and with the "segment" data we,
-## uh, "spindle" collapsing stimuli presented in different
-## hemifields. Averaging foldings and hemifields is useful for
-## plotting but not as good for modeling. "fold" collapses CW and CCW
-## direction contents.  "spindle" collapses stimulus locaions.
-extract_segment <- function(df, fold=FALSE, spindle=FALSE, collapse=FALSE,
-                            count=TRUE)
-  chain(df,
-        subset(exp_type=="numdensity" & subject %in% names(models)),
-        do.rename(folding = FALSE), # we handle the folds more comprehensively.
-        refold(fold = fold),
-        if(count) mkrates(., c(  segment.config.vars, segment.experiment.vars
-                               , "eccentricity", if(!spindle) "side")) else .,
-        mutate(bias = if (fold) 0 else 1,
-               sidedness = if (spindle) 0 else 1,
-               side = if (spindle) NA else side,
-               extent = spacing * target_number_shown),
-        if(collapse) collapse(.) else .,
-        labeler)
-
-#Build ggplot layers to add predictions to a plot.
-prediction_layers <- function(data, connect = c("number","spacing"))  {
-  connect <- match.arg(connect)
-  eval(template(
-         with_arg(
-           ...(if (missing(data)) list() else list(data=quote(data))),
-           mapping=aes(
-             y=fit, ymin = fit - se.fit, ymax = fit + se.fit,
-             ...(switch(connect,
-                        number=alist(
-                          color=factor(target_number_shown),
-                          fill=factor(target_number_shown)),
-                        spacing=alist(
-                          linetype=factor(spacing))))),
-           geom_line(...(if (connect=="number") list(linetype="11") else list())),
-           geom_ribbon(alpha=0.3, linetype=0))))
-}
-
 descriptive_model <- function(dataset) {
   formula <- (  cbind(n_cw, n_ccw)
               ~ content:I(1/spacing)
               - 1)
-  #Some of our subjects were tested at multiple
+  #Some of our subjects were t ested at multiple
   #displacements/contents, others not. So teh
   #displacement/content coefficient only makes sense to include
   #if the data support it:
@@ -636,7 +528,7 @@ FALSE && {
     data.frame(c(coef(model), group), model=NA)
   })
 
-  plot(  plot.spacing
+  plot(  plot.spacing %+% segment.folded.spindled.mutilated
        + prediction_layers(predict_from_model_frame(informed.model.descriptions)))
 
   ## comparo <- merge(

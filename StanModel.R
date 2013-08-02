@@ -1,6 +1,7 @@
 suppressPackageStartupMessages({
   library(rstan)
   library(plyr)
+  library(R.cache)
   source("library.R")
   source("stanFunctions.R")
 })
@@ -36,21 +37,31 @@ main <- function(infile="data.RData",
                  outfile="SlopeModel.fit.RData",
                  iter=2000
                  ) {
+  #interrupting one of these model fits shoud fail fast...
+  options(error=NULL)
   iter <- as.numeric(iter)
   e <- load2env(modelfile) #contains as least 'model', 'stan_predict'
   d <- load2env(infile)
   menergy <- read.csv(grid)
   chain(d$data, (e$filter_data)(), (e$format_data)(menergy)) -> e$data
-
   fits <- ddply_along(e$data, e$model_split, function(split, chunk) {
     stan_data <- e$stan_format(chunk)
-    fit <- sampling(e$model, data=stan_data, warmup=iter/2, iter=iter)
+    hash <- list("sampling",
+                 e$model@model_name, e$model@model_code, e$model@model_cpp,
+                 data=stan_data, warmup=iter/2, iter=iter)
+    fit <- (loadCache(hash)
+            %||% sampling(e$model, data=stan_data,
+                          warmup=iter/2, iter=iter))
+    saveCache(fit, hash)
     print(split)
     print(fit)
 
     # then also get the max-likelihood parameters. And the Hessian? Nah.
     startpoint <- normalize_coefs(maxll(as.data.frame(fit)))
-    l = optimizing(e$model, stan_data, init=startpoint)
+    hash <- list("optimizing", e$model@model_name, e$model@model_code, e$model@model_cpp,
+                 stan_data, init=startpoint)
+    l = (loadCache(hash) %||% optimizing(e$model, stan_data, init=startpoint))
+    saveCache(l, hash)
     optimized = c(l$par, lp__=list(l$value))
 
     quickdf(list(fit = list(fit), optimized=list(optimized)))

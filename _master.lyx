@@ -11,9 +11,6 @@
 %\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
 \use_default_options true
-\begin_modules
-knitr
-\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -71,20 +68,92 @@ knitr
 \begin_body
 
 \begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand include
-filename "introduction.lyx"
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%knitr options
+\end_layout
+
+\begin_layout Plain Layout
+
+<<knitr-options,include=FALSE, cache=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
 
 \begin_inset CommandInset include
 LatexCommand include
-filename "demos.lyx"
+filename "introduction.tex"
 
 \end_inset
 
 
+\begin_inset CommandInset include
+LatexCommand include
+filename "demos.tex"
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 \begin_inset CommandInset include
 LatexCommand include
 filename "methods.lyx"
@@ -94,7 +163,7 @@ filename "methods.lyx"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset CommandInset include
 LatexCommand include
 filename "modeling.lyx"
@@ -104,7 +173,7 @@ filename "modeling.lyx"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset CommandInset include
 LatexCommand include
 filename "results.lyx"
@@ -121,7 +190,7 @@ filename "density.lyx"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset CommandInset include
 LatexCommand include
 filename "discussion.lyx"
@@ -131,7 +200,7 @@ filename "discussion.lyx"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset CommandInset include
 LatexCommand include
 filename "motion_energy.lyx"
@@ -141,10 +210,15 @@ filename "motion_energy.lyx"
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset CommandInset include
 LatexCommand include
 filename "everything.lyx"
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 

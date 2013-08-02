@@ -20,6 +20,21 @@ stan_format <- mkchain(
       lapse_limit <- lapse_limit
     }))
 
+ stan_predict <- mkchain[., coefs](
+     mutate(frac_spacing = 2*pi/target_number_all)
+   , with(coefs, summarize(
+       .
+     , beta_dx = (-blur * spacing_sensitivity
+                  * log(  exp(- frac_spacing / blur)
+                        + exp(- max_sensitivity / spacing_sensitivity * 2 * pi / blur)))
+     , link_displacement = (beta_dx * displacement)
+     , link_repulsion = (repulsion * content
+                         + nonlinearity * (content * abs(content)))
+     , link_summation = (target_number_all * content * summation)
+     , link = bias + link_displacement + link_repulsion + link_summation
+     , response = plogis(link) * (1-lapse) + lapse/2
+     )))
+
 model_code <- '
 data {
   int<lower=0> N;
@@ -43,11 +58,11 @@ transformed data {
 }
 
 parameters {
-  real spacing_sensitivity;
+  real <lower=0>spacing_sensitivity;
   real<lower=0, upper=lapse_limit> lapse;
   real bias;
 
-  real<lower=0,upper=pi()> cs;
+  real<lower=0,upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
   real summation;
   real repulsion;
   real nonlinearity;
@@ -65,7 +80,7 @@ model {
   for (n in 1:N) {
     beta_dx <- -blur * spacing_sensitivity
                 * log(  exp(- frac_spacing[n] / blur)
-                      + exp(- cs / blur));
+                      + exp(- max_sensitivity / spacing_sensitivity * 2 * pi() / blur));
     link_displacement <- beta_dx * displacement[n];
     link_repulsion <- (repulsion * content[n]
                        + nonlinearity * (content[n] * abs(content[n])));
@@ -77,17 +92,3 @@ model {
 
 }'
 
- stan_predict <- mkchain[., coefs](
-     mutate(frac_spacing = 2*pi/target_number_all)
-   , with(coefs, summarize(
-       .
-     , beta_dx = (-blur * spacing_sensitivity
-                  * log(  exp(- frac_spacing / blur)
-                        + exp(- cs / blur)))
-     , link_displacement = (beta_dx * displacement)
-     , link_repulsion = (repulsion * content
-                         + nonlinearity * (content * abs(content)))
-     , link_summation = (target_number_all * content * summation)
-     , link = bias + link_displacement + link_repulsion + link_summation
-     , response = plogis(link) * (1-lapse) + lapse/2
-     )))

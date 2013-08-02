@@ -1,4 +1,4 @@
-suppressPackageStartupMessages({
+ suppressPackageStartupMessages({
   library(grid)
   library(plyr)
   library(ggplot2)
@@ -9,37 +9,70 @@ suppressPackageStartupMessages({
   library(reshape2)
   source("library.R")
   source("scales.R")
+  source("density_library.R")
   theme_set(theme_bw())
   #theme_update(panel.border=element_blank())
 })
 
-infile <- "OnlyMotionEnergy.fit.RData"
+infile <- "CenterSurroundModel.fit.RData"
 grid <- "motion_energy.csv"
-plotfile <- "OnlyMotionEnergy.plots.pdf"
+plotfile <- "CenterSurroundModel.plots.pdf"
 
-main <- function(infile="OnlyMotionEnergy.fit.RData",
+main <- function(infile="CenterSurroundModel.fit.RData",
                  grid="motion_energy.csv",
-                 plotfile="OnlyMotionEnergy.plots.pdf") {
+                 plotfile="CenterSurroundModel.plots.pdf") {
   e <- load2env(infile)
   class(e) <- c("stanenv", class(e))
   #inject a motion-energy interpolator if necessary. An interpolator modifies
   #a data frame. This one interpolates over "norm_diff"
   if (!exists("interpolator", e, inherits=FALSE)) {
-    print("building interpolator for motion energy...")
+    message("building interpolator for motion energy...")
     menergy <- read.csv(grid)
-    e$interpolator <- interpolator(menergy)
+    e$interpolator <- do.call(interpolator, c(list(menergy), e$interpolator.args))
   }
   cairo_pdf(plotfile, onefile=TRUE)
+  on.exit(dev.off, add=TRUE)
+  if (any(with(e$data, target_number_shown < target_number_all))) {
+    message("plotting number/density data...")
+    numdensity_plot(e)
+  }
+  message("plotting psychometric functions...")
   fullCirclePlots(e, fold=TRUE)
+  message("plotting contours...")
+  contourPlots(e, fold=TRUE)
   crossPlots(e)
-  on.exit(dev.off)
+}
+
+contourPlots <- function(object, fold=fold) {
+
+}
+
+numdensity_plot <- function(object) {
+  segment.data <- extract_segment(object$data, subjects=object$fits$subject,
+                                  splits=object$splits)
+  folded.segment.data <- extract_segment(object$data, subjects=object$fits$subject,
+                                         splits=object$splits,
+                                         fold=TRUE, spindle=TRUE, collapse=TRUE)
+  x <- predictable(object)
+  predictions <- cbind(segment.data, predict(x, segment.data, se.fit=TRUE))
+
+  folded.predictions <- mutilate.predictions(
+      predictions, fold=TRUE, spindle=TRUE, collapse=TRUE)
+
+  print(plot.spacing %+% segment.data + facet_wrap(~ subject + displacement + content)
+        + density_prediction_layers(predictions, connect="number")
+        + errorbars(facet="label", segment.data))
+  print(plot.spacing %+% folded.segment.data + facet_wrap(~ label)
+        + density_prediction_layers(folded.predictions, connect="number")
+        + errorbars(facet="label", folded.segment.data))
+  NULL
 }
 
 prediction_dataset <-
     function(fit, data=fit$data,
              fold=FALSE,
              ordinate = "displacement",
-             menergy=data,
+             menergy = data,
              ordinate.values = get_sampling(fit$stanenv$data, menergy, ordinate)){
       chain(data, .[fit$stanenv$splits %v% fit$stanenv$model_split %-% ordinate],
             unique,
@@ -93,7 +126,8 @@ predict.stanenv <- function(object, newdata=object$data,
                             samples=Inf
                             ) {
   ddply_along(
-    newdata, object$model_split, .progress=if(!is.null(summary)) "text" else "none",
+      newdata, object$model_split,
+      .progress=if(!is.null(summary)) "text" else "none",
     function(split, chunk) {
       fit <- merge(object$fits, split)$fit[[1]]
       coefs <- as.data.frame(fit)
@@ -117,37 +151,58 @@ predict.stanenv <- function(object, newdata=object$data,
     })
 }
 
+
 interpolator <- function(
     menergy,
-    interpolating=c("target_number_shown", "content", "displacement"),
-    interpolated=c("norm_diff"),
+    interpolating=c("displacement", "content", "spacing", "extent", "fullcircle"),
+    interpolated=c("norm_diff", "energy_diff"),
     matched=c()
     ) {
-  menergy <- chain(menergy, subset(grid==TRUE), add_energies,
-                   .[c(interpolating, interpolated, matched)],
+  menergy <- chain(menergy, add_energies,
+                   mutate(extent = 2*pi*(target_number_shown/target_number_all),
+                          spacing = 2*pi*eccentricity/target_number_all,
+                          fullcircle = target_number_all == target_number_shown),
                    data.table)
-  function(data) {
-    #a hack -- can't find a 3-d interpolator at the moment.
-    #Just ask what plane we're operating over.
-    bind[...=outofplane, inplane, inplane[2]] <-
+  x <- function(data) {
+    data <- chain(data,
+                  mutate(extent=2*pi*(target_number_shown/target_number_all),
+                         spacing = 2*pi*eccentricity/target_number_all,
+                         fullcircle = target_number_all == target_number_shown))
+    bind[inplane, inplane[2], ...=outofplane] <-
         chain(data, .[interpolating],
-              vapply(mkchain(unique, length), 0), sort, names)
+              vapply(mkchain(unique, length), 0), .[.>1], names)
     setkeyv(menergy, outofplane)
-    ddply(data, outofplane, function(chunk) {
-      ldply(interpolated, function(interp.var) {
-        interp.over <- menergy[unique(chunk[outofplane])]
-        grid <- acast(interp.over,
-                      lapply(inplane, mkchain(as.name, as.quoted)),
-                      value.var=interp.var)
-        interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
-                           y=as.numeric(dimnames(grid)[[2]]),
-                           z=grid)
-        loc <- do.call("cbind", chunk[inplane])
-        interp <- interp.surface(interp.obj, loc)
-        put(chunk[[interp.var]], interp)
-      })
-    })
+    chunker <- function(chunk) {
+      interp <- sapply(
+          interpolated, USE.NAMES=TRUE, simplify=FALSE,
+          function(interp.var) {
+            interp.over <- menergy[unique(chunk[outofplane])]
+            grid <- acast(interp.over,
+                              lapply(inplane, mkchain(as.name, as.quoted)),
+                              value.var=interp.var, fun.aggregate=mean)
+            active.dims <-  which(dim(grid) > 1)
+            inactive.dims <- which(dim(grid) == 1)
+            switch(length(active.dims), {
+              #interpolating over one dim. Assert other dim matches exactly
+              (all(unique(chunk[inplane[[inactive.dims]]])
+                   %in% interp.over[[inplane[inactive.dims]]])) || stop("oops")
+              x <- as.numeric(dimnames(grid)[[active.dims]])
+              loc <- chunk[[inplane[[active.dims]]]]
+              approx(x, grid, loc)$y
+            }, {
+              #interpolating over two dims
+              interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
+                                 y=as.numeric(dimnames(grid)[[2]]),
+                                 z=grid)
+              loc <- do.call("cbind", chunk[inplane])
+              interp.surface(interp.obj, loc)
+            })
+          })
+      cbind(chunk, quickdf(interp))
+    }
+    ddply(data, outofplane, chunker)
   }
+  x
 }
 
 makeTitle <- function(...) {
@@ -175,6 +230,7 @@ fullCirclePlots <- function(e, fold=FALSE, ...) {
 fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
                            style=c("bubble", "binned"), fold=FALSE) {
   style <- match.arg(style)
+  data <- subset(data, target_number_shown == target_number_all)
 
   switch(style, bubble = {
     plotdata <- mkrates(refold(data, fold=fold), splits=splits)
@@ -190,7 +246,7 @@ fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
     predictions2 <- chain(preddata, fold_trials(fold=TRUE),
                           predict(fits, ., type="response", se.fit=TRUE))
     predictions$fit <- (predictions$fit + (1-predictions2$fit))/2
-    predictions$se.fit <- (predictions$se.fit + predictions2$se.fit)/2
+    predictions$se.fit <- sqrt((predictions$se.fit^2 + predictions2$se.fit^2)/2)
   }
   predictions <- cbind(preddata, predictions)
 
@@ -224,7 +280,9 @@ predict.predictable <- function (
   newdata <- newdata[order(newdata$.order),]
   if (se.fit) {
     df <- predict(object$stanenv, newdata, select=optimized)
+    df <- df[order(df$.order),]
     dfse <- predict(object$stanenv, newdata, summary=colwise_se_frame)
+    dfse <- dfse[order(df$.order),]
     switch(type,
            response=list(fit=df$response, se.fit=dfse$response),
            link=list(fit=df$link, se.fit=dfse$link),
@@ -277,7 +335,7 @@ crossPlot <- function(fit, ..., subsample=1000) {
   (ggplot(plotdata)
    + aes(x=x, y=y)
    + facet_grid(facet.y ~ facet.x, scales="free")
-   + geom_point(size=0.5, alpha=0.2)
+   + geom_point(size=0.15)
    + theme_bw()
    + theme(strip.text.x=element_text(angle=-90, hjust=1),
            strip.text.y=element_text(angle=0, hjust=0),
@@ -296,5 +354,8 @@ crossPlot <- function(fit, ..., subsample=1000) {
    + list(...)
    )
 }
+
+
+try_command <- function(line) chain(line, strsplit(" +"), .[-1:-2], main %()% .)
 
 run_as_command()

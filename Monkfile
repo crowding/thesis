@@ -75,6 +75,10 @@
 --output {0}.RData
 --invisible --phony stan
 
+--command Rscript --input --match (NineModels).R$
+--output --listing {0}.list
+--invisible --phony stan
+
 --command Rscript --input StanModel.R
 --input data.RData
 --input motion_energy.csv
@@ -84,11 +88,14 @@
 
 #some models are not baked yet, or need extra samples
 --command
---output --match --invisible (Hemifield)\.fit\.RData$ 100
+--output --match --invisible (CenterSurroundModel)\.fit\.RData$ 500
+
+--command
+--output --match --invisible (models/.*)\.fit\.RData$ 1000 --invisible --phony nine
 
 --command
 --output --match --invisible (ProportionalMotionEnergy)\.fit\.RData$ 4000
- 
+
 --command Rscript --input FitPlots.R
 --input --match (.*)\.fit\.RData
 --input motion_energy.csv
@@ -96,11 +103,27 @@
 --invisible --phony plot
 --invisible --phony pdf
 
+# MotionEnergyLinear|MotionEnergySoftMin|
+
 --command --once Rscript --input --once CompareStanFits.R
---output --once StanComparisonPlots.pdf
---input --match (.*)\.fit\.RData$
+--output --once StanComparisonCircles.pdf
+--input --match (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony pdf
+
+--command --once Rscript --input --once CompareStanFits.R
+--output --once StanComparisonEnergies.pdf
+--input --match (ProportionalMotionEnergy|SlopeModel|MotionEnergyRepulsion|OnlyMotionEnergy)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony pdf
+
+--command --once Rscript --input --once CompareStanFits.R
+--output --once StanComparisonCombined.pdf
+--input --match (Hemifield|SummationField)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony pdf
+
+#--command Rscript --input --once StanResiduals.R
 
 --command pdfjoin %--rotateoversize 'false'
 %--outfile --output contours/all_contours.pdf
@@ -114,6 +137,9 @@
 
 --command '$(LYX)' %-e knitr --input --match ([^_].*)\.lyx
 --output --invisible {0}.Rnw
+
+--command '$(LYX)' %-e latex --input --match (_master)\.lyx
+--output --invisible {0}.tex
 
 --command Rscript %-e "\"library(knitr); knit('{0}{1}.Rnw', '{1}.tex')\""
 --input --invisible --match ((?:.*/)?)([^_].*)\.Rnw
@@ -142,7 +168,7 @@
 
 #compile graffle figures...
 --command osascript --input og-export.applescript 
-$(abspath --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
+$(abspath --input --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
 $(abspath --output {0}.pdf ) pdf
 --phony --invisible graffles 
 --phony --invisible intermediate_pdf
