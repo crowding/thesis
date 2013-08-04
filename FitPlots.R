@@ -355,7 +355,6 @@ crossPlot <- function(fit, ..., subsample=1000) {
    )
 }
 
-
-try_command <- function(line) chain(line, strsplit(" +"), .[-1:-2], main %()% .)
+try_command <- mkchain(strsplit(" +"), unlist, .[-1:-2], main %()% .)
 
 run_as_command()

@@ -1,5 +1,8 @@
 FILES := $(filter-out $(MAKEFILE_LIST),$(shell git ls-files --cached))
 
+.SUFFIXES:
+MAKEFLAGS += --no-builtin-rules
+
 .DELETE_ON_ERROR:
 
 LYX := /Applications/LyX.app/Contents/MacOS/lyx
