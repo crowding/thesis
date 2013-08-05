@@ -138,6 +138,12 @@
 --invisible --phony compare
 --invisible --phony pdf
 
+--command --once Rscript --input --once CompareStanFits.R
+--output --once models/comparison_c_{1}.pdf
+--input --match models/d_([a-z_]*)_c_([a-z_]*)\.fit\.RData$
+--invisible --phony plot
+--invisible --phony compare
+--invisible --phony pdf
 
 #--command Rscript --input --once StanResiduals.R
 

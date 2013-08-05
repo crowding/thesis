@@ -27,6 +27,43 @@ scenarios <- list(d=list(
                 * log(   exp(- frac_spacing / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi / blur))))),
+    soft_local_endpoints=list(
+        displacement_parameter='
+          real <lower=spacing_sensitivity*min(frac_spacing),
+                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
+          real<lower=0, upper=max_sensitivity> endpoint_sensitivity;
+',
+        displacement_var = '
+          real endpoints;
+          real raw_spacing_sensitivity;
+          real envelope_interior;
+          real envelope_norm;
+          ',
+        displacement_computation = '
+          raw_spacing_sensitivity <- -blur * spacing_sensitivity
+              * log(  exp(- frac_spacing[n] / blur)
+                    + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi() / blur));
+          if (target_number_shown[n] == target_number_all[n])
+            endpoints <- 0;
+          else endpoints <- 2;
+          envelope_interior <- pow(raw_spacing_sensitivity, 2) * target_number_shown[n];
+          envelope_norm <- (  endpoints * endpoint_sensitivity
+                              + target_number_shown[n] * raw_spacing_sensitivity);
+          displacement_factor <- envelope_interior / envelope_norm;
+        ',
+        displacement_R_computation = alist(
+            endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+            raw_spacing_sensitivity <- (
+                -blur * spacing_sensitivity
+                * log(  exp(- frac_spacing / blur)
+                      + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi / blur))),
+            envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
+            envelope_norm <- (endpoints * endpoint_sensitivity
+                              + target_number_shown * raw_spacing_sensitivity), 
+            displacement_factor <- envelope_interior / envelope_norm
+            )),
     soft_global=list(
         displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -46,7 +83,7 @@ scenarios <- list(d=list(
                 -blur *  spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
                       + exp(- max_sensitivity /
-                              spacing_sensitivity * 2 * pi / blur)))))
+                            spacing_sensitivity * 2 * pi / blur)))))
     ,
     soft_windowed=list(
         displacement_parameter='
@@ -67,15 +104,15 @@ scenarios <- list(d=list(
                            * 2 * pi() / blur));',
         displacement_R_computation = alist(
             inverse_number <- blur*log(
-                  exp(displacement_field / target_number_shown / blur)
+                exp(displacement_field / target_number_shown / blur)
                 + exp(2*pi / target_number_shown / blur)),
             displacement_factor <- (
                 -blur * spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi / blur)))))
-    ),
-                  #carrier
+                            * 2 * pi / blur))))))
+                  ,
+                  #CARRIER
     c=list(
         global=list(
             carrier_parameter = '',
