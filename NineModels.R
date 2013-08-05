@@ -17,16 +17,53 @@ scenarios <- list(d=list(
         displacement_var = '',
         displacement_computation = '
           displacement_factor <-
-             -blur * displacement_sensitivity * spacing_sensitivity
+             -blur * spacing_sensitivity
               * log(  exp(- frac_spacing[n] / blur)
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
         displacement_R_computation = alist(
             displacement_factor <- (
-                -blur * displacement_sensitivity * spacing_sensitivity
+                -blur * spacing_sensitivity
                 * log(   exp(- frac_spacing / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi / blur))))),
+    soft_local_endpoints=list(
+        displacement_parameter='
+          real <lower=spacing_sensitivity*min(frac_spacing),
+                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
+          real<lower=0, upper=max_sensitivity> endpoint_sensitivity;
+',
+        displacement_var = '
+          real endpoints;
+          real raw_spacing_sensitivity;
+          real envelope_interior;
+          real envelope_norm;
+          ',
+        displacement_computation = '
+          raw_spacing_sensitivity <- -blur * spacing_sensitivity
+              * log(  exp(- frac_spacing[n] / blur)
+                    + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi() / blur));
+          if (target_number_shown[n] == target_number_all[n])
+            endpoints <- 0;
+          else endpoints <- 2;
+          envelope_interior <- pow(raw_spacing_sensitivity, 2) * target_number_shown[n];
+          envelope_norm <- (  endpoints * endpoint_sensitivity
+                              + target_number_shown[n] * raw_spacing_sensitivity);
+          displacement_factor <- envelope_interior / envelope_norm;
+        ',
+        displacement_R_computation = alist(
+            endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+            raw_spacing_sensitivity <- (
+                -blur * spacing_sensitivity
+                * log(  exp(- frac_spacing / blur)
+                      + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi / blur))),
+            envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
+            envelope_norm <- (endpoints * endpoint_sensitivity
+                              + target_number_shown * raw_spacing_sensitivity), 
+            displacement_factor <- envelope_interior / envelope_norm
+            )),
     soft_global=list(
         displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -36,23 +73,23 @@ scenarios <- list(d=list(
         displacement_computation = '
           inverse_number <- 2*pi() / target_number_shown[n];
           displacement_factor <-
-             -blur * displacement_sensitivity * spacing_sensitivity
+             -blur * spacing_sensitivity
               * log(  exp(- inverse_number / blur)
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
         displacement_R_computation = alist(
             inverse_number <- 2*pi/target_number_shown,
             displacement_factor <- (
-                -blur * displacement_sensitivity * spacing_sensitivity
+                -blur *  spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
                       + exp(- max_sensitivity /
-                              spacing_sensitivity * 2 * pi / blur)))))
+                            spacing_sensitivity * 2 * pi / blur)))))
     ,
     soft_windowed=list(
         displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
-          real <lower=0, upper=2*pi()> displacement_field;',
+          real <lower=min(frac_spacing), upper=2*pi()> displacement_field;',
         displacement_var = '
           real inverse_number; // equivalent spacing',
         displacement_computation = '
@@ -61,21 +98,21 @@ scenarios <- list(d=list(
               exp(displacement_field / target_number_shown[n] / blur)
             + exp(2*pi() / target_number_shown[n] / blur));
           displacement_factor <-
-            -blur * displacement_sensitivity * spacing_sensitivity
+            -blur * spacing_sensitivity
              * log(  exp(- inverse_number / blur)
                    + exp(- max_sensitivity / spacing_sensitivity
                            * 2 * pi() / blur));',
         displacement_R_computation = alist(
             inverse_number <- blur*log(
-                  exp(displacement_field / target_number_shown / blur)
-                + exp(2*pi() / target_number_shown / blur)),
+                exp(displacement_field / target_number_shown / blur)
+                + exp(2*pi / target_number_shown / blur)),
             displacement_factor <- (
                 -blur * spacing_sensitivity
                 * log(  exp(- inverse_number / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi / blur)))))
-    ),
-                  #carrier
+                            * 2 * pi / blur))))))
+                  ,
+                  #CARRIER
     c=list(
         global=list(
             carrier_parameter = '',
@@ -92,7 +129,7 @@ scenarios <- list(d=list(
             carrier_R_computation=alist(
                 carrier_factor <- 2*pi* frac_spacing * carrier_sensitivity)),
         windowed=list(
-            carrier_parameter = 'real<lower=0, upper=2*pi()> carrier_field;',
+            carrier_parameter = 'real<lower=min(frac_spacing), upper=2*pi()> carrier_field;',
             carrier_var = '
                 real frac_shown;
                 real frac_in_carrier_field;
@@ -100,16 +137,18 @@ scenarios <- list(d=list(
             carrier_computation = '
                 frac_shown <- (target_number_shown[n]+0.0) / target_number_all[n];
                 frac_in_carrier_field <- -blur * log(
-                    exp(-frac_shown/blur) + exp(-2*pi()*carrier_field/blur));
+                    exp(-2*pi()*frac_shown/blur) + exp(-carrier_field/blur));
                 carrier_factor <-
-                    target_number_all[n] * frac_in_carrier_field * carrier_sensitivity;
+                    target_number_all[n] * frac_in_carrier_field
+                        * carrier_sensitivity / carrier_field;
                 ',
             carrier_R_computation=alist(
-                frac_shown <- target_number_shown[n] / target_number_all[n],
+                frac_shown <- target_number_shown / target_number_all,
                 frac_in_carrier_field <- -blur * log(
-                    exp(-frac_shown/blur) + exp(-2*pi*carrier_field/blur)),
+                    exp(-2*pi*frac_shown/blur) + exp(-carrier_field/blur)),
                 carrier_factor <-
-                    target_number_all * frac_in_carrier_field * carrier_sensitivity))
+                    target_number_all * frac_in_carrier_field
+                    * carrier_sensitivity / carrier_field))
         ))
 
 modelTemplate <- '
@@ -134,7 +173,6 @@ transformed data {
 parameters {
   real <lower=0, upper=lapse_limit> lapse;
   real bias;
-  real displacement_sensitivity;
   real carrier_sensitivity;
   real <lower=0>spacing_sensitivity;
   {{displacement_parameter}}

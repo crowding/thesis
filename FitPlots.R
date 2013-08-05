@@ -241,14 +241,22 @@ fullCirclePlot <- function(fits, data, group, optimized, splits, predictions,
 
   preddata <- prediction_dataset(plotdata, fit=fits)
   predictions <- chain(preddata,
-                       predict(fits, ., type="response", se.fit=TRUE))
+                       predict(fits, ., type="response"))
+  ## predictions <- chain(preddata,
+                       ## predict(fits, ., type="response", se.fit=TRUE))
   if (fold) {
+    ## predictions2 <- chain(preddata, fold_trials(fold=TRUE),
+    ##                       predict(fits, ., type="response", se.fit=TRUE))
     predictions2 <- chain(preddata, fold_trials(fold=TRUE),
-                          predict(fits, ., type="response", se.fit=TRUE))
-    predictions$fit <- (predictions$fit + (1-predictions2$fit))/2
-    predictions$se.fit <- sqrt((predictions$se.fit^2 + predictions2$se.fit^2)/2)
+                          predict(fits, ., type="response"))
+    #predictions$fit <- (predictions$fit + (1-predictions2$fit))/2
+    predictions <- (predictions + (1-predictions2))/2
+    #predictions$se.fit <- sqrt((predictions$se.fit^2 + predictions2$se.fit^2)/2)
   }
-  predictions <- cbind(preddata, predictions)
+  #predictions <- cbind(preddata, predictions)
+  predictions <- cbind(preddata, fit=predictions)
+  #error bars don't add much here and are horrible to compute
+  predictions$se.fit <- 0
 
   #if folding need to average folded and unfolded predictions
   print((ggplot(plotdata)
@@ -355,7 +363,6 @@ crossPlot <- function(fit, ..., subsample=1000) {
    )
 }
 
-
-try_command <- function(line) chain(line, strsplit(" +"), .[-1:-2], main %()% .)
+try_command <- mkchain(strsplit(" +"), unlist, .[-1:-2], main %()% .)
 
 run_as_command()

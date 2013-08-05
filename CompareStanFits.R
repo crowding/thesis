@@ -61,6 +61,10 @@ collect_fit_data <- function(model, extract,
 
 violinPlot <- function(samples, optimized) {
   #shows the posterior distributions over each parameter for each subject
+  samples2 <- condition_warn(samples)
+  if(nrow(samples2) == 0) error("seriously messed")
+  samples <- samples2
+  optimized <- condition_warn(optimized)
   bind[samples, optimized] = shift_likelihoods(samples, optimized, "subject")
   print(
     ggplot(samples)
@@ -69,8 +73,21 @@ violinPlot <- function(samples, optimized) {
     + geom_violin( size=0.1, alpha=0.5
                   , position="identity")
     + geom_point(data=optimized, shape=4)
-    )
+      )
 }
+
+
+condition_warn <- function(samples) {
+  cond <- with(samples, (!is.finite(value)) | (abs(value) > 1E10))
+  if (any(cond)) {
+    message("Infinite or nan or large values!")
+    message(deparse(substitute(samples)), ":", "\n")
+    print(unique(samples[cond,c("variable", "subject", "model_name")]))
+  }
+  if(sum(!cond) == 0) browser()
+  samples[!cond,]
+}
+
 
 #given a long format data frame, match each variable against the other
 cross_variables <- mkchain[
@@ -123,6 +140,9 @@ crossPlot <- function(samples, optimized, filter, subsample=500) {
     samples <- match_df(samples, filter, on=names(filter))
     optimized <- match_df(optimized, filter, on=names(filter))
   }
+
+  samples <- condition_warn(samples)
+  optimized <- condition_warn(optimized)
 
   matchnames <- names(samples) %-% c("value")
 
@@ -189,5 +209,7 @@ main <- function(outfile, ...) {
   on.exit(dev.off, add=TRUE)
   plotStanFits(c(...))
 }
+
+try_command <- mkchain(strsplit(" +"), unlist, .[-1:-2], main %()% .)
 
 run_as_command()
