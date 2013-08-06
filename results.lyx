@@ -325,9 +325,8 @@ circ$
 \end_inset
 
  and used a complete circle of evenly spaced elements.
- For each session we chose a set of carrier strengths and spacings, and
- collected psychometric functions for each member of the set, with the abscissa
- of each function being the envelope motion.
+ For each session I chose a set of carrier strengths and spacings, and collected
+ data for each member of the set.
  As described above in 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -335,12 +334,12 @@ reference "sub:methods-staircase"
 
 \end_inset
 
-, we used an interleaved staircase procedure to collect psychometric functions,
+, I used an interleaved staircase procedure to collect psychometric functions,
  with the staircase varying the speed of the envelope motion.
- There were two general types of sessions.
+ There were two types of sessions.
  One type was focused on the effect of spacing, and tested several spacings
  at a single carrier strength.
- chosen based on preliminary data from that subject.).
+ chosen based on preliminary data from that subject.
  Another type was focused on the effect of carrier strength, and tested
  a fixed set of carrier strengths (0.1, 0.2, 0.4 and 1.0), at two values of
  spacing.
@@ -348,9 +347,8 @@ reference "sub:methods-staircase"
  based on preliminary sessions with that subject.
  There may be some adaptation when a single carrier strength or limited
  sets of spacings were used for an entire session.
- However, we find that a single model fits the both datasets adequately,
- so we pool the data from both types of experiments and present them together
- here.
+ However, I found that a single model fits both datasets adequately, so
+ data from both types of experiments are pooled and presented together here.
  
 \end_layout
 
@@ -359,10 +357,30 @@ Results
 \end_layout
 
 \begin_layout Standard
-We first compare individual psychometric functions that illustrate the effects
+I first show individual psychometric functions that illustrate the effects
  of spacing, carrier strength and envelope displacement.
- There are three qualitative effects that we wish to point out before combining
+ I found three effects relating envelope motion, carrier motion, and spacing.
+ I will describe and show these effects qualitatively first, then show how
+ they are accounted for by the model described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+ model and quantify these effects.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+There are three qualitative effects that we wish to point out before combining
  them all into a unified presentation of the model.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -370,14 +388,29 @@ Sensitivity to displacement decreases as spacing decreases
 \end_layout
 
 \begin_layout Standard
-One effect of changing spacing is to change the observers' sensitivity to
- envelope motion.
- Consider the psychometric function whose domain is the envelope motion
- (spatial distance between stations, or 
+First consider the effect of changing spacing (and simultaneously increasing
+ number) on the perception of envelope motion.
+ There are two potential effects.
+ A reduction in spacing may cause crowding, while an increased number of
+ elements may facilitate pooling of their identical envelope motions.
+ These hypotheses would predict opposite effects on the sensitivity to envelope
+ motion.
+ Pooling would predict that more elements would lead to a greater sensitivity
+ to envelope motion; crowding would predict that reduced spacing will reduce
+ sensitivity to envelope motion.
+ I found the latter; an example of this is shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-collapse"
+
+\end_inset
+
+, for a subset of the data collected.
+ This figure plots the envelope displacement per step, 
 \begin_inset Formula $\Delta x$
 \end_inset
 
-) and whose range is the probability of the observer responding 
+ on the horizontal axis and the probability of the observer responding 
 \begin_inset Quotes eld
 \end_inset
 
@@ -386,80 +419,40 @@ clockwise
 \end_inset
 
  to that stimulus.
- We find that when the spacing between elements is reduced, the slope of
- this function decreases.
- An example of this is shown in 
+ For 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-spacing-collapse"
 
 \end_inset
 
-.
- The curves in that figure reflect an overall fit of the model described
- in 
+ data from two values of spacing at the same carrier strength are shown,
+ for three observers.
+ In each case the psychometric function fit to data collected at the smaller
+ spacing has a shallower slope, independently of any shifts it may have.
+ In a later section (
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:model"
+LatexCommand ref
+reference "sub:results-no-pooling"
 
 \end_inset
 
-, while the points reflect the observed responses at a particular carrier
- strength, spacing, and direction content.
- The points on the graph are scaled according to the number of trials completed
- with those stimulus configurations.
- Therefore we would expect larger points to lie closer to the model fit,
- while smaller points have more uncertainty and may be expected to lie farther
- from the model fit.
- In the extreme, a particular stimulus configuration might only be visited
- once while the staircase moves past it; these smallest points will lie
- on either 
-\begin_inset Formula $P(clockwise)=1$
-\end_inset
-
- or 0.
- Since the curves plotted are overall model fits rather that fits to only
- the stimuli shown, we expect some degree of mismatch between model and
- data.
+) I will quantify and graph the relation of sensitivity to element spacing.
 \end_layout
 
 \begin_layout Standard
-\align left
-We consistently observe that reducing the spacing between elements also
- reduces the slope of the psychometric functions.
- Thus, when elements are more closely packed together, it appears to be
- more difficult for observers to discriminate the direction of envelope
- motion.
- Nearby elements thus interfere with the ability to discriminate changes
- in elements position.
- Note that in this experiment, reducing the spacing between elements correspondi
-ngly increases the number of elements in the scene.
- One might have expected that there could be pooling of envelope motion
- signals from separate elements, in which case we would expect that the
- sensitivity to envelope motion increases with additional elements on the
- display.
- We do not see this, even for the difference between two and four elements
- (one or two per hemifield) 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-I'm not showing this subset of data but I could
-\end_layout
+Crowding causes interference at smaller distances, while pooling might still
+ act over larger distances.
+ Therefore I also tested whether there was a change in envelope motion sensitivi
+ty at wider spacings, outside the range of spacings that might be subject
+ to crowding, but I found no significant effect (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-no-pooling"
 
 \end_inset
 
- which should be outside the range of any crowding effects.
- So it appears that in this task envelope motion is not pooled, even with
- knowledge in the task that the motion of all elements is identical.
- So we also rule out the possibility that envelope motion is globally pooled
- among elements, at least for this task and stimuli; if pooling of envelope
- motion occurred, we would observe the opposite effect on the slopes of
- the psychometric functions.
-\end_layout
-
-\begin_layout Standard
-We should also note that the values of 
+) The values of 
 \begin_inset Formula $\Delta x$
 \end_inset
 
@@ -514,26 +507,47 @@ name "fig:results-spacing-collapse"
 
 \end_inset
 
- Effect of spacing on sensitivity to direction content.
- Psychometric functions of envelope motion are shown for three example subjects.
- For each observer two curves are shown, each at a different spacing; carrier
- strength is unchanged.
- The effect of reducing spacing is to reduce the slope of the psychometric
- function, indicating that nearby elements interfere with observers' ability
- to detect an element's change in position.
- Curved lines show model fits, while dots show observed data; the size of
- each dot corresponds to the number of trials observed by the staircase
- procedure at that displacement.
- The curves plot fits from the overall model as described in 
+ When spacing is reduced, sensitivity to envelope motion decreases.
+ Data from three observers is shown, each showing two spacings.
+ The horizontal axis shows the envelope displacement per step 
+\begin_inset Formula $\Delta x$
+\end_inset
+
+, and the vertical axis plots the proportion of trials answering 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to that stimulus.
+ Within each subplot the carrier strength 
+\begin_inset Formula $C$
+\end_inset
+
+ is held constant, written in the lower left corners.
+ Curves are drawn from overall fits of the model described in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sec:model"
 
 \end_inset
 
-, which was fit to a much larger set of data than is shown here (so we expect
- individual curves may not fit ideally to the small subset of data shown
- here.)
+, using data from a larger range of spacings and carrier strengths.
+ The points on the graph are scaled according to the number of trials made
+ at those stimulus configurations.
+ Therefore we would expect larger points to lie closer to the model fit,
+ while smaller points have more uncertainty and may be expected to lie farther
+ from the model fit.
+ In the extreme, a particular stimulus configuration might only be visited
+ once or twice while the staircase moves past it; these smallest points
+ would lie on either 
+\begin_inset Formula $P(clockwise)=1$
+\end_inset
+
+ or 0.
+ When spacings are reduced, psychometric functions fit with shallower slopes.
 \end_layout
 
 \end_inset
@@ -561,31 +575,74 @@ name "sub:results-basic-summation"
 \begin_layout Standard
 Observers' responses to the carrier component of the motion were in some
  ways more complicated then their response to the envelope motion.
- One feature is that carrier motion can be repulsive; weak amounts of carrier
- motion in one direction often caused a tendency for observers to report
- perceived motion in the opposite direction.
+ One feature was that carrier motion can be repulsive; weak amounts of carrier
+ motion in one direction often caused observers to report perceived motion
+ in the opposite direction.
  Another feature is that the sensitivity to carrier motion, in these stimuli,
  changed as a function of the spacing between elements.
- Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-summation-increases"
 
 \end_inset
 
- gives an example of both these effects, using a subset of the data collected.
- In that figure we show psychometric functions collected at two different
- values of carrier strength at two different element spacings.
+ gives examples of both these effects, again using a subset of the data
+ collected.
+ In that figure we show data using two different values of carrier strength,
+ each at two different element spacings.
  The lower row shows data collected at the wider of the two spacings.
- The psychometric functions shown here show a repulsive effect of carrier
- motion; they intercept the 
+ 
+\end_layout
+
+\begin_layout Standard
+Of particular note is how observers respond when there is no envelope motion,
+ i.e.
+ 
 \begin_inset Formula $\Delta x=0$
 \end_inset
 
- axis at a value less than 0.5, indicating that observers were more likely
- to perceive a stimulus with null envelope motion and clockwise carrier
- motion as actually moving counterclockwise.
- 
+ (in the graphs, where the curves intersect the vertical axis.
+ Comparing the location of the intercept between conditions of different
+ carrier reflects the observers' sensitivity to changes in carrier motion,
+ other parameters being held equal.
+ The upper row in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-summation-increases"
+
+\end_inset
+
+ shows data collected at small spacing, with many elements on scree, while
+ the lower row shows data collected at smaller spacings.
+ The difference between intercepts is larger on the upper figure, showing
+ that these observers are more sensitive to changes in the carrier strength
+ when the spacing is small and there are more elements on the screen (this
+ will be quantified in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-sensitivity"
+
+\end_inset
+
+.)
+\end_layout
+
+\begin_layout Standard
+A second effect visible in these examples is an apparent repulsion from
+ carrier motion at wide spacings.
+ In the lower row, the psychometric functions fitted to this data intercept
+ the vertical 
+\begin_inset Formula $\Delta x=0$
+\end_inset
+
+ axis at values of 
+\begin_inset Formula $P\left(clockwise\right)$
+\end_inset
+
+ less than 0.5.
+ That is to say, at wide spacings, observers were more likely to perceive
+ a stimulus with null envelope motion and clockwise carrier motion as actually
+ moving counterclockwise (against the carrier motion).
 \end_layout
 
 \begin_layout Standard
@@ -641,24 +698,36 @@ reference "sec:results-basic"
 
 \end_inset
 
- tupper row shows data taken a wide spacing while the lower row shows data
- taken at a narrow spacing.
- Each subplot shows two psychometric functions taken at two different carrier
+ is selected, showing three observers, two clockwise values of carrier strength
+ and two spacings.
+ The horizontal axis plots displacement, the vertical axis reflects proportion
+ of responses clockwise.
+ Colors indicate different strengths of carrier motion; three observers
+ are shown in separate columns.
+ The upper row shows data taken a wide spacing, indicated in the margin,
+ while the lower row shows data taken at a narrow spacing.
+ Each subplot shows two psychometric functions at two different carrier
  strengths.
- In addition to the effect of spacing on sensitivity to direction content,
- seen in the previous figure, this plot illustrates the changing effect
- of carrier strength as a function of element spacing; the does not change
- the intercepts of the psychometric functions very much, while the same
- change at narrow spacing produces a much greater change in the proportion
- of observers' responses toward one direction.
- We also see that weaker carrier strengths are repulsive when targets at
- wide spacings; In the bottom row, curves intersect the 
-\begin_inset Formula $\Delta x=0$
+ In each graph, the difference between the two curves' 
+\begin_inset Formula $y$
 \end_inset
 
- axis with the observer reporting clockwise motion with probability less
- than 0.5 (with the convention that carrier motion is always taken to be
- clockwise.)
+-intercepts reflects the observer's sensitivity to carrier motion at that
+ spacing.
+ This sensitivity is greater at wider spacings.
+ At narrow spacings, curves intercept the vertical axis below 
+\begin_inset Formula $P=0.5$
+\end_inset
+
+, indicating a tendency to respond 
+\begin_inset Quotes eld
+\end_inset
+
+counterclockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to clockwise carrier motion.
 \end_layout
 
 \end_inset
@@ -672,8 +741,65 @@ reference "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
-Note that since this graph presents folded data, i.e., values shown here with
- a single value for carrier strength, which we nonetheless refer to as 
+The graphs in the upper row show responses at smaller spacings, At smaller
+ spacings the repulsive effect was no longer evident; when 
+\begin_inset Formula $\Delta x=0$
+\end_inset
+
+, observers responded clockwise, in agreement with the carrier motion rather
+ than against it.
+ So the repulsion may only be active at larger spacings, or it may be present
+ at smaller spacings while being overwhelmed by a spacing-dependent effect
+ (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+) 
+\end_layout
+
+\begin_layout Standard
+For an identical change in carrier strength, then, distance between the
+ 
+\begin_inset Formula $\Delta x=0$
+\end_inset
+
+ intercepts for two strengths of carrier motion was much larger at the narrow
+ spacing than at the larger spacing (to be quantified in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-sensitivity"
+
+\end_inset
+
+.) Note that this statement is based on comparing the intercepts with the
+ vertical axis, rather than the points of subjective equality (intercepts
+ with the horizontal line 
+\begin_inset Formula $P=0.5$
+\end_inset
+
+.) One would expect the distance between the points of subjective equality
+ to be increased even of the strength of carrier motion did not change,
+ because of the change in slopes: an identical shift in log-likelihood applied
+ to two sigmoid cumulative distribution functions will produce a greater 
+ change in the PSE for the one with the shallower slope.
+ However, since the intercepts with the vertical axis are also farther apart
+ at smaller spacings, we conclude that the sensitivity to carrier motion
+ has increased in addition to the decrease in sensitivity to envelope motion.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-summation-increases"
+
+\end_inset
+
+ presents folded data, i.e., values shown here with a single value for carrier
+ strength, which we nonetheless refer to as 
 \begin_inset Quotes eld
 \end_inset
 
@@ -684,10 +810,10 @@ clockwise,
  represent data collected from both that stimulus and its mirror image,
  and envelope motions and responses are mirrored correspondingly.
  So a point appearing below 
-\begin_inset Formula $P(cw)<0.5$
+\begin_inset Formula $P<0.5$
 \end_inset
 
- in this graph indicates that the observer chose 
+ in this graph can be read as indicating that the observer chose 
 \begin_inset Quotes eld
 \end_inset
 
@@ -705,119 +831,47 @@ counterclockwise
 
  to that stimulus's mirror image.
  Thus the presentation of folded data here averages out any static biases
- toward one direction that an observer may have.
+ toward one direction.
  
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-having to explain this is part of why I don't like folded plots.
- It's more compelling to compare one curve with another than to have to
- explain which side of the x-intercept means what
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
-In fact any data appearing in the lower right quadrant of this graph shows
- stimuli for which carrier motion is (nominally) clockwise, envelope motion
- is clockwise, and yet the observer reported counterclockwise motion on
- average -- that is, against both the carrier and envelope motions.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-the change in strength is somewhat more important than the assimilation/repulsio
-n, maybe it should move up
-\end_layout
-
+Note that at wide spacings, the curves pass through the lower right quadrant
+ of each graph (
+\begin_inset Formula $\Delta x>0$
 \end_inset
 
- Moving to the graphs in the upper row, we see that the repulsive effect
- is no longer evident.
- Now nominally clockwise values of carrier strength are associated with
- increased rates of responding 
+ and 
+\begin_inset Formula $P<0.5$
+\end_inset
+
+.) This represents a situation where the observer's response contradicts
+ both the carrier and envelope motions; in these conditions the observer
+ will respond 
 \begin_inset Quotes eld
 \end_inset
 
-clockwise
+counterclockwise
 \begin_inset Quotes erd
 \end_inset
 
-, and increasing the carrier strength further increases the rate of clockwise
- responses.
- So the repulsion may only be active at larger spacings, or it may be present
- at smaller spacings while being overwhelmed by a spacing-dependent effect
- (see 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:results-induced-modeling"
-
-\end_inset
-
-) We also observe that the effect of changing carrier strength is larger
- when inter-element spacing is reduced.
- For an identical change in carrier strength, distance between the 
-\begin_inset Formula $\Delta x=0$
-\end_inset
-
- intercepts for two strengths of carrier motion is much larger at the narrow
- spacing than at the larger spacing.
- Note that we would expect the distance between the points of subjective
- equality (the intercepts of the psychometric functions with 
-\begin_inset Formula $P(cw)=0.5$
-\end_inset
-
-) to be increased even of the strength of carrier motion did not change,
- simply because of the reduced sensitivity to envelope motion described
- in the previous section and apparent as a change in the slope of the psychometr
-ic functions between upper and lower rows.
- Since the intercepts with the vertical axis are also farther apart at smaller
- spacings, we conclude that the sensitivity to carrier motion has increased
- in addition to the decrease in sensitivity to envelope motion.
+ to a stimulus whose carrier and envelope motions are both slightly clockwise.
+ Thus at wide spacings, carrier motion repels rather than adds to the perceived
+ motion direction.
 \end_layout
 
 \begin_layout Standard
-There are alternative ways to interpret the spacing-dependent change in
- the strength of carrier motion and the shift from repulsion to assimilation.
- One is as a form of center surround effect, in which the spacing-dependent
- interaction takes the form of repulsion between widely spaced element and
- obligatory summation between more closely spaced elements, as has been
- observed for other visual features such as orientation 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Mareschal:2010fk"
-
-\end_inset
-
-.
- Another interpretation is that the repulsion is an induced-motion effect
- that operates independently of the spacing-dependent effect and the increase
- in sensitivity to carrier motion depends on a sum of motion energy over
- the visual field (thus the number of elements is more relevant than the
- spacing.) 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-It now appears to me that the latter possibility is more likely i.e.
- number patters more for carrier motion (but spacing matters more for envelope
- motion), but that will be for the spacing/density experiment to talk about.
-\end_layout
-
-\end_inset
-
- We will attempt to clarify and distinguish between these interpretations
- in the subsequent experiment.
+In the previous section I illustrated that the sensitivity to envelope motion,
+ visible as the slope of the psychometric function, decreased when element
+ spacing decreased.
+ In this section I illustrate that carrier motion has the opposite change
+ in sensitivity; carrier motion have more effect for narrowly spaced stimuli.
+ In this experiment the spacing between elements covaries with the number
+ of elements, so that it is not determined whether either effect should
+ be considered an effect of the reduced spacing or of the increased number.
  In either case, this contrast identifies a way in which envelope motion
- is seen differently from carrier motion; it appears that envelope motion
- signals from separate objects cannot be combined in this task,
+ is processed differently from carrier motion; it appears that envelope
+ motion signals from separate objects cannot be combined in this task,
 \begin_inset Note Note
 status collapsed
 
@@ -832,7 +886,7 @@ have to qualify this because they can be combined given longer viewing durations
 \end_layout
 
 \begin_layout Subsection
-Model and data overview and visualizations
+Model overview and visualizations
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-contours"
@@ -843,34 +897,64 @@ name "sub:results-contours"
 \end_layout
 
 \begin_layout Standard
-Our experiment relates three parameters -- carrier strength, envelope motion
+Having given examples illustrating some of the effects that a model should
+ capture, this section attempt to present an overview both of the entire
+ dataset, and how the model specified in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+ fits that data.
+ In the following section I will examine particular features of the model
+ and evaluate their fit to the data.
+\end_layout
+
+\begin_layout Standard
+This experiment related three parameters -- carrier strength, envelope motion
  and spacing -- to a fourth variable, the motion perceived by the observer.
- At this point, having given examples illustrating some of the effects that
- a model should capture, we attempt to present an overview both of the entire
- dataset, and how the model fits that data.
- Afterwards we will examine particular features of the model and evaluate
- their fit to the data.
-\end_layout
+ One can visualize those variables as forming a three-dimensional space
+ illustrated in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-3d"
 
-\begin_layout Standard
-This experiment observed the effect on perceived motion of three stimulus
- parameters (spacing, envelope motion, and carrier strength.) We can visualize
- those variables as forming a three-dimensional configuration space.
- As a function of these three variables, we model the proportion of responses
- on one direction or the other.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-These graphs display the models fitted to each subject's data, while showing
- locations at which data was sampled.
- The model has three primary variables (spacing, envelope motion, and carrier
- strength) which we are concerned with; these variables can be considered
- to form a three-dimensional stimulus configuration space.
+.
  The combination of these three variables determines the likelihood with
- which the observer will respond "clockwise" or "counterclockwise" to the
- given stimulus.
- Here we show the model's predictions over four planar sections through
- this three-dimensional space.
+ which the observer will respond 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+counterclockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to the given stimulus.
+ The model predicts the proportion of responses in one direction or the
+ other as a function of these three variables, which is drawn visualized
+ as a density coloring each point in the space.
+ Four planar sections are shown through this space to highlight model features
+ of interest.
+ In 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+ these same sections are pulled out and shown in relation to the observed
+ data.
 \end_layout
 
 \begin_layout Standard
@@ -1116,14 +1200,33 @@ reference "fig:results-3d"
 
 \end_inset
 
- shows a perspective view of the three stimulus parameters varied in this
- experiment, as a three-dimensional space with four intersecting planar
- sections shown.
- Data from one observer is shown; the complete set of illustrations for
- all observers is shown in an appendix.
- The color scale maps response probabilities to luminance with darker and
- more saturated hues mapped to response probabilities that are further from
- 0.5.
+ shows data from one observer is shown; the complete set of illustrations
+ for all observers is shown in an appendix.
+ The background color scale depicts the probability of responding 
+\begin_inset Quotes eld
+\end_inset
+
+cockwise
+\begin_inset Quotes erd
+\end_inset
+
+, with high probabilities shaded red and low probabilities (i.e.
+ tending counterclockwise) shaded blue; darker and more saturated the color,
+ the further from 
+\begin_inset Formula $P=0.5$
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+SOMETHING WRONG HERE???
+\end_layout
+
+\end_inset
+
  Additionally color is mapped to the sign of the response probability, with
  blue shades representing points where the modeled observer tended to respond
  counterclockwise (that is, against the direction of carrier motion) and
