@@ -107,26 +107,26 @@
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonCircles.pdf
---input --match (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
+--input --match --once (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonCircles.pdf
---input --match (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
+--input --match --once (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonEnergies.pdf
---input --match (ProportionalMotionEnergy|SlopeModel|MotionEnergyRepulsion|OnlyMotionEnergy)\.fit\.RData$
+--input --match --once (ProportionalMotionEnergy|SlopeModel|MotionEnergyRepulsion|OnlyMotionEnergy)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony compare
 --invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonCombined.pdf
---input --match (Hemifield|SummationField)\.fit\.RData$
+--input --match --once (Hemifield|SummationField)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony compare
 --invisible --phony pdf

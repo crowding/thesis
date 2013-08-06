@@ -61,7 +61,7 @@ scenarios <- list(d=list(
                             * 2 * pi / blur))),
             envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
             envelope_norm <- (endpoints * endpoint_sensitivity
-                              + target_number_shown * raw_spacing_sensitivity), 
+                              + target_number_shown * raw_spacing_sensitivity),
             displacement_factor <- envelope_interior / envelope_norm
             )),
     soft_global=list(
@@ -118,9 +118,68 @@ scenarios <- list(d=list(
             carrier_parameter = '',
             carrier_var = '',
             carrier_computation=
-                'carrier_factor <- target_number_all[n] * carrier_sensitivity;',
+                'carrier_factor <- target_number_shown[n] * carrier_sensitivity;',
             carrier_R_computation=alist(
-                carrier_factor <- target_number_all * carrier_sensitivity)),
+                carrier_factor <- target_number_shown * carrier_sensitivity)),
+         endpoints=list(
+            carrier_parameter = '
+                real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;',
+            carrier_var = '
+                real carrier_weight_inside;
+                real carrier_norm;
+                real n_endpoints;',
+            carrier_computation= '
+                if (target_number_shown[n] == target_number_all[n])
+                    n_endpoints <- 0;
+                else n_endpoints <- 2;
+                carrier_weight_inside <- target_number_shown[n] * displacement_factor;
+                carrier_norm <-
+                   ( target_number_shown[n] * displacement_factor
+                    + n_endpoints * endpoint_carrier_weight ) / (n_endpoints + target_number_shown[n]);
+                carrier_factor <- carrier_sensitivity *
+                                  carrier_weight_inside / carrier_norm;
+                ',
+            carrier_R_computation=alist(
+                endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+                carrier_weight_inside <- target_number_shown * displacement_factor,
+                carrier_norm <-
+                   ( target_number_shown * displacement_factor
+                    + endpoints * endpoint_carrier_weight) / (endpoints + target_number_shown),
+                carrier_factor <- carrier_sensitivity *
+                carrier_weight_inside / carrier_norm)),
+        repulsive_endpoints=list(
+            carrier_parameter = '
+                real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;
+                // a factor multiplied by the summation going on elsewhere...
+                real <lower=-10, upper=10> endpoint_carrier_factor;',
+            carrier_var = '
+                real carrier_weight_inside;
+                real carrier_norm;
+                real n_endpoints;',
+            carrier_computation= '
+                if (target_number_shown[n] == target_number_all[n])
+                    n_endpoints <- 0;
+                else n_endpoints <- 2;
+                carrier_weight_inside <- target_number_shown[n] * displacement_factor;
+                carrier_norm <-
+                   ( carrier_weight_inside
+                    + n_endpoints * endpoint_carrier_weight ) / (n_endpoints + target_number_shown[n]);
+                carrier_factor <- (
+                      carrier_sensitivity * target_number_shown[n] * displacement_factor
+                    + carrier_weight_inside * n_endpoints *
+                      endpoint_carrier_factor * carrier_weight_inside
+                    ) / carrier_norm;
+                ',
+            carrier_R_computation=alist(
+                endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+                carrier_weight_inside <- target_number_shown * displacement_factor,
+                carrier_norm <-
+                   ( target_number_shown * displacement_factor
+                    + endpoints * endpoint_carrier_weight) / (endpoints + target_number_shown),
+                carrier_factor <- (  (carrier_sensitivity * carrier_weight_inside)
+                                   + (endpoint_carrier_factor * carrier_weight_inside)
+                                  ) / carrier_norm
+                )),
         local=list(
             carrier_parameter = '',
             carrier_var = '',
@@ -148,7 +207,7 @@ scenarios <- list(d=list(
                     exp(-2*pi*frac_shown/blur) + exp(-carrier_field/blur)),
                 carrier_factor <-
                     target_number_all * frac_in_carrier_field
-                    * carrier_sensitivity / carrier_field))
+                * carrier_sensitivity / carrier_field))
         ))
 
 modelTemplate <- '
@@ -266,6 +325,23 @@ otherFunctions <- quote({
 
 })
 
+#these models screw up in some way and I omit them from taking up computer time.
+losers <- c(
+    "d_soft_windowed_c_local",
+    "d_soft_local_c_local",
+    "d_soft_local_endpoints_c_local",
+    "d_soft_global_c_endpoints",
+    "d_soft_global_c_local",
+    "d_soft_global_c_windowed",
+    "d_soft_windowed_c_windowed",
+    "d_soft_windowed_c_local",
+    "d_soft_global_c_global",
+    "d_soft_windowed_c_global",
+    "d_soft_global_c_global",
+    "d_soft_windowed_c_global",
+    "d_soft_global_c_endpoints",
+    "d_soft_windowed_c_endpoints")
+
 makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
                          scenarios=parent.env(environment())$scenarios,
                          envir = new.env(parent=globalenv())) {
@@ -316,6 +392,7 @@ main <- function(outfile='NineModels.list') {
           do.call(expand.grid, .),
           as.matrix,
           alply(1, makeModelEnv),
+          Filter(f=function(x) !x$model_name %in% losers),
           lapply(compileModelEnv, outconn))
   })
 }
