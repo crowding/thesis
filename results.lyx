@@ -13,7 +13,7 @@ knitr
 \maintain_unincluded_children false
 \language english
 \language_package default
-\inputencoding auto
+\inputencoding utf8
 \fontencoding global
 \font_roman default
 \font_sans default
@@ -79,7 +79,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -193,7 +193,7 @@ status collapsed
 
 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -202,7 +202,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<results-loadData,cache=TRUE,echo=FALSE,results="hide",cache.extra=cache.extra=file.info(c("slopeModel.RData", "motion_energy.csv")$mtime>>
+<<results-loadData,cache=TRUE,echo=FALSE,results="hide",cache.extra=file.info(c("s
+lopeModel.RData", "motion_energy.csv"))$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -417,8 +418,7 @@ clockwise
 \begin_inset Quotes erd
 \end_inset
 
-to that stimulus on the vertical axis.
-For
+to that stimulus on the vertical axis.For
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:results-spacing-collapse"
@@ -443,8 +443,8 @@ reference "sec:model"
 Crowding causes interference at smaller distances, while pooling might still
  act over larger distances.
  Therefore I also tested whether there was a change in envelope motion sensitivi
-ty with element number at wider spacings, outside the range of spacings that might be subject
- to crowding, but I found no significant effect (
+ty with element number at wider spacings, outside the range of spacings
+ that might be subject to crowding, but I found no significant effect (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:results-no-pooling"
@@ -512,7 +512,7 @@ name "fig:results-spacing-collapse"
 \begin_inset Formula $\Delta x$
 \end_inset
 
-, and the vertical axis plots the proportion of trials answering 
+, and the vertical axis plots the proportion of trials answering 
 \begin_inset Quotes eld
 \end_inset
 
@@ -533,7 +533,7 @@ reference "sec:model"
 
 \end_inset
 
-, using data from a larger range of spacings and carrier strengths.
+, using data from a larger range of spacings and carrier strengths.
  The points on the graph are scaled according to the number of trials made
  at those stimulus configurations.
  Therefore we would expect larger points to lie closer to the model fit,
@@ -542,7 +542,7 @@ reference "sec:model"
  In the extreme, a particular stimulus configuration might only be visited
  once or twice while the staircase moves past it; these smallest points
  would lie on either 
-\begin_inset Formula $P(clockwise)=1$
+\begin_inset Formula $P\left(clockwise\right)=1$
 \end_inset
 
  or 0.
@@ -579,6 +579,7 @@ Observers' responses to the carrier component of the motion were in some
  in the opposite direction.
  Another feature is that the sensitivity to carrier motion, in these stimuli,
  changed as a function of the spacing between elements.
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-summation-increases"
@@ -600,18 +601,18 @@ Of particular note is how observers respond when there is no envelope motion,
 \begin_inset Formula $\Delta x=0$
 \end_inset
 
- (in the graphs, where the curves intersect the vertical axis.
- Comparing the location of the intercept between conditions of different
- carrier reflects the observers' sensitivity to changes in carrier motion,
- other parameters being held equal.
+ (in the graphs, where the curves intersect the vertical axis.) Comparing
+ the location of the intercept between conditions of different carrier reflects
+ the observers' sensitivity to changes in carrier motion, other parameters
+ being held equal.
  The upper row in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-summation-increases"
 
 \end_inset
- 
- shows data collected at small spacing, with many elements on scree, while
+
+  shows data collected at small spacing, with many elements on scree, while
  the lower row shows data collected at smaller spacings.
  The difference between intercepts is larger on the upper figure, showing
  that these observers are more sensitive to changes in the carrier strength
@@ -622,13 +623,13 @@ LatexCommand ref
 reference "sub:results-sensitivity"
 
 \end_inset
- 
-.)
+
+ .)
 \end_layout
 
 \begin_layout Standard
 A second effect visible in these examples is an apparent repulsion from
- carrier motion at wide spacings.
+ carrier motion at wide spacings.
  In the lower row, the psychometric functions fitted to this data intercept
  the vertical 
 \begin_inset Formula $\Delta x=0$
@@ -710,8 +711,8 @@ reference "sec:results-basic"
  In each graph, the difference between the two curves' 
 \begin_inset Formula $y$
 \end_inset
- 
--intercepts reflects the observer's sensitivity to carrier motion at that
+
+ -intercepts reflects the observer's sensitivity to carrier motion at that
  spacing.
  This sensitivity is greater at narrow spacings.
  At wider spacings, curves intercept the vertical axis below 
@@ -725,8 +726,8 @@ reference "sec:results-basic"
 counterclockwise
 \begin_inset Quotes erd
 \end_inset
- 
- to clockwise carrier motion.
+
+  to clockwise carrier motion.
 \end_layout
 
 \end_inset
@@ -773,20 +774,20 @@ reference "sub:results-sensitivity"
 
 \end_inset
 
-.) Note that this statement about sensitivity is based on comparing the intercepts with the
- vertical axis, rather than the points of subjective equality (intercepts
- with the horizontal line 
+.) Note that this statement about sensitivity is based on comparing the intercept
+s with the vertical axis, rather than the points of subjective equality
+ (intercepts with the horizontal line 
 \begin_inset Formula $P=0.5$
 \end_inset
 
 .) One would expect the distance between the points of subjective equality
  to be increased even of the strength of carrier motion did not change,
- because of the change in slopes: an identical vertical shift applied to two lines will
- produce a greater shift in the x-intercept for the line with the shallower slope.
+ because of the change in slopes: an identical vertical shift applied to
+ two lines will produce a greater shift in the x-intercept for the line
+ with the shallower slope.
  However, since the intercepts with the vertical axis are also farther apart
  at smaller spacings, we conclude that the sensitivity to carrier motion
  has increased in addition to the decrease in sensitivity to envelope motion.
-
 \end_layout
 
 \begin_layout Standard
@@ -804,8 +805,8 @@ reference "fig:results-summation-increases"
 clockwise,
 \begin_inset Quotes erd
 \end_inset
- 
- represent data collected from both that stimulus and its mirror image,
+
+  represent data collected from both that stimulus and its mirror image,
  and envelope motions and responses are mirrored correspondingly.
  So a point appearing below 
 \begin_inset Formula $P<0.5$
@@ -814,8 +815,8 @@ clockwise,
  in this graph can be read as indicating that the observer chose 
 \begin_inset Quotes eld
 \end_inset
-	
-counterclockwise
+
+	counterclockwise
 \begin_inset Quotes erd
 \end_inset
 
@@ -830,7 +831,6 @@ counterclockwise
  to that stimulus's mirror image.
  Thus the presentation of folded data here averages out any static biases
  toward one direction.
-
 \end_layout
 
 \begin_layout Standard
@@ -844,7 +844,7 @@ Note that at wide spacings, the curves pass through the lower right quadrant
 \end_inset
 
 .) This represents a situation where the observer's response contradicts
- both the carrier and envelope motions; in these conditions the observer
+ both the carrier and envelope motions; in these conditions the observer
  will respond 
 \begin_inset Quotes eld
 \end_inset
@@ -948,7 +948,7 @@ counterclockwise
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-contours"
- 
+
 \end_inset
 
  these same sections are pulled out and shown in relation to the observed
@@ -1224,12 +1224,12 @@ SOMETHING WRONG HERE???
 \end_layout
 
 \end_inset
- 
- Additionally color is mapped to the sign of the response probability, with
- blue shades representing points where the modeled observer tended to respond
- counterclockwise (that is, against the direction of carrier motion) and
- red hues representing points where the response favors the direction of
- carrier motion.
+
+  Additionally color is mapped to the sign of the response probability,
+ with blue shades representing points where the modeled observer tended
+ to respond counterclockwise (that is, against the direction of carrier
+ motion) and red hues representing points where the response favors the
+ direction of carrier motion.
  Four planes are illustrated within this space.
  These planes are the same as the subplots shown in the lower half of the
  figure.
@@ -1527,7 +1527,7 @@ it takes a 90 degree twist as spacing decreases???
  perception of motion is driven by envelope motion at wider spacings but
  by the carrier when spacing is narrow.
 \end_layout
- 
+
 \begin_layout Standard
 \begin_inset Note Note
 status open
@@ -1699,9 +1699,9 @@ Model components and measurement of effects
 
 \begin_layout Standard
 \align left
-We have described three separate effects: a reduction in the sensitivity
-This model captures the effect of three factors
- - carrier strength, envelope motion and spacing - that each affect peceived motion.
+We have described three separate effects: a reduction in the sensitivityThis
+ model captures the effect of three factors - carrier strength, envelope
+ motion and spacing - that each affect peceived motion.
  As described in the Discussion, this model also provides a parsimonous
  explanation of large amounts of individual variation in the appearance
  of these stimuli across individual subjects, since small changes in model
@@ -1774,7 +1774,7 @@ We would like to distill out the distinct effects we see each into its own
  effects are consistent across observers.
  ]]
 \end_layout
- 
+
 \begin_layout Standard
 This model also provides some insights into the properties of the mechanisms
  underlying the task that are not immediately intuitively obvious.
@@ -1851,8 +1851,7 @@ key "Anstis:2011vn"
 \end_inset
 
 .) In these stimuli, both envelope and carrier motion are (considered separately)
- consistent
- with that of a wheel rotating around the fixation point.
+ consistent with that of a wheel rotating around the fixation point.
  Knowing this, an ideal observer could in principle pool multiple envelope
  position signals in order to improve sensitivity to envelope motion.
  If that is the case than the sensitivity to envelope motion (i.e.

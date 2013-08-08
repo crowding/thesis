@@ -1,5 +1,7 @@
 ## ----------------------------------------------------------------------
 ## @knitr results-libraries
+library(vadr)
+library(plyr)
 opts_chunk$set(cache.extra=file.info(
     c("slopeModel.R", "latexing.R",
       "slopeModel.RData", "motion_energy.csv"))$mtime)
@@ -24,7 +26,7 @@ load("slopeModel.RData")
 motion.energy <- read.csv("motion_energy.csv")
 bind[plot.displacement, plot.content, plot.spacing] <- (
   chain(motion.energy, subset(grid==TRUE),
-        mutate(spacing=target_number_all * 2*pi/eccentricity),
+        mutate(spacing = target_number_all * 2*pi/eccentricity),
         .[c("abs_displacement", "abs_direction_content", "spacing")],
         lapply(unique), lapply(sort)))
 
@@ -49,6 +51,7 @@ cbind_predictions <- function(dataset, model, ...)
 ## ----------------------------------------------------------------------
 ## @knitr results-numbers
 
+#browser()
 results.eccentricity <- chain(
   model.df$model, lapply(function(x) x$data$eccentricity),
   do.call(what=c), unique)
