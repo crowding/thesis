@@ -101,7 +101,6 @@
 --input motion_energy.csv
 --output {0}.plots.pdf
 --invisible --phony plot
---invisible --phony pdf
 
 # MotionEnergyLinear|MotionEnergySoftMin|
 
@@ -109,41 +108,35 @@
 --output --once StanComparisonCircles.pdf
 --input --match --once (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
 --invisible --phony plot
---invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonCircles.pdf
 --input --match --once (OnlyMotionEnergy|SlopeModel|SoftMinModel)\.fit\.RData$
 --invisible --phony plot
---invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonEnergies.pdf
 --input --match --once (ProportionalMotionEnergy|SlopeModel|MotionEnergyRepulsion|OnlyMotionEnergy)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony compare
---invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once StanComparisonCombined.pdf
 --input --match --once (Hemifield|SummationField)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony compare
---invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once models/comparison_d_{0}.pdf
 --input --match models/d_([a-z_]*)_c_([a-z_]*)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony compare
---invisible --phony pdf
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once models/comparison_c_{1}.pdf
 --input --match models/d_([a-z_]*)_c_([a-z_]*)\.fit\.RData$
 --invisible --phony plot
 --invisible --phony compare
---invisible --phony pdf
 
 #--command Rscript --input --once StanResiduals.R
 
@@ -174,9 +167,11 @@
 %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match --invisible ((?:.*/)?)([^_].*)\.tex$ {1}.tex
 #--input --listing --invisible {0}.in
+--input --invisible _preamble.tex
 --output --invisible {0}{1}.pdf
 --output --invisible {0}{1}.fls
 --phony --invisible latex
+--invisible --phony pdf
 --invisible --input intermediate_pdf )
 
 --command grep '^INPUT' --match --input (.*)\.fls

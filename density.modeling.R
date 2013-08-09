@@ -9,7 +9,7 @@ suppressPackageStartupMessages({
   library(glm2)
   library(binom)
   library(psyphy)
-  library(ptools)
+  library(vadr)
   library(reshape2)
 })
 #source("latexing.R")

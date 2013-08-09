@@ -1,3 +1,6 @@
+## @knitr do-not-run
+library(knitr)
+
 ## ----------------------------------------------------------------------
 ## @knitr results-libraries
 library(vadr)
@@ -54,7 +57,18 @@ cbind_predictions <- function(dataset, model, ...)
 #browser()
 results.eccentricity <- chain(
   model.df$model, lapply(function(x) x$data$eccentricity),
-  do.call(what=c), unique)
+    do.call(what=c), unique)
+
+bind[narrow.spacings, wide.spacings] <-
+    chain(model.df, .$model,
+          lapply(`[[`, "data"),
+          lapply(`[[`, "spacing"),
+          c %()% .,
+          x=unique,
+          take_nearest(c(2*pi*20/3/6, 2*pi*20/3/20)),
+          factor,
+          tapply(x,.,identity)
+          )
 
 ## ----------------------------------------------------------------------
 ## @knitr results-spacing-collapse

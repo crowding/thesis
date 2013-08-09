@@ -1,7 +1,7 @@
 suppressPackageStartupMessages({
   library(plyr)
   library(ggplot2)
-  library(ptools)
+  library(vadr)
   library(psyphy)
   library(gnm)
   library(grid)

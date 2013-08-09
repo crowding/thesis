@@ -4,11 +4,7 @@
 \begin_header
 \textclass article
 \begin_preamble
-
-\usepackage{movie15}
-
-\usepackage{hyperref}
-\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\input{_preamble}
 \end_preamble
 \use_default_options true
 \begin_modules

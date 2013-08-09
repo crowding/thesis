@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+input{_preamble}
+\end_preamble
 \use_default_options true
 \begin_modules
 knitr
@@ -10,7 +13,7 @@ knitr
 \maintain_unincluded_children false
 \language english
 \language_package default
-\inputencoding auto
+\inputencoding utf8
 \fontencoding global
 \font_roman default
 \font_sans default
@@ -121,7 +124,7 @@ library(ptools)
 \begin_layout Standard
 A schematic explanation of our model is shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:model"
 
 \end_inset
@@ -129,12 +132,12 @@ reference "fig:model"
 .
  Conceptually the model combines two signals to produce decisions about
  motion direction: 
-\begin_inset Formula $\bar{M_{\Delta}}$
+\begin_inset Formula $M_{\Delta}$
 \end_inset
 
  is an estimate of the change of position of a tracked target, corresponding
- to envelope motion in these stimuli, computed within a restricted region
- illustrated as the smaller, black dotted circle.
+ to envelope motion in these stimuli, and is computed within a restricted
+ region illustrated as the smaller, black dotted circle.
  
 \begin_inset Formula $M_{s}$
 \end_inset
@@ -148,16 +151,16 @@ reference "mov:stimuli"
 
 \end_inset
 
-, a rightward carrier on a stationary envelope may produce a perception
+, a rightward carrier on a stationary envelope may produce a perception
  of leftward motion.
- In the schematic 
+ This is accounted for in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:model-visual-schematic"
 
 \end_inset
 
-D, when carrier and envelope motion signals are combined, and the two velocity
+D, where carrier and envelope motion signals are combined, and the two velocity
  measures disagree, the difference is amplified in favor of envelope motion.
  In our model this appears as a nonlinear repulsion 
 \begin_inset Formula $M_{I}$
@@ -186,7 +189,7 @@ For
 \begin_layout Standard
 \begin_inset Formula 
 \begin{align*}
-M_{S} & =\beta_{S}\frac{2\pi C}{S}\intertext{\,\, or\,\,}M_{s}=\beta_{S}CN
+M_{S} & =\beta_{S}\frac{2\pi C}{S}\text{\ \ or\ \ }M_{s}=\beta_{S}CN
 \end{align*}
 
 \end_inset
@@ -199,9 +202,9 @@ Note that
 \begin_inset Formula $M_{S}$
 \end_inset
 
-can be expressed in terms of either element number or spacing, since the
+ can be expressed in terms of either element number or spacing, since the
  two are inversely related in Experiment 1.
- In Experiment 2 we will attempt to disentangle these alternatives.
+ In Experiment 2 I attempt to disentangle these alternatives.
 \end_layout
 
 \begin_layout Standard
@@ -247,9 +250,9 @@ name "fig:model-visual-schematic"
  The motion stimulus contains two sources of information.
  The positional displacement of an individual, attended element is computed
  within a limited region, as illustrated by the smaller, black dashed circle.
- Firoder motion energy is summed over a larger region, a summation of motion
- energy over most or all of the visual field, illustrated by the red dashed
- line.
+ First order motion energy is summed over a larger region, a summation of
+ motion energy over most or all of the visual field, illustrated by the
+ red dashed line.
  
 \series bold
 B.
@@ -325,7 +328,7 @@ For
 \begin_inset Formula $M_{\Delta}$
 \end_inset
 
-, we assume that envelope motion is computed by taking the difference between
+, assume that envelope motion is computed by taking the difference between
  successive noisy estimates of the position of a given element.
  The sensitivity to envelope motion 
 \begin_inset Formula $\beta_{\Delta}$
@@ -371,7 +374,7 @@ the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\intertext{\,\, or\,\,}\beta_{\Delta_{x}}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
+\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\ \ \text{or}\ \ \beta_{\Delta_{x}}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
 \]
 
 \end_inset
@@ -385,7 +388,7 @@ This function results in sensitivity that approaches
 \end_inset
 
  at large spacings and approaches zero at small spacings, as plotted in
- the 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:model-uncertainty"
@@ -430,16 +433,13 @@ status open
 \end_inset
 
 .
- As can be seen from this function, our model has envelope motion reaching
- an asymptote for large spacing, and therefore does not change as a function
- of the number of targets, once the targets are sufficiently far apart.
+ This function has envelope motion sensitivity reaching an asymptote for
+ large spacing, so once elements are sufficiently far apart the number of
+ elements does not affect sensitivity much.
  Again, the dependence of envelope sensitivity on envelope spacing may also
  be expressed as a function of the number of elements, as along as elements
  are distributed evenly around the circle.
  
-\end_layout
-
-\begin_layout Standard
 \begin_inset Note Note
 status collapsed
 
@@ -479,7 +479,7 @@ decreasing the spacing between elements has opposite effects on the first-order
 
 \begin_layout Standard
 One addition to this basic model is required to account for a repulsion
- effect I observed when carrier motion velocity disagrees with envelope
+ effect I observed when carrier motion velocity disagrees with envelope
  velocity.
  In 
 \begin_inset CommandInset ref
@@ -580,8 +580,8 @@ number/density experiment)
 
 \begin_layout Standard
 These three components contribute to the modeled subjects' responses according
- to a probabilistic rule; 
-s\end_layout
+ to a probabilistic rule; s
+\end_layout
 
 \begin_layout Standard
 \begin_inset Formula 

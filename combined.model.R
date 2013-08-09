@@ -1,5 +1,5 @@
 ## model <- circle.models[["nj", "model"]]
-library(ptools)
+library(vadr)
 library(plyr)
 library(ggplot2)
 library(gnm)
@@ -701,7 +701,7 @@ plot_segment_fit <- function(selected.models,
       fold=TRUE, spindle=TRUE, collapse=TRUE)
 
   (plot.spacing %+% plot.dataset
-        + prediction_layers(selected.model.predictions, connect="number")
+        + density_prediction_layers(selected.model.predictions, connect="number")
         )
 }
 

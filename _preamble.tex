@@ -1,0 +1,12 @@
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{changepage}
+\usepackage{SIunits}
+\usepackage{movie15}
+
+\newlength{\totalleftmargin}
+\newcommand{\calctotalleftmargin}{%
+  \setlength{\totalleftmargin}{\dimexpr+\hoffset+1in+\leftskip}%
+  \checkoddpage%
+  \addtolength{\totalleftmargin}{\ifoddpage\oddsidemargin\else\evensidemargin\fi}%
+}
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
