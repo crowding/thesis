@@ -165,7 +165,8 @@
 
 --command ( cd ./{0} && latexmk
 %-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
---input --match --invisible ((?:.*/)?)([^_].*)\.tex$ {1}.tex
+#--input --match --invisible ((?:.*/)?)(_master|[^_]*)\.tex$ {1}.tex
+--input --match --invisible ((?:.*/)?)([^_]*)\.tex$ {1}.tex
 #--input --listing --invisible {0}.in
 --input --invisible _preamble.tex
 --output --invisible {0}{1}.pdf
@@ -173,6 +174,24 @@
 --phony --invisible latex
 --invisible --phony pdf
 --invisible --input intermediate_pdf )
+
+--command
+--input ./extract_document
+--input --match ((?:.*/)?)([^_][^/]*)(?<!_strip)\.tex$
+--output {0}{1}_strip.tex
+
+--command latexmk %-pdf
+%-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
+--input --match (_master)\.tex$
+--input --invisible _preamble.tex
+--output --invisible {0}.pdf
+--output --invisible {0}.fls
+--phony --invisible latex
+--invisible --phony pdf
+--invisible --input intermediate_pdf
+
+--command --input --invisible --match .*_strip\.tex$
+--output --invisible _master.pdf
 
 --command grep '^INPUT' --match --input (.*)\.fls
 | cut %-d "' '" %-f 2- > --output {0}.in

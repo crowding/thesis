@@ -1,7 +1,23 @@
+\usepackage[usenames,dvipsnames]{xcolor}
 \usepackage[colorlinks=true]{hyperref}
 \usepackage{changepage}
 \usepackage{SIunits}
 \usepackage{movie15}
+\usepackage{zref-xr}
+\zexternaldocument{introduction}
+\zexternaldocument{demos}
+\zexternaldocument{methods}
+\zexternaldocument{modeling}
+\zexternaldocument{results}
+\zexternaldocument{density}
+\zexternaldocument{discussion}
+\zexternaldocument{everything}
+
+\hypersetup{
+  colorlinks,
+  citecolor=Blue,
+  linkcolor=Plum,
+  urlcolor=PineGreen}
 
 \newlength{\totalleftmargin}
 \newcommand{\calctotalleftmargin}{%
@@ -10,3 +26,5 @@
   \addtolength{\totalleftmargin}{\ifoddpage\oddsidemargin\else\evensidemargin\fi}%
 }
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+
+%\usepackage{subfiles}
