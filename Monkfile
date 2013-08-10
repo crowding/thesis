@@ -150,7 +150,7 @@
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
 #--phony --invisible intermediate_pdf
 
---command '$(LYX)' %-e knitr --input --match ([^_].*)\.lyx
+--command '$(LYX)' %-e knitr --input --match ^([^_/][^/]*)\.lyx$
 --output --invisible {0}.Rnw
 
 --command '$(LYX)' %-e latex --input --match (_master)\.lyx

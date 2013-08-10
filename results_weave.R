@@ -472,7 +472,7 @@ nonlinearity_plot <- function(..., spacing=10) {
  }
 
 save(file="nonlinearity-plot.RData", spacingData, linear.models,
-     second.models, free.asym.models, nonlinearity_plot)
+     second.models, free.asym.models, nonlinearity_plot, iunique)
 
 nonlinearity_plot(subject %in% sensitivity.example.subjects)
 ##I think the 2nd order plot is totally fine for my purposes.

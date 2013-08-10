@@ -85,7 +85,7 @@ In this section we show the complete collection of fitted models and comparisons
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -132,7 +132,12 @@ external=TRUE,results="hide",echo=FALSE)
 
 \begin_layout Plain Layout
 
-library(ptools)
+library(vadr)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(plyr)
 \end_layout
 
 \begin_layout Plain Layout
@@ -772,7 +777,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -782,7 +787,7 @@ status collapsed
 \begin_layout Plain Layout
 
 <<everything-nonlinearity,fig.width=7,fig.height=7,cache.extra=file.info("nonlineari
-ty-plot.RData")$mtime>>=
+ty-plot.RData",message=FALSE)$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -792,8 +797,13 @@ load("nonlinearity-plot.RData")
 
 \begin_layout Plain Layout
 
-lapply(ls(),function(x) assign(x, get(x), globalenv())) #make everything
- global
+message(ls())
+\end_layout
+
+\begin_layout Plain Layout
+
+invisible(lapply(ls(),function(x) assign(x, get(x), globalenv()))) #make
+ everything global
 \end_layout
 
 \begin_layout Plain Layout
@@ -854,14 +864,14 @@ reference "sub:results-induced-modeling"
 \end_layout
 
 \begin_layout Subsection
-Predictions for partial circle stimuli from full circle simuli
+Predictions for partial circle stimuli from full circle stimuli
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -870,7 +880,7 @@ status open
 \begin_layout Plain Layout
 
 <<everything-density-model, fig.width=7, fig.height=7,cache.extra=file.info(c("combi
-ned.model.RData", "combined.model.R")$mtime>>=
+ned.model.RData", "combined.model.R"))$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -963,7 +973,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -982,7 +992,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-  subset(selected.fits, subject %in% density.example.subjects),
+  subset(selected.fits, TRUE),
 \end_layout
 
 \begin_layout Plain Layout

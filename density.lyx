@@ -23,7 +23,6 @@
 \usepackage{hyperref}
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
 \end_preamble
-\options jou
 \use_default_options false
 \begin_modules
 knitr
@@ -31,7 +30,7 @@ knitr
 \maintain_unincluded_children false
 \language english
 \language_package default
-\inputencoding auto
+\inputencoding utf8
 \fontencoding global
 \font_roman default
 \font_sans default
@@ -57,7 +56,7 @@ knitr
 \use_esint 0
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine natbib_authoryear
+\cite_engine basic
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -1005,7 +1004,7 @@ status open
 
 
 \backslash
-Sexpr{what.observer}
+Sexpr{"WHAT"}
 \end_layout
 
 \end_inset
@@ -2364,12 +2363,12 @@ global
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
-bibfiles "xampl,bibliography"
+bibfiles "bibliography"
 options "apalike"
 
 \end_inset
 
-
+ 
 \end_layout
 
 \end_body

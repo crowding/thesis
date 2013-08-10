@@ -4,7 +4,7 @@
 \begin_header
 \textclass article
 \begin_preamble
-input{_preamble}
+\input{_preamble}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -79,7 +79,7 @@ name "sec:model"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -103,7 +103,7 @@ library(plyr)
 
 \begin_layout Plain Layout
 
-library(ptools)
+library(vadr)
 \end_layout
 
 \begin_layout Plain Layout
