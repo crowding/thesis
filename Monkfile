@@ -160,23 +160,13 @@
 --command --invisible --input --match (.*)_weave\.R$
 --output --invisible --once {0}.tex
 
---command ( cd ./{0} && latexmk
-%-pdf %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
-#--input --match --invisible ((?:.*/)?)(_master|[^_]*)\.tex$ {1}.tex
---input --match --invisible ((?:.*/)?)([^_]*)\.tex$ {1}.tex
-#--input --listing --invisible {0}.in
---input --invisible _preamble.tex
---output --invisible {0}{1}.pdf
---output --invisible {0}{1}.fls
---phony --invisible latex
---invisible --phony pdf
---invisible --input intermediate_pdf )
-
+#ater knitting, extract the document code from each .tex file
 --command
 --input ./extract_document
---input --match ((?:.*/)?)([^_][^/]*)(?<!_strip)\.tex$
+--input --match ((?:.*/)?)([^_][^/]*)(?<!_strip)(?<!_chapter)\.tex$
 --output {0}{1}_strip.tex
 
+#compile master document
 --command latexmk %-pdf
 %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match (_master)\.tex$
@@ -188,8 +178,31 @@
 --invisible --phony pdf
 --invisible --input intermediate_pdf
 
+#master pdf depends on all child .tex files
 --command --input --invisible --match .*_strip\.tex$
 --output --invisible _master.pdf
+
+#make "chapter" files
+--command ./chapter --input --invisible chapter
+--input --invisible --match (.*)_strip\\.tex
+--output {0}_chapter.tex
+{0}_strip
+
+#compile individual chapter pdfs
+--command latexmk
+%-pdf %"-pdflatex=\"pdflatex -halt-on-error -interaction=nonstopmode\""
+--input --match (.*)_chapter.tex
+--input --invisible _master.tex
+--input --invisible _preamble.tex
+--input --invisible _master_preamble.tex
+--output --invisible {0}.pdf
+--output --invisible {0}.fls
+--phony --invisible latex
+--invisible --phony pdf
+--invisible --phony chapter_pdf
+
+--command --output --match (.*)_chapter\\.pdf
+--input {0}_strip.tex
 
 --command grep '^INPUT' --match --input (.*)\.fls
 | cut %-d "' '" %-f 2- > --output {0}.in
