@@ -150,15 +150,12 @@
 '$$(' cat --input --match --listing contours/contours_folded.list ')'
 #--phony --invisible intermediate_pdf
 
---command '$(LYX)' %-e knitr --input --match ^([^_/][^/]*)\.lyx$
+--command '$(LYX)' %-e knitr --input --match ^(_master|[^_/][^/]*)\.lyx$
 --output --invisible {0}.Rnw
 
---command '$(LYX)' %-e latex --input --match (_master)\.lyx
---output --invisible {0}.tex
-
---command Rscript %-e "\"library(knitr); knit('{0}{1}.Rnw', '{1}.tex')\""
---input --invisible --match ((?:.*/)?)([^_].*)\.Rnw
---output --invisible --once {0}{1}.tex
+--command Rscript %-e "\"library(knitr); knit('{0}.Rnw', '{0}.tex')\""
+--input --invisible --match (.*)\.Rnw
+--output --invisible --once {0}.tex
 
 --command --invisible --input --match (.*)_weave\.R$
 --output --invisible --once {0}.tex
@@ -184,6 +181,7 @@
 %-pdflatex='pdflatex -halt-on-error -interaction=nonstopmode'
 --input --match (_master)\.tex$
 --input --invisible _preamble.tex
+--input --invisible _master_preamble.tex
 --output --invisible {0}.pdf
 --output --invisible {0}.fls
 --phony --invisible latex

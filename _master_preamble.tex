@@ -1,0 +1,39 @@
+\input{_preamble}
+
+%extra things because lyx doesn't know what preamble I need
+\usepackage{graphicx, color}
+\usepackage{alltt}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{varioref}
+\usepackage{wrapfig}
+\usepackage{refstyle}
+\usepackage{setspace}
+\usepackage[authoryear]{natbib}
+
+\AtBeginDocument{\providecommand\movref[1]{\ref{mov:#1}}}
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+%% The greyedout annotation environment
+\newenvironment{lyxgreyedout}
+  {\textcolor{note_fontcolor}\bgroup\ignorespaces}
+  {\ignorespacesafterend\egroup}
+\RS@ifundefined{subref}
+  {\def\RSsubtxt{section~}\newref{sub}{name = \RSsubtxt}}
+  {}
+\RS@ifundefined{thmref}
+  {\def\RSthmtxt{theorem~}\newref{thm}{name = \RSthmtxt}}
+  {}
+\RS@ifundefined{lemref}
+  {\def\RSlemtxt{lemma~}\newref{lem}{name = \RSlemtxt}}
+  {}
+
+\usepackage{color}
+\definecolor{note_fontcolor}{rgb}{0.80078125, 0.80078125, 0.80078125}
+\usepackage{amsmath}
+
+\makeatother
+
+\usepackage{babel}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
