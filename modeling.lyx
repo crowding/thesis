@@ -139,31 +139,44 @@ reference "fig:model"
  to envelope motion in these stimuli, and is computed within a restricted
  region illustrated as the smaller, black dotted circle.
  
-\begin_inset Formula $M_{s}$
+\begin_inset Formula $M_{S}$
 \end_inset
 
  is a sum of first order motion energy (carrier motion in these stimuli)
  inside a larger region illustrated by the green dashed outline.
  As can be seen in 
+\series bold
+
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "mov:stimuli"
+reference "mov:carenv"
 
 \end_inset
 
-, a rightward carrier on a stationary envelope may produce a perception
+
+\series default
+A, a rightward carrier on a stationary envelope may produce a perception
  of leftward motion.
- This is accounted for in 
+ This might be accounted for by a comparison of first-order and higher order
+ signals, so that differences between carrier and envelope are adjusted
+ in favor of the envelope (to support motion).
+ This is schematized in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:model-visual-schematic"
 
 \end_inset
 
-D, where carrier and envelope motion signals are combined, and the two velocity
- measures disagree, the difference is amplified in favor of envelope motion.
- In our model this appears as a nonlinear repulsion 
+D, and appears In our model as a nonlinear repulsion term 
 \begin_inset Formula $M_{I}$
+\end_inset
+
+ appearing along with 
+\begin_inset Formula $M_{\Delta}$
+\end_inset
+
+ and 
+\begin_inset Formula $M_{S}$
 \end_inset
 
 .
@@ -217,7 +230,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename model.pdf
-	width 6in
+	width 100text%
 
 \end_inset
 
@@ -306,9 +319,8 @@ C.
 D.
 
 \series default
- The lower order and higher order signals are combined to yield a decision.
- Both carrier and envelope contribute positively to the decision, but difference
-s between carrier and envelope velocity are amplified in favor of the envelope.
+ The lower order and higher order signals are combined to yield a decision;
+ there may be interactions between signals if they conflict.
  Thus, at wide spacings adding carrier motion to a stationary envelope may
  result in repulsion (shaded red region of panel C.) 
 \end_layout
@@ -422,13 +434,10 @@ critical distance
 \begin_inset Quotes erd
 \end_inset
 
- in crowding 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(cites)
-\end_layout
+ of crowding 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Levi:2002ph,Pelli:2008ao,Whitney:2011vn"
 
 \end_inset
 
@@ -488,8 +497,9 @@ reference "mov:stimuli"
 
 \end_inset
 
-, it appears that carrier motion leftward, with a stationary envelope, results
- in perceived motion rightward, and vice versa.
+, it might appear to some observers that the carrier motion leftward with
+ a stationary envelope, results in perceived motion rightward, and vice
+ versa.
  We account for this by a third component in the model 
 \begin_inset Formula $M_{I}$
 \end_inset
@@ -512,7 +522,7 @@ M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 \end_inset
 
 The nonlinear component was necessary to account for a nonmonotonic effect
- of direction content on subjects' responses (see 
+ of carrier strength on observers' responses (see 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sub:results-induced-modeling"

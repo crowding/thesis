@@ -221,7 +221,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
                          )
     )
   cairo_pdf(file=paste(prefix, "sensitivity.pdf", sep=""),
-            width=3, height=2, family="MS Gothic")
+            width=3, height=2)
   print(sensitivity_plot)
   dev.off()
 
@@ -239,7 +239,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
     + geom_ribbon(aes(ymin=p, ymax=pmax(0.5,p)), color=NA, fill="red", alpha=0.5)
     )
   cairo_pdf(file=paste(prefix, "all_bias.pdf", sep=""),
-            width=3, height=2, family="MS Gothic")
+            width=3, height=2)
   print(bias_all_plot)
   dev.off()
 
@@ -255,7 +255,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
     + geom_ribbon(aes(ymin=localbias, ymax=pmax(0,localbias)), color=NA, fill="red", alpha=0.5)
     + coord_cartesian(ylim=c(-5,20))
     )
-  cairo_pdf(file=paste(prefix, "all_bias2.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  cairo_pdf(file=paste(prefix, "all_bias2.pdf", sep=""), width=3, height=2)
   print(bias_all_plot2)
   dev.off()
 
@@ -281,7 +281,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
                     ymax=ifelse(content>0, 0,             pmin(0, localbias))),
                   color=NA, fill="green", alpha=0.5)
     )
-  cairo_pdf(file=paste(prefix, "wide_content.pdf", sep=""), width=3, height=2, family="MS Gothic")
+  cairo_pdf(file=paste(prefix, "wide_content.pdf", sep=""), width=3, height=2)
   print(wide_content_plot)
   dev.off()
 

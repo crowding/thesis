@@ -30,6 +30,8 @@
 --input motion_energy.csv
 --output slopeModel.RData
 --output slopeModel.pdf
+--output --invisible inset_all_bias.pdf
+--output --invisible inset_sensitivity.pdf
 
 --command Rscript
 --input density.calibration.R
@@ -177,6 +179,9 @@
 --phony --invisible latex
 --invisible --phony pdf
 --invisible --input intermediate_pdf
+
+--command --output --invisible --match (_master|modeling)\\.pdf
+--input --invisible model.pdf
 
 #master pdf depends on all child .tex files
 --command --input --invisible --match .*_strip\.tex$

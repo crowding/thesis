@@ -667,6 +667,13 @@ Examples of carrier/envelope stimuli.
  
 \series bold
 A.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "mov:carenv"
+
+\end_inset
+
 
 \series default
  At left, an element contains carrier (first-order) motion in the absence
