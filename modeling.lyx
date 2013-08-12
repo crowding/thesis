@@ -435,6 +435,10 @@ critical distance
 \end_inset
 
  of crowding 
+\begin_inset Newline linebreak
+\end_inset
+
+
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Levi:2002ph,Pelli:2008ao,Whitney:2011vn"
@@ -445,8 +449,8 @@ key "Levi:2002ph,Pelli:2008ao,Whitney:2011vn"
  This function has envelope motion sensitivity reaching an asymptote for
  large spacing, so once elements are sufficiently far apart the number of
  elements does not affect sensitivity much.
- Again, the dependence of envelope sensitivity on envelope spacing may also
- be expressed as a function of the number of elements, as along as elements
+ Again, the dependence of envelope sensitivity on envelope spacing may equivalen
+tly be expressed as a function of the number of elements, as along as elements
  are distributed evenly around the circle.
  
 \begin_inset Note Note
@@ -469,12 +473,16 @@ This formula for
 \end_layout
 
 \begin_layout Standard
-In other words, 
-\emph on
-decreasing the spacing between elements has opposite effects on the first-order
- and higher-order motion
-\emph default
- mechanisms.
+These two forms for 
+\begin_inset Formula $M_{S}$
+\end_inset
+
+ and 
+\begin_inset Formula $M_{\Delta}$
+\end_inset
+
+capture the phenomenon that decreasing the spacing between elements has
+ opposite effects on the first-order and higher-order motion mechanisms.
  For the carrier motion signal, cramming more elements into the summation
  region increases the strength of the signal, since it is a simple summation
  of motion energy within that region.
@@ -493,13 +501,12 @@ One addition to this basic model is required to account for a repulsion
  In 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "mov:stimuli"
+reference "mov:carenv"
 
 \end_inset
 
-, it might appear to some observers that the carrier motion leftward with
- a stationary envelope, results in perceived motion rightward, and vice
- versa.
+A, it might appear to some observers that the carrier motion leftward with
+ a stationary envelope results in perceived motion rightward, and vice versa.
  We account for this by a third component in the model 
 \begin_inset Formula $M_{I}$
 \end_inset
@@ -524,7 +531,7 @@ M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 The nonlinear component was necessary to account for a nonmonotonic effect
  of carrier strength on observers' responses (see 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sub:results-induced-modeling"
 
 \end_inset
@@ -590,13 +597,13 @@ number/density experiment)
 
 \begin_layout Standard
 These three components contribute to the modeled subjects' responses according
- to a probabilistic rule; s
+ to a probabilistic rule; 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\mathrm{logit}(M_{\Delta}+M_{S}+M_{I}+k)
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=(1-\lambda)\mathrm{logit}(M_{\Delta}+M_{S}+M_{I}+k)+\frac{\lambda}{2}
 \]
 
 \end_inset
@@ -637,6 +644,22 @@ where
 
  accounts for an overall clockwise or counterclockwise bias, which some
  observers exhibit.
+ The lapse rate 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ was intended to improve the robustness of the fit 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Wichmann:2001kx"
+
+\end_inset
+
+; I constrained 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ to lie between 0 and 0.05.
 \end_layout
 
 \begin_layout Standard
