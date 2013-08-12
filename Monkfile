@@ -188,6 +188,14 @@
 --output {0}_chapter.tex
 {0}_strip
 
+--command osascript poster_frame.applescript
+--input --match (.*)\\.mov
+--output {0}.png
+--phony includes
+
+--command --output --invisible --match (.*_chapter|_master).pdf
+--input --invisible includes
+
 #compile individual chapter pdfs
 --command latexmk
 %-pdf %"-pdflatex=\"pdflatex -halt-on-error -interaction=nonstopmode\""
@@ -195,14 +203,14 @@
 --input --invisible _master.tex
 --input --invisible _preamble.tex
 --input --invisible _master_preamble.tex
---output --invisible {0}.pdf
---output --invisible {0}.fls
+--output --invisible {0}_chapter.pdf
+--output --invisible {0}_chapter.fls
 --phony --invisible latex
 --invisible --phony pdf
 --invisible --phony chapter_pdf
 
---command --output --match (.*)_chapter\\.pdf
---input {0}_strip.tex
+--command --output --match --invisible (.*)_chapter\\.pdf
+--input --invisible {0}_strip.tex
 
 --command grep '^INPUT' --match --input (.*)\.fls
 | cut %-d "' '" %-f 2- > --output {0}.in

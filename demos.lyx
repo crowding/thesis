@@ -346,9 +346,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{3in}{3in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_circle_6.mov",sep="")}}
+includemov{3in}{3in}{demo_circle_6}
 \end_layout
 
 \end_inset
@@ -520,9 +518,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{3in}{3in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_circle_16.mov",sep="")}}
+includemov{3in}{3in}{demo_circle_16}
 \end_layout
 
 \end_inset
@@ -594,9 +590,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{3in}{3in}{
-\backslash
-Sexpr{paste(getwd(),"/demo_circle_22.mov",sep="")}}
+includemov{3in}{3in}{demo_circle_22}
 \end_layout
 
 \end_inset

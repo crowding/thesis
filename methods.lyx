@@ -484,7 +484,6 @@ status open
 
 \begin_layout Plain Layout
 
-\series bold
 
 \backslash
 raisebox{1in}{A}
@@ -523,7 +522,6 @@ status open
 
 \begin_layout Plain Layout
 
-\series bold
 
 \backslash
 raisebox{1in}{B}
@@ -564,7 +562,6 @@ status open
 
 \begin_layout Plain Layout
 
-\series bold
 
 \backslash
 raisebox{1in}{C}
@@ -623,7 +620,6 @@ status open
 
 \begin_layout Plain Layout
 
-\series bold
 
 \backslash
 raisebox{1in}{D}
@@ -663,7 +659,6 @@ status open
 
 \begin_layout Plain Layout
 
-\series bold
 
 \backslash
 raisebox{1in}{E}
@@ -1130,7 +1125,7 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{3in}{3in}{demo_stimuli.mov}
+includemov{3in}{3in}{demo_stimuli}
 \end_layout
 
 \end_inset

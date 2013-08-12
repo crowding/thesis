@@ -203,7 +203,7 @@ status open
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "bibliography"
-options "plainnat"
+options "apalike"
 
 \end_inset
 

@@ -555,11 +555,11 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{1
+includemov{1
 \backslash
 linewidth}{0.4
 \backslash
-linewidth}{demo_carenv.mov}
+linewidth}{demo_carenv}
 \end_layout
 
 \end_inset
@@ -593,11 +593,11 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{1
+includemov{1
 \backslash
 linewidth}{0.4
 \backslash
-linewidth}{demo_single.mov}
+linewidth}{demo_single}
 \end_layout
 
 \end_inset
@@ -631,11 +631,11 @@ status open
 
 
 \backslash
-includemovie[poster,repeat]{1
+includemov{1
 \backslash
 linewidth}{0.4
 \backslash
-linewidth}{demo_counter.mov}
+linewidth}{demo_counter}
 \end_layout
 
 \end_inset
@@ -841,8 +841,8 @@ smoothness,
 \begin_inset Quotes erd
 \end_inset
 
- with the having a more jittery appearance, but does not strongly affect
- the apparent direction or even the apparent speed of the motion.
+ with having a more jittery appearance, but does not strongly affect the
+ apparent direction or even the apparent speed of the motion.
  However, in 
 \begin_inset CommandInset ref
 LatexCommand ref

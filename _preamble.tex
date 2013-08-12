@@ -3,6 +3,8 @@
 \usepackage{changepage}
 \usepackage{SIunits}
 \usepackage{movie15}
+\usepackage[percent]{overpic}
+\usepackage{relsize}
 
 \hypersetup{
   colorlinks,
@@ -17,5 +19,18 @@
   \addtolength{\totalleftmargin}{\ifoddpage\oddsidemargin\else\evensidemargin\fi}%
 }
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+
+\newcommand{\includemov}[3]{
+    \includemovie[poster,repeat,text={
+        \begin{overpic}[width=#1,height=#2]{#3.png}
+            \put(3,3){\colorbox{white}%
+            {\textsmaller[2]{\url{http://github.com/crowding/thesis/blob/master/#3.mov?raw=true}}}}
+        \end{overpic}
+%         \includegraphics[width=#1,height=#2]{#3.png}
+    }]{}{}{#3.mov}
+    \vspace{0.5em}
+}
+
+%\includemovie[poster,repeat,text={demo\_carenv.mov}]{1\linewidth}{0.4\linewidth}{demo_carenv.mov}
 
 %\usepackage{subfiles}
