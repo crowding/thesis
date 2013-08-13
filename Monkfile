@@ -227,10 +227,10 @@
 --phony --invisible pdf
 
 #compile graffle figures...
---command osascript --input og-export.applescript 
+--command osascript --input og-export.applescript
 $(abspath --input --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
 $(abspath --output {0}.pdf ) pdf
---phony --invisible graffles 
+--phony --invisible graffles
 --phony --invisible intermediate_pdf
 
 #model.graffle includes some "inset" files as insets
