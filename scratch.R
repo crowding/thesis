@@ -82,7 +82,7 @@ summarize3 <- macro(function(.data, ...) {
         list2env(.(.data)))))
 })
 
-library(ptools)
+library(vadr)
 summarize4 <- macro(function(.data, ...) {
   e <- list(...)
   n <- names(e)
@@ -225,6 +225,26 @@ test <- predict(a, a$data[1:5,], summary=colwise_se_frame)
   save(list=ls(e), envir=e, file="CenterSurroundModel.fit.RData")
 }
 
+e <- function() {x <- function() f()}
+f <- function(e1 = parent.frame(), e2=parent.frame()) {g(e1, e2)}
+g <- function(e1, e2) 
+
+frame="global"
+e <- function() {frame <- "e"; f()}
+f <- function(.envir={print(sys.frames()); parent.frame()}) {frame <- "f"; g(.envir)}
+g <- function(...) {frame <- "g"; h(...)}
+h <- function(...) {frame <- "h"; i(...)}
+i <- function(.envir) {
+  frame <- "h"
+  print(sys.frames())
+  .envir$frame
+  function() {print(sys.frames()); .envir$frame}
+}
+
+e()
+
+x <- e()
+x()
 
 switch2 <- function(EXPR, ...) {
   if (is.character(EXPR)) {

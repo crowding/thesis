@@ -5,6 +5,8 @@ library(knitr)
 ## @knitr results-libraries
 library(vadr)
 library(plyr)
+library(lmtest)
+library(reshape2)
 opts_chunk$set(cache.extra=file.info(
     c("slopeModel.R", "latexing.R",
       "slopeModel.RData", "motion_energy.csv"))$mtime)
@@ -174,14 +176,113 @@ sensitivity.models <- adply(model.df, 1, function(row) {
   length(toDrop) == 1 || stop("no")
   dropped <- drop.terms(terms(m), toDrop, keep.response=TRUE)
   f <- formula(dropped)
+  environment(f) <- environment(m$formula)
   #??? it should not be generating the "displacement" term (or should
   #leave another out)...
-  f <- update(f, . ~ . + (displacement-1):factor(spacing) - displacement)
-  environment(f) <- environment(m$formula)
-  mutate(row, free.model=list(glm(formula=f, data=m$data, family=m$family)))
+  free <- update(f, . ~ . + (displacement-1):factor(spacing) - displacement)
+  flat <- update(f, . ~ . + displacement)
+  mutate(row,
+         free.model=I(list(glm(formula=free, data=m$data, family=m$family))),
+         flat.model=I(list(glm(formula=flat, data=m$data, family=m$family))))
 })
 
-#%plot log spacing versus log sensitivity?%
+idvars <- names(model.df) %-% "model"
+
+model_stats <- function(model.list) {
+  id <- model.list[idvars]
+  rownames(id) <- NULL
+  chain(model.list,
+        put(.[idvars], NULL),
+        lapply(`[[`, 1),
+        sapply(function(m)
+               c(df=extractAIC(m)[[1]],
+                 aic=extractAIC(m)[[2]],
+                 deviance=deviance(m),
+                 ll=unclass(logLik(m)),
+                 nobs=unclass(attr(logLik(m), "nobs")),
+                 ntrials=sum(m$data$n_obs))
+               ),
+        put(names(dimnames(.)), c("stat", "model.type")),
+        melt,
+        cbind(id))
+}
+
+#not sure what this is good for...
+all_model_stats <- function(model_list) {
+  x <- alply(model_list, 1, model_stats)
+  rbind.fill %()% x
+}
+
+sensitivity.stats <- all_model_stats(sensitivity.models)
+
+check <- function(x, ...) if(chain(x, ...)) x else stop("check failed")
+browse <- function(x) {browser(); x}
+
+#also run stats on the aggregation of models.
+aggregate.sensitivity.stats <- chain(
+    sensitivity.stats,
+    dcast(list(c(idvars, "model.type"), "stat")),
+    ddply(., "model.type", chain,
+          subset(., select=names(.) %-% c(idvars)),
+          numcolwise(sum)()),
+    melt(id.vars="model.type", variable.name="stat"))
+
+#run a log likelihood ratio test on each pair of models...
+model_pair_tests <- mkchain[
+    ., id = idvars[idvars %in% names(.)],
+    tests=c("df", "ll", "ll.x", "aic", "chisq", "lpval",
+            "pval", "ntrials", "nobs")](
+    dcast(., list(c(id, "model.type"), "stat")),
+    merge(.,.,by=id),
+    subset(unclass(df.x) < unclass(df.y)),
+    check(with(all(nobs.y==nobs.x))),
+    mutate(df = df.y - df.x,
+           ll = ll.y - ll.x,
+           ll.x = ll.x,
+           aic = aic.y - aic.x,
+           chisq = 2 * abs(ll),
+           lpval = pchisq(chisq, round(df), lower.tail=FALSE, log.p=TRUE),
+           pval = pchisq(chisq, round(df), lower.tail=FALSE),
+           ntrials = ntrials.x,
+           nobs = nobs.x),
+    .[c(id, "model.type.x", "model.type.y", tests)],
+    melt(c(id, "model.type.x", "model.type.y"), variable.name="test"),
+    acast(list(id, "test", "model.type.x", "model.type.y")),
+    put(names(dimnames(.)), c("id", "test", "model.type.x", "model.type.y"))
+    )
+
+sensitivity.tests <- model_pair_tests(sensitivity.stats)
+aggregate.sensitivity.tests <- model_pair_tests(aggregate.sensitivity.stats)
+
+#here are some pseudo r-2 measures based on these tables
+hosmer_lemeshow_r2 <- function(tests,
+                               models=c("flat.model", "model", "free.model")) {
+  (  tests[, "ll", models[1], models[2], drop=FALSE]
+   / tests[, "ll", models[1], models[3], drop=FALSE])
+}
+
+#the axes are group, test stat, model 1, model 2
+cox_snell_r2 <- function(tests) {
+  1-exp( -2/tests[, "nobs", "flat.model", "model"]
+        *  tests[ , "ll", "flat.model", "model"])
+}
+
+nagelkerke_r2 <- function(tests) {
+  cox_snell_r2(tests) / (1-exp( 2/tests[, "nobs", "flat.model", "model"]
+                               * tests[ , "ll.x", "flat.model", "model"]))
+}
+
+sensitivity.plot.r2 <-
+    chain(sensitivity.tests,
+          hosmer_lemeshow_r2,
+          melt,
+          rename(c(id="subject", value="r2")),
+          mutate(., label=qqply("  R"[L]^2 == .(sprintf("%.2f  ", x)))(x=r2)),
+          mutate(label=vapply(label, deparse, "")),
+          mutate(., observer=chain(subject, toupper, paste("Observer", .))),
+          unfactor)
+
+#%plot spacing versus sensitivity?%
 sensitivity.plot.data <- rbind.fill %()% (
   Map %<<% sensitivity.models
   %()% list(
@@ -206,11 +307,11 @@ sensitivity.plot.data <- rbind.fill %()% (
         rename(structure(names=paste0(c("fit.", "se.fit."), sensitivity.term.label),
                          c("fit", "se.fit")))))))
 sensitivity.plot.data$observer <- chain(
-  sensitivity.plot.data$subject, toupper, paste("Observer", .))
+    sensitivity.plot.data$subject, toupper, paste("Observer", .))
 
 sensitivity.example.subjects <- c("jb", "pbm", "nj")
 
-sensitivity_plot <- function(data=sensitivity.plot.data){
+sensitivity_plot <- function(data=sensitivity.plot.data, stats=sensitivity.plot.r2){
   (ggplot(subset(data, type=="points"))
    + geom_hline(y=0, color="gray50")
    + aes(x=spacing, y=fit)
@@ -224,25 +325,35 @@ sensitivity_plot <- function(data=sensitivity.plot.data){
    + no_grid
    + spacing_scale_x
    + theme(aspect.ratio=1)
+   + geom_text(data=match_df(stats, data, on="subject"),
+               aes(x=-Inf, y=Inf, label=label), parse=TRUE,
+               vjust=1.5, hjust=0, size=3)
    + labs(title="Sensitivity to envelope motion declines below 3 deg. spacing",
-          y=expression(paste("Sentitivity ", beta[Delta*x])),
+          y=expression(paste("Sensitivity ", beta[Delta*x])),
           size="N"))
 }
-
-fffff <- function(..., model, free.model) {
-  quickdf(list(...,
-               model.aic = extractAIC(model[[1]])[[2]],
-               model.deviance = deviance(model[[1]]),
-               free.model.aic = extractAIC(free.model[[1]])[[2]],
-               free.model.deviance = deviance(free.model[[1]])))
-}
-#not sure what this is good for...
-#mdply(sensitivity.models, fffff)
-
-save(file="sensitivity-plot.RData", sensitivity.plot.data, sensitivity_plot)
-
 sensitivity_plot(subset(sensitivity.plot.data,
                         subject %in% sensitivity.example.subjects))
+
+save(file="sensitivity-plot.RData",
+     sensitivity.plot.data, sensitivity_plot, sensitivity.tests)
+
+
+## @knitr do-not-run
+
+hosmer_lemeshow_r2(sensitivity.tests)
+hosmer_lemeshow_r2(aggregate.sensitivity.tests)
+
+cox_snell_r2(sensitivity.tests)
+cox_snell_r2(aggregate.sensitivity.tests)
+
+nagelkerke_r2(sensitivity.tests)
+nagelkerke_r2(aggregate.sensitivity.tests)
+
+sensitivity.tests[, "pval", "flat.model", "model.model"] < 0.05
+
+## @knitr results-sensitivity-content-interactions
+
 
 ## @knitr results-spacing-summation
 # ----------------------------------------------------------------------

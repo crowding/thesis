@@ -79,7 +79,7 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -193,7 +193,7 @@ status collapsed
 
 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -246,26 +246,18 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-The demonstrations in
+The demonstrations in 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "mov:wheels"
+LatexCommand ref
+reference "sec:lookatthis"
 
 \end_inset
 
- and 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "mov:singles"
-
-\end_inset
-
- seem to suggest that the perceived reversal of motion direction is a function
- not only of the properties of individual elements but of a spacing-dependent
- interaction between nearby elements.
- I explored this spatial interaction by examining the interactions between
- local and global motion as a function of both the distance between elements
- and the carrier strength.
+ seem to suggest that the perceived change in motion is a function not only
+ of the properties of individual elements but of a spacing-dependent interaction
+ between nearby elements.
+ I explored this spatial interaction by jointly measuring the sensitivity
+ to carrier and envelope motion as a function of the distance between elements.
 \end_layout
 
 \begin_layout Subsection
@@ -308,8 +300,8 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-Stimuli for this consisted of a circle of evenly spaced elements presented
- at an eccentricity of 
+Stimuli for this experiment consisted of a circle of evenly spaced elements
+ presented at an eccentricity of 
 \begin_inset ERT
 status collapsed
 
@@ -327,7 +319,7 @@ circ$
 .
  As described above in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand ref
 reference "sub:methods-staircase"
 
 \end_inset
@@ -391,9 +383,9 @@ Sensitivity to envelope displacement decreases as spacing decreases
 First consider the effect of changing spacing (and simultaneously increasing
  number) on the perception of envelope motion.
  There are two potential effects.
- A reduction in spacing may cause crowding,, while an increased number of
- identical elements may facilitate summation or pooling of their identical
- envelope motions.
+ A reduction in spacing may cause crowding, while an increased number of
+ identical elements may allow summation or pooling of their identical envelope
+ motions.
  These hypotheses would predict opposite effects on the sensitivity to envelope
  motion.
  Pooling would predict that more elements would lead to a greater sensitivity
@@ -411,7 +403,8 @@ reference "fig:results-spacing-collapse"
 \begin_inset Formula $\Delta x$
 \end_inset
 
- on the horizontal axis and the probability of the observer responding 
+, on the horizontal axis and the probability of the observer responding
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -422,7 +415,7 @@ clockwise
  to that stimulus on the vertical axis.
  For 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-spacing-collapse"
 
 \end_inset
@@ -431,14 +424,14 @@ reference "fig:results-spacing-collapse"
  for three observers.
  In each case the psychometric function fit to data collected at the smaller
  spacing has a shallower slope, independently of any shifts it may have.
- In a later section (
+ Below in 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:model"
+LatexCommand ref
+reference "sub:results-sensitivity"
 
 \end_inset
 
-) I will quantify and graph the relation of sensitivity to element spacing.
+ I will quantify and graph the relation of sensitivity to element spacing.
 \end_layout
 
 \begin_layout Standard
@@ -448,7 +441,7 @@ Crowding causes interference at smaller distances, while pooling might still
 ty with element number at wider spacings, outside the range of spacings
  that might be subject to crowding, but I found no significant effect (
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sub:results-no-pooling"
 
 \end_inset
@@ -460,8 +453,20 @@ reference "sub:results-no-pooling"
 
  tested are substantially smaller than half the inter-element spacing, so
  that spatial aliasing (i.e.
- the wagon wheel illusion) should not explain why there is additional uncertaint
-y in motion direction.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+ 
+\end_layout
+
+\end_inset
+
+the wagon wheel illusion) should not explain why there is additional uncertainty
+ in motion direction.
  
 \end_layout
 
@@ -528,7 +533,7 @@ clockwise
 \begin_inset Formula $C$
 \end_inset
 
- is held constant, written in the lower left corners.
+, written in the lower left corners, is held constant.
  Curves are drawn from overall fits of the model described in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -545,7 +550,7 @@ reference "sec:model"
  In the extreme, a particular stimulus configuration might only be visited
  once or twice while the staircase moves past it; these smallest points
  would lie on either 
-\begin_inset Formula $P\left(clockwise\right)=1$
+\begin_inset Formula $\Pr\left(\mathrm{clockwise}\right)=1$
 \end_inset
 
  or 0.
@@ -575,13 +580,18 @@ name "sub:results-basic-summation"
 \end_layout
 
 \begin_layout Standard
-Observers' responses to the carrier component of the motion were in some
- ways more complicated then their response to the envelope motion.
- One feature was that carrier motion was observed repulsive; weak amounts
- of carrier motion in one direction often caused observers to report perceived
- motion in the opposite direction.
- Another feature is that the sensitivity to carrier motion, in these stimuli,
- changed as a function of the spacing between elements.
+The responses observers made to the carrier component of the stimuli were
+ in some ways more complicated then their responses to the envelope motion.
+ Like was the case for envelope motion, the sensitivity to carrier motion
+ changed as a function of spacing, but in the opposite direction (becoming
+ more sensitive at smaller spacings.) Another feature was that carrier motion
+ was sometimes repulsive; weak amounts of carrier motion in one direction
+ often caused observers to shift their reports of perceived motion in the
+ opposite direction.
+ Thus the response to carrier motion was nonmonotonic; adding elements to
+ a blank display caused observers to report directions of motion opposite
+ that of the carrier, but adding more closely-spaced elements caused apparent
+ motion to shift in the direction of carrier motion.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -598,10 +608,16 @@ reference "fig:results-summation-increases"
 \end_layout
 
 \begin_layout Standard
-Of particular note is how observers respond when there is no envelope motion,
- i.e.
+Of particular note in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-sensitivity"
+
+\end_inset
+
+ is how observers respond when there is no envelope motion, i.e.
  the value of 
-\begin_inset Formula $P\left(clockwise\right)$
+\begin_inset Formula $\Pr\left(\mathrm{clockwise}\right)$
 \end_inset
 
  when 
@@ -609,24 +625,23 @@ Of particular note is how observers respond when there is no envelope motion,
 \end_inset
 
 , where the curves intersect the vertical axis.
- A change in the location of the intercept between conditions of different
- carrier reflects the observers' sensitivity to changes in carrier motion,
- other parameters being held equal.
+ When the carrier strength changes, a shift in this intercept reflects the
+ sensitivity to carrier motion in the presence of stationary envelopes.
  The upper row in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-summation-increases"
 
 \end_inset
 
   shows data collected at small spacing, with many elements on screen, while
  the lower row shows data collected at smaller spacings with fewer elements.
- The difference between intercepts is larger on the upper figure, showing
+ The difference between intercepts is large on the upper figure, showing
  that these observers are more sensitive to changes in the carrier strength
  when the spacing is small and there are more elements on the screen (this
  will be quantified in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sub:results-sensitivity"
 
 \end_inset
@@ -639,12 +654,12 @@ A second effect visible in these examples is an apparent repulsion from
  carrier motion at wide spacings.
  In the lower row, the psychometric functions fitted to this data intercept
  the vertical axis at values of 
-\begin_inset Formula $P\left(clockwise\right)$
+\begin_inset Formula $\Pr\left(\mathrm{clockwise}\right)$
 \end_inset
 
  less than 0.5.
  That is to say, at wide spacings, observers were more likely to perceive
- a stimulus with null envelope motion and clockwise carrier motion as actually
+ a stimulus with stationary envelopes and clockwise carrier motion as actually
  moving counterclockwise.
  At smaller spacings, as seen in the upper row, the repulsive effect was
  no longer evident; when 
@@ -657,17 +672,21 @@ A second effect visible in these examples is an apparent repulsion from
  at smaller spacings while being overwhelmed by a spacing-dependent effect
  (see 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sub:results-induced-modeling"
 
 \end_inset
 
-) This repulsion leads to the existence of some stimuli, for which both
- envelope and carrier motion are slightly clockwise, but the perceived motion
- is still clockwise; this is the case when the curves pass through the lower
- right quadrants in 
+.)
+\end_layout
+
+\begin_layout Standard
+This repulsion means that there are some stimuli for which both envelope
+ and carrier motion are slightly clockwise, but the perceived motion is
+ still counterclockwise; this is the case when the curves pass through the
+ lower right quadrants in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -677,12 +696,10 @@ reference "fig:results-summation-increases"
 \end_inset
 
  and 
-\begin_inset Formula $P<0.5$
+\begin_inset Formula $\Pr<0.5$
 \end_inset
 
-.) This represents a situation where the observer's response contradicts
- both the carrier and envelope motions; in these conditions the observer
- will respond 
+.) In these conditions the observer will respond 
 \begin_inset Quotes eld
 \end_inset
 
@@ -692,7 +709,7 @@ counterclockwise
 
  to a stimulus whose carrier and envelope motions are both slightly clockwise.
  Thus at wide spacings, carrier motion repels rather than adds to the perceived
- motion direction.
+ direction of motion.
 \end_layout
 
 \begin_layout Standard
@@ -748,36 +765,30 @@ reference "sec:results-basic"
 
 \end_inset
 
- is selected, showing three observers, two clockwise values of carrier strength
- and two spacings.
- The horizontal axis plots displacement, the vertical axis reflects proportion
- of responses clockwise.
+ is selected, showing three observers, two values of carrier strength and
+ two spacings.
+ The horizontal axis plots envelope displacement, the vertical axis plots
+ proportion of responses clockwise.
  Colors indicate different strengths of carrier motion; three observers
  are shown in separate columns.
- The upper row shows data taken a wide spacing, indicated in the margin,
- while the lower row shows data taken at a narrow spacing.
- Each subplot shows two psychometric functions at two different carrier
- strengths.
+ Curves are predictions from a model fit to data spanning a more complete
+ set of strengths and spacings.
+ The upper row shows data taken using a wide spacing, while the lower row
+ shows data taken at a narrow spacing (spacings are indicated in the right
+ margin.) Each subplot shows two psychometric functions at two different
+ carrier strengths.
  In each graph, the difference between the two curves' 
 \begin_inset Formula $y$
 \end_inset
 
- -intercepts reflects the observer's sensitivity to carrier motion at that
+-intercepts reflects the observer's sensitivity to carrier motion at that
  spacing.
  This sensitivity is greater at narrow spacings.
  At wider spacings, curves intercept the vertical axis below 
 \begin_inset Formula $P=0.5$
 \end_inset
 
-, indicating a tendency to respond 
-\begin_inset Quotes eld
-\end_inset
-
-counterclockwise
-\begin_inset Quotes erd
-\end_inset
-
-  to clockwise carrier motion.
+, indicating a tendency to respond in opposition to the carrier motion.
 \end_layout
 
 \end_inset
@@ -806,30 +817,30 @@ reference "fig:results-summation-increases"
  spacing than at the larger spacing.
  (This will be quantified in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sub:results-sensitivity"
 
 \end_inset
 
-.) Note that this statement about sensitivity is based on comparing the intercept
-s with the vertical axis, rather than the points of subjective equality
- (the intercepts with the horizontal line 
+.) Note that this statement about sensitivity is based on the shift in the
+ vertical axis intercept, rather than the shift in the point of subjective
+ equality (the intercept with the horizontal line 
 \begin_inset Formula $P=0.5$
 \end_inset
 
 .) One would expect the distance between the points of subjective equality
- to be increased even of the strength of carrier motion did not change,
+ to be increased even if the strength of carrier motion did not change,
  because of the change in slopes: an identical vertical shift applied to
  two lines will produce a greater shift in the x-intercept for the line
  with the shallower slope.
- However, since the intercepts with the vertical axis are also farther apart
- at smaller spacings, it appears that the sensitivity to carrier motion
- has increased in addition to the decrease in sensitivity to envelope motion.
+ However, since the change in vertical axis intercept is also larger at
+ smaller spacings, it appears that the sensitivity to carrier motion has
+ increased in addition to the decrease in sensitivity to envelope motion.
 \end_layout
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -874,7 +885,7 @@ counterclockwise
 In the previous section I illustrated that the sensitivity to envelope motion,
  visible as the slope of the psychometric function, decreased when element
  spacing decreased.
- In this section I illustrate that carrier motion has the opposite change
+ In this section I illustrated that carrier motion has the opposite change
  in sensitivity; carrier motion has a stronger influence on perceived motion
  for narrowly spaced stimuli.
  In this experiment the spacing between elements covaries with the number
@@ -929,7 +940,7 @@ This experiment related three parameters -- carrier strength, envelope motion
  One can visualize those variables as forming a three-dimensional space
  illustrated in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-3d"
 
 \end_inset
@@ -959,7 +970,7 @@ counterclockwise
  of interest.
  In 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
@@ -975,6 +986,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
 status collapsed
 
@@ -1012,9 +1024,31 @@ status collapsed
 
 
 \backslash
-includegraphics[height=3in]{contours/contours_folded_
+hspace*{-
 \backslash
-Sexpr{example.contour.subject}_3d.pdf}
+dimexpr
+\backslash
+oddsidemargin+1in
+\backslash
+relax}
+\backslash
+makebox[
+\backslash
+paperwidth]{%
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[height=4in]{contours/contours_folded_
+\backslash
+Sexpr{example.contour.subject}_3d.pdf}%
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -1062,8 +1096,8 @@ Sexpr{toupper(example.contour.subject)}
 .
  The background color scale indicates the probability of responding clockwise
  predicted by our model.
- Four sections through the notionally three-dimensional space are shown,
- and correspond to the four panels in 
+ Four planar sections through the three-dimensional space are shown, and
+ correspond to the four panels in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:results-contours"
@@ -1145,7 +1179,7 @@ Sexpr{toupper(example.contour.subject)}
 .
  The four plots shown correspond to the four planes shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-3d"
 
 \end_inset
@@ -1161,24 +1195,27 @@ reference "fig:results-3d"
 \noun on
 Upper left
 \noun default
-: Response probability as a function of carrier strength and spacing, with
+: Response probability as a function of spacing and carrier strength, with
  envelope motion fixed to zero.
- Data are combined across all carrier strengths (see below).
+ Residuals collect trials across all envelope motions (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:model-figure-details"
+
+\end_inset
+
+).
  
 \noun on
 Lower left
 \noun default
 : Response probability as a function of envelope motion and spacing, for
  stimuli with no carrier strength (i.e.
- counterphase).
- Data are combined across all envelope motions (see 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:model-figure"
-
+\begin_inset space \space{}
 \end_inset
 
-).
+counterphase flicker).
+ Residuals collect trials across all carrier strengths.
 
 \noun on
  Upper right 
@@ -1188,7 +1225,7 @@ and
 lower right
 \noun default
 : Fitted model response as a function of carrier spacing and strength, for
- two different ranges of spacing.
+ two different values of spacing (indicated in the upper right).
  Residuals shown in the upper right are of trials with spacing from 
 \begin_inset ERT
 status collapsed
@@ -1215,7 +1252,7 @@ Sexpr{format(max(wide.spacings), digits=2)}
 
 \end_inset
 
- degrees , while residuals shown in the lower right are of trials with spacing
+ degrees, while residuals shown in the lower right are of trials with spacing
  between 
 \begin_inset ERT
 status collapsed
@@ -1268,7 +1305,6 @@ name "sub:model-figure"
 \end_layout
 
 \begin_layout Standard
-Figures 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-3d"
@@ -1282,7 +1318,7 @@ reference "fig:results-contours"
 
 \end_inset
 
- shows data from one observer; the complete set of illustrations for all
+ show data from one observer; the complete set of illustrations for all
  observers is shown in an appendix.
  The background color scale depicts the probability of responding 
 \begin_inset Quotes eld
@@ -1293,12 +1329,11 @@ clockwise
 \end_inset
 
 , with high probabilities shaded red and low probabilities (i.e.
- tending counterclockwise) shaded blue; darker and more saturated the color,
- the further from 
-\begin_inset Formula $P=0.5$
+ tending counterclockwise) shaded blue; probabilities further from 
+\begin_inset Formula $0.5$
 \end_inset
 
-.
+ in either direction are shown with darker and more saturated colors.
  The four subplots correspond to the four planes shown in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1312,7 +1347,7 @@ reference "fig:results-3d"
 \begin_layout Standard
 Each panel in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
@@ -1320,17 +1355,17 @@ reference "fig:results-contours"
  shows the model's predictions as a function of two of the three variables,
  leaving the other fixed; the value of the fixed variable is noted in the
  upper right corner of each panel.
- From upper right counterclockwise, we show how (
+ The four panels show how model responses vary (
 \noun on
 Upper left
 \noun default
-) model responses vary as a function of spacing and carrier strength, for
- stimuli with zero envelope motion, (
+) as a function of spacing and carrier strength, for stimuli with zero envelope
+ motion, (
 \noun on
 Lower left
 \noun default
 ) as a function of spacing and envelope movement, for stimuli with zero
- carrier motion, (
+ carrier strength, (
 \noun on
 Upper right
 \noun default
@@ -1348,37 +1383,44 @@ Upper right
 \end_layout
 
 \begin_layout Standard
-Figure 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
 
- also depicts the observer's responses.
- Each circles area corresponds to the number of trials it summarizes.
- The shade within the circle corresponds to the difference in shade between
- the circle and the background corresponds to the residual between the model
- prediction and the observer's responses.
- The shading within the circle represents an average of the observers' responses
- in a bin centered on the stimulus parameters where the circle is drawn.
+ also represents the observer's responses.
+ Trials are sorted into bins according to stimulus parameters and a summary
+ circle is plotted for each bin.
+ The circles are drawn with area proportional to the number of trials they
+ summarize.
+ The shade within the circle is a weighted average of the observer's responses.
  Any difference between the shading inside the circle and that of the background
  indicates a residual between the model and the subset of observed data
- falling closest to that circle.
- The area of the circles scales in proportion to the number of trials represente
-d.
+ summarized in that circle.
+ Each plot uses a different binning, according to its axes.
+ For example, a circle in the lower left figure summarizes a set of trials
+ with a particular range of envelope motion and spacing, but any value of
+ carrier strength.
  
 \end_layout
 
 \begin_layout Subsubsection
-Response binning and color scaling
+Binning and color scaling
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:model-figure-details"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-This section gives technical details of how the observer's responses are
- binned and averaged for display in 
+This section gives technical details of how responses are binned and averaged
+ for display in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
@@ -1387,9 +1429,9 @@ reference "fig:results-contours"
  The shading within each circle is not simply the arithmetic mean of observers'
  responses, but is based on the difference between the data and model prediction
 s.
- I based the plot on residuals rather than sample means for reasons related
- to the three dimensional parameter space and the sampling of data throughout
- that space.
+ I based the plot on the residuals rather than the sample mean for reasons
+ related to the three dimensional parameter space and the sampling of data
+ throughout that space.
  First, each circle represents the subset of trials that lie closest to
  it in the two dimensions of the plot, but these trials may be located at
  any value in the third dimension.
@@ -1398,27 +1440,26 @@ s.
 Upper left
 \noun default
  panel, showing a slice across carrier strength and spacing, data are combined
- across all values of envelope motions.
- The points collected under one circle at a particular value of displacement
- can take any value in the unseen dimension (envelope motion).
- Second, the response probability varies in the unseen dimension, so that
- one circle may combine stimuli for which the observer tends to respond
- clockwise with stimuli for which the observer tends to respond counterclockwise.
- Indeed since we use a staircase procedure to choose envelope displacement,
- we expect that the mean response probabilities when the unseen dimension
- is envelope displacement will all be 0.5, which would not be useful to plot.
- Third, the data are not uniformly sampled throughout the stimulus configuration
- space; adjacent circles may collect trials with a different sampling in
- the unseen dimension, as determined by the staircase procedure.
+ across all speeds of envelope motion.
+ The response probability varies in the unseen dimension, so that one circle
+ may combine stimuli for which the observer tends to respond clockwise with
+ stimuli for which the observer tends to respond counterclockwise.
+ Indeed since I used a staircase procedure to choose envelope displacement,
+ the the mean response probability in each bin clusters around 0.5, which
+ would not be useful to display.
+ Since the data are not uniformly sampled throughout the stimulus configuration
+ space, adjacent bins collect trials with a different sampling in the unseen
+ dimension, as determined by the staircase procedure.
  A simple arithmetic mean of each bin would not lead to a depiction of observed
  data that could be visually compared with either adjacent bins or the model
  on the 2-d slice.
 \end_layout
 
 \begin_layout Standard
-The shading within each circle is determined by computing the Pearson residual
- between model predictions and observations, then applying that residual
- at the location of the bin center to obtain a remapped response probability.
+Instead the shading within each circle is determined by computing the Pearson
+ residual between model predictions and observations, then applying that
+ residual at the location of the bin center to obtain a remapped response
+ probability.
  Consider 
 \begin_inset Formula $n$
 \end_inset
@@ -1432,7 +1473,7 @@ The shading within each circle is determined by computing the Pearson residual
 \end_inset
 
  falling within a bin centered on a certain stimulus configuration 
-\begin_inset Formula $x$
+\begin_inset Formula $\bar{x}$
 \end_inset
 
 .
@@ -1454,13 +1495,13 @@ The shading within each circle is determined by computing the Pearson residual
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P=\dfrac{\sum_{i}\left(y_{i}-\widehat{\mu}_{i}\right)}{\sqrt{\sum_{i}\widehat{\mu}_{i}\cdot\sum_{i}\left(1-\widehat{\mu}_{i}\right)}}
+R=\dfrac{\sum_{i}\left(y_{i}-\widehat{\mu}_{i}\right)}{\sqrt{\sum_{i}\widehat{\mu}_{i}\cdot\sum_{i}\left(1-\widehat{\mu}_{i}\right)}}
 \]
 
 \end_inset
 
-which is the difference between data and observation scaled by the expected
- standard error.
+which is the total difference between data and observation scaled by the
+ expected standard error.
  If the model 
 \begin_inset Formula $\widehat{\mu}$
 \end_inset
@@ -1483,14 +1524,14 @@ which is the difference between data and observation scaled by the expected
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\bar{y}\left(x\right)=\widehat{\mu}\left(x\right)+P\dfrac{1}{\sqrt{n}}\sqrt{\widehat{\mu}\left(x\right)\left(1-\widehat{\mu}\left(x\right)\right)}
+\bar{y}\left(x\right)=\widehat{\mu}\left(x\right)+R\dfrac{1}{\sqrt{n}}\sqrt{\widehat{\mu}\left(x\right)\left(1-\widehat{\mu}\left(x\right)\right)}
 \]
 
 \end_inset
 
 The shading of the circles in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
@@ -1503,17 +1544,22 @@ reference "fig:results-contours"
 \begin_inset Formula $\widehat{\mu}(x)$
 \end_inset
 
-, This is designed so that the difference between background and observation
- fairly depicts the difference between model fit and data; if there is no
- Pearson residual for a bin, we would have 
+.
+ This is designed so that the difference between background and observation
+ drawn on the graph fairly depicts the difference between model fit and
+ data: if the Pearson residual is zero for a bin of trials, then 
 \begin_inset Formula $\bar{y}\left(x\right)=\widehat{\mu}\left(x\right)$
 \end_inset
 
-; if all the points 
-\begin_inset Formula $x_{i}$
+; if all the parameters happen to fall at the bin center so that all 
+\begin_inset Formula $x_{i}=x$
 \end_inset
 
- happened to fall at the bin center, we would have 
+, 
+\begin_inset Formula $\bar{y}$
+\end_inset
+
+ collapses to the sample mean 
 \begin_inset Formula $\bar{y}\left(x\right)=\frac{1}{n}\sum_{i}y_{i}$
 \end_inset
 
@@ -1526,7 +1572,7 @@ reference "fig:results-contours"
 \end_inset
 
  is proportional to 
-\begin_inset Formula $P$
+\begin_inset Formula $R$
 \end_inset
 
 .
@@ -1534,27 +1580,49 @@ reference "fig:results-contours"
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
 
- omits a measure of standard error or significance because the all dimensions
- in the figure are already mapped to stimulus variables.
- A subsequent section (
+ does not include a measure of standard error or significance because all
+ dimensions in the figure are already mapped to stimulus variables.
+ Below in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sub:results-goodness"
 
 \end_inset
 
-) will consider model predictions and data one variable at a time, at which
- point I can display aggregated standard errors between observed data and
- model and obtain goodness of fit statistics.
- However, the size of the plotted circles is scaled to the number of observation
-s made, which may help give a sense of the significance of differences between
- model and data; one expects larger circles to have less difference between
- observation and model.
+ will consider model predictions and data one variable at a time, at which
+ point I can display standard errors of observed and predicted data and
+ obtain goodness of fit statistics.
+ However, the areas of the plotted circles in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+ are scaled to the number of observations, which may help give a sense of
+ the significance of differences between model and data; one expects larger
+ circles to have less difference between observation and model.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+With the unequal sampling, applying t-tests to the residual would not correspond
+ to what we would like to see...
+ (i.e.
+ it would consider to be mis-fits between differently sized bins.
+ When using binned residuals to gauge model fit we usually sample equally
+ sized bins, but this is not easy in two dimensions.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1585,27 +1653,36 @@ I need some consistent names for the three effects of the model.
 
 The four plots in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
 
- illustrate each of the effects associated with carrier strength, envelope
- motion, and spacing that were previously discussed.
- The lower left plot shows how the observer's response varies for stimuli
+ illustrate effects associated with carrier strength, envelope motion, and
+ spacing.
+ The lower left panel shows how the observer's response varies for stimuli
  with no carrier motion (i.e.
  with all elements flickering in counterphase.) The horizontal axis measures
  the degree of carrier motion used in the stimulus, while the vertical axis
  measures the inter-element spacing.
  When there is no carrier motion, observers tend to report clockwise apparent
  motion for envelope motions that are clockwise, and vice versa.
- This is reflected by the right half of the graph taking values > 0.5 (in
- red) and the left half of the graph taking values less than 0.5 (in blue).
- Because the data are folded, this graph only shows data where 
+ This is reflected by the right half of the graph taking values greater
+ than 0.5 (in red) and the left half of the graph taking values less than
+ 0.5 (in blue.) 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Because the data are folded, this graph only shows data where 
 \begin_inset Formula $\Delta x>0$
 \end_inset
 
 .
+\end_layout
+
+\end_inset
+
  
 \begin_inset Note Note
 status collapsed
@@ -1625,19 +1702,32 @@ this is a subtlety to the folding: if you're going to fold so that carrier
 \end_layout
 
 \begin_layout Standard
-The effect captured in the lower left plot is how sensitivity to envelope
- motion (graphically, how fast the transition is, in the horizontal direction,
- from deep blue to deep red) changes as a function of spacing.
- In our model this spacing-dependent sensitivity is described by the function
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+lower left
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The effect captured in the lower left panel is how the sensitivity to envelope
+ displacement (which corresponds to the inverse of the horizontal distance
+ between contour lines) changes as a function of spacing.
+ In the model the spacing-dependent sensitivity is described by the function
  
-\begin_inset Formula $\beta_{\Delta x}(S)$
+\begin_inset Formula $\beta_{\Delta}(S)$
 \end_inset
 
  and is controlled by the sensitivity parameter 
 \begin_inset Formula $\beta_{0}$
 \end_inset
 
-and the 
+ and the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1650,15 +1740,17 @@ critical spacing
 \end_inset
 
 .
- The data that is observed, whose residuals are plotted in circles shows
+ The sensitivity to envelope motion decreases at smaller spacing, causing
+ contour lines to spread apart at the bottom of the graph.
+ The data that is observed, whose residuals are plotted in circles, shows
  analogous behavior.
  Note that at smaller spacings, data has been collected over a wider range
- of envelope motions than at the largest spacings.
- This is a result of using an interleaved staircase procedure which steps
- over a wider range when the sensitivity is larger.
- Note that even at the smallest spacings most data has been collected with
- envelope step sizes significantly smaller than 0.5; so that inherent ambiguity
- with forming correspondences between element appearances (i.e.
+ of envelope speeds than at the larger spacings.
+ This is a result of using a staircase procedure which steps over a wider
+ range when the sensitivity is lower.
+ Even at the smallest spacings most data has been collected with envelope
+ step sizes significantly smaller than half the spacing, so that the ambiguity
+ of forming correspondences between element appearances (i.e.
  the wagon wheel illusion) should not contribute to the lessening of sensitivity.
  
 \begin_inset Note Note
@@ -1675,42 +1767,36 @@ Crowding is a kind of source confusion, but it's inherent to the system
 \end_layout
 
 \begin_layout Standard
-While sensitivity to envelope motion decreases when spacing is reduced,
- the sensitivity to carrier motion typically increases.
- The combination of the two effects can be seen in comparing the two graphs
- at the right of 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:results-contours"
-
-\end_inset
-
-.
- When spacing is relatively wide, as in the upper right panel, the gradient
- of the decision function is steeper along the axis of envelope motion,
- and the model is relatively insensitive to carrier strength.
- In the lower left graph the situation has reversed.
- With reference to the space shown in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:results-3d"
-
-\end_inset
-
- we can imagine the surface formed by the set of stimuli for which observers
- equivocate as to the direction of the stimulus; 
-\begin_inset Marginal
+\begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-it takes a 90 degree twist as spacing decreases???
+upper right
 \end_layout
 
 \end_inset
 
-.
- perception of motion is driven by envelope motion at wider spacings but
- by the carrier when spacing is narrow.
+
+\end_layout
+
+\begin_layout Standard
+The upper right panel of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+ characterizes responses to envelope and carrier motion at a wide spacing.
+ Consider starting at the point (0,0), where the response probability is
+ 0.5.
+ Traveling up the graph, corresponds to adding carrier motion to the stimulus;
+ response probabilities at first drop below 0.5, exhibiting repulsion.
+ Increasing the carrier motion further, the repulsion reverses and the observer
+ now reports motion in the direction of the carrier.
+ At any point, moving horizontally corresponds to a change in the envelope
+ motion; at the large spacing captured in this graph, sensitivity to envelope
+ motion is high.
 \end_layout
 
 \begin_layout Standard
@@ -1718,9 +1804,7 @@ it takes a 90 degree twist as spacing decreases???
 status open
 
 \begin_layout Plain Layout
-A 3-d null surface plot might be one of the most confounding ways of presenting
- this data imaginable but we could try to draw it.
- I think people will be fine.
+lower right
 \end_layout
 
 \end_inset
@@ -1729,46 +1813,58 @@ A 3-d null surface plot might be one of the most confounding ways of presenting
 \end_layout
 
 \begin_layout Standard
-Finally, the repulsion effect characterized by 
-\begin_inset Formula $M_{i}(C)$
+The lower right panel has the same axes as the upper right but shows narrow
+ spacings.
+ Moving vertically in this graph gives a large change in response, reflecting
+ a higher sensitivity to carrier motion than in the upper right panel.
+ By comparison, moving horizontally shows much less sensitivity to envelope
+ motion than in the upper right panel.
+ The repulsion effect 
+\begin_inset Formula $M_{I}$
 \end_inset
 
- can be observed.
- Its effect is to make weak carrier motions slightly repulsive; that is,
- adding a moderate amount of clockwise carrier motion tends to make bias
- observers towards reporting counterclockwise apparent motion.
- This effect is nonlinear as a function of carrier strength; carrier strengths
- less than 0.4 generally cause repulsion but as the carrier strength approaches
- 1 again, carrier motion once again becomes positive in strength.
+ that was evident in the upper graph is swamped by the higher sensitivity
+ to carrier motion 
+\begin_inset Formula $M_{S}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-In the upper right figure, we have plotted response probabilities as a function
- of envelope motion and carrier strength, for a relatively wide spacing.
- Consider starting at the point (0,0) where the response probability is
- 0.5.
- As you travel up the graph, corresponding to adding carrier motion, the
- modeled response probabilities drop below 0.5, exhibiting repulsion.
- Increasing the carrier motion further we find that the repulsion reverses
- and the observer now reports motion in the direction of the carrier.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+upper left; repulsion
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-The upper left graph shows the combined effects of both the nonlinear repulsion
- and spacing-dependent summation effects.
+Finally, the upper left panel shows the combined effects of both the nonlinear
+ repulsion and spacing-dependent summation effects.
  Here we have fixed the envelope motion to zero.
- At relatively wide spacings, we see that there is much repulsion, indicated
- by mostly blue colors on the right side of the graph.
- However the repulsion effect disappears at the strongest carrier strengths
- (at the top of the graph) and at narrower spacings.
+ At relatively wide spacings, moderate carrier strengths induce repulsion,
+ indicated by mostly blue colors on the right side of the panel.
+ Carrier strengths less than 0.4 generally cause repulsion but as the carrier
+ strength approaches 1 again, carrier motion once again becomes positive
+ in strength.
+ The repulsion effect also disappears at narrower spacings.
  Both the repulsion at weak carrier strengths and its reversal at at high
- carrier strengths occurred for most observers in our sample.
- 
+ carrier strengths occurred for most observers in the dataset.
 \end_layout
 
 \begin_layout Standard
-As modeled this repulsion effect is independent of both the number of elements
- on the display and the spacing between them.
+The repulsion effect 
+\begin_inset Formula $M_{I}$
+\end_inset
+
+ is modeled as a function only of the carrier strength; it is independent
+ of both the number of elements on the display and the spacing between them.
  
 \begin_inset Note Note
 status collapsed
@@ -1780,7 +1876,7 @@ Don't really know what to make of this other than wild speculation whcih
 
 \end_inset
 
- We attempted changing or adding similarly formulated terms that were dependent
+ I explored changing or adding similarly formulated terms that were dependent
  on element number and on spacing, but these did not result in better fits
  as assessed by the AIC measure 
 \begin_inset CommandInset citation
@@ -1793,89 +1889,94 @@ key "Akaike:1974aa"
 \end_layout
 
 \begin_layout Standard
+While sensitivity to envelope motion decreases when spacing is reduced,
+ the sensitivity to carrier motion typically increases.
+ The combination of the two effects can be seen in comparing the upper right
+ and lower right panels of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+.
+ When spacing is relatively wide, as in the upper right panel, the gradient
+ of the decision function is steeper along the axis of envelope motion,
+ and the model is relatively insensitive to carrier strength.
+ In the lower left graph, showing data at narrow spacings, the situation
+ has reversed.
+ Broadly speaking it appears that motion is driven by envelope motion at
+ wider spacings but by the carrier motion when spacing is narrow.
+\end_layout
+
+\begin_layout Standard
 Similar patterns of behavior are found for most observers.
  The set of plots for all observers who participated in this experiment
- is included in an Appendix (
+ is included in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sec:everything"
 
 \end_inset
 
-.)
+.
 \end_layout
 
 \begin_layout Standard
-It is worth discussing the areas where the model is not fully successful
- at reproducing observers' data.
+It is worth noting the areas where the model is not fully successful at
+ reproducing observers' data.
  We often find that the repulsion measured at a carrier strength of 0.2 is
- stronger than the model fit (and the repulsion at 0.4 is weaker.) This suggests
- that the functional parameterization we have chosen for 
+ stronger than the model fit, and the repulsion at 0.4 is weaker, see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-model-plot"
+
+\end_inset
+
+ below.
+ This suggests that the functional parameterization I have chosen for 
 \begin_inset Formula $M_{i}(C)$
 \end_inset
 
- might need to be improved, however with the current data we do not have
- the power (or a potential mechanism in mind) that would inspire a better
- parameterization.
+ might need to be improved, however the current data do not have the power
+ that would select a better principled parameterization.
 \end_layout
 
 \begin_layout Standard
 Another area where the model does not fully capture the observers' behavior
- is that their responses at smaller spacing are more variable at than the
- model would predict.
+ is that their responses at smaller spacing are more variable than the model
+ would predict.
  This is visible to some extent in the raw data plotted in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-spacing-collapse"
 
 \end_inset
 
-; rather than the smooth psychometric function that is fit to the data.
- the data points have more scatter or oscillation around the fit.
+; the data collected at wider spacings trace out a psychometric function,
+ but the data collected at narrower spacings have more dispersion than one
+ would expect from the model fit.
  
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
 Compute deviance (as opposed to Pearson) residuals to underscore this point?
+ Model an overdispersed process for envelope motion?
 \end_layout
 
 \end_inset
 
- This is also visible in the bottom row of circles in the lower left panel
+This is also visible in the bottom row of circles in the lower left panel
  of 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
 
 , where the differences between model and observed data are more apparent.
- It may be significant that the stimuli are narrowband with a relatively
- well defined spatial period to the carrier.
- This may produce spatial aliasing; different speeds of envelope motion
- (corresponding to different lengths of the spatial step between successive
- appearances of the Gabor-like element) may cause peaks and troughs to line
- up.
- When the locations of the envelope are obscured by the presence of flankers,
- the visual system may resort to aligning first-order peaks and troughs
- rather than second-order envelope locations.
- Some individual psychometric functions for some observers are suggestive
- of an oscillation on the order of the spatial period of the carrier, but
- we have not been successful in improving the model fit by adding a term
- accounting for this.
- Subjectively, the experience of stimuli at high density is 
-\begin_inset Quotes eld
-\end_inset
-
-confusing
-\begin_inset Quotes erd
-\end_inset
-
- and observers report, e.g.
- that different motions overlap, or that the appearance of the stimulus
- changes as a function of attention; observers' responses may vary according
- to a choice of strategy or attending to different aspects of the stimulus.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -1890,35 +1991,114 @@ name "sub:results-goodness"
 \end_layout
 
 \begin_layout Standard
-\align left
-We have described three separate effects: a reduction in the sensitivityThis
- model captures the effect of three factors - carrier strength, envelope
- motion and spacing - that each affect peceived motion.
- As described in the Discussion, this model also provides a parsimonous
- explanation of large amounts of individual variation in the appearance
- of these stimuli across individual subjects, since small changes in model
- parameters can have dramatic effects on the predicted perception.
+This model captures the effect of three factors - carrier strength, envelope
+ motion and spacing - that each affect perceived motion.
+ As described in the Discussion, this model also captures individual variation
+ in the appearance of these stimuli across individual subjects, since small
+ changes in model parameters can have dramatic effects on the predicted
+ perception.
+ I would like to distill out the distinct effects we see each into its own
+ measurement.
+ This will help evaluate and provide some justification for the particular
+ functional forms that have chosen in our model, as well as show how individual
+ effects are consistent across observers.
+\end_layout
+
+\begin_layout Standard
+Tests of goodness of fit such as residual deviance and Pearson 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ operate by comparing the predictions to those of a saturated model, one
+ with as many parameters as observations that captures all the variance.
+ However the idea of a saturated model does not have a perfect equivalent
+ in the case of binary responses, and analogous fit tests are problematic
+ when the predictors are not evenly grouped 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Collett:2003aa"
+
+\end_inset
+
+, or when the observations sparsely sample the space spanned by multiple
+ predictors 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hosmer:aa"
+
+\end_inset
+
+, both being situations which characterize this dataset.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Some idea of the difficulty can come from considering the effect of sampling
+ procedure; I use adaptive staircase to draw data from the parameters which
+ give more information, but those are also the parameters for which the
+ observer gives a mixture of yes and no responses.
+ A model-agnostic of deviance or goodness of fit adapted from linear regression
+ will necessarily be higher under adaptive sampling: you cannot fully eliminate
+ deviance or residuals when an observer says both 
+\begin_inset Quotes eld
+\end_inset
+
+yes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+no
+\begin_inset Quotes erd
+\end_inset
+
+ to the same stimulus in different trials; adjusting measures of residual
+ to account for the compression of the logistic function as was done in
  
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-contours"
+
+\end_inset
+
+ would make a model fit measure specific to a particular model.
+ A model-agnostic measure of deviance with data taken under adaptive sampling
+ will be higher than under a fixed procedure that samples the tails heavily,
+ even though the adaptive sampling procedure produces a more accurate parameter
+ estimate for the same number of samples.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-[[ ok move this some where else
-\end_layout
+Further, applying an complete goodness of fit test to a model with multiple
+ effects involving multiple predictors would not give a useful evaluation
+ of how well each component effect is capturing behavior.
+ Therefore it would be most instructive to focus on the fit for each effect
+ considered separately.
+ Since I sampled a discrete set of spacings and of carrier strength, this
+ can be done by expanding the proposed model 
+\begin_inset Formula $m_{P}$
+\end_inset
 
-\begin_layout Standard
-\align left
-(We have described three separate effects: a reduction in the sensitivity
- to envelope motion as inter-element spacings reduce, a concurrent increase
- in the sensitivity to carrier strength, and an independent repulsion that
- depends nonlinearly on the carrier strength but not on the spacing.
- Since the effects involve mutually overlapping stimulus parameters, comparisons
- of behavior along any one dimension involve overlapping effects, which
- makes it less obvious which effect is responsible for which features of
- behavior.
- Additionally we observe a relatively large amount of individual variation
- in observer's behavior -- I have configured a demonstration stimulus with
- both carrier and envelope motion moderately clockwise, which appeared clearly
- clockwise to me, while a na
+ into model 
+\begin_inset Formula $m_{S,E}$
+\end_inset
+
+ that is saturated over one predictor 
+\begin_inset Formula $E$
+\end_inset
+
+; i.e.
 \begin_inset ERT
 status open
 
@@ -1926,54 +2106,62 @@ status open
 
 
 \backslash
-"{
-\backslash
-i}
+ 
 \end_layout
 
 \end_inset
 
-ve observer viewing the same stimulus at the same time, it was clearly countercl
-ockwise.
- In earlier experiments, some observers perceive motion to reverse when
- spacing is changed holding other stimulus parameters constant, but we were
- not able to find a stimulus configuration that produced the reversal consistent
-ly across observers.
- 
-\begin_inset Note Note
-status open
+adding indicator variables for each value of spacing or carrier strength,
+ and fitting the sensitivity in terms of those indicators.
+ This builds a 
+\begin_inset Quotes eld
+\end_inset
 
-\begin_layout Plain Layout
-I'm rambling.
- some of this should go to discussion
-\end_layout
+effect saturated
+\begin_inset Quotes erd
+\end_inset
+
+ model 
+\begin_inset Formula $m_{S,E}$
+\end_inset
+
+; a corresponding process builds a null or intercept model 
+\begin_inset Formula $m_{0,E}$
+\end_inset
+
+.
+ Then the success of each effect term can be characterized by nested comparisons
+ between null, proposed (
+\begin_inset Formula $m_{L})$
+\end_inset
+
+ and saturated models 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Tsiatis:1980aa,Archer:2007aa"
 
 \end_inset
 
- We suspect that multiple motion sensing mechanisms are responsible for
- observer's behavior in this experiment; when multiple mechanisms are involved,
- the relative strengths of these mechanisms vary between observers, with
- qualitatively different effects.
- 
-\end_layout
+, and by the log-likelihood-based pseudo-
+\begin_inset Formula $R^{2}$
+\end_inset
 
-\begin_layout Standard
-\align left
-We would like to distill out the distinct effects we see each into its own
- measurement.
- This will help us evaluate and provide some justification for the particular
- functional forms that have chosen in our model, as well as show how individual
- effects are consistent across observers.
- ]]
-\end_layout
+ measure 
+\begin_inset Formula 
+\[
+R_{L,E}^{2}=\frac{L\left(m_{P}\right)-L\left(m_{0,E}\right)}{L\left(m_{P}\right)-L\left(m_{S,E}\right)}.
+\]
 
-\begin_layout Standard
-This model also provides some insights into the properties of the mechanisms
- underlying the task that are not immediately intuitively obvious.
+\end_inset
+
+Perhaps more importantly, building effect-saturated models allows visual
+ comparison of, e.g., how the sensitivity to carrier motion varies over each
+ discrete value of spacing tested, versus the model's behavior over the
+ same question.
 \end_layout
 
 \begin_layout Subsubsection
-Lack of pooling across large distances
+Lack of pooling of envelope motion across large distances
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-no-pooling"
@@ -2010,42 +2198,40 @@ status collapsed
 
 We motivated the description of our model (
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "sec:model"
 
 \end_inset
 
 ) by considering that the observer attends a single element of the display;
- other elements were taken to be ignored as best the observer is able, though
- they exert an influence via effects like crowding or summation depending
- on distance.
+ other elements are not attended, may but exert an influence via crowding
+ or summation.
  However, in our task the stimulus is composed of identical, identically
  moving elements.
- Therefore in principle, it is not necessary that a subject isolate any
- particular element to arrive at a veridical perception of envelope motion;
- any element will do the same job.
+ Therefore in principle, it is not necessary that an observer isolate any
+ particular element to measure envelope motion; any element or combination
+ of elements will do the job.
  When distinct objects move concurrently, one can perceive the motion as
  being of a larger element of which the distinct components are features,
- as in Ternus displays (e.g.
- 
+ such as in Ternus displays 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citep
 key "BoiMarco2009"
 
 \end_inset
 
-) or as when motion is consistent with the motion of a rigid body (e.g.
- 
+ or when motion is consistent with the motion of a rigid body 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citep
 key "Anstis:2011vn"
 
 \end_inset
 
-.) In these stimuli, both envelope and carrier motion are (considered separately)
+.
+ In these stimuli, both envelope and carrier motion are, considered separately,
  consistent with that of a wheel rotating around the fixation point.
- Knowing this, an ideal observer could in principle pool multiple envelope
- position signals in order to improve sensitivity to envelope motion.
+ Knowing this, an observer might pool multiple envelope position signals
+ in order to improve sensitivity to envelope motion.
  If that is the case than the sensitivity to envelope motion (i.e.
  the slope of the psychometric function relating envelope motion to response
  probability) should increase when additional, coherently-moving elements
@@ -2067,8 +2253,8 @@ Sexpr{length(unique(results.pooling.candidates$subject))}
 
 \end_inset
 
- of the observers who participated in this experiment, we measured psychometric
- functions with both 
+ of the observers who participated in this experiment, I collected data
+ with both 
 \begin_inset ERT
 status collapsed
 
@@ -2134,7 +2320,7 @@ Sexpr{element.numbers}
  elements using a logistic regression model formulated as 
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}\left(\beta_{n}\Delta_{x}+k_{\left|C\right|,n}C+b\right)
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}\left(\beta_{n}\Delta_{X}+k_{\left|C\right|,n}C+b_{\left|C\right|,n}\right)
 \]
 
 \end_inset
@@ -2143,13 +2329,20 @@ where the slope of the psychometric function corresponds to
 \begin_inset Formula $\beta_{n}$
 \end_inset
 
- and a separate intercept is used for each absolute value of direction content
- and element number.
+ and separate proportionality constants 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ were used for each absolute value of direction content and element number.
  Using a treatment contrast for 
 \begin_inset Formula $\beta_{n}$
 \end_inset
 
-, we asked how sensitivities changed as a function of element number.
+, I asked how sensitivities changed as a function of element number.
  For 
 \begin_inset ERT
 status collapsed
@@ -2223,8 +2416,12 @@ Sexpr{sum(results.pooling.data$n_obs)}
 \end_inset
 
  trials.
- We conclude that there is not pooling of envelope motion data between separate
- objects in this experiment.
+ I conclude that there is not pooling of envelope motion data between separate
+ objects in this experiment, which agrees with the choice of a form of 
+\begin_inset Formula $\beta_{\Delta}\left(S\right)$
+\end_inset
+
+ which reaches an asymptote at large spacings.
  
 \begin_inset Note Note
 status collapsed
@@ -2299,20 +2496,19 @@ Sensitivity to displacement collapses as spacing decreases.
  axis measures sensitivity to direction content (corresponding to the slopes
  of the psychometric functions shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-spacing-collapse"
 
 \end_inset
 
-.
- Data points are obtained by re-fitting the model while allowing sensitivity
+.) Data points are obtained by re-fitting the model while allowing sensitivity
  to vary freely for each value of spacing, while other aspects of the model
  are unmodified.
  The size of the data points is scaled according to the number of trials
  underlying its measurement; vertical bars show the standard error obtained
  from the measurement.
- The vertical axis is a sensitivity measure (corresponding to the the change
- in log-likelihood of answering 
+ The vertical axis is the sensitivity to envelope motion (corresponding
+ to the the change in log-likelihood of answering 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2339,7 +2535,7 @@ clockwise
 .
  Three observers are shown here; the complete set is shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:everything-sensitivity"
 
 \end_inset
@@ -2358,85 +2554,170 @@ reference "fig:everything-sensitivity"
 \end_layout
 
 \begin_layout Standard
-A central feature of our model as illustrated on 
+A central feature of the proposed model as illustrated in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:model"
 
 \end_inset
 
- is that we expect the sensitivity to envelope motion to decline as spacing
+ is that it expects the sensitivity to envelope motion to decline as spacing
  between elements declines, i.e.
- there is a crowding effect on envelope motion.
- To illustrate this effect we derive a measurement of the effect size as
- a function of spacing, disentangled from other effects (carrier motion
- summation and repulsion.) We do this by removing the parameterization of
- 
-\begin_inset Formula $\beta_{\Delta x}(S)$
+ there is a crowding effect on the detection of envelope motion.
+ As described above, to assess whether the model captures an the effect
+ of spacing on sensitivity in the presence of other effects, I compare the
+ proposed motel to a null model without this effect and a saturated model
+ formed by expanding the parameterization of 
+\begin_inset Formula $\beta_{\Delta}\left(S\right)$
 \end_inset
 
- from the model and instead including a separate coefficient 
-\begin_inset Formula $\beta_{\Delta x}^{S}$
+ into a set of dummy variables coded to capture a different value 
+\begin_inset Formula $\beta_{\Delta,S}$
 \end_inset
 
- for each distinct value of spacing tested, forming a modified model [[
- not sure why this is necessary, let's talk about it]].
- The fitted values of these coefficients constitute a measurement of the
- sensitivity to displacement as a function of spacing.
- The other components of the model (repulsion and carrier motion summation)
- remain included.
+ for each distinct value of spacing tested.
+ The null model uses a constant value of sensitivity at all spacings.
+ All other aspects are left as described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:model"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-Examples of this measurement are shown in 
+The proposed and saturated models are plotted in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-spacing-sensitivity"
 
 \end_inset
 
  for three observers (the entire set is shown in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand ref
 reference "fig:everything-sensitivity"
 
 \end_inset
 
-) The measurement we obtain for sensitivity to displacement here is somewhat
- noisy, but we can see that the separately measured sensitivities generally
- approach zero as spacing approaches zero.
- As we discussed in 
+) The measurement obtained in the saturated model is noisy, but the sensitivitie
+s do approach zero as spacing approaches zero.
+ Also confirming the analysis in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sub:results-no-pooling"
 
 \end_inset
 
-, as spacings become large there is no general trend for sensitivities to
- further increase.
- So both general features we chose for our parameterization of 
+, as spacings become large, sensitivity appears to reach an asymptote.
+ So both general features chosen for the proposed model of 
 \begin_inset Formula $\beta_{\Delta x}\left(S\right)$
 \end_inset
 
- (an asymptote at large spacings, and collapses to zero at small spacings)
+, an asymptote at large spacings, and a collapse to zero at small spacings,
  are consistent with the data.
- 
-\begin_inset Note Note
+ Comparing the proposed to the null model, all observers show highly significant
+ improvements, with the largest 
+\begin_inset Formula $p$
+\end_inset
+
+-value being 
+\begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
-(how to say something more quantitative...
- perhaps about how much deviance the parameterization eliminates vs.
- no collapse vs.
- this full model?)
+
+$
+\backslash
+Sexpr{latex.format(max(sensitivity.tests[, "pval", "flat.model", "model"]),
+ digits=1)}$
 \end_layout
 
 \end_inset
 
- As a side note, we see that for observer PBM (an author) the sensitivities
- are much larger that for other subjects, while still showing the same kind
- of collapse at narrow spacings.
- We attribute this to overtraining relative to the na
+.
+ Further comparing the proposed to the saturated model, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(sensitivity.tests[, "pval", "model", "free.model"] > 0.05)}
+\end_layout
+
+\end_inset
+
+ out of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{dim(sensitivity.tests)[1]}
+\end_layout
+
+\end_inset
+
+ observers show a significant difference between proposed and saturated
+ model.
+\end_layout
+
+\begin_layout Standard
+Labels in each facet of the plot show the pseudo-
+\begin_inset Formula $R_{L}^{2}$
+\end_inset
+
+ 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+measure
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ described above.
+ Aggregating across all observers, I obtain a value of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+$R_L^2 = 
+\backslash
+Sexpr{format(as.vector(hosmer_lemeshow_r2(aggregate.sensitivity.tests)), digits=2)}
+$
+\end_layout
+
+\end_inset
+
+.
+ Note that for observer PBM (the author) the sensitivities are much larger
+ than for other subjects, while still showing the same form of collapse
+ at narrow spacings.
+ The higher sensitivity might be attributed to overtraining relative to
+ the na
 \begin_inset ERT
 status collapsed
 
@@ -2452,7 +2733,30 @@ i}
 \end_inset
 
 ve observers.
- 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%results-nested
+\end_layout
+
+\begin_layout Plain Layout
+
+<<results-nested-spacing>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection

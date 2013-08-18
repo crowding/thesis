@@ -920,7 +920,7 @@ alter <- macro(function(assignment, ...) {
       (
           function(`.(target)`) {
             .(assignment) <-
-                .(ptools:::chain_function(alist(`.`=))(list(...)))(.(assignment));
+                .(vadr:::chain_function(alist(`.`=))(list(...)))(.(assignment));
             .(target)
           }
       )(.(target))

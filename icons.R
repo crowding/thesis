@@ -641,7 +641,7 @@ unicode_demo <- function() {
 #
 custom_geom_demo <- function() {
   #here's an example that uses these.
-  library(ptools)
+  library(vadr)
   theme_set(theme_bw(12, "Myriad Pro"))
   theme_update(  panel.grid.major = element_blank()
                , panel.grid.minor = element_blank()

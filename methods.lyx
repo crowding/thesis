@@ -442,6 +442,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -465,9 +469,41 @@ relax
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace*{-
+\backslash
+dimexpr
+\backslash
+oddsidemargin+1in
+\backslash
+relax}
+\backslash
+makebox[
+\backslash
+paperwidth]{%
+\end_layout
+
+\end_inset
+
+
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="4">
-<features tabularvalignment="middle" tabularwidth="100text%">
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -692,9 +728,17 @@ raisebox{1in}{E}
 \end_inset
 
 
-\end_layout
+\begin_inset ERT
+status open
 
 \begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -803,6 +847,10 @@ reference "mov:sample-stimuli"
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 This construction of the stimuli is illustrated in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -933,7 +981,7 @@ C=\frac{C_{CW}-C_{CCW}}{C_{CW}+C_{CCW}}
  and counterclockwise motion energy.
  The total luminance contrast is held at 
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 

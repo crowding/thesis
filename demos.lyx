@@ -274,18 +274,19 @@ key "Hedges:2011aa"
 \end_inset
 
 .
- For the greatest values values of carrier strength, (for these demonstrations,
- the carrier strength as defined in 
-\begin_inset Note Note
-status open
+ For the greatest values of carrier strength, (for these demonstrations,
+ the carrier strength 
+\begin_inset Formula $C$
+\end_inset
 
-\begin_layout Plain Layout
-link!
-\end_layout
+ as defined in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:methods"
 
 \end_inset
 
-Methods is 
+ is 
 \begin_inset Formula $100\%$
 \end_inset
 
@@ -339,6 +340,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
 status open
 
@@ -511,6 +513,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
 status open
 
@@ -583,6 +586,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
 status open
 
@@ -626,16 +630,13 @@ A stimulus with 22 identical elements.
 \begin_layout Standard
 While I did not describe the stimulus construction in detail to naïve observers,
  all observers after having practiced at the task employed in 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-link!
-\end_layout
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
 
 \end_inset
 
-Experiment 1 commented spontaneously on the two forms of motion being employed.
+ commented spontaneously on the two forms of motion being employed.
  More than one observer described the envelope motion as the 
 \begin_inset Quotes eld
 \end_inset

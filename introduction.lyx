@@ -527,6 +527,29 @@ status open
 
 \begin_layout Plain Layout
 \noindent
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+hspace*{-
+\backslash
+dimexpr
+\backslash
+oddsidemargin+1in
+\backslash
+relax}
+\backslash
+makebox[
+\backslash
+paperwidth]{%
+\end_layout
+
+\end_inset
+
+
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="2">
 <features tabularvalignment="middle">
@@ -647,6 +670,20 @@ linewidth}{demo_counter}
 </cell>
 </row>
 </lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
 
 \end_inset
 

@@ -351,7 +351,7 @@ For
  the visual system will be less able to isolate a single element to determine
  its position, so the sensitivity to changes in position will decline.
  We model this by making 
-\begin_inset Formula $\beta_{\Delta_{x}}(S)$
+\begin_inset Formula $\beta_{\Delta}(S)$
 \end_inset
 
  a sigmoid 
@@ -386,7 +386,7 @@ the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\beta_{\Delta_{x}}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\ \ \text{or}\ \ \beta_{\Delta_{x}}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
+\beta_{\Delta}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\ \ \text{or}\ \ \beta_{\\Delta}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
 \]
 
 \end_inset
