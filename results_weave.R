@@ -219,37 +219,39 @@ check <- function(x, ...) if(chain(x, ...)) x else stop("check failed")
 browse <- function(x) {browser(); x}
 
 #also run stats on the aggregation of models.
-aggregate.sensitivity.stats <- chain(
-    sensitivity.stats,
+aggregate_stats <- mkchain(
     dcast(list(c(idvars, "model.type"), "stat")),
     ddply(., "model.type", chain,
           subset(., select=names(.) %-% c(idvars)),
           numcolwise(sum)()),
-    melt(id.vars="model.type", variable.name="stat"))
+    melt(id.vars="model.type", variable.name="stat")
+    )
+
+aggregate.sensitivity.stats <- aggregate_stats(sensitivity.stats)
 
 #run a log likelihood ratio test on each pair of models...
 model_pair_tests <- mkchain[
     ., id = idvars[idvars %in% names(.)],
     tests=c("df", "ll", "ll.x", "aic", "chisq", "lpval",
-            "pval", "ntrials", "nobs")](
-    dcast(., list(c(id, "model.type"), "stat")),
-    merge(.,.,by=id),
-    subset(unclass(df.x) < unclass(df.y)),
-    check(with(all(nobs.y==nobs.x))),
-    mutate(df = df.y - df.x,
-           ll = ll.y - ll.x,
-           ll.x = ll.x,
-           aic = aic.y - aic.x,
-           chisq = 2 * abs(ll),
-           lpval = pchisq(chisq, round(df), lower.tail=FALSE, log.p=TRUE),
-           pval = pchisq(chisq, round(df), lower.tail=FALSE),
-           ntrials = ntrials.x,
-           nobs = nobs.x),
-    .[c(id, "model.type.x", "model.type.y", tests)],
-    melt(c(id, "model.type.x", "model.type.y"), variable.name="test"),
-    acast(list(id, "test", "model.type.x", "model.type.y")),
-    put(names(dimnames(.)), c("id", "test", "model.type.x", "model.type.y"))
-    )
+            "pval", "ntrials", "nobs")
+    ](
+        dcast(., list(c(id, "model.type"), "stat")),
+        merge(.,.,by=id),
+        subset(df.x <= df.y & (nobs.y == nobs.x)),
+        check(with(all(nobs.y==nobs.x))),
+        mutate(df = df.y - df.x,
+               ll = ll.y - ll.x,
+               ll.x = ll.x,
+               aic = aic.y - aic.x,
+               chisq = 2 * abs(ll),
+               lpval = pchisq(chisq, round(df), lower.tail=FALSE, log.p=TRUE),
+               pval = pchisq(chisq, round(df), lower.tail=FALSE),
+               ntrials = ntrials.x,
+               nobs = nobs.x),
+        .[c(id, "model.type.x", "model.type.y", tests)],
+        melt(c(id, "model.type.x", "model.type.y"), variable.name="test"),
+        acast(list(id, "test", "model.type.x", "model.type.y")),
+        put(names(dimnames(.)), c("id", "test", "model.type.x", "model.type.y")))
 
 sensitivity.tests <- model_pair_tests(sensitivity.stats)
 aggregate.sensitivity.tests <- model_pair_tests(aggregate.sensitivity.stats)
@@ -272,15 +274,17 @@ nagelkerke_r2 <- function(tests) {
                                * tests[ , "ll.x", "flat.model", "model"]))
 }
 
-sensitivity.plot.r2 <-
-    chain(sensitivity.tests,
-          hosmer_lemeshow_r2,
-          melt,
-          rename(c(id="subject", value="r2")),
-          mutate(., label=qqply("  R"[L]^2 == .(sprintf("%.2f  ", x)))(x=r2)),
-          mutate(label=vapply(label, deparse, "")),
-          mutate(., observer=chain(subject, toupper, paste("Observer", .))),
-          unfactor)
+label_r2 <- mkchain(
+    hosmer_lemeshow_r2,
+    melt,
+    rename(c(id="subject", value="r2")),
+    mutate(., label=qqply("  R"[L]^2 == paste(.(sprintf("%.2f", x)), "  "))(x=r2)),
+    mutate(label=vapply(label, deparse, "")),
+    mutate(., observer=chain(subject, toupper, paste("Observer", .))),
+    unfactor
+    )
+
+sensitivity.plot.r2 <- label_r2(sensitivity.tests)
 
 #%plot spacing versus sensitivity?%
 sensitivity.plot.data <- rbind.fill %()% (
@@ -311,12 +315,20 @@ sensitivity.plot.data$observer <- chain(
 
 sensitivity.example.subjects <- c("jb", "pbm", "nj")
 
+error.segment <- geom_segment(aes(y=fit-se.fit, yend = fit+se.fit, xend=spacing))
+
+r2_label <- function(data, labels, x=-Inf, y=Inf, vjust=1.5, hjust=0) {
+  geom_text(data=match_df(labels, data, on="subject"),
+            aes(label=label), parse=TRUE,
+            vjust=vjust, hjust=hjust, size=3, x=x, y=y)
+}
+
 sensitivity_plot <- function(data=sensitivity.plot.data, stats=sensitivity.plot.r2){
   (ggplot(subset(data, type=="points"))
    + geom_hline(y=0, color="gray50")
    + aes(x=spacing, y=fit)
    + geom_point(aes(size=n_obs), color="gray50")
-   + geom_segment(aes(y=fit-se.fit, yend = fit+se.fit, xend=spacing))
+   + error.segment
    + scale_size_area(breaks=c(50, 100, 200, 500, 1000))
    + with_arg(data=subset(data, type=="curve"),
               geom_line(),
@@ -325,9 +337,7 @@ sensitivity_plot <- function(data=sensitivity.plot.data, stats=sensitivity.plot.
    + no_grid
    + spacing_scale_x
    + theme(aspect.ratio=1)
-   + geom_text(data=match_df(stats, data, on="subject"),
-               aes(x=-Inf, y=Inf, label=label), parse=TRUE,
-               vjust=1.5, hjust=0, size=3)
+   + r2_label(data, stats)
    + labs(title="Sensitivity to envelope motion declines below 3 deg. spacing",
           y=expression(paste("Sensitivity ", beta[Delta*x])),
           size="N"))
@@ -344,13 +354,7 @@ save(file="sensitivity-plot.RData",
 hosmer_lemeshow_r2(sensitivity.tests)
 hosmer_lemeshow_r2(aggregate.sensitivity.tests)
 
-cox_snell_r2(sensitivity.tests)
-cox_snell_r2(aggregate.sensitivity.tests)
-
-nagelkerke_r2(sensitivity.tests)
-nagelkerke_r2(aggregate.sensitivity.tests)
-
-sensitivity.tests[, "pval", "flat.model", "model.model"] < 0.05
+sensitivity.tests[, "pval", "flat.model", "model"] < 0.05
 
 ## @knitr results-sensitivity-content-interactions
 
@@ -359,73 +363,119 @@ sensitivity.tests[, "pval", "flat.model", "model.model"] < 0.05
 # ----------------------------------------------------------------------
 # show the crossover from summation to induced motion as spacing changes
 
-# The big question is why all of these end up NA when i simply use GNM.
-# How does that happen?
-whichTerm <- ""
-makeSummationModel <- function(m) {
-  l <- labels(terms(m))
-  toDrop <- grep("1/spacing", l)
-  f <- formula(drop.terms(terms(m), toDrop, keep.response=TRUE))
-  f <- update(f, . ~ . + (factor(spacing) - 1):content - content)
-  m2 <- update(m, family=m$family, formula = f, data=m$data)
+makeSummationModel <- function(row) {
+  bind[model=bind[model], ...=group] <- row
+  #eliminate the nonlinear term
+  toSwap <- grep("content \\*", labels(terms(model)))
+  newdata <- mutate(model$data, content.nonlin = content)
+  fmla <- chain(terms(model),
+                drop.terms(toTrans, keep.response=TRUE),
+                formula,
+                update(., . ~ . + I(content.nonlin * abs(content.nonlin))))
+  model <- update(model, data=newdata, formula=fmla)
+  toDrop <- grep("1/spacing", labels(terms(fmla)))
+  flat.fmla <- formula(drop.terms(terms(fmla), toDrop, keep.response=TRUE))
+  free.fmla <- update(flat.fmla, . ~ . + (factor(spacing) - 1):content - content)
+  #freer.fmla <- update(flat.fmla, . ~ . + (factor(spacing):factor(content) - 1) - content)
+  free.model <- update(model, family=model$family, formula = free.fmla, data=model$data)
+  flat.model <- update(model, family=model$family, formula = freer.fmla, data=model$data)
   #the problem is for some subsets of data we were completely
-  #dominated and can't sensibly fit that subset. Eliminate that subset of data
-  #and try again.
-  oops <- predict(m2, type="terms")[,"content:factor(spacing)"]
-  update(m2, data=m2$data[oops!=0 & abs(oops) < 100,])
+  #dominated by carrier motion and we can't sensibly fit that
+  #subset. Eliminate that subset of data and try again.
+  oops <- predict(free.model, type="terms")[,"content:factor(spacing)"]
+  censored.data = model$data[oops!=0 & abs(oops) < 100,]
+  flat.model2 <- update(flat.model, data=censored.data)
+  model2 <- update(model, data=censored.data)
+  free.model2 <- update(free.model, data=censored.data)
+  free.model2 <- update(free.model, data=censored.data)
+  quickdf(c(group,
+            lapply(list(uncensored.flat.model=flat.model,
+                        uncensored.model=model,
+                        uncensored.free.model=free.model,
+                        flat.model=flat.model2,
+                        model=model2,
+                        free.model=free.model2),
+                   mkchain(list, I))))
 }
-summation.free.models <- lapply(models, makeSummationModel)
+
+summation.models <- adply(model.df, 1, makeSummationModel)
+
+#Can we extract the sensitivities with error bars using lmtest?
+summation.stats <- all_model_stats(summation.models)
+aggregate.summation.stats <- aggregate_stats(summation.stats)
+
+summation.tests <- model_pair_tests(summation.stats)
+aggregate.summation.tests <- model_pair_tests(aggregate.summation.stats)
+
+#extract coefs and curves via lmtest? I_want standard errors on them.
 
 #The next step is to extract coefs and
 #curves. Individual coefs and curves from "terms" predictions of each
 #model, like so:
+
+#the thing is I want not to predict from the nonlinear term...
+
 summation.plot.data <- rbind.fill %()% Map(
-  model=models, free.model=summation.free.models,
-  f=function(model, free.model) {
-    rbind.fill(
+  model=summation.models$uncensored.model, free.model=summation.models$free.model,
+  f=function(model, free.model) rbind.fill(
     chain(
+      #the points
       free.model$data,
       count(splits %-% c("displacement", "content", "exp_type"), "n_obs"),
-      cbind(displacement=0, content=1, type="points"),
-      cbind_predictions(free.model, type="terms"),
-      mutate(n_obs = freq,
-             fit=`content:factor(spacing)`,
-             fit.content=0,
-             `fit.content:I(1/spacing)`=0)),
+      cbind(displacement=0, content=1, content.nonlin = 0, type="points"),
+      cbind_predictions(free.model, type="link", se.fit=TRUE),
+      mutate(n_obs = freq)),
     chain(
+      #the lines
       model$data,
       count(splits %-% c("displacement", "content", "exp_type",
                          "spacing", "target_number_all", "target_number_shown")),
-      cbind(displacement=0, spacing = seq(2, 20, length=100),
-            content=1, type="curve"),
-      cbind_predictions(model, type="terms", se.fit=TRUE), 
-      mutate(fit=`fit.content:I(1/spacing)` + `fit.content`,
-              se.fit=`se.fit.content:I(1/spacing)`))
-      )
-  })
+      cbind(displacement=0, spacing = seq(1.5, 24, length=100),
+            content=1, content.nonlin=0, type="curve"),
+      cbind_predictions(model, type="link", se.fit=TRUE))
+    )
+  )
 summation.plot.data$observer <- chain(
   summation.plot.data$subject, toupper, paste("Observer", .))
 
-summation_plot <-
-  function(data=summation.plot.data) (
-             ggplot(subset(data, type=="points"))
-             + spacing_scale_x
-             + aes(y=fit, ymin=fit-se.fit, ymax = fit+se.fit)
-             + geom_point(aes(size=n_obs), alpha=0.5)
-             + scale_size_area()
-             + no_grid
-             + with_arg(data=subset(data, type=="curve"),
-                        geom_line(), geom_ribbon(alpha=0.1))
-             + facet_wrap(~observer, scales="free_y")
-             + labs(title="Sensitivity to carrier direction is inversely related to spacing"
-                    , y=expression(paste("Carrier sensitivity " , beta[S]*M[S](S)))
-                    , size="N")
-             + geom_hline(y=0, alpha=0.5)
-             + theme(aspect.ratio=1))
+summation.plot.r2 <- label_r2(summation.tests)
+
+summation_plot <- function(data=summation.plot.data, labels=summation.plot.r2) (
+    ggplot(subset(data, type=="points"))
+    + spacing_scale_x
+    + aes(y=fit)
+    + geom_point(aes(size=n_obs), alpha=0.5)
+    + error.segment
+    + scale_size_area()
+    + no_grid
+    + with_arg(data=subset(data, type=="curve"),
+               geom_ribbon(alpha=0.1, aes(ymin=fit-se.fit, ymax=fit+se.fit)),
+               geom_line())
+    + facet_wrap(~observer, scales="free_y")
+    + r2_label(data, labels, x=Inf, hjust=1)
+    + labs(title="Sensitivity to carrier motion is inversely related to spacing"
+           , y=expression(paste("Carrier sensitivity " , beta[S]))
+           , size="N")
+    + geom_hline(y=0, alpha=0.5)
+    + theme(aspect.ratio=1))
+summation_plot(subset(summation.plot.data,
+                      subject %in% sensitivity.example.subjects))
 
 save(file="summation-plot.RData", summation_plot, summation.plot.data)
 
-summation_plot(subset(summation.plot.data, subject %in% sensitivity.example.subjects))
+## @knitr do-not-run
+
+hosmer_lemeshow_r2(summation.tests, c("flat.model",
+                                      "model",
+                                      "free.model"))
+hosmer_lemeshow_r2(aggregate.summation.tests)
+
+summation.stats[, "ll", "uncensored.flat.model"]
+
+summation.tests[, "pval", "flat.model", "model"] < 0.05
+summation.tests[, "pval", "flat.model", "free.model"] < 0.05
+
+summation_plot()
 
 ## @knitr results-no-pooling
 

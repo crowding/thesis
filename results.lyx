@@ -2858,17 +2858,17 @@ reference "fig:everything-summation"
 While the sensitivity to envelope motion decreases as flanking elements
  are brought closer, the sensitivity to carrier motion increases at the
  same time.
- We illustrate this using the same technique as the last section, by dropping
- the term 
+ I extract this effect using the same technique as before, forming a saturated
+ model by dropping the term 
 \begin_inset Formula $M_{s}\left(S\right)$
 \end_inset
 
- and including a term 
+ and including variables 
 \begin_inset Formula $\beta_{S}C$
 \end_inset
 
  for each distinct value of spacing.
- We also remove the repulsive term 
+ The saturated model also covers the repulsion term 
 \begin_inset Formula $\beta_{I_{a}}C$
 \end_inset
 
@@ -2882,8 +2882,32 @@ While the sensitivity to envelope motion decreases as flanking elements
 \begin_inset Formula $\beta_{I_{b}}C\left|C\right|$
 \end_inset
 
-, and are fitted in parallel.
- The units of the coefficient 
+.
+ The null model retains the term 
+\begin_inset Formula $\beta_{I_{a}}C$
+\end_inset
+
+ (i.e.
+ it has a constant sensitivity to carrier motion that does not vary with
+ spacing.) The comparison of proposed and saturated models is plotted in
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-summation"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+For the data at a few spacings the responses align 100% with carrier content,
+ which leads to infinite coefficients in the saturated test; those data
+ are dropped for the purposes of model comparison.
+\end_layout
+
+\begin_layout Standard
+The units 
 \begin_inset Formula $\beta_{S}$
 \end_inset
 
@@ -2896,14 +2920,7 @@ clockwise
 \end_inset
 
  when the carrier strength makes a change from 0 to 1 (ignoring the nonlinearity
- for the moment.) We show the results of this in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:results-spacing-summation"
-
-\end_inset
-
-.
+ for the moment.) results of this in.
  We generally find a good fit where the sensitivity to carrier strength
  is inversely proportional to the element spacing (or, equivalently, proportiona
 l to the number of elements) plus a constant offset.
