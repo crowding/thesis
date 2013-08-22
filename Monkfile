@@ -212,7 +212,19 @@
 --output --invisible {0}_chapter.fls
 --phony --invisible latex
 --invisible --phony pdf
---invisible --phony chapter_pdf
+--invisible --phony chapter
+
+#compile part 1
+--command latexmk
+%-pdf %"-pdflatex=\"pdflatex -halt-on-error -interaction=nonstopmode\""
+--input --match _part1\\.tex$
+--input --invisible _preamble.tex
+--input --invisible _master_preamble.tex
+--output --invisible _part1.pdf
+--output --invisible _part1.fls
+--phony --invisible latex
+--invisible --phony pdf
+--invisible --phony master
 
 --command --output --match --invisible (.*)_chapter\\.pdf
 --input --invisible {0}_strip.tex

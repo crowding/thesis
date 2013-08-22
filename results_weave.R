@@ -349,7 +349,8 @@ sensitivity_plot(subset(sensitivity.plot.data,
                         subject %in% sensitivity.example.subjects))
 
 save(file="sensitivity-plot.RData",
-     sensitivity.plot.data, sensitivity_plot, sensitivity.tests)
+     sensitivity.plot.data, sensitivity_plot, sensitivity.tests,
+     sensitivity.plot.r2, error.segment, r2_label, xaxis)
 
 
 ## @knitr do-not-run
@@ -456,7 +457,8 @@ summation_plot <- function(data=summation.plot.data, labels=summation.plot.r2) (
 summation_plot(subset(summation.plot.data,
                       subject %in% sensitivity.example.subjects))
 
-save(file="summation-plot.RData", summation_plot, summation.plot.data)
+save(file="summation-plot.RData", summation_plot, xaxis,
+     summation.plot.data, summation.plot.r2, error.segment, r2_label)
 
 ## @knitr do-not-run
 
@@ -642,7 +644,7 @@ repulsion_plot(data=subset(
     repulsion.plot.data, subject %in% sensitivity.example.subjects))
 
 save(file="repulsion-plot.RData", repulsion.plot.data, repulsion.plot.r2,
-     repulsion_plot, xaxis, r2_label)
+     repulsion_plot, xaxis, r2_label, error.segment, xaxis)
 
 
 ## @knitr do-not-run

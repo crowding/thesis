@@ -4,6 +4,9 @@
 \begin_header
 \textclass article
 \use_default_options true
+\begin_modules
+knitr
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -25,6 +28,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -61,6 +65,130 @@
 
 \begin_layout Subsection
 Predictions for partial circle stimuli from full circle stimuli
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%setup
+\end_layout
+
+\begin_layout Plain Layout
+
+<<setup, echo=FALSE, include=FALSE, cache=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_knit$set(stop_on_error=2L,encoding="UTF-8")
+\end_layout
+
+\begin_layout Plain Layout
+
+opts_chunk$set(cache=TRUE,fig.width=6,
+\end_layout
+
+\begin_layout Plain Layout
+
+fig.height=4,dev="cairo_pdf",dev.args=list(pointsize=10),
+\end_layout
+
+\begin_layout Plain Layout
+
+tidy=FALSE,out.width="1.0
+\backslash
+
+\backslash
+textwidth",autodep=TRUE,
+\end_layout
+
+\begin_layout Plain Layout
+
+external=TRUE,results="hide",echo=FALSE)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+library(vadr)
+\end_layout
+
+\begin_layout Plain Layout
+
+library(plyr)
+\end_layout
+
+\begin_layout Plain Layout
+
+pdf.options(encoding='ISOLatin2.enc')
+\end_layout
+
+\begin_layout Plain Layout
+
+source('library.R')
+\end_layout
+
+\begin_layout Plain Layout
+
+source("scales.R")
+\end_layout
+
+\begin_layout Plain Layout
+
+setup_theme()
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%data
+\end_layout
+
+\begin_layout Plain Layout
+
+<<data, cache=TRUE, echo=FALSE, results="hide", message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("slopeModel.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
