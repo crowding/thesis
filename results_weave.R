@@ -50,8 +50,8 @@ buildModel <- function(modelList, update.arg) {
 mutateModelData <- function(models, ...)
   llply(models, function(model) `$<-`(model,"data", mutate(model$data, ...)))
 
-cbind_predictions <- function(dataset, model, ...)
-  cbind(dataset, predict(model, newdata=dataset, ...))
+cbind_predictions <- function(dataset, model, fold=TRUE, ...)
+  cbind(dataset, folding_predict(model, newdata=dataset, fold=fold, ...))
 
 ## ----------------------------------------------------------------------
 ## @knitr results-numbers
@@ -199,7 +199,7 @@ model_stats <- function(model.list) {
                  aic=extractAIC(m)[[2]],
                  deviance=deviance(m),
                  ll=unclass(logLik(m)),
-                 nobs=unclass(attr(logLik(m), "nobs")),
+                 nobs=length(m$residuals), #unclass(attr(logLik(m), "nobs")),
                  ntrials=sum(m$data$n_obs))
                ),
         put(names(dimnames(.)), c("stat", "model.type")),
@@ -311,7 +311,7 @@ sensitivity.plot.data <- rbind.fill %()% (
         rename(structure(names=paste0(c("fit.", "se.fit."), sensitivity.term.label),
                          c("fit", "se.fit")))))))
 sensitivity.plot.data$observer <- chain(
-    sensitivity.plot.data$subject, toupper, paste("Observer", .))
+    sensitivity.plot.data$subject, toupper, paste("Observer", . ))
 
 sensitivity.example.subjects <- c("jb", "pbm", "nj")
 
@@ -323,9 +323,11 @@ r2_label <- function(data, labels, x=-Inf, y=Inf, vjust=1.5, hjust=0) {
             vjust=vjust, hjust=hjust, size=3, x=x, y=y)
 }
 
+
+xaxis = geom_hline(y=0, size=0.2, linetype="11")
+
 sensitivity_plot <- function(data=sensitivity.plot.data, stats=sensitivity.plot.r2){
   (ggplot(subset(data, type=="points"))
-   + geom_hline(y=0, color="gray50")
    + aes(x=spacing, y=fit)
    + geom_point(aes(size=n_obs), color="gray50")
    + error.segment
@@ -338,8 +340,9 @@ sensitivity_plot <- function(data=sensitivity.plot.data, stats=sensitivity.plot.
    + spacing_scale_x
    + theme(aspect.ratio=1)
    + r2_label(data, stats)
-   + labs(title="Sensitivity to envelope motion declines below 3 deg. spacing",
-          y=expression(paste("Sensitivity ", beta[Delta*x])),
+   + xaxis
+   + labs(title="Sensitivity to envelope motion declines at small spacings",
+          y=expression(paste("Displacement sensitivity ", beta[Delta])),
           size="N"))
 }
 sensitivity_plot(subset(sensitivity.plot.data,
@@ -369,25 +372,24 @@ makeSummationModel <- function(row) {
   toSwap <- grep("content \\*", labels(terms(model)))
   newdata <- mutate(model$data, content.nonlin = content)
   fmla <- chain(terms(model),
-                drop.terms(toTrans, keep.response=TRUE),
+                drop.terms(toSwap, keep.response=TRUE),
                 formula,
                 update(., . ~ . + I(content.nonlin * abs(content.nonlin))))
   model <- update(model, data=newdata, formula=fmla)
   toDrop <- grep("1/spacing", labels(terms(fmla)))
   flat.fmla <- formula(drop.terms(terms(fmla), toDrop, keep.response=TRUE))
   free.fmla <- update(flat.fmla, . ~ . + (factor(spacing) - 1):content - content)
-  #freer.fmla <- update(flat.fmla, . ~ . + (factor(spacing):factor(content) - 1) - content)
-  free.model <- update(model, family=model$family, formula = free.fmla, data=model$data)
-  flat.model <- update(model, family=model$family, formula = freer.fmla, data=model$data)
+  bind[flat.model, free.model] <- lapply(
+      list(flat.fmla, free.fmla),
+      function(fmla) update(model, family=model$family, formula=fmla, data=model$data))
   #the problem is for some subsets of data we were completely
   #dominated by carrier motion and we can't sensibly fit that
   #subset. Eliminate that subset of data and try again.
   oops <- predict(free.model, type="terms")[,"content:factor(spacing)"]
   censored.data = model$data[oops!=0 & abs(oops) < 100,]
+  free.model2 <- update(free.model, data=censored.data)
   flat.model2 <- update(flat.model, data=censored.data)
   model2 <- update(model, data=censored.data)
-  free.model2 <- update(free.model, data=censored.data)
-  free.model2 <- update(free.model, data=censored.data)
   quickdf(c(group,
             lapply(list(uncensored.flat.model=flat.model,
                         uncensored.model=model,
@@ -397,23 +399,15 @@ makeSummationModel <- function(row) {
                         free.model=free.model2),
                    mkchain(list, I))))
 }
-
 summation.models <- adply(model.df, 1, makeSummationModel)
 
-#Can we extract the sensitivities with error bars using lmtest?
 summation.stats <- all_model_stats(summation.models)
 aggregate.summation.stats <- aggregate_stats(summation.stats)
 
+#tests between unconsored flat model and uncensored model are valid, because
+#the problem that forces censoring is in the free model.
 summation.tests <- model_pair_tests(summation.stats)
 aggregate.summation.tests <- model_pair_tests(aggregate.summation.stats)
-
-#extract coefs and curves via lmtest? I_want standard errors on them.
-
-#The next step is to extract coefs and
-#curves. Individual coefs and curves from "terms" predictions of each
-#model, like so:
-
-#the thing is I want not to predict from the nonlinear term...
 
 summation.plot.data <- rbind.fill %()% Map(
   model=summation.models$uncensored.model, free.model=summation.models$free.model,
@@ -449,14 +443,15 @@ summation_plot <- function(data=summation.plot.data, labels=summation.plot.r2) (
     + scale_size_area()
     + no_grid
     + with_arg(data=subset(data, type=="curve"),
-               geom_ribbon(alpha=0.1, aes(ymin=fit-se.fit, ymax=fit+se.fit)),
+               geom_ribbon(alpha=0.1,
+                           aes(ymin=fit-se.fit, ymax=fit+se.fit)),
                geom_line())
     + facet_wrap(~observer, scales="free_y")
     + r2_label(data, labels, x=Inf, hjust=1)
     + labs(title="Sensitivity to carrier motion is inversely related to spacing"
-           , y=expression(paste("Carrier sensitivity " , beta[S]))
+           , y=expression(paste("Carrier sensitivity " , beta[S] + beta[I][a]))
            , size="N")
-    + geom_hline(y=0, alpha=0.5)
+    + xaxis
     + theme(aspect.ratio=1))
 summation_plot(subset(summation.plot.data,
                       subject %in% sensitivity.example.subjects))
@@ -464,16 +459,6 @@ summation_plot(subset(summation.plot.data,
 save(file="summation-plot.RData", summation_plot, summation.plot.data)
 
 ## @knitr do-not-run
-
-hosmer_lemeshow_r2(summation.tests, c("flat.model",
-                                      "model",
-                                      "free.model"))
-hosmer_lemeshow_r2(aggregate.summation.tests)
-
-summation.stats[, "ll", "uncensored.flat.model"]
-
-summation.tests[, "pval", "flat.model", "model"] < 0.05
-summation.tests[, "pval", "flat.model", "free.model"] < 0.05
 
 summation_plot()
 
@@ -525,121 +510,143 @@ results.pooling.change <-
   })
 
 ## @knitr results-induced-modeling
-null.models <-
-  buildModel(models,
-             . ~ . - content - I(content*abs(content)))
+repulsion.models = mutate(
+    model.df,
+    model=lapply(model, function(m)update(m, data=subset(m$data, content!=0))),
+    flat.model = buildModel(model, . ~ . - content - I(content*abs(content))),
+    linear.model = buildModel(flat.model, .~.+content),
+    free.model = buildModel(flat.model,
+                            . ~ . + sign(content):factor(abs(content))))
 
-#with a linear induced motion response
-linear.models <- buildModel(null.models, .~.+content)
+argh <- function(model) {
+  newdata <- chain(it=model, predict(type="terms"),
+                   .[,1], data.frame(offs=.), cbind(it$data))
+  which.term <- chain(model, terms, labels, grep(pattern="displacement"))
+  newformula <- chain(model, terms,
+                      drop.terms(which.term, keep.response=TRUE), formula,
+                      update(., . ~ . + offset(offs)))
+  glm(data=newdata, formula=newformula, family=model$family)
+}
+repulsion.models <- mutate(repulsion.models, free.model=lapply(free.model, argh))
 
-#then make models with a 3rd-order component to induced motion what
-#might make sens is a madel that responds to leftward and rightward
-#components.
+#not used?
+narrowed.repulsion.models <- adply(repulsion.models, 1, function(row) {
+  ix <- row[idvars]
+  row[idvars] <- NULL
+  if(any(is.na(coef(row$free.model[[1]])))) {
+    model <- row$free.model[[1]]
+    chain(model, model.matrix, .[, is.na(coef(model)), drop=FALSE],
+          alply(2, `==`, 0), Reduce(f=`&`), .&model$data$content != 0) -> kept
+    row <- lapply(row, function(m) {
+      model <- m[[1]]
+      list(update(model, formula=model$formula, data=model$data[kept,]))
+    })
+  }
+  quickdf(as.list(c(ix, row)))
+})
 
-second.models <- buildModel(linear.models, .~. + I(abs(content) * content))
 
-#the other idea is "adding up the components differently" with the
-#idea that less dominant component matters more than the more dominant
-#component. how about square roots?
-
-#and we want some models just fit all direction contents freely, to plot as points.
-free.asym.models <- buildModel(mutateModelData(null.models,
-                                               fContent = factor(abs(content))),
-                               . ~ . + fContent:sign(content)
-                               )
 
 ## @knitr results-induced-stats
-#record some statistics on the likelihood ratio tests of null versus linear and linear versus second-order
-suppressMessages(library(lmtest))
-pvals <- function(models) sapply(models, `[`, 2, "Pr(>Chisq)")
-linear.model.test  <- Map(lrtest, null.models, linear.models)
-second.model.test <- Map(lrtest, linear.models, second.models)
-complete.model.test <- Map(lrtest, null.models, second.models)
-weakest.second.test <- which.max(pvals(second.model.test))
+#record some statistics on the likelihood ratio tests of null versus
+#linear and linear versus second-order
+#repulsion.stats <- all_model_stats(narrowed.repulsion.models)
+repulsion.stats <- all_model_stats(repulsion.models)
+aggregate.repulsion.stats <- aggregate_stats(repulsion.stats)
+repulsion.tests <- model_pair_tests(repulsion.stats)
+aggregate.repulsion.tests <- model_pair_tests(aggregate.repulsion.stats)
+
+linear.model.test <- repulsion.tests[, "pval", "flat.model", "linear.model"]
+second.model.test <- repulsion.tests[, "pval", "linear.model", "model"]
+complete.model.test <- repulsion.tests[, "pval", "flat.model", "model"]
+weakest.second.test <- which.max(second.model.test)
 p.level <- 0.05
 
 ## @knitr results-induced-additionally
-linear.slopes <- sapply(linear.models, function(x) x$coefficients[["content"]])
-second.slopes <- sapply(second.models, function(x) x$coefficients[["content"]])
-curve.coef.name <- "I(abs(content) * content)"
-second.curves <- sapply(second.models, function(x) x$coefficients[["content"]])
-carissas.wierd <- names(second.slopes[second.slopes > 0 | second.curves > 0])
+linear.slopes <- sapply(repulsion.models$linear.model,
+                        function(x) x$coefficients[["content"]])
+second.slopes <- sapply(repulsion.models$model,
+                        function(x) x$coefficients[["content"]])
+curve.coef.name <- "I(content * abs(content))"
+second.curves <- sapply(repulsion.models$model,
+                        function(x) x$coefficients[[curve.coef.name]])
+carissas.wierd <- names(second.slopes[second.slopes > 0 | second.curves < 0])
 #^ that is not the name of the subject. It's a seattle rock band.
 
+## @knitr do-not-use
+
+
 ## @knitr results-induced-model-plot
-# here's a plot showing what the model differences are.
-# this probably won't be included in the paper, though.
 
-iunique <- function(x, ...) {
-  #indices of unique elements
-  i <- seq_along(x)
-  setdiff(i, i[duplicated(x)])
-}
+repulsion.plot.data <- rbind.fill %()% (
+  Map %<<% repulsion.models
+  %()% list(
+    f = function(model, linear.model, free.model, ...)
+    rbind.fill(
+      chain(
+          free.model$data,
+          refold,
+          count(splits %-% c("displacement", "exp_type", "spacing",
+                             "target_number_all", "target_number_shown"), "n_obs"),
+          cbind(offs=0, displacement=0, spacing=1e6, bias=0,
+                type="points", model.type="full"),
+          #cbind(., folding_predict(free.model, ., type="response", se.fit=TRUE, fold=TRUE)),
+          cbind_predictions(free.model, type="link", se.fit=TRUE),
+          rename(c("freq" = "n_obs"))),
+      chain(
+        linear.model$data,
+        count(idvars, "n_obs"),
+        merge(data.frame(offs=0, displacement=0, content=seq(0, 1, length=100),
+                         type="curve", spacing=1e6, bias=0, model_type="linear"),
+              by=c()),
+        cbind_predictions(linear.model, type="link", se.fit=TRUE)),
+      chain(
+        model$data,
+        count(idvars, "n_obs"),
+        merge(data.frame(offs=0, displacement=0, content=seq(0, 1, length=100),
+                         type="curve", spacing=1e6, bias=0,
+                         model_type="second order"),
+              by=c()),
+        cbind_predictions(model, type="link", se.fit=TRUE))
+        )))
+repulsion.plot.data$observer <- chain(
+    repulsion.plot.data$subject, toupper, paste("Observer", .))
+repulsion.plot.r2 <- label_r2(repulsion.tests)
 
-#curious about how it looks? make a fake plot showing the predicted biases for stimuli with zero displacement
-#over direction content at ten degree spacing
-spacingData <- function(models, type, newspacing=10, categorical=TRUE) {
-  ldply(models, function(model) {
-    subject = unique(model$data$subject)
-    if (!categorical) {
-      newContent <- seq(0,1,length=100)
-      fContent = newContent
-    } else {
-      iu <- iunique(abs(model$data$content))
-      newContent = abs(model$data$content[iu])
-      fContent = model$data$fContent[iu]
-    }
-    chain(data.frame(subject=subject, model=type, spacing=newspacing,
-            content=newContent, displacement=0, fContent = fContent, bias=0),
-          cbind(., folding_predict(model, ., type="response", se.fit=TRUE, fold=TRUE)),
-          mutate(observer=paste("Observer", toupper(subject))))
-  })
-}
-
-nonlinearity_plot <- function(..., spacing=10) {
-   curve.fits <-
-   mapply(models = list(linear.models, second.models),
-           type = c("linear", "2nd order"),
-           spacingData, MoreArgs=list(newspacing=spacing, categorical=FALSE),
-           SIMPLIFY=FALSE
-           )
-  curve.fits <- do.call(rbind.fill, curve.fits)
-  ##
-  cat.fits <- spacingData(free.asym.models, "full", newspacing=spacing,
-                          categorical=TRUE)
-   ##
-  #here is a depiction of what all the alternative induced motion
-  #models.
-  ##
-   (ggplot(subset(curve.fits, ...))
-    + content_scale
-    + proportion_scale
+repulsion_plot <- function(data=repulsion.plot.data, labels=repulsion.plot.r2) {
+   (ggplot(subset(data, type == "points"))
+    + aes(x=content)
     + facet_wrap(~observer)
-    + aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)
-    + with_arg(mapping=aes(color=model, fill=model),
+    + aes(y=fit)
+    + with_arg(mapping=aes(color=model_type, fill=model_type,
+                           ymin=fit-se.fit, ymax=fit+se.fit),
+               data=subset(data, type=="curve"),
                geom_line(),
                geom_ribbon(color=NA, alpha=0.3))
-    + geom_point(data=subset(cat.fits, ...), alpha=0.5)
-    + geom_errorbar(data=subset(cat.fits, ...))
+    + geom_pointrange(aes(ymin=fit-se.fit, ymax=fit+se.fit),
+                      alpha=0.5)
 #   + coord_cartesian(ylim=c(-10,10))
     + theme(aspect.ratio=1)
     + no_grid
+    + r2_label(data, labels, x=Inf, hjust=1)
+    + scale_x_continuous(breaks=c(0,0.5,1))
+    + xaxis
     + labs(
-      x="Carrier strength (CW)",
+        x="Carrier strength",
+        color="Model type", fill="Model type",
+        y=expression(paste("Carrier repulsion ", beta[I])),
       title=paste( sep="\n",
-        "Repulsion as a function of carrier strength",
-        "(stationary envelope, 10 deg. spacing)"))
-   )
+        "Repulsion as a function of carrier strength")))
  }
+repulsion_plot(data=subset(
+    repulsion.plot.data, subject %in% sensitivity.example.subjects))
 
-save(file="nonlinearity-plot.RData", spacingData, linear.models,
-     second.models, free.asym.models, nonlinearity_plot, iunique)
+save(file="repulsion-plot.RData", repulsion.plot.data, repulsion.plot.r2,
+     repulsion_plot, xaxis, r2_label)
 
-nonlinearity_plot(subject %in% sensitivity.example.subjects)
-##I think the 2nd order plot is totally fine for my purposes.
 
-## Now make a graph to justify the claim that sensitivity declines with spacing.
-## do it by altering the formula to remove the displacement term....
+## @knitr do-not-run
+latex.format(hosmer_lemeshow_r2(aggregate.repulsion.tests), digits=2)
 
 ## @knitr results-summation-models
 ##The other thing I_want to do now is look at the behavior at short ranges.

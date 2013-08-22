@@ -261,3 +261,41 @@ closer <- function(x) {force(x); function()close(x)}
 hook <- function(data, fn1, fn2, ...) {
   fn2(fn1(data), data, ...)
 }
+
+chain(repulsion.models,
+      .[lapply(.,class) == "list"],
+      ls=do.call(what="c"),
+      vapply(mkchain(coef, is.na, any), TRUE),
+      ls[.])
+
+
+chain(repulsion.models[[8,"free.model"]]$data,
+      ddply(., .(content, spacing), summarise, p=sum(n_cw)/sum(n_obs)))
+
+arrange(unique([,c("content", "spacing")]), content, spacing)
+
+wtf <- repulsion.models[[8, "free.model"]]
+argh(wtf)
+
+chain(wtf, terms, labels)
+
+
+
+
+mutateModelData(list(wtf), disp = predict(wtf, "terms"))
+
+alter(wtf$data, it=., mutate(disp=predict(wtf, type="terms"), .[,1],
+                             as.data.frame, cbind(it,.)))
+
+chain(model = repulsion.models[[8,"free.model"]],
+      terms, wtf=labels,
+      )
+
+
+null.models <-
+  buildModel(models,
+             . ~ . - content - I(content*abs(content)))
+free.asym.models <- buildModel(mutateModelData(null.models,
+                                               fContent = factor(abs(content))),
+                               . ~ . + fContent:sign(content)
+                               )

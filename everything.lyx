@@ -78,14 +78,13 @@ name "sec:everything"
 \end_layout
 
 \begin_layout Standard
-In this section we show the complete collection of fitted models and comparisons
- to data for all observers.
- 
+In this section I show the complete collection of model and diagnostic plots
+ for all observers.
 \end_layout
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -235,7 +234,7 @@ reference "sub:results-contours"
 
 \end_inset
 
- but the entire collection of observers is shown.
+.
 \end_layout
 
 \begin_layout Standard
@@ -659,16 +658,22 @@ Sensitivity to carrier motion
 \end_layout
 
 \begin_layout Standard
-Figure 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:everything-summation"
+
+\end_inset
+
+ Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:everything-summation"
 
 \end_inset
 
- depicts the spacing-dependent assimilation effect denoted in the model
- as 
-\begin_inset Formula $\beta_{S}M$
+ measures the spacing-dependent summation of carrier motion, denoted in
+ the model as 
+\begin_inset Formula $M_{S}$
 \end_inset
 
  for all observers who participated in the experiment.
@@ -766,7 +771,36 @@ reference "sub:results-basic-summation"
 \end_layout
 
 \begin_layout Subsection
-Nonlinearity 
+Carrier repulsion
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:everything-repulsion"
+
+\end_inset
+
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-summation"
+
+\end_inset
+
+ depicts the repulsion to carrier motion 
+\begin_inset Formula $M_{I}$
+\end_inset
+
+ for all observers who participated in the experiment.
+ The construction is described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-repulsion"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -777,7 +811,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -786,13 +820,13 @@ status open
 
 \begin_layout Plain Layout
 
-<<everything-nonlinearity,fig.width=7,fig.height=7,cache.extra=file.info("nonlineari
-ty-plot.RData",message=FALSE)$mtime>>=
+<<everything-nonlinearity,fig.width=7,fig.height=7,cache.extra=file.info("repulsion-
+plot.RData",message=FALSE)$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
 
-load("nonlinearity-plot.RData")
+load("repulsion-plot.RData")
 \end_layout
 
 \begin_layout Plain Layout
@@ -808,7 +842,7 @@ invisible(lapply(ls(),function(x) assign(x, get(x), globalenv()))) #make
 
 \begin_layout Plain Layout
 
-nonlinearity_plot() 
+repulsion_plot() 
 \end_layout
 
 \begin_layout Plain Layout
@@ -836,7 +870,7 @@ name "fig:everything-nonlinearity"
 \end_inset
 
  The strength of the repulsion effect as a function of carrier strength.
- This is a complete version of 
+ This is a version of 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-induced-model-plot"
@@ -851,209 +885,6 @@ reference "sub:results-induced-modeling"
 \end_inset
 
  for details on construction.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Predictions for partial circle stimuli from full circle stimuli
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-<<everything-density-model, fig.width=7, fig.height=7,cache.extra=file.info(c("combi
-ned.model.RData", "combined.model.R"))$mtime>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-source("combined.model.R")
-\end_layout
-
-\begin_layout Plain Layout
-
-load("combined.model.RData")
-\end_layout
-
-\begin_layout Plain Layout
-
-print(plot_segment_fit(selected.fits, prediction.dataset)
-\end_layout
-
-\begin_layout Plain Layout
-
-      + theme(aspect.ratio=1)) 
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:everything-density-predictions"
-
-\end_inset
-
- Predictions from 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:results-basic"
-
-\end_inset
-
-, extrapolated to the partial-circle stimuli in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:results-number"
-
-\end_inset
-
-.
- Predictions are obtained over four assumptions concerning the globality
- or locality of effects of element spacing on envelope or carrier motion
- mechanisms.
- The format of this figure is the same as 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:density-predictions"
-
-\end_inset
-
- but shows the entire set of observers.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-%everything-density-profile
-\end_layout
-
-\begin_layout Plain Layout
-
-<<everything-density-profile, fig.height=7, fig.width=7>>=
-\end_layout
-
-\begin_layout Plain Layout
-
-(make_extent_plots(
-\end_layout
-
-\begin_layout Plain Layout
-
-  subset(selected.fits, TRUE),
-\end_layout
-
-\begin_layout Plain Layout
-
-  combined.data)
-\end_layout
-
-\begin_layout Plain Layout
-
- + theme(aspect.ratio=1))
-\end_layout
-
-\begin_layout Plain Layout
-
-@
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:everything-density-profile"
-
-\end_inset
-
-Sensitivity to carrier motion as a function of the stimulus extent.
- Data come from both 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
-.
- Curved lines show a model fit parameterized by the size of the summation
- field.
- Point with standard error lines show values obtained by binning trials
- into six groups by extent.
- The format of this figure is the same as 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:density-model-sensitivity"
-
-\end_inset
-
-
 \end_layout
 
 \end_inset

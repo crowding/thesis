@@ -350,7 +350,7 @@ For
  We assume that as flanking elements come closer to the tracked element,
  the visual system will be less able to isolate a single element to determine
  its position, so the sensitivity to changes in position will decline.
- We model this by making 
+ We model this by making the sensitivity 
 \begin_inset Formula $\beta_{\Delta}(S)$
 \end_inset
 
@@ -386,7 +386,18 @@ the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\beta_{\Delta}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\ \ \text{or}\ \ \beta_{\\Delta}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
+M_{\Delta}=\beta_{\Delta}\Delta_{X}\text{, where}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\beta_{\Delta}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\ \ \text{or}\ \ \beta_{}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
 \]
 
 \end_inset
