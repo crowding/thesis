@@ -227,20 +227,13 @@ key "Steinman:2000ap"
 \end_layout
 
 \begin_layout Standard
-It is generally believed that there are at multiple classes of motion mechanisms.
+It is generally believed that there are multiple classes of motion mechanisms.
  One of these, the 
 \noun on
 first-order
 \noun default
  motion mechanism, seems to respond to local spatiotemporal correlations
- in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "mov:demo-single"
-
-\end_inset
-
-luminance contrast, at relatively short timescales and in small regions
+ in luminance contrast, at relatively short timescales and in small regions
  of space.
  It is generally agreed that the first-order motion mechanism originates
  with the direction selective response of cells in area V1.
@@ -258,7 +251,14 @@ key "Adelson:1985ea,Watson:1985aa"
  are largely compatible with this type of model 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Movshon:1978qq,Rust:2005vu"
+key "Movshon:1978qq,Rust:2005vu,Touryan:2005aa,Chen:2007aa"
+
+\end_inset
+
+, and models of higher order processing can be built on this basis 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Graham:2011aa"
 
 \end_inset
 
@@ -384,8 +384,8 @@ key "Majaj:2007aa"
  A computation based on first-order or pattern motion would generally track
  the oscillation of the surface texture rather than that of the underlying
  movement.
- However it is the underlying movement that is more relevant, and we are
- generally able to perceive.
+ However it is the underlying movement that is more relevant, and often
+ dominates the perception of motion.
  
 \end_layout
 
@@ -488,12 +488,12 @@ key "Nishida:1999aa,McGraw:2004aa,Mather:2009aa"
 \end_inset
 
 .
- While the receptive fields of areas MT and MST are large enough that they
- might be able to integrate information about objects that change position,
- recordings of cells in these areas find that responses are dominated by
- first-order motion and show little to no selectivity to higher-order, position-
-defined motion, even when the higher-order motion corresponds better to
- the experience of viewing these stimuli 
+ While the receptive fields of cells in cortical areas MT and MST are large
+ enough that they might be able to integrate information about objects that
+ change position, recordings of these cells find their responses dominated
+ by first-order motion and showing little to no selectivity to higher-order,
+ position-defined motion, even when the higher-order motion corresponds
+ better to the experience of viewing these stimuli 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Livingstone:2001ao,Ilg:2004qc,Hedges:2011aa"
@@ -504,7 +504,7 @@ key "Livingstone:2001ao,Ilg:2004qc,Hedges:2011aa"
  So while signals present in MT have an influence on perceived position,
  MT does not itself appear to track perceived position.
  Despite the fact that these two motion systems clearly both contribute
- to determining our impression of the moving world, the question of whether
+ to determining the appearance of the moving world, the question of whether
  and how they interact to produce a single coherent percept of motion remains
  open 
 \begin_inset CommandInset citation
@@ -770,7 +770,7 @@ reference "mov:demo"
  provides examples of first order and higher order motion, and how they
  can interact.
  The elements are Gabor-like stimuli that can be understood as a carrier
- crating windowed by a spatial envelope.
+ grating windowed by a spatial envelope.
  The envelope moves independently of the carrier, so that the 
 \emph on
 carrier
@@ -801,16 +801,8 @@ A illustrates the difference between first-order and higher-order motion.
  On the right side, the element has envelope motion but its carrier motion
  is balanced.
  The higher order motion on the right is seen as a clear progressive change
- in position, while the first order motion has an appearance more like a
- 
-\begin_inset Quotes eld
-\end_inset
-
-wind
-\begin_inset Quotes erd
-\end_inset
-
- passing over a stationary element.
+ in position, while the first order motion on the left has an appearance
+ more like a flicker.
  (The position of the element on the left does appear to shift slightly,
  opposite its first-order motion.
  This is an example of motion-induced position shift; 
@@ -846,16 +838,14 @@ reference "mov:demo"
 B, elements have both carrier and envelope motion.
  On the left, the carrier and envelope components move in the same direction;
  on the right the carrier and envelope motions are in opposite directions.
- Full details of the construction of this display are given in Methods.
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-link!
-\end_layout
+ Full details of the construction of this display are given in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:methods"
 
 \end_inset
 
+.
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -875,9 +865,9 @@ reference "mov:demo"
 
 \end_inset
 
-B, the appearance of the direction of motion is consistent with the motion
- of the envelope, and independent of the direction of the carrier.
- The conflicting carrier motion causes a change in the sense of 
+B, the appearance of the direction of motion follows the motion of the envelope,
+ and not strongly affected by the direction of the carrier.
+ The carrier motion does cause a change in the sense of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -885,8 +875,9 @@ smoothness,
 \begin_inset Quotes erd
 \end_inset
 
- with having a more jittery appearance, but does not strongly affect the
- apparent direction or even the apparent speed of the motion.
+ with conflicting motion having a more jittery appearance , but does not
+ strongly affect the apparent direction or even the apparent speed of the
+ motion.
  However, in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -909,21 +900,12 @@ C, when multiple elements are placed in proximity, but not overlapping,
 
 \begin_layout Standard
 From this demonstration it appears that having more than one element in
- a given region of space affects how first-order and higher-order motion
- are combined.
+ proximity affects how first-order and higher-order motion are combined.
  That the appearance changes with retinal eccentricity of the stimulus suggests
  that the range of spatial interaction scales with retinal eccentricity.
  A plausible explanation could be that the presence of flanking objects
  limits the ability to see movement of the envelope, thereby allowing the
- carrier motion to determine the percept; that is, 
-\begin_inset Quotes eld
-\end_inset
-
-crowding
-\begin_inset Quotes erd
-\end_inset
-
- 
+ carrier motion to determine the percept; that is, crowding 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Levi:2008la,Pelli:2008nx"
@@ -936,13 +918,10 @@ key "Levi:2008la,Pelli:2008nx"
 \begin_layout Standard
 In this thesis I examine how first-order and higher order mechanisms interact
  in forming an overall perception of motion.
- In Experiment 1
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-link@
-\end_layout
+ In 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
 
 \end_inset
 
@@ -950,13 +929,10 @@ link@
  and higher order motions and present a simple model to capture the results,
  wherein first-order and higher-order motion signals are processed separately
  and combined at a decision stage.
- In Experiment 2
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-link!
-\end_layout
+ In 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
 
 \end_inset
 

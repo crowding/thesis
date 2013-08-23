@@ -4,6 +4,7 @@
 \begin_header
 \textclass article
 \begin_preamble
+\date{ }
 \input{_master_preamble}
 \end_preamble
 \use_default_options true
@@ -65,6 +66,128 @@ knitr
 \end_header
 
 \begin_body
+
+\begin_layout Title
+Spatial interactions reveal differing natures of first-order and higher
+ order motion processing
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+Peter Meilstrup
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+A dissertation submitted
+\begin_inset Newline newline
+\end_inset
+
+in partial fulfillment of the
+\begin_inset Newline newline
+\end_inset
+
+requirements for the degree of 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+Doctor of Philosophy
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+University of Washington
+\begin_inset Newline newline
+\end_inset
+
+2013
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+Reading Committee:
+\begin_inset Newline newline
+\end_inset
+
+Michael Shadlen, chair
+\begin_inset Newline newline
+\end_inset
+
+Ione Fine
+\begin_inset Newline newline
+\end_inset
+
+Ric Robinson
+\begin_inset Newline newline
+\end_inset
+
+John Palmer
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+Program Authorized to Offer Degree:
+\begin_inset Newline newline
+\end_inset
+
+Graduate Program in Neurobiology and Behavior
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
 
 \begin_layout Standard
 \begin_inset ERT

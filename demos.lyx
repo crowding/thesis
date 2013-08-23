@@ -274,7 +274,7 @@ key "Hedges:2011aa"
 \end_inset
 
 .
- For the greatest values of carrier strength, (for these demonstrations,
+ For the largest values of carrier strength, (for these demonstrations,
  the carrier strength 
 \begin_inset Formula $C$
 \end_inset
@@ -308,7 +308,7 @@ key "Lu:2001fv"
 \end_inset
 
 .
- Notably, when carrier motions are directed opposite to envelope motion,
+ Incidentally, when carrier motions are directed opposite to envelope motion,
  as can be seen in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -451,21 +451,18 @@ The subjective speed of the motion can change as spacing is brought near
 \end_layout
 
 \begin_layout Standard
-The tendency was for motion to be seen with the carrier immediately after
- stimulus onset but then to change to be more in agreements with the envelope
- motion.
- Observers performing a direction-discrimination task under time pressure,
- such as in 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-link!
-\end_layout
+Some observers saw motion directions in agreement with the carrier immediately
+ after stimulus onset which then changes to be more in agreements with the
+ envelope motion.
+ For this reason I asked observers in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
 
 \end_inset
 
-Experiment 1, often reported cases where they gave a mistaken response (i.e.
+ to respond within a restricted time window.
+ Observers often reported cases where they gave a mistaken response (i.e.
 \begin_inset ERT
 status open
 
@@ -478,9 +475,8 @@ status open
 
 \end_inset
 
- they gave a response but their perception of motion changed immediately
- afterwards.) In preliminary experiments we noted a correlation between response
- direction and response time, for some but not all observers.
+they gave a response but their perception of motion changed after they had
+ committed to the response.)
 \end_layout
 
 \begin_layout Standard
@@ -489,10 +485,10 @@ One perceptual phenomenon that did
 not
 \emph default
  seem to occur is bistability.
- Both the carrier motions and envelope motions are individually consistent
- with a global rotation of the display around the fixation point, so that
- we might have anticipated perceptions exclusively consistent one rigid
- movement or the other 
+ Both the carrier and envelope motions are individually consistent with
+ a global rotation of the display around the fixation point, so that we
+ might have anticipated perceptions exclusively consistent one rigid movement
+ or the other 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Anstis:2011vn"
@@ -502,7 +498,7 @@ key "Anstis:2011vn"
 .
  However, the appearances of critically spaced stimuli tended to reflect
  a mixture of two motions rather than one overriding motion, and there was
- never the spontaneous all-at-once switch that occurs in perceptually bistable
+ never the spontaneous all-at-once switch that occurs for perceptually bistable
  stimuli.
 \end_layout
 
@@ -544,7 +540,7 @@ reference "mov:uncrowded"
 \end_inset
 
  with sixteen elements.
- The appearance may be a mixture of carrier and envelope motions
+ The appearance may be a mixture of carrier and envelope motions.
 \end_layout
 
 \end_inset
@@ -558,7 +554,7 @@ reference "mov:uncrowded"
 \end_layout
 
 \begin_layout Standard
-Rounding out the stimuli, the third demonstration in 
+The third demonstration in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:dominated"
@@ -613,7 +609,7 @@ name "mov:dominated"
 \end_inset
 
 A stimulus with 22 identical elements.
- In most observers, carrier motion dominates the appearance.
+ For most observers, carrier motion dominates the appearance.
  
 \end_layout
 
@@ -637,7 +633,8 @@ reference "sec:results-basic"
 \end_inset
 
  commented spontaneously on the two forms of motion being employed.
- More than one observer described the envelope motion as the 
+ More than one observer when commenting on the stimuli called the envelope
+ morion 
 \begin_inset Quotes eld
 \end_inset
 
@@ -645,7 +642,7 @@ real
 \begin_inset Quotes erd
 \end_inset
 
- motion and the carrier motion as 
+ and the carrier motion 
 \begin_inset Quotes eld
 \end_inset
 
@@ -775,7 +772,7 @@ key "Kitaoka:2007fv"
 
 \begin_layout Standard
 There are too many stimulus parameters to explore the entire configuration
- space in detail, but I can report some impressions as to the robustness
+ space exhaustively, but I can report some impressions as to the robustness
  of the appearance of the stimulus.
  In particular I wondered whether the density-driven reversal of apparent
  motion was robust to changes in stimulus properties such as element size
@@ -856,12 +853,12 @@ reference "mov:demo"
 \end_inset
 
  and in this section suggest that multiple motion elements placed in proximity
- in peripheral vision interfere in such a way that the carrier motion becomes
+ in peripheral vision interact in such a way that the carrier motion becomes
  more perceptually salient and the envelope motion less so.
- When the two types of motion are put into conflict, the inter-element spacing
- (scaled according to cortical distance) appears to be the most reliable
- determinant of which element wins.
- In the following sections I will describe psychophysical experiments designed
+ When envelope and carrier motion are put into conflict, the inter-element
+ spacing (scaled according to cortical distance) appears to be the most
+ reliable determinant of which component wins.
+ In the following sections I report psychophysical experiments designed
  to capture and model the determining factors explaining perceived motion
  direction.
  

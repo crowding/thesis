@@ -187,6 +187,9 @@
 --command --input --invisible --match .*_strip\.tex$
 --output --invisible _master.pdf
 
+--command --input --invisible --match .*_strip\.tex$
+--output --invisible _part1.pdf
+
 #make "chapter" files
 --command ./chapter --input --invisible chapter
 --input --invisible --match (.*)_strip\\.tex
@@ -218,6 +221,7 @@
 --command latexmk
 %-pdf %"-pdflatex=\"pdflatex -halt-on-error -interaction=nonstopmode\""
 --input --match _part1\\.tex$
+--input --invisible _master.tex
 --input --invisible _preamble.tex
 --input --invisible _master_preamble.tex
 --output --invisible _part1.pdf
