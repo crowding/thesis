@@ -88,7 +88,6 @@ condition_warn <- function(samples) {
   samples[!cond,]
 }
 
-
 #given a long format data frame, match each variable against the other
 cross_variables <- mkchain[
     .

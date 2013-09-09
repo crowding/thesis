@@ -308,6 +308,22 @@ interpolate.predictable <- function(
   object$stanenv$interpolator(newdata)
 }
 
+condition_warn <- function(samples, columns = c("value"),
+                           include = function(data) data$parameters != "lp__",
+                           flag = function(x) NULL) {
+  cond <- lapply(samples[columns], function(value)
+                 ((!is.finite(value)) | (abs(value) > 1E3)))
+  includes <- include(samples)
+  cond <- Reduce(`|`, cond) & includes
+  if (any(cond & includes)) {
+    message("Infinite or nan or large values!")
+    message(deparse(substitute(samples)), ":", "\n")
+    print(unique(samples[cond,"parameters", drop=FALSE]))
+  }
+  if(sum(!cond) == 0) stop("no no no no no")
+  samples[!cond, , drop=FALSE]
+}
+
 crossPlots <- function(e, ...) {
   extraArgs <- dots(...)
   (Map %<<% e$fits)(function(...) {
@@ -324,10 +340,14 @@ crossPlots <- function(e, ...) {
 
 crossPlot <- function(fit, ..., subsample=1000) {
   #plot x-y things...
+  flag <- FALSE;
+  setFlag <- function(x) flag <<- TRUE;
   plotdata <- chain(
-    fit, short=as.matrix,
+    fit,
+    short=as.matrix,
     .[sample(min(subsample, nrow(.))),],
-    long=melt,
+    melt,
+    long=condition_warn(flag=setFlag),
     .$parameters, unique,
     expand.grid(facet.x=., facet.y=.),
     subset(as.numeric(facet.x) > as.numeric(facet.y)),
@@ -340,6 +360,7 @@ crossPlot <- function(fit, ..., subsample=1000) {
     rename(c(value="y")),
     mutate(lp__=short[iterations, "lp__"])
     )
+  if(flag) browser();
   (ggplot(plotdata)
    + aes(x=x, y=y)
    + facet_grid(facet.y ~ facet.x, scales="free")

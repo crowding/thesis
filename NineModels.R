@@ -1,5 +1,5 @@
 suppressPackageStartupMessages({
-  library(ptools)
+  library(vadr)
   library(plyr)
   library(rstan)
   library(knitr)
@@ -21,6 +21,29 @@ scenarios <- list(d=list(
               * log(  exp(- frac_spacing[n] / blur)
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
+        displacement_R_computation = alist(
+            displacement_factor <- (
+                -blur * spacing_sensitivity
+                * log(   exp(- frac_spacing / blur)
+                      + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi / blur))))),
+    soft_local_boosted=list(
+        displacement_parameter='
+          real <lower=spacing_sensitivity*min(frac_spacing),
+                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
+          real <lower=0,upper=max_sensitivity> min_sensitivity;
+          ',
+        displacement_var = '',
+        displacement_computation = '
+          displacement_factor <-
+             -blur * spacing_sensitivity
+              * log(  exp(- frac_spacing[n] / blur)
+                    + exp(- max_sensitivity / spacing_sensitivity
+                            * 2 * pi() / blur));
+          displacement_factor <- ( (displacement_factor/max_sensitivity)
+                                  *(max_sensitivity-min_sensitivity)
+                                  + min_sensitivity);
+        ',
         displacement_R_computation = alist(
             displacement_factor <- (
                 -blur * spacing_sensitivity
@@ -271,7 +294,7 @@ predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
       link_displacement <- (displacement_factor * displacement)
       link_repulsion <- (repulsion * content
                          + nonlinearity * (content * abs(content)))
-      link_carrier <- (content * carrier_sensitivity)
+      link_carrier <- (content * carrier_factor)
       link <- bias + link_displacement + link_repulsion + link_carrier
       response <- plogis(link) * (1-lapse) + lapse/2
     })))

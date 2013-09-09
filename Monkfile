@@ -244,7 +244,7 @@
 
 #compile graffle figures...
 --command osascript --input og-export.applescript
-$(abspath --input --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle ) 
+$(abspath --input --match --invisible (.*).graffle((?=/data\.plist|$)) {0}.graffle )
 $(abspath --output {0}.pdf ) pdf
 --phony --invisible graffles
 --phony --invisible intermediate_pdf
@@ -260,3 +260,25 @@ $(abspath --output {0}.pdf ) pdf
 #which is updated when this is updated...
 --command --output --invisible --match sensitivity-plot\.RData
 --output --invisible results.tex
+
+#some diagnostics
+--command Rscript --input --match 'DiagnoseBadCalc\.R'
+--input --invisible "models/d_soft_local_c_global.stan.RData"
+--input --invisible "SoftMinModel.stan.RData"
+--input --invisible "data.RData"
+--input --invisible "motion_energy.csv"
+--output --invisible "diagnose/fit_segment_manual.fit.RData"
+--output --invisible "diagnose/fit_segment_subst.fit.RData"
+--output --invisible "diagnose/fit_circle_manual.fit.RData"
+--output --invisible "diagnose/fit_circle_subst.fit.RData"
+--invisible --phony diagnose
+
+#and nominate the plots from those fits under "diagnose
+--command --output --match --invisible diagnose(.*)\.pdf
+--invisible --phony diagnose
+
+#and the coefficient comparisons...
+--command --once Rscript --input --once CompareStanFits.R
+--output --once diagnose/compare_{1}.pdf
+--input --match --once '(.*(circle|segment).*)\.fit\.RData$'
+--invisible --phony diagnose
