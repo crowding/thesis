@@ -65,8 +65,8 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
   }, error=warning))
 }
 
-plot_contours <- function(model, subject, motion.energy, outlist,
-                          fold=FALSE, ...) {
+plot_contours <- function(model, subject, motion.energy,
+                          fold=FALSE, plot.3d=TRUE, ...) {
   # we want three contour plots along our three axes --
   # spacing, displacement and direction content --
   # maybe even put it in 3d with the other one.
@@ -77,13 +77,13 @@ plot_contours <- function(model, subject, motion.energy, outlist,
   #because 20/3 in the dataset is different form R's idea of 20/3....
   nominal.eccentricity <- take_nearest(20/3, motion.energy$eccentricity)
 
-  #we decied where to sample the displacement
+  #we decide where to sample the displacement
   roundings <- c(0.2, 0.1, 2)
   offsets <- c(0.1, 0, 0) #modifies the roundings
   #e.g. round displacement to -0.3, -0.1, 0.1, 0.3, ...
   # id coordinates to sample on
-  is.motion.energy <- "motion_energy_models" %in% class(model)
-  if ("motion_energy_model" %in% class(model)) {
+  is.motion.energy <- "motion_energy_model" %in% class(model)
+  if (is.motion.energy) {
     ##in motion energy models we can only evaluate stimuli whose
     ##motion energies have been precomputed
     stop("extract sampling form motion energy limited to range of stimuli")
@@ -153,6 +153,8 @@ plot_contours <- function(model, subject, motion.energy, outlist,
                content_scale_y_nopadding)
 
   spacing.threshold <- 4.5
+
+  #filter subsets of data.
   filters <- list(
     identity,
     identity,
@@ -178,12 +180,14 @@ plot_contours <- function(model, subject, motion.energy, outlist,
           if (exists("eccentricity")) eccentricity else nominal.eccentricity),
         bias = 1,
         target_number_all = (
-          if (exists("target_number_all")) target_number_all
-          else round(2*pi*eccentricity / spacing))),
+            if (exists("target_number_all")) target_number_all
+            else (2*pi*eccentricity / spacing)),
+        target_number_shown = (
+            if (exists("target_number_shown")) target_number_shown
+            else (2*pi*eccentricity / spacing))),
       recast_data,
       if (is.motion.energy) attach_motion_energy(., motion.energy) else .,
       mutate(., pred = folding_predict(model, newdata=., type="response", fold=fold))))
-
 
   plot.tables <- Map(
     grid=grids, bin=bins, xscale=xscales, yscale = yscales, fig=2:5,
@@ -193,7 +197,7 @@ plot_contours <- function(model, subject, motion.energy, outlist,
       ##missing variable. This function snaps the data to
       ##grid lines, while computing an "average" that
       ##preserves the residual.
-      binned_data <- bin_grid_resid(
+       binned_data <- bin_grid_resid(
         model, bin, data=filt(model$data), coords=c(xvar, yvar), fold=fold)
       the.plot <- (
         ggplot(grid)
@@ -226,10 +230,13 @@ plot_contours <- function(model, subject, motion.energy, outlist,
     gtable_add_grob(plot.tables[[1]][-1:-2,-5], 3, 1),
     gtable_add_grob(plot.tables[[4]][-1:-2,-5], 3, 2),
     gtable_add_grob(plot.tables[[1]][,5], 2, 3, 3))
+  grid.newpage()
   grid.draw(gt)
 
   #let's also make a 3d plot to serve as a key.
-  plot_3d_grids(model=model, grids=grids, bins=bins)
+  if(plot.3d) {
+    plot_3d_grids(model=model, grids=grids, bins=bins)
+  }
 }
 
 plot_3d_grids <- function(model, grids, fold=FALSE, ...) {

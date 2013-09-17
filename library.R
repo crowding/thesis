@@ -882,12 +882,6 @@ declare_data <- function(...) {
         quickdf)
 }
 
-qq <- template
-
-qe <- function(x, envir=parent.frame()) eval(
-                    template %()% list(substitute(x), parent.frame()),
-                    parent.frame())
-
 factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x)) {
   if (filter(x)) factor(x, levels=unique(x)) else x
 }
@@ -936,9 +930,6 @@ print.if.nonempty <- function(d) {
     print(d)
   }
 }
-
-evalqq <- function(x, envir=parent.frame())
-  eval(template(substitute(x), envir))
 
 exploreFun <- function(f, start=rep(1, length(formals(f))),
                        min=start/4, max=start*4, mark=start,

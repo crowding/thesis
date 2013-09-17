@@ -2,25 +2,27 @@
   library(grid)
   library(plyr)
   library(ggplot2)
-  library(fields)
   library(data.table)
   library(rstan)
-  library(ptools)
+  library(vadr)
   library(reshape2)
   source("library.R")
   source("scales.R")
+  source("icons.R")
   source("density_library.R")
+  source("ndinterp.R")
   theme_set(theme_bw())
   #theme_update(panel.border=element_blank())
 })
 
-infile <- "CenterSurroundModel.fit.RData"
+infile <- "Hemifield.fit.RData"
 grid <- "motion_energy.csv"
-plotfile <- "CenterSurroundModel.plots.pdf"
+plotfile <- "Hemifield.plots.pdf"
 
-main <- function(infile="CenterSurroundModel.fit.RData",
+main <- function(infile="Hemifield.fit.RData",
                  grid="motion_energy.csv",
-                 plotfile="CenterSurroundModel.plots.pdf") {
+                 plotfile="Hemifield.plots.pdf",
+                 plots=c("numdensity", "pfun", "sampling")) {
   e <- load2env(infile)
   class(e) <- c("stanenv", class(e))
   #inject a motion-energy interpolator if necessary. An interpolator modifies
@@ -30,21 +32,59 @@ main <- function(infile="CenterSurroundModel.fit.RData",
     menergy <- read.csv(grid)
     e$interpolator <- do.call(interpolator, c(list(menergy), e$interpolator.args))
   }
-  cairo_pdf(plotfile, onefile=TRUE)
-  on.exit(dev.off, add=TRUE)
-  if (any(with(e$data, target_number_shown < target_number_all))) {
-    message("plotting number/density data...")
-    numdensity_plot(e)
+  if (!missing(plotfile)) {
+    cairo_pdf(plotfile, onefile=TRUE)
+    on.exit(dev.off, add=TRUE)
   }
-  message("plotting psychometric functions...")
-  fullCirclePlots(e, fold=TRUE)
-  message("plotting contours...")
-  contourPlots(e, fold=TRUE)
-  crossPlots(e)
+  for (i in plots) {
+    switch(i, numdensity={
+      if (any(with(e$data, target_number_shown < target_number_all))) {
+        message("plotting number/density data...")
+        numdensity_plot(e)
+      }
+    }, pfun={
+      message("plotting psychometric functions...")
+      fullCirclePlots(e, fold=TRUE)
+    }, contour={
+      message("plotting contours...")
+      contourPlots(e, fold=TRUE, menergy=menergy)
+    }, sampling={
+      message("plotting sampling...")
+      crossPlots(e)
+    }, stop("unknown plot type"))
+  }
 }
 
-contourPlots <- function(object, fold=fold) {
+slice <- function(object, selector) UseMethod("slice")
 
+slice.stanenv <- function(object, selector) {
+  structure(list(model = object, selector = selector,
+                 data = match_df(object$data, selector)),
+            class="stanslice")
+}
+
+predict.stanslice <- function(object,
+                              newdata=object$data,
+                              type="response") {
+  newdata <- cbind(newdata, unrowname(object$selector))
+  predict(predictable(object$model), newdata=newdata)
+}
+
+contourPlots <- function(object, fold=fold, menergy) {
+  contour_env <- new.env(parent=environment())
+
+  #actually source locally
+  source <- function(..., local=ignored) {do.call(base::source, envir=parent.frame(),
+                                   list(..., local=TRUE))}
+  with(contour_env, source("contours.R"))
+  a_ply(object$fits, 1, function(row) {
+    bind[fit=, optimized=, ...=group] <- row
+    print(group)
+    group$full_circle <- 1
+    slice <- slice(object, group)
+    contour_env$plot_contours(model=slice, subject=group$subject,
+                              motion.energy=menergy, fold=TRUE)
+  })
 }
 
 numdensity_plot <- function(object) {
@@ -128,29 +168,30 @@ predict.stanenv <- function(object, newdata=object$data,
   ddply_along(
       newdata, object$model_split,
       .progress=if(!is.null(summary)) "text" else "none",
-    function(split, chunk) {
-      fit <- merge(object$fits, split)$fit[[1]]
-      coefs <- as.data.frame(fit)
-      #usually we select the canonical model by optimization
-      #note that we expect stan_predict to work on EITHER single coefs
-      #and many data or single data and many coefs
-      if (!is.null(summary)) {
-        #we either summarize over all coefs, or select one set of coefs
-        #selected_coefs <- selector(object, split)
-        ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
-        subset_coefs <- coefs[ix,]
-        summary <- adply(chunk, 1,
-                         mkchain(object$stan_predict(coefs=subset_coefs), summary)
-                         , .progress="text")
-        cbind(chunk, summary)
-      } else {
-        selected_coefs <- selector(object, split)
-        fit <- object$stan_predict(coefs=selected_coefs, chunk)
-        cbind(chunk, fit)
-      }
-    })
+      function(split, chunk) {
+        fit <- merge(object$fits, split)$fit[[1]]
+        coefs <- as.data.frame(fit)
+        #usually we select the canonical model by optimization
+        #note that we expect stan_predict to work on EITHER single coefs
+        #and many data or single data and many coefs
+        if (!is.null(summary)) {
+          #we either summarize over all coefs, or select one set of coefs
+          #selected_coefs <- selector(object, split)
+          ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
+          subset_coefs <- coefs[ix,]
+          summary <- adply(chunk, 1,
+                           mkchain(object$stan_predict(coefs=subset_coefs), summary)
+                           , .progress="text")
+          cbind(chunk, summary)
+        } else {
+          selected_coefs <- selector(object, split)
+          fit <- object$stan_predict(coefs=selected_coefs, chunk)
+          cbind(chunk, fit)
+        }
+      })
 }
 
+invoke <- function(data, f, ...) f %()% data
 
 interpolator <- function(
     menergy,
@@ -158,7 +199,7 @@ interpolator <- function(
     interpolated=c("norm_diff", "energy_diff"),
     matched=c()
     ) {
-  menergy <- chain(menergy, add_energies,
+  menergy <- chain(menergy, add_energies, subset(as.logical(grid)),
                    mutate(extent = 2*pi*(target_number_shown/target_number_all),
                           spacing = 2*pi*eccentricity/target_number_all,
                           fullcircle = target_number_all == target_number_shown),
@@ -168,39 +209,49 @@ interpolator <- function(
                   mutate(extent=2*pi*(target_number_shown/target_number_all),
                          spacing = 2*pi*eccentricity/target_number_all,
                          fullcircle = target_number_all == target_number_shown))
-    bind[inplane, inplane[2], ...=outofplane] <-
-        chain(data, .[interpolating],
-              vapply(mkchain(unique, length), 0), .[.>1], names)
-    setkeyv(menergy, outofplane)
+
+    #we have to interpolate any columns that don't have a match in the grid.
+    count_unmatched_values <-
+        mkchain( #which column value are not matched in the grid
+                list(data[[.]], menergy[[.]]),
+                lapply(unique),
+                invoke(match), is.na, sum)
+    interpolate.by <-
+        chain(interpolating,
+              . %in% names(data),
+              interpolating[.], #column names
+              vapply(count_unmatched_values, 0),
+              .[.>0],
+              sort, rev, names)
+    match.by <- interpolating %-% interpolate.by
+
+        #assert that all
+    #i.e.
+    setkeyv(menergy, match.by)
     chunker <- function(chunk) {
       interp <- sapply(
           interpolated, USE.NAMES=TRUE, simplify=FALSE,
           function(interp.var) {
-            interp.over <- menergy[unique(chunk[outofplane])]
-            grid <- acast(interp.over,
-                              lapply(inplane, mkchain(as.name, as.quoted)),
-                              value.var=interp.var, fun.aggregate=mean)
-            active.dims <-  which(dim(grid) > 1)
-            inactive.dims <- which(dim(grid) == 1)
-            switch(length(active.dims), {
-              #interpolating over one dim. Assert other dim matches exactly
-              (all(unique(chunk[inplane[[inactive.dims]]])
-                   %in% interp.over[[inplane[inactive.dims]]])) || stop("oops")
-              x <- as.numeric(dimnames(grid)[[active.dims]])
-              loc <- chunk[[inplane[[active.dims]]]]
-              approx(x, grid, loc)$y
-            }, {
-              #interpolating over two dims
-              interp.obj <- list(x=as.numeric(dimnames(grid)[[1]]),
-                                 y=as.numeric(dimnames(grid)[[2]]),
-                                 z=grid)
-              loc <- do.call("cbind", chunk[inplane])
-              interp.surface(interp.obj, loc)
-            })
+            if (length(interpolate.by) >= 1) {
+              interp.over <- menergy[unique(chunk[match.by])]
+              grid <- acast(interp.over,
+                            lapply(interpolate.by, mkchain(as.name, as.quoted)),
+                            value.var=interp.var, fun.aggregate=mean)
+              names(dimnames(grid)) <- interpolate.by
+              if (any(dim(grid) == 1)) {
+                stop("Columns ",
+                     paste(names(dimnames(grid))[dim(grid)==1], collapse=", "),
+                     " have only one entry in grid")
+              }
+              ref <- lapply(dimnames(grid), as.numeric)
+              interp <- interp.nd(chunk[names(dimnames(grid))], grid, ref, rule=2)
+            } else {
+              interp <- menergy[chunk[match.by]][[interp.var]]
+            }
           })
       cbind(chunk, quickdf(interp))
     }
-    ddply(data, outofplane, chunker)
+    ddply(data, match.by, chunker)
   }
   x
 }
