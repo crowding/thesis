@@ -124,3 +124,14 @@ chain(grids$spacing_content,
       aes(spacing, content, fill=content_global)
       +geom_tile())
 
+interpolate.by <-
+
+    chain(interpolating,
+          . %in% names(data),
+          interpolating[.], #column names
+          vapply(count_unmatched_values, 0)
+          )
+
+(
+   .[.>0],
+   sort, rev, names)

@@ -22,7 +22,7 @@ plotfile <- "Hemifield.plots.pdf"
 main <- function(infile="Hemifield.fit.RData",
                  grid="motion_energy.csv",
                  plotfile="Hemifield.plots.pdf",
-                 plots=c("numdensity", "pfun", "sampling")) {
+                 plots=c("numdensity", "contour", "pfun", "sampling")) {
   e <- load2env(infile)
   class(e) <- c("stanenv", class(e))
   #inject a motion-energy interpolator if necessary. An interpolator modifies
@@ -83,7 +83,8 @@ contourPlots <- function(object, fold=fold, menergy) {
     group$full_circle <- 1
     slice <- slice(object, group)
     contour_env$plot_contours(model=slice, subject=group$subject,
-                              motion.energy=menergy, fold=TRUE)
+                              motion.energy=menergy, fold=TRUE,
+                              plot.3d=FALSE)
   })
 }
 
@@ -199,7 +200,7 @@ interpolator <- function(
     interpolated=c("norm_diff", "energy_diff"),
     matched=c()
     ) {
-  menergy <- chain(menergy, add_energies, subset(as.logical(grid)),
+  menergy <- chain(menergy, add_energies,
                    mutate(extent = 2*pi*(target_number_shown/target_number_all),
                           spacing = 2*pi*eccentricity/target_number_all,
                           fullcircle = target_number_all == target_number_shown),
@@ -225,29 +226,34 @@ interpolator <- function(
               sort, rev, names)
     match.by <- interpolating %-% interpolate.by
 
-        #assert that all
-    #i.e.
     setkeyv(menergy, match.by)
+    if (length(interpolate.by) == 0) {
+      return(cbind(data,
+                   as.data.frame(menergy[data[match.by], mult="first"]
+                                 )[interpolated]))
+    }
     chunker <- function(chunk) {
       interp <- sapply(
           interpolated, USE.NAMES=TRUE, simplify=FALSE,
           function(interp.var) {
-            if (length(interpolate.by) >= 1) {
-              interp.over <- menergy[unique(chunk[match.by])]
-              grid <- acast(interp.over,
-                            lapply(interpolate.by, mkchain(as.name, as.quoted)),
-                            value.var=interp.var, fun.aggregate=mean)
-              names(dimnames(grid)) <- interpolate.by
-              if (any(dim(grid) == 1)) {
-                stop("Columns ",
-                     paste(names(dimnames(grid))[dim(grid)==1], collapse=", "),
-                     " have only one entry in grid")
-              }
-              ref <- lapply(dimnames(grid), as.numeric)
-              interp <- interp.nd(chunk[names(dimnames(grid))], grid, ref, rule=2)
-            } else {
-              interp <- menergy[chunk[match.by]][[interp.var]]
+            interp.over <- menergy[unique(chunk[match.by])]
+            grid <- acast(interp.over,
+                          lapply(interpolate.by, mkchain(as.name, as.quoted)),
+                          value.var=interp.var, fun.aggregate=mean)
+            names(dimnames(grid)) <- interpolate.by
+            if (any(dim(grid) == 1)) {
+              stop("Columns ",
+                   paste(names(dimnames(grid))[dim(grid)==1], collapse=", "),
+                   " have only one entry in grid")
             }
+            ref <- lapply(dimnames(grid), as.numeric)
+            interp <- interp.nd(chunk[names(dimnames(grid))], grid, ref, rule=2)
+
+            if (length(interp) != nrow(chunk)) {
+              message("oops!")
+              browser()
+            }
+            interp
           })
       cbind(chunk, quickdf(interp))
     }
