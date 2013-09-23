@@ -350,20 +350,20 @@ otherFunctions <- quote({
 
 #these models screw up in some way and I omit them from taking up computer time.
 losers <- c(
-    "d_soft_windowed_c_local",
-    "d_soft_local_c_local",
-    "d_soft_local_endpoints_c_local",
     "d_soft_global_c_endpoints",
-    "d_soft_global_c_local",
+    "d_soft_global_c_endpoints",
+#    "d_soft_global_c_global",
+#    "d_soft_global_c_local",
     "d_soft_global_c_windowed",
-    "d_soft_windowed_c_windowed",
+#    "d_soft_local_c_local",
+    "d_soft_local_endpoints_c_local",
+    "d_soft_windowed_c_endpoints",
+    "d_soft_windowed_c_global",
+    "d_soft_windowed_c_global",
     "d_soft_windowed_c_local",
-    "d_soft_global_c_global",
-    "d_soft_windowed_c_global",
-    "d_soft_global_c_global",
-    "d_soft_windowed_c_global",
-    "d_soft_global_c_endpoints",
-    "d_soft_windowed_c_endpoints")
+    "d_soft_windowed_c_windowed",
+    "d_soft_windowed_c_local"
+    )
 
 makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
                          scenarios=parent.env(environment())$scenarios,

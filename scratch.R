@@ -19,6 +19,10 @@ ls(A)
 A$stan_predict
 B$stan_predict
 
+microbenchmark(
+    a=mapply(list, a=1:100, b=letters[1:100], MoreArgs=list(c="ha")),
+    b=mply(list, c="ha")(a=1:100, b=letters[1:100]))
+
 
 a <- function(N) {
   x <- 0
@@ -118,20 +122,32 @@ model$model$stan_predict
 ## [19] "pred"                    "fullcircle"
 ## [21] "norm_diff"               "energy_diff"
 
-chain(grids$spacing_content,
-      model$model$interpolator(),
-      ggplot(),
-      aes(spacing, content, fill=content_global)
-      +geom_tile())
+microbenchmark(
+    a=do.call(list, as.list(letters)),
+    b=qe(list(..(letters))),
+    c=list %()% letters)
 
-interpolate.by <-
+env.list <- macro(function(...) {
+  names <- list(...)
+  qq(function(`.(names)`=..(missing_value(length(names)))) environment())
+})
 
-    chain(interpolating,
-          . %in% names(data),
-          interpolating[.], #column names
-          vapply(count_unmatched_values, 0)
-          )
+env.list.2 <- macro(function(...) {
+  names <- list(...)
+  qe(function(`.(names)`=..(missing_value(length(names)))) environment())
+})
 
-(
-   .[.>0],
-   sort, rev, names)
+fab <- function(a, b, c, d, e) environment()
+fab2 <- function() function(a, b, c, d, e) environment()
+
+#b and f are misleadingly slow when enableJIT(3) -- microbenchmark artifact
+microbenchmark(
+    a = env.list("a", "b", "c", "d", "e")(1, 2, 3, 4, 5),
+    a1 = env.list.2("a", "b", "c", "d", "e")(1, 2, 3, 4, 5),
+    b = (function(a,b,c,d,e) environment())(1,2,3,4,5),
+    c = fab(1,2,3,4,5),
+    c1 = fab2()(1,2,3,4,5),
+    d = list2env(list(a=1, b=2, c=3, d=4, b=5)),
+    e = list2env(do.call(list, list(a=1,b=2,c=3,d=4,e=5))),
+    f = do.call(function(a,b,c,d,e) environment(), list(a=1,b=2,c=3,d=4,e=5)),
+    g = do.call(fab, list(a=1,b=2,c=3,d=4,e=5)))

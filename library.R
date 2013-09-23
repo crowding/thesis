@@ -3,6 +3,7 @@ suppressPackageStartupMessages({
   library(stringr)
   library(psyphy)
   library(vadr)
+  library(plyr)
 })
 
 ## function to build a nonlinear term as used by the gnm package.

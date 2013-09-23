@@ -6,6 +6,8 @@
   library(rstan)
   library(vadr)
   library(reshape2)
+  library(R.cache)
+  library(digest)
   source("library.R")
   source("scales.R")
   source("icons.R")
@@ -18,11 +20,36 @@
 infile <- "Hemifield.fit.RData"
 grid <- "motion_energy.csv"
 plotfile <- "Hemifield.plots.pdf"
+plots <- c("numdensity", "contour", "pfun", "sampling")
 
 main <- function(infile="Hemifield.fit.RData",
                  grid="motion_energy.csv",
                  plotfile="Hemifield.plots.pdf",
                  plots=c("numdensity", "contour", "pfun", "sampling")) {
+  match <- FALSE
+  tryCatch({
+    infile.hash <- digest(infile, file=TRUE)
+    outfile.hash <- digest(grid, file=TRUE)
+    plots.hash <- digest(plots)
+    plotfile.hash <- digest(plotfile, file=TRUE)
+    x <- loadCache(key=list(infile.hash, outfile.hash, plots.hash))
+    if (identical(x, plotfile.hash)) {
+      print("match found")
+      match <- TRUE
+    }
+  }, error=print)
+  if(!match) {
+    print("no match found")
+    inner(infile, grid, plotfile, plots)
+    print("saving match")
+    plotfile.hash <- digest(plotfile, file=TRUE)
+    saveCache(plotfile.hash, key=list(infile.hash, outfile.hash, plots.hash))
+  } else {
+    print("match found, doing nothing")
+  }
+}
+
+inner <- function(infile, grid, plotfile, plots, digests) {
   e <- load2env(infile)
   class(e) <- c("stanenv", class(e))
   #inject a motion-energy interpolator if necessary. An interpolator modifies
@@ -204,6 +231,7 @@ interpolator <- function(
                    mutate(extent = 2*pi*(target_number_shown/target_number_all),
                           spacing = 2*pi*eccentricity/target_number_all,
                           fullcircle = target_number_all == target_number_shown),
+                   subset(content_ccw + content_cw == 0.5),
                    data.table)
   x <- function(data) {
     data <- chain(data,
@@ -253,6 +281,7 @@ interpolator <- function(
               message("oops!")
               browser()
             }
+            if (any(is.na(interp))) browser()
             interp
           })
       cbind(chunk, quickdf(interp))
@@ -348,14 +377,15 @@ predict.predictable <- function (
     df <- df[order(df$.order),]
     dfse <- predict(object$stanenv, newdata, summary=colwise_se_frame)
     dfse <- dfse[order(df$.order),]
-    switch(type,
+    result = switch(type,
            response=list(fit=df$response, se.fit=dfse$response),
            link=list(fit=df$link, se.fit=dfse$link),
            terms=list(fit=df, se.fit=dfse))
   } else {
     df = predict(object$stanenv, newdata)
-    switch(type, response=df$response, link=df$link, terms=df)
+    result = switch(type, response=df$response, link=df$link, terms=df)
   }
+  result
 }
 
 interpolate <- function(...) UseMethod("interpolate")

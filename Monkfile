@@ -273,6 +273,12 @@ $(abspath --output {0}.pdf ) pdf
 --output --invisible "diagnose/fit_circle_subst.fit.RData"
 --invisible --phony diagnose
 
+--command --once Rscript
+--input --once compareLogProbs.R
+--output --once models/compare_lp.pdf
+--input --match models/.*\\.fit\\.RData
+--invisible --phony --once plot
+
 #and nominate the plots from those fits under "diagnose
 --command --output --match --invisible diagnose(.*)\.pdf
 --invisible --phony diagnose
