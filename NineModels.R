@@ -10,6 +10,17 @@ set_cppo('fast')
 
 #displacement
 scenarios <- list(d=list(
+    ## local=list( #for whatever reason spacing_sensitivity explodes
+    ##     displacement_parameter='
+    ##       real<lower=0.01, upper=100> max_sensitivity;',
+    ##     displacement_var = '',
+    ##     displacement_computation = '
+    ##       displacement_factor <-
+    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n]))) * max_sensitivity;',
+    ##     displacement_R_computation = alist(
+    ##       displacement_factor <-
+    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * max_sensitivity)
+    ##     ) ,
     soft_local=list(
         displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -27,29 +38,29 @@ scenarios <- list(d=list(
                 * log(   exp(- frac_spacing / blur)
                       + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi / blur))))),
-    soft_local_boosted=list(
-        displacement_parameter='
-          real <lower=spacing_sensitivity*min(frac_spacing),
-                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
-          real <lower=0,upper=max_sensitivity> min_sensitivity;
-          ',
-        displacement_var = '',
-        displacement_computation = '
-          displacement_factor <-
-             -blur * spacing_sensitivity
-              * log(  exp(- frac_spacing[n] / blur)
-                    + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi() / blur));
-          displacement_factor <- ( (displacement_factor/max_sensitivity)
-                                  *(max_sensitivity-min_sensitivity)
-                                  + min_sensitivity);
-        ',
-        displacement_R_computation = alist(
-            displacement_factor <- (
-                -blur * spacing_sensitivity
-                * log(   exp(- frac_spacing / blur)
-                      + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi / blur))))),
+    ## soft_local_boosted=list(
+    ##     displacement_parameter='
+    ##       real <lower=spacing_sensitivity*min(frac_spacing),
+    ##             upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
+    ##       real <lower=0,upper=max_sensitivity> min_sensitivity;
+    ##       ',
+    ##     displacement_var = '',
+    ##     displacement_computation = '
+    ##       displacement_factor <-
+    ##          -blur * spacing_sensitivity
+    ##           * log(  exp(- frac_spacing[n] / blur)
+    ##                 + exp(- max_sensitivity / spacing_sensitivity
+    ##                         * 2 * pi() / blur));
+    ##       displacement_factor <- ( (displacement_factor/max_sensitivity)
+    ##                               *(max_sensitivity-min_sensitivity)
+    ##                               + min_sensitivity);
+    ##     ',
+    ##     displacement_R_computation = alist(
+    ##         displacement_factor <- (
+    ##             -blur * spacing_sensitivity
+    ##             * log(   exp(- frac_spacing / blur)
+    ##                   + exp(- max_sensitivity / spacing_sensitivity
+    ##                         * 2 * pi / blur))))),
     soft_local_endpoints=list(
         displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -352,7 +363,7 @@ otherFunctions <- quote({
 losers <- c(
     "d_soft_global_c_endpoints",
     "d_soft_global_c_endpoints",
-#    "d_soft_global_c_global",
+#    "d_soft_global_c_global", #these suck but they need to suck for comparison.
 #    "d_soft_global_c_local",
     "d_soft_global_c_windowed",
 #    "d_soft_local_c_local",
@@ -371,7 +382,7 @@ makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
   #substitute bits and pieces into the
   envir <- as.environment(envir)
   with(envir, {
-    source("stanFunctions.R", local=TRUE)
+    base::source("stanFunctions.R", local=TRUE)
   })
   substituting.env <- new.env(parent=envir)
   mapply(names(selection), selection,
@@ -383,12 +394,13 @@ makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
                   )
          })
   envir$model_code <- do.call(knit_expand,
-                              list(text=modelTemplate), envir=substituting.env)
+                              list(text=modelTemplate),
+                              envir=substituting.env)
   envir$model_name <- chain(selection, rbind(names(.),.),
                             paste(collapse="_"))
-  envir$stan_predict <- eval(do.call(template,
-                                     list(predictorTemplate,
-                                          substituting.env)),
+  envir$stan_predict <- eval(do.call(vadr::qq,
+                                     list(predictorTemplate),
+                                     envir=substituting.env),
                              envir)
   eval(otherFunctions, envir)
   envir
@@ -409,6 +421,7 @@ compileModelEnv <- function(envir, listing_file) {
 }
 
 main <- function(outfile='NineModels.list') {
+  options(error=NULL)
   using(file(outfile, open="w"), function(outconn){
     chain(scenarios,
           lapply(names),

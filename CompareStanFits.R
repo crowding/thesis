@@ -106,7 +106,10 @@ cross_variables <- mkchain[
 #shift likelihoods to bring the maximum likelihood to zero. Delete lower tails...
 shift_likelihoods <- function(samples, optimized, group="subject") {
   optimized.shift <- ddply(optimized, group, function(x) {
-    alter(x$value[x$variable=="lp__"], . - max(.))
+    alter(x$value[x$variable=="lp__"],
+          . - max(.),
+          . / abs(quantile(., 0.95)),
+          asinh) #asinh transform yo
   })
   samples.shift <- ddply(samples, group, function(x) {
     lpshift__ <- chain(optimized, subset(variable=="lp__"),

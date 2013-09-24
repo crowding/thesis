@@ -6,6 +6,31 @@ suppressPackageStartupMessages({
   library(plyr)
 })
 
+if ("library" %in% search())
+    detach("library", unload=TRUE)
+
+with( e <- new.env(parent=globalenv()), {
+
+attachSource <- function(file, local=TRUE, ...) {
+  name <- stringr::str_match(file, "([^./]*).?[^./]*$")[1,2]
+  if (name == "library") {
+    return(base::source(file=file, local=local, ...))
+  }
+  if (name %in% search()) {
+    detach(name, unload=TRUE, character.only=TRUE)
+  }
+  doTheSource <- function() {
+    e$source <<- attachSource
+    do.call(base::source, list(file=file, ..., local=local), envir=e)
+    rm("source", envir=e)
+  }
+  e <- new.env(parent=globalenv())
+  doTheSource()
+  base::attach(e, name=name)
+}
+
+source <- attachSource
+
 ## function to build a nonlinear term as used by the gnm package.
 ## called like;
 ##
@@ -957,3 +982,8 @@ exploreFun <- function(f, start=rep(1, length(formals(f))),
         )
     , finally=close.screen(screens))
 }
+
+})
+
+base::attach(e, name="library")
+rm(e)

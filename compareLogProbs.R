@@ -2,25 +2,7 @@ library(ggplot2)
 library(scales)
 library(gtable)
 
-attachSource <- function(file, local=TRUE, ...) {
-  library(stringr)
-  name <- str_match(file, "([^.]*).?")[1,2]
-  doTheSource <- function() {
-    e$source <<- attachSource
-    do.call(base:::source, list(file=file, ..., local=local), envir=e)
-    rm("source", envir=e)
-  }
-  if (!name %in% search()) {
-    e <- new.env(parent=globalenv())
-    doTheSource()
-    attach(e, name=name)
-  } else {
-    e <- as.environment(name)
-    doTheSource()
-  }
-}
-
-attachSource("library.R")
+source("library.R")
 
 main <- function(plotfile, ...) {
   files <- list(...)

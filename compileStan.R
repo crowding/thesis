@@ -1,5 +1,5 @@
 suppressPackageStartupMessages({
-  library(ptools)
+  library(vadr)
   library(plyr)
   library(rstan)
   library(R.cache)
@@ -12,8 +12,8 @@ outfile <- "SlopeModel.stan.RData"
 
 main <- function(infile, outfile) {
   local({
-    source("stanFunctions.R", local=TRUE)
-    source(infile, local=TRUE)
+    base::source("stanFunctions.R", local=TRUE)
+    base::source(infile, local=TRUE)
 
     model <- memoizedCall(stan_model,
                           model_name=strip_extension(infile),
