@@ -1,4 +1,5 @@
 #functions for spindling/folding/collapsing and plotting density data.
+source("scales.R")
 
 #place a single error bar in the right half of each fact.
 errorbars <- function(segment, x.axis="spacing", facet="label") {

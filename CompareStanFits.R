@@ -1,7 +1,7 @@
 library(scales)
 library(grid)
 library(rstan)
-library(ptools)
+library(vadr)
 library(plyr)
 library(reshape2)
 library(ggplot2)
@@ -61,6 +61,7 @@ collect_fit_data <- function(model, extract,
 
 violinPlot <- function(samples, optimized) {
   #shows the posterior distributions over each parameter for each subject
+  cat("violin plot\n")
   samples2 <- condition_warn(samples)
   if(nrow(samples2) == 0) error("seriously messed")
   samples <- samples2
@@ -201,6 +202,7 @@ crossPlot <- function(samples, optimized, filter, subsample=500) {
 
 crossPlots <- function(samples, optimized) {
   l_ply(unique(samples$model_name), function(x) {
+    cat("cross plot ", samples$model_name[[1]], "\n")
     crossPlot(samples, optimized,
               filter=data.frame(model_name=x, stringsAsFactors=FALSE))
   })

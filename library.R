@@ -11,25 +11,25 @@ if ("library" %in% search())
 
 with( e <- new.env(parent=globalenv()), {
 
-attachSource <- function(file, local=TRUE, ...) {
-  name <- stringr::str_match(file, "([^./]*).?[^./]*$")[1,2]
-  if (name == "library") {
-    return(base::source(file=file, local=local, ...))
-  }
-  if (name %in% search()) {
-    detach(name, unload=TRUE, character.only=TRUE)
-  }
-  doTheSource <- function() {
-    e$source <<- attachSource
-    do.call(base::source, list(file=file, ..., local=local), envir=e)
-    rm("source", envir=e)
-  }
-  e <- new.env(parent=globalenv())
-  doTheSource()
-  base::attach(e, name=name)
-}
+## attachSource <- function(file, local=TRUE, ...) {
+##   name <- stringr::str_match(file, "([^./]*).?[^./]*$")[1,2]
+##   if (name == "library") {
+##     return(base::source(file=file, local=local, ...))
+##   }
+##   if (name %in% search()) {
+##     detach(name, unload=TRUE, character.only=TRUE)
+##   }
+##   doTheSource <- function() {
+##     e$source <<- attachSource
+##     do.call(base::source, list(file=file, ..., local=local), envir=e)
+##     rm("source", envir=e)
+##   }
+##   e <- new.env(parent=globalenv())
+##   doTheSource()
+##   base::attach(e, name=name)
+## }
 
-source <- attachSource
+## source <- attachSource
 
 ## function to build a nonlinear term as used by the gnm package.
 ## called like;
@@ -476,12 +476,14 @@ fold_trials <- function(data, fold.trial) {
     cw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_cw(.*)")
     ccw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_ccw(.*)")
     diff_cols <- str_match_matching(sort(colnames(trials)), "(.*)_diff(.*)")
-    content_cols <- str_match_matching(sort(colnames(trials)), "(.*)content(.*)")
+    content_cols <- (
+        str_match_matching(sort(colnames(trials)), "(.*)content(.*)")[,1] %-%
+        cw_cols[,1] %-% ccw_cols[,1])
     if (any(cw_cols[,c(2,3)] != ccw_cols[,c(2,3)])) stop("hmm")
     Map(a=cw_cols[,1], b=ccw_cols[,1],
         f=function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL})
     lapply(diff_cols[,1], function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
-    lapply(content_cols[,1], function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
+    lapply(content_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
     trials
   }
   #p <- NA
@@ -571,8 +573,9 @@ mkrates <- function(data,
 
 #undo mkrates, convert counted yes/no data into binary data.
 unmkrates <- function(data, keep.count.cols=FALSE, columns=names(data),
-                      splits=c("displacement", "content",
-                      "spacing", "subject", "exp_type")) {
+                      splits= (c("displacement", "content",
+                                 "spacing", "subject", "exp_type")
+                               %^% names)) {
   is <- is_rates(data, splits)
   if (!is.na(is)) {
     if (!is) {
@@ -661,7 +664,7 @@ recast_data <- function(
       eccentricity = 20/3
       , target_number_shown = round(2*pi*eccentricity/spacing)
       , target_number_all = round(2*pi*eccentricity/spacing)
-      , content_cw = (content+1/4)
+      , content_cw = (content+1)/4
       , content_ccw = (1 - content)/4
       , side = factor("all", levels=c("all", "bottom", "left", "right", "top")))
     , mutate(

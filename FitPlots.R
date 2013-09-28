@@ -20,12 +20,13 @@ suppressPackageStartupMessages({
 infile <- "Hemifield.fit.RData"
 grid <- "motion_energy.csv"
 plotfile <- "Hemifield.plots.pdf"
-plots <- c("numdensity", "contour", "pfun", "sampling")
+plots_default <- c("numdensity", "contour", "pfun", "sampling")
 
+print(environment())
 main <- function(infile="Hemifield.fit.RData",
                  grid="motion_energy.csv",
                  plotfile="Hemifield.plots.pdf",
-                 plots=c("numdensity", "contour", "pfun", "sampling")) {
+                 plots=plots_default) {
   match <- FALSE
   tryCatch({
     infile.hash <- digest(infile, file=TRUE)
@@ -143,19 +144,6 @@ maxll <- function(stanenv, split) {
 colwise_se <- mkchain(colwise(sd)(.), put(names(.), paste0(names(.), ".sd")))
 
 colwise_se_frame <- mkchain(colwise(sd)(.))
-
-optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {
-  if ("optimized" %in% names(stanenv$fits)) {
-    return(merge(stanenv$fits, split)$optimized[[1]])
-  }
-  #obtain coefficients by gradient descent from the starting point.
-  data <- merge(stanenv$data, split)
-  model <- merge(stanenv$fits, split)$fit[[1]]
-  print(startpoint)
-  standata <- stanenv$stan_format(stanenv$format_data(data))
-  l = optimizing(model@stanmodel, standata, init=startpoint)
-  c(l$par, list(l$lp__))
-}
 
 column_quantiles <- mkchain(
   lapply(.,
