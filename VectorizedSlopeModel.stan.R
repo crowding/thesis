@@ -39,14 +39,14 @@ transformed data {
   frac_spacing <- (2 * pi() * target_number_all);
   for (n in 1:N) {
     ones[n] <- 1.0;
-    content_nonlinear[n] <- content[n] * abs(content[n]);
+    content_nonlinear[n] <- content[n] * fabs(content[n]);
   }
 }
 
 parameters {
   real beta_dx;
   real<lower=0, upper=lapse_limit> lapse;
-  real bias;
+  real intercept;
 
   real<lower=0,upper=2*pi()> cs;
   real summation;
@@ -66,7 +66,7 @@ model {
   link_displacement <- beta_dx * displacement .* crowdedness;
   link_repulsion <- (repulsion * content + nonlinearity * content_nonlinear);
   link_summation <- summation * content .* target_number_shown;
-  link <- bias + link_displacement + link_repulsion + link_summation;
+  link <- intercept + link_displacement + link_repulsion + link_summation;
   response <- (ones ./ (1+ exp(-link))) * (1-lapse) + lapse/2;
   n_cw ~ binomial( n_obs, response );
 }'
@@ -80,6 +80,6 @@ model {
      , link_repulsion = (repulsion * content
                          + nonlinearity * (content * abs(content)))
      , link_summation = (target_number_all * content * summation)
-     , link = bias + link_displacement + link_repulsion + link_summation
+     , link = intercept + link_displacement + link_repulsion + link_summation
      , response = plogis(link) * (1-lapse) + lapse/2
      )))

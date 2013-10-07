@@ -57,7 +57,7 @@ transformed data {
 parameters {
   real beta_dx;
   real<lower=0, upper=lapse_limit> lapse;
-  real bias;
+  real intercept;
 
   real<lower=0,upper=2*pi()> cs;
   real summation;
@@ -82,9 +82,9 @@ model {
     global_energy <- normalized_energy[n];
     link_displacement <- beta_dx * displacement[n] * crowdedness;
     link_repulsion <- ( repulsion * local_energy
-                             + nonlinearity * local_energy * abs(local_energy));
+                             + nonlinearity * local_energy * fabs(local_energy));
     link_summation <- global_energy * summation;
-    link <- bias
+    link <- intercept
             + link_displacement
             + link_repulsion
             + link_summation;
@@ -109,7 +109,7 @@ stan_predict <- mkchain[., coefs](
                        + nonlinearity * (local_energy * abs(local_energy))
                        )
     , link_summation = global_energy * summation
-    , link = ( bias
+    , link = ( intercept
              + link_displacement
              + link_repulsion
              + link_summation

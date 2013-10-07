@@ -11,7 +11,9 @@ model_split <- "subject"
 filter_data <- mkchain(
     subset(exp_type %in% c("spacing", "content"))
     , match_df(., subset(count(., "subject"), freq>2000), on="subject")
-    )
+  )
+
+pars <- NA
 
 format_data <- mkchain[., energy](
     do.rename(folding=FALSE)

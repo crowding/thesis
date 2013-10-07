@@ -1,6 +1,7 @@
 library(ggplot2)
 library(scales)
 library(gtable)
+library(vadr)
 
 source("library.R")
 

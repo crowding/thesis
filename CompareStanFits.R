@@ -33,8 +33,9 @@ unfactor <- colwise(function(x) if (is.factor(x)) as.character(x) else x)
 #unpack a fitlist into two long-format data frames
 collect_model_data <- function(model.list) {
   #fitlist is a list with one item per model type
-  list(samples = ldply(model.list, collect_fit_data, "fit"),
-       optimized = ldply(model.list, collect_fit_data, "optimized"))
+  samp <- ldply(model.list, collect_fit_data, "fit")
+  optim <- ldply(model.list, collect_fit_data, "optimized")
+  list(samples = samp, optimized = optim)
 }
 
 collect_fit_data <- function(model, extract,
@@ -47,16 +48,16 @@ collect_fit_data <- function(model, extract,
   identifiers <- names(model) %-% ignore %-% extract
   chain(
     model,
-    (Map %<<% .)(list), #zip
+    (Map %<<% .)(list),
     lapply(., mkchain(
+      alter(.[[extract]], .[!grepl('\\[', names(.))]),
       c(., .[[extract]]), put(.[[extract]], NULL),
       data.frame %()% .,
       mutate(., .n=1:nrow(.)), #remember the sample id
-      melt(id.vars=c(".n", identifiers)), #long format
-      unfactor
-      )),
-    rbind.fill %()% .
-    )
+                          melt(id.vars=c(".n", identifiers)), #long format
+                          unfactor
+                          )),
+        rbind.fill %()% .) 
 }
 
 violinPlot <- function(samples, optimized) {
@@ -67,6 +68,9 @@ violinPlot <- function(samples, optimized) {
   samples <- samples2
   optimized <- condition_warn(optimized)
   bind[samples, optimized] = shift_likelihoods(samples, optimized, "subject")
+  if (nrow(optimized) > 1000) {
+    browser()
+  }
   print(
     ggplot(samples)
     + aes(subject, value, fill=model_name, color=model_name)

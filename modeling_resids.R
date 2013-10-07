@@ -5,14 +5,8 @@ library(ggplot2)
 source("stan_predictor.R")
 source("library.R")
 
-resids <- function(fit, groups) {
-  #Pearson resids...
-  data <- model$data
-  predicted <- predict(model, type="response")
-}
-
 #we might want to plot collapsed residuals
-modelfile="models/d_soft_local_c_repulsive_endpoints.fit.RData"
+modelfile="SlopeModel_segment_adj.fit.RData"
 
 main <- function(outfile="residuals.pdf",
                  ...) {
@@ -21,13 +15,15 @@ main <- function(outfile="residuals.pdf",
   cairo_pdf(outfile, width=18, height=12, onefile=TRUE)
   on.exit(dev.off())
   lapply(modelfiles, plot_model)
+  NULL
 }
 
 plot_model <-  function(modelfile) {
+
   print(modelfile)
   model <- load_stanfit(modelfile)
   if (all(model$data$full_circle)) return()
-  model_name <- model$model_name
+  model_name <- paste0(model$model_name, " ", modelfile)
   model <- predictable(model)
 
   # what are the values that differ in the data...
@@ -114,26 +110,58 @@ plot_model <-  function(modelfile) {
     col=1:3)
   grid.newpage()
   grid.draw(table)
+
+  #plot the individual link columns aggregated over the scale of the residuals?
 }
 
 chunk_resid <- function(x) {
   total_obs <- sum(x$n_cw)
-  total_pred <- sum(x$fit * x$n_obs)
-  total_var <- sum(x$fit * (1-(x$fit)) * x$n_obs)
+  total_pred <- sum(x$response * x$n_obs)
+  total_var <- sum(x$response * (1-(x$response)) * x$n_obs)
+  links <- str_match_matching(sort(colnames(x)), "link_.*")[,1]
   pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
-  quickdf(list(n_obs = sum(x$n_obs), total_obs = total_obs,
-               total_pred = total_pred, total_var = total_var,
-               pearson_resid = pearson_resid))
+  quickdf(c(list(n_obs = sum(x$n_obs), total_obs = total_obs,
+                 total_pred = total_pred, total_var = total_var,
+                 pearson_resid = pearson_resid),
+            #also add in "scaled term predictors"
+            colwise(function(.) sum(.) / total_var)(x[links])))
 }
 
 #Compute Pearson residuals over some splits. Don't bin yet?
 pearson_resids <- function(model, data=model$data, split,
-                           responsevar="response", fold=TRUE) {
+                           responsevar="terms", fold=TRUE) {
     chain(model,
-          predict(data, type="response"),
-          cbind(data, fit=.),
+          predict(data, type="terms"),
           refold(fold=fold),
           ddply_keeping_unique_cols(split, chunk_resid))
 }
 
 run_as_command()
+
+
+if(FALSE) {
+  #this actually makes no sense to do, sionce we're targeting distractions
+  # as well as the problems with link vs. binary residual
+  # and this makes weirdly weighted data.
+
+  split <- c("full_circle", "spacing", "subject")
+  resids <- pearson_resids(model, split=split, fold=TRUE)
+  link_cols <- str_match_matching(names(resids), "link_.*")[,1]
+  plotdata <- melt(resids, id.vars=split, measure.vars=link_cols)
+
+  (ggplot(plotdata,
+          aes(spacing, value,
+              color=factor(variable)))
+   + geom_line()
+   + geom_point()
+#   + scale_size_area()
+   + facet_grid(subject~full_circle, scales="free", space="free_x",
+                labeller = (function(var, value)
+                            if(var == "full_circle")
+                            ifelse(value, "Full circle", "Segment")
+                            else as.character(value)))
+   + coord_trans(xtrans="sqrt")
+   + scale_color_brewer("Term", type="qual", palette=2)
+   )
+
+}

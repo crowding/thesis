@@ -476,6 +476,7 @@ fold_trials <- function(data, fold.trial) {
     cw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_cw(.*)")
     ccw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_ccw(.*)")
     diff_cols <- str_match_matching(sort(colnames(trials)), "(.*)_diff(.*)")
+    link_cols <- str_match_matching(sort(colnames(trials)), "(.*)link_(.*)")[,1]
     content_cols <- (
         str_match_matching(sort(colnames(trials)), "(.*)content(.*)")[,1] %-%
         cw_cols[,1] %-% ccw_cols[,1])
@@ -484,6 +485,7 @@ fold_trials <- function(data, fold.trial) {
         f=function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL})
     lapply(diff_cols[,1], function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
     lapply(content_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
+    lapply(link_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
     trials
   }
   #p <- NA
@@ -493,7 +495,9 @@ fold_trials <- function(data, fold.trial) {
         #n_ccw and n_cw were already taken care of...
         mutate_when_has(
           displacement = (ifelse(folded, -displacement, displacement)),
-          response = ifelse(folded, !response, response),
+          response = (if(is.logical(response))
+                      ifelse(folded, !response, response)
+                      else ifelse(folded, response, 1-response)),
           fit = ifelse(folded, 1-fit, fit),
           p = ifelse(folded, 1-p, p),
           .bin.total_yes = ifelse(

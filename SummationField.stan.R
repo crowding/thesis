@@ -49,7 +49,7 @@ transformed data {
 parameters {
   real beta_dx;
   real<lower=0, upper=lapse_limit> lapse;
-  real bias;
+  real intercept;
 
   real<lower=0,upper=2*pi()> cs;
   real<lower=0, upper=2*pi()> field;
@@ -83,11 +83,11 @@ model {
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
     link_displacement <- beta_dx * displacement[n] * crowdedness;
     link_repulsion <- (repulsion * content[n]
-                       + nonlinearity * (content[n] * abs(content[n])));
+                       + nonlinearity * (content[n] * fabs(content[n])));
     link_summation_inside <- content_in_field * (summation + inside_outside);
     link_summation_outside <- content_outside_field * (summation - inside_outside);
     link_summation <- link_summation_inside + link_summation_outside;
-    link <- bias + link_displacement + link_repulsion + link_summation;
+    link <- intercept + link_displacement + link_repulsion + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
   }
@@ -110,6 +110,6 @@ stan_predict <- mkchain[., coefs](
      , link_summation_inside = content_in_field * (summation + inside_outside)
      , link_summation_outside = content_outside_field * (summation - inside_outside)
      , link_summation = link_summation_inside + link_summation_outside
-     , link = bias + link_displacement + link_repulsion + link_summation
+     , link = intercept + link_displacement + link_repulsion + link_summation
      , response = plogis(link) * (1-lapse) + lapse/2
      )))

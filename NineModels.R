@@ -9,41 +9,47 @@ suppressPackageStartupMessages({
 set_cppo('fast')
 
 #displacement
-scenarios <- list(d=list(
+scenarios <- list(
+  d=list(
     ## local=list( #for whatever reason spacing_sensitivity explodes
     ##     displacement_parameter='
     ##       real<lower=0.01, upper=100> max_sensitivity;',
+    ##     displacement_parameter_name="max_sensitivity",
     ##     displacement_var = '',
     ##     displacement_computation = '
     ##       displacement_factor <-
-    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n]))) * max_sensitivity;',
+    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
+    ##          * max_sensitivity;',
     ##     displacement_R_computation = alist(
     ##       displacement_factor <-
-    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * max_sensitivity)
+    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing)))
+    ##* max_sensitivity)
     ##     ) ,
     soft_local=list(
-        displacement_parameter='
+      displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
-        displacement_var = '',
-        displacement_computation = '
+      displacement_parameter_name="max_sensitivity",
+      displacement_var = '',
+      displacement_computation = '
           displacement_factor <-
              -blur * spacing_sensitivity
               * log(  exp(- frac_spacing[n] / blur)
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
-        displacement_R_computation = alist(
-            displacement_factor <- (
-                -blur * spacing_sensitivity
-                * log(   exp(- frac_spacing / blur)
-                      + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi / blur))))),
+      displacement_R_computation = alist(
+        displacement_factor <- (
+          -blur * spacing_sensitivity
+          * log(   exp(- frac_spacing / blur)
+                + exp(- max_sensitivity / spacing_sensitivity
+                      * 2 * pi / blur))))),
     ## soft_local_boosted=list(
     ##     displacement_parameter='
     ##       real <lower=spacing_sensitivity*min(frac_spacing),
     ##             upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
     ##       real <lower=0,upper=max_sensitivity> min_sensitivity;
     ##       ',
+    ##     displacement_parameter_name=c("max_sensitivity", "min_sensitivity"),
     ##     displacement_var = '',
     ##     displacement_computation = '
     ##       displacement_factor <-
@@ -62,71 +68,75 @@ scenarios <- list(d=list(
     ##                   + exp(- max_sensitivity / spacing_sensitivity
     ##                         * 2 * pi / blur))))),
     soft_local_endpoints=list(
-        displacement_parameter='
+      displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
           real<lower=0, upper=max_sensitivity> endpoint_sensitivity;
 ',
-        displacement_var = '
+      displacement_parameter_name=c("max_sensitivity", "endpoint_sensitivity"),
+      displacement_var = '
           real endpoints;
           real raw_spacing_sensitivity;
           real envelope_interior;
           real envelope_norm;
           ',
-        displacement_computation = '
-          raw_spacing_sensitivity <- -blur * spacing_sensitivity
-              * log(  exp(- frac_spacing[n] / blur)
-                    + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi() / blur));
-          if (target_number_shown[n] == target_number_all[n])
-            endpoints <- 0;
-          else endpoints <- 2;
-          envelope_interior <- pow(raw_spacing_sensitivity, 2) * target_number_shown[n];
-          envelope_norm <- (  endpoints * endpoint_sensitivity
-                              + target_number_shown[n] * raw_spacing_sensitivity);
-          displacement_factor <- envelope_interior / envelope_norm;
+      displacement_computation = '
+        raw_spacing_sensitivity <- -blur * spacing_sensitivity
+            * log(  exp(- frac_spacing[n] / blur)
+                  + exp(- max_sensitivity / spacing_sensitivity
+                          * 2 * pi() / blur));
+        if (target_number_shown[n] == target_number_all[n])
+          endpoints <- 0;
+        else endpoints <- 2;
+        envelope_interior <- pow(raw_spacing_sensitivity, 2)
+                             * target_number_shown[n];
+        envelope_norm <- (  endpoints * endpoint_sensitivity
+                            + target_number_shown[n] * raw_spacing_sensitivity);
+        displacement_factor <- envelope_interior / envelope_norm;
         ',
-        displacement_R_computation = alist(
-            endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-            raw_spacing_sensitivity <- (
-                -blur * spacing_sensitivity
-                * log(  exp(- frac_spacing / blur)
-                      + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi / blur))),
-            envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
-            envelope_norm <- (endpoints * endpoint_sensitivity
-                              + target_number_shown * raw_spacing_sensitivity),
-            displacement_factor <- envelope_interior / envelope_norm
-            )),
+      displacement_R_computation = alist(
+        endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        raw_spacing_sensitivity <- (
+          -blur * spacing_sensitivity
+          * log(  exp(- frac_spacing / blur)
+                + exp(- max_sensitivity / spacing_sensitivity
+                      * 2 * pi / blur))),
+        envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
+        envelope_norm <- (endpoints * endpoint_sensitivity
+                          + target_number_shown * raw_spacing_sensitivity),
+        displacement_factor <- envelope_interior / envelope_norm
+        )),
     soft_global=list(
-        displacement_parameter='
+      displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
-        displacement_var = '
+      displacement_parameter_name=c("max_sensitivity"),
+      displacement_var = '
           real inverse_number;',
-        displacement_computation = '
+      displacement_computation = '
           inverse_number <- 2*pi() / target_number_shown[n];
           displacement_factor <-
              -blur * spacing_sensitivity
               * log(  exp(- inverse_number / blur)
                     + exp(- max_sensitivity / spacing_sensitivity
                             * 2 * pi() / blur));',
-        displacement_R_computation = alist(
-            inverse_number <- 2*pi/target_number_shown,
-            displacement_factor <- (
-                -blur *  spacing_sensitivity
-                * log(  exp(- inverse_number / blur)
-                      + exp(- max_sensitivity /
-                            spacing_sensitivity * 2 * pi / blur)))))
+      displacement_R_computation = alist(
+        inverse_number <- 2*pi/target_number_shown,
+        displacement_factor <- (
+          -blur *  spacing_sensitivity
+          * log(  exp(- inverse_number / blur)
+                + exp(- max_sensitivity /
+                      spacing_sensitivity * 2 * pi / blur)))))
     ,
     soft_windowed=list(
-        displacement_parameter='
+      displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
           real <lower=min(frac_spacing), upper=2*pi()> displacement_field;',
-        displacement_var = '
+      displacement_parameter_name=c("max_sensitivity", "displacement_field"),
+      displacement_var = '
           real inverse_number; // equivalent spacing',
-        displacement_computation = '
+      displacement_computation = '
           //maximum of actual spacing and field width divided by targets shown
           inverse_number <- blur*log(
               exp(displacement_field / target_number_shown[n] / blur)
@@ -136,113 +146,150 @@ scenarios <- list(d=list(
              * log(  exp(- inverse_number / blur)
                    + exp(- max_sensitivity / spacing_sensitivity
                            * 2 * pi() / blur));',
-        displacement_R_computation = alist(
-            inverse_number <- blur*log(
-                exp(displacement_field / target_number_shown / blur)
-                + exp(2*pi / target_number_shown / blur)),
-            displacement_factor <- (
-                -blur * spacing_sensitivity
-                * log(  exp(- inverse_number / blur)
-                      + exp(- max_sensitivity / spacing_sensitivity
-                            * 2 * pi / blur))))))
+      displacement_R_computation = alist(
+        inverse_number <- blur*log(
+          exp(displacement_field / target_number_shown / blur)
+          + exp(2*pi / target_number_shown / blur)),
+        displacement_factor <- (
+          -blur * spacing_sensitivity
+          * log(  exp(- inverse_number / blur)
+                + exp(- max_sensitivity / spacing_sensitivity
+                      * 2 * pi / blur))))))
                   ,
-                  #CARRIER
+                  ##CARRIER
     c=list(
-        global=list(
-            carrier_parameter = '',
-            carrier_var = '',
-            carrier_computation=
-                'carrier_factor <- target_number_shown[n] * carrier_sensitivity;',
-            carrier_R_computation=alist(
-                carrier_factor <- target_number_shown * carrier_sensitivity)),
-         endpoints=list(
-            carrier_parameter = '
+      global=list(
+        carrier_parameter = '',
+        carrier_parameter_name=c(),
+        carrier_var = '',
+        carrier_computation=
+        'carrier_factor <- target_number_shown[n] * carrier_sensitivity;',
+        carrier_R_computation=alist(
+          carrier_factor <- target_number_shown * carrier_sensitivity)),
+      simple_RA_endpoints=list(
+        carrier_parameter = '
+          real<lower=-100, upper=100> endpoint_repulsion;
+          real<lower=-100, upper=100> endpoint_summation;',
+        carrier_parameter_name=c("endpoint_summation", "endpoint_repulsion"),
+        carrier_var = '
+          real n_endpoints;',
+        carrier_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <-
+            target_number_shown[n] * carrier_sensitivity
+            + target_number_shown[n] + n_endpoints * endpoint_summation
+            + n_endpoints * endpoint_repulsion;',
+        carrier_R_computation=alist(
+          n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+          carrier_factor <- (
+            target_number_shown * carrier_sensitivity
+            + n_endpoints * endpoint_repulsion
+            + n_endpoints * endpoint_summation * target_number_shown))),
+      endpoints=list(
+        carrier_parameter = '
                 real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;',
-            carrier_var = '
+        carrier_parameter_name=c("endpoint_carrier_weight"),
+        carrier_var = '
                 real carrier_weight_inside;
                 real carrier_norm;
                 real n_endpoints;',
             carrier_computation= '
-                if (target_number_shown[n] == target_number_all[n])
-                    n_endpoints <- 0;
-                else n_endpoints <- 2;
-                carrier_weight_inside <- target_number_shown[n] * displacement_factor;
-                carrier_norm <-
-                   ( target_number_shown[n] * displacement_factor
-                    + n_endpoints * endpoint_carrier_weight ) / (n_endpoints + target_number_shown[n]);
-                carrier_factor <- carrier_sensitivity *
-                                  carrier_weight_inside / carrier_norm;
-                ',
+              if (target_number_shown[n] == target_number_all[n])
+                  n_endpoints <- 0;
+              else n_endpoints <- 2;
+              carrier_weight_inside <- target_number_shown[n]
+                                       * displacement_factor;
+              carrier_norm <-
+                 ( target_number_shown[n] * displacement_factor
+                  + n_endpoints * endpoint_carrier_weight ) /
+                 (n_endpoints + target_number_shown[n]);
+              carrier_factor <- carrier_sensitivity *
+                                carrier_weight_inside / carrier_norm;
+              ',
             carrier_R_computation=alist(
-                endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-                carrier_weight_inside <- target_number_shown * displacement_factor,
-                carrier_norm <-
-                   ( target_number_shown * displacement_factor
-                    + endpoints * endpoint_carrier_weight) / (endpoints + target_number_shown),
-                carrier_factor <- carrier_sensitivity *
-                carrier_weight_inside / carrier_norm)),
+              endpoints <- ifelse(target_number_shown == target_number_all,
+                                  0, 2),
+              carrier_weight_inside <- (target_number_shown
+                                        * displacement_factor),
+              carrier_norm <- (
+                target_number_shown * displacement_factor
+                + endpoints * endpoint_carrier_weight
+                ) / (endpoints + target_number_shown),
+              carrier_factor <- (carrier_sensitivity
+                                 * carrier_weight_inside) / carrier_norm)),
         repulsive_endpoints=list(
-            carrier_parameter = '
-                real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;
-                // a factor multiplied by the summation going on elsewhere...
-                real <lower=-10, upper=10> endpoint_carrier_factor;',
-            carrier_var = '
-                real carrier_weight_inside;
-                real carrier_norm;
-                real n_endpoints;',
-            carrier_computation= '
-                if (target_number_shown[n] == target_number_all[n])
-                    n_endpoints <- 0;
-                else n_endpoints <- 2;
-                carrier_weight_inside <- target_number_shown[n] * displacement_factor;
-                carrier_norm <-
-                   ( carrier_weight_inside
-                    + n_endpoints * endpoint_carrier_weight ) / (n_endpoints + target_number_shown[n]);
-                carrier_factor <- (
-                      carrier_sensitivity * target_number_shown[n] * displacement_factor
-                    + carrier_weight_inside * n_endpoints *
-                      endpoint_carrier_factor * carrier_weight_inside
-                    ) / carrier_norm;
-                ',
-            carrier_R_computation=alist(
-                endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-                carrier_weight_inside <- target_number_shown * displacement_factor,
-                carrier_norm <-
-                   ( target_number_shown * displacement_factor
-                    + endpoints * endpoint_carrier_weight) / (endpoints + target_number_shown),
-                carrier_factor <- (  (carrier_sensitivity * carrier_weight_inside)
-                                   + (endpoint_carrier_factor * carrier_weight_inside)
-                                  ) / carrier_norm
-                )),
+          carrier_parameter = '
+            real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;
+            // a factor multiplied by the summation going on elsewhere...
+            real <lower=-10, upper=10> endpoint_carrier_factor;',
+          carrier_parameter_name=c("endpoint_carrier_weight",
+                                   "endpoint_carrier_factor"),
+          carrier_var = '
+            real carrier_weight_inside;
+            real carrier_norm;
+            real n_endpoints;',
+          carrier_computation= '
+            if (target_number_shown[n] == target_number_all[n])
+                n_endpoints <- 0;
+            else n_endpoints <- 2;
+            carrier_weight_inside <- target_number_shown[n]
+                                     * displacement_factor;
+            carrier_norm <-
+               ( carrier_weight_inside
+                + n_endpoints * endpoint_carrier_weight ) /
+                          (n_endpoints + target_number_shown[n]);
+            carrier_factor <- (
+              carrier_sensitivity * target_number_shown[n] * displacement_factor
+                + carrier_weight_inside * n_endpoints *
+                  endpoint_carrier_factor * carrier_weight_inside
+                ) / carrier_norm;
+            ',
+          carrier_R_computation=alist(
+            endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+            carrier_weight_inside <- target_number_shown * displacement_factor,
+            carrier_norm <- (
+              target_number_shown * displacement_factor
+              + endpoints * endpoint_carrier_weight) / (
+                endpoints + target_number_shown),
+            carrier_factor <- (
+              (carrier_sensitivity * carrier_weight_inside)
+              + (endpoint_carrier_factor * carrier_weight_inside)
+              ) / carrier_norm
+            )),
         local=list(
-            carrier_parameter = '',
-            carrier_var = '',
-            carrier_computation =
-                'carrier_factor <- 2*pi()*frac_spacing[n] * carrier_sensitivity;',
-            carrier_R_computation=alist(
-                carrier_factor <- 2*pi* frac_spacing * carrier_sensitivity)),
-        windowed=list(
-            carrier_parameter = 'real<lower=min(frac_spacing), upper=2*pi()> carrier_field;',
-            carrier_var = '
-                real frac_shown;
-                real frac_in_carrier_field;
-                ',
-            carrier_computation = '
-                frac_shown <- (target_number_shown[n]+0.0) / target_number_all[n];
-                frac_in_carrier_field <- -blur * log(
-                    exp(-2*pi()*frac_shown/blur) + exp(-carrier_field/blur));
-                carrier_factor <-
-                    target_number_all[n] * frac_in_carrier_field
-                        * carrier_sensitivity / carrier_field;
-                ',
-            carrier_R_computation=alist(
-                frac_shown <- target_number_shown / target_number_all,
-                frac_in_carrier_field <- -blur * log(
-                    exp(-2*pi*frac_shown/blur) + exp(-carrier_field/blur)),
-                carrier_factor <-
-                    target_number_all * frac_in_carrier_field
-                * carrier_sensitivity / carrier_field))
-        ))
+          carrier_parameter = '',
+          carrier_parameter_name=c(),
+          carrier_var = '',
+          carrier_computation = '
+            carrier_factor <- 2*pi()*frac_spacing[n] * carrier_sensitivity;',
+          carrier_R_computation=alist(
+            carrier_factor <- 2*pi* frac_spacing * carrier_sensitivity)),
+      windowed=list(
+        carrier_parameter = '
+          real<lower=min(frac_spacing), upper=2*pi()> carrier_field;',
+        carrier_parameter_name=c("carrier_field"),
+        carrier_var = '
+          real frac_shown;
+          real frac_in_carrier_field;
+          ',
+        carrier_computation = '
+          frac_shown <- (target_number_shown[n]+0.0) / target_number_all[n];
+          frac_in_carrier_field <- -blur * log(
+              exp(-2*pi()*frac_shown/blur) + exp(-carrier_field/blur));
+          carrier_factor <-
+              target_number_all[n] * frac_in_carrier_field
+                  * carrier_sensitivity / carrier_field;
+          ',
+        carrier_R_computation=alist(
+          frac_shown <- target_number_shown / target_number_all,
+          frac_in_carrier_field <- -blur * log(
+            exp(-2*pi*frac_shown/blur) + exp(-carrier_field/blur)),
+          carrier_factor <-
+          target_number_all * frac_in_carrier_field
+          * carrier_sensitivity / carrier_field))
+      ))
 
 modelTemplate <- '
 data {
@@ -265,7 +312,7 @@ transformed data {
 }
 parameters {
   real <lower=0, upper=lapse_limit> lapse;
-  real bias;
+  real intercept;
   real carrier_sensitivity;
   real <lower=0>spacing_sensitivity;
   {{displacement_parameter}}
@@ -289,7 +336,31 @@ model {
     link_repulsion <- (repulsion * content[n]
                        + nonlinearity * (content[n] * abs(content[n])));
     link_summation <- content[n] * carrier_factor;
-    link <- bias + link_displacement + link_repulsion + link_summation;
+    link <- intercept + link_displacement + link_repulsion + link_summation;
+    n_cw[n] ~ binomial( n_obs[n],
+      inv_logit( link ) .* (1-lapse) + lapse/2);
+  }
+}
+generated quantities {
+  {{displacement_var}}
+  {{carrier_var}}
+  real carrier_factor[N];
+  real displacement_factor[N];
+  real link_displacement[N];
+  real link_repulsion[N];
+  real link_summation[N];
+  real trial_id_stan[N];
+  real link[N];
+  for (n in 1:N) {
+    {{displacement_computation}}
+    {{carrier_computation}}
+    link_displacement[n] <- displacement[n] * displacement_factor;
+    link_repulsion[n] <- (repulsion * content[n]
+                          + nonlinearity * (content[n] * abs(content[n])));
+    link_summation[n] <- content[n] * carrier_factor;
+    link[n] <- intercept + link_displacement[n]
+               + link_repulsion[n] + link_summation[n];
+    trial_id_stan[n] <- trial_id;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
   }
@@ -306,7 +377,7 @@ predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
       link_repulsion <- (repulsion * content
                          + nonlinearity * (content * abs(content)))
       link_carrier <- (content * carrier_factor)
-      link <- bias + link_displacement + link_repulsion + link_carrier
+      link <- intercept + link_displacement + link_repulsion + link_carrier
       response <- plogis(link) * (1-lapse) + lapse/2
     })))
     , as.data.frame))

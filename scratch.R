@@ -151,3 +151,17 @@ microbenchmark(
     e = list2env(do.call(list, list(a=1,b=2,c=3,d=4,e=5))),
     f = do.call(function(a,b,c,d,e) environment(), list(a=1,b=2,c=3,d=4,e=5)),
     g = do.call(fab, list(a=1,b=2,c=3,d=4,e=5)))
+
+
+#diagnose something wrong with my predictions, by taking predictions from the
+#computed values of Stan.
+
+my.subset <- function(...) {
+  result <- base::`[`(...)
+
+  # 
+  result
+}
+
+
+chain(d$data, (e$filter_data)(), (e$format_data)(menergy))

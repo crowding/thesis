@@ -2,16 +2,17 @@ suppressPackageStartupMessages({
   library(rstan)
   library(plyr)
   library(R.cache)
+  library(foreach)
+  library(digest)
   source("library.R")
   source("stanFunctions.R")
+  source("stan_predictor.R")
 })
 
 infile <- "data.RData"
 grid <- "motion_energy.csv"
 modelfile <- "SlopeModel.stan.RData"
 outfile <- "SlopeModel.fit.RData"
-
-maxll <- mkchain(as.data.frame, .[which.max(.$lp__)[[1]],])
 
 #take a vector of coefficients with the weird names that Stan produces
 #and put it into the list data structure that seems to be implied
@@ -31,34 +32,66 @@ normalize_coefs <- function(coefs) {
   as.list(e)
 }
 
+getSampling <- function(object, ..., chains=4, parallel=FALSE) {
+  if (parallel) {
+    l <- llply(.parallel=parallel, seq_len(chains),
+               function(x) sampling(object, chain_id=x, chains=1, ...))
+    sflist2stanfit(l)
+  } else {
+    sampling(object, chains=chains, ...)
+  }
+}
+
 main <- function(infile="data.RData",
                  grid="motion_energy.csv",
                  modelfile="SlopeModel.stan.RData",
                  outfile="SlopeModel.fit.RData",
-                 iter=2000
+                 iter=2000,
+                 warmup=iter/2,
+                 parallel=TRUE
                  ) {
   #interrupting one of these model fits shoud fail fast...
-  options(error=NULL)
+  #options(error=NULL)
   iter <- as.numeric(iter)
+  warmup <- as.numeric(warmup)
+  if (is.na(as.logical(parallel))) {
+    parallel <- as.numeric(parallel)
+    if (!is.na(parallel)) {
+      options(cores=parallel)
+      parallel <- TRUE
+    } else {
+      parallel <- FALSE
+    }
+  } else {
+    parallel <- as.logical(parallel)
+  }
   e <- load2env(modelfile) #contains as least 'model', 'stan_predict'
   d <- load2env(infile)
   menergy <- read.csv(grid)
   chain(d$data, (e$filter_data)(), (e$format_data)(menergy)) -> e$data
-  fits <- ddply_along(e$data, e$model_split, function(split, chunk) {
+  fits <- ddply_along(.parallel=FALSE,
+                      e$data, e$model_split, function(split, chunk) {
     stan_data <- e$stan_format(chunk)
+    #make sure "parameters" are set correctly...
     hash <- list("sampling",
                  e$model@model_name, e$model@model_code, e$model@model_cpp,
-                 data=stan_data, warmup=iter/2, iter=iter)
+                 data=stan_data, warmup=warmup, iter=iter,
+                 pars=e$pars)
+    print(digest(hash))
     fit <- (loadCache(hash)
-            %||% sampling(e$model, data=stan_data,
-                          warmup=iter/2, iter=iter))
+            %||% getSampling(e$model, data=stan_data,
+                             warmup=warmup, iter=iter,
+                             parallel=parallel,
+                             pars=e$pars))
     saveCache(fit, hash)
     print(split)
     print(fit)
 
     # then also get the max-likelihood parameters. And the Hessian? Nah.
+    # Note that we don't restrict the params here.
     startpoint <- normalize_coefs(maxll(as.data.frame(fit)))
-    hash <- list("optimizing", e$model@model_name, e$model@model_code, e$model@model_cpp,
+    hash <- list("optimizing", e$model@model_name, e$model@model_code,
+                 e$model@model_cpp,
                  stan_data, init=startpoint)
     l = (loadCache(hash) %||% optimizing(e$model, stan_data, init=startpoint))
     saveCache(l, hash)

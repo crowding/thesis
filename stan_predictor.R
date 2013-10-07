@@ -26,7 +26,7 @@ predict.stanslice <- function(object,
                               newdata=object$data,
                               type="response") {
   newdata <- cbind(newdata, unrowname(object$selector))
-  predict(predictable(object$model), newdata=newdata)
+  predict(predictable(object$model), newdata=newdata,)
 }
 
 predict.stanenv <- function(object, newdata=object$data,
@@ -51,12 +51,16 @@ predict.stanenv <- function(object, newdata=object$data,
           ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
           subset_coefs <- coefs[ix,]
           summary <- adply(chunk, 1,
-                           mkchain(object$stan_predict(coefs=subset_coefs), summary)
-                           , .progress="text")
+                           mkchain(object$stan_predict(coefs=subset_coefs),
+                                   summary),
+                           .progress="text")
           cbind(chunk, summary)
         } else {
           selected_coefs <- selector(object, split)
           fit <- object$stan_predict(coefs=selected_coefs, chunk)
+          if (any(is.na(fit))) {
+            browser()
+          }
           cbind(chunk, fit)
         }
       })
@@ -75,14 +79,17 @@ optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {
   c(l$par, list(l$lp__))
 }
 
+maxll <- mkchain(as.data.frame, .[which.max(.$lp__)[[1]],])
+
 invoke <- function(data, f, ...) f %()% data
 
 interpolator <- function(
-    menergy,
-    interpolating=c("displacement", "content", "spacing", "extent", "fullcircle", "contrast"),
-    interpolated=c("norm_diff", "energy_diff"),
-    matched=c()
-    ) {
+  menergy,
+  interpolating=c("displacement", "content", "spacing",
+                  "extent", "fullcircle", "contrast"),
+  interpolated=c("norm_diff", "energy_diff"),
+  matched=c()
+  ) {
   menergy <- chain(menergy, add_energies,
                    mutate(extent = 2*pi*(target_number_shown/target_number_all),
                           spacing = 2*pi*eccentricity/target_number_all,
@@ -117,9 +124,23 @@ interpolator <- function(
 
     setkeyv(menergy, match.by)
     if (length(interpolate.by) == 0) {
-      return(cbind(data,
-                   as.data.frame(menergy[data[match.by], mult="first"]
-                                 )[interpolated]))
+      interp <- cbind(
+        data,
+        as.data.frame(menergy[data[match.by], mult="first"])[interpolated])
+      if (any %()% lapply(interp[interpolated], is.na)) {
+        warning("Trying setting contrast to 0.5")
+        if ("contrast" %in% match.by) {
+          interp <- cbind(data,
+                          as.data.frame(menergy[data[match.by %-% "contrast"],
+                                                mult="first"])[interpolated])
+        }
+        if (any %()% lapply(interp[interpolated], is.na)) {
+          stop("can't find matches")
+        } else {
+          return(interp)
+        }
+      }
+      return(interp)
     }
     chunker <- function(chunk) {
       interp <- sapply(

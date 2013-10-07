@@ -53,7 +53,7 @@ transformed data {
 parameters {
   real beta_dx;
   real<lower=0, upper=lapse_limit> lapse;
-  real bias;
+  real intercept;
 
   real<lower=0,upper=2*pi()> cs;
   real energy_weight; // how much "energy" to add to content
@@ -81,9 +81,9 @@ model {
     crowdedness <- 2 - 2/(1+exp(-cs/frac_spacing[n]));
     link_displacement <- beta_dx * displacement[n] * crowdedness;
     link_repulsion <- (repulsion * local_energy
-                       + nonlinearity * local_energy * abs(local_energy));
+                       + nonlinearity * local_energy * fabs(local_energy));
     link_summation <- global_energy * summation;
-    link <- bias + link_displacement
+    link <- intercept + link_displacement
             + link_repulsion
             + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
@@ -107,6 +107,6 @@ stan_predict <- mkchain[., coefs](
                                + nonlinearity * (
                                  local_energy * abs(local_energy)))
     , link_summation = norm_diff * summation
-    , link = (bias + link_displacement + link_repulsion + link_summation)
+    , link = (intercept + link_displacement + link_repulsion + link_summation)
     , response = plogis(link) * (1-lapse) + lapse/2
     )))

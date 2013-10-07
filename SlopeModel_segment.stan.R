@@ -40,19 +40,8 @@ data {
 transformed data {
   real frac_spacing[N];
 
-  real content_in_hemifield[N];
-  real content_outside_hemifield[N];
-
-  for (n in 1:N) {
-      real extent;
-      real covered;
-      extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
-      covered <- fmin(extent, 0.5);
-      content_in_hemifield[n] <- content[n] * target_number_all[n] * covered;
-      content_outside_hemifield[n] <-
-          content[n] * target_number_all[n] * (extent-covered);
+  for (n in 1:N)
       frac_spacing[n] <- 2*pi()./target_number_all[n];
-  }
 }
 
 parameters {
@@ -62,8 +51,6 @@ parameters {
 
   real<lower=0,upper=2*pi()> cs;
   real summation;
-  //put limits on because unidentifiable if no number/density experiment
-  real<lower=-1, upper=1> inside_outside;
   real repulsion;
   real nonlinearity;
 }
@@ -72,8 +59,6 @@ model {
   real crowdedness;
   real link_displacement;
   real link_repulsion;
-  real link_summation_inside;
-  real link_summation_outside;
   real link_summation;
   real link;
 
@@ -84,9 +69,7 @@ model {
     link_displacement <- beta_dx * displacement[n] * crowdedness;
     link_repulsion <- (repulsion * content[n]
                        + nonlinearity * (content[n] * fabs(content[n])));
-    link_summation_inside <- content_in_hemifield[n] * (summation + inside_outside);
-    link_summation_outside <- content_outside_hemifield[n] * (summation - inside_outside);
-    link_summation <- link_summation_inside + link_summation_outside;
+    link_summation <- target_number_shown[n] * content[n] * summation;
     link <- intercept + link_displacement + link_repulsion + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
@@ -94,23 +77,15 @@ model {
 
 }'
 
-stan_predict <- mkchain[., coefs](
-     mutate(frac_spacing = 2*pi/target_number_all,
-            extent = target_number_shown / target_number_all,
-            covered = pmin(extent, 0.5),
-            content_in_hemifield = content * target_number_all * covered,
-            content_outside_hemifield =
-                content * target_number_all * (extent-covered)
-)
+ stan_predict <- mkchain[., coefs](
+     mutate(frac_spacing = 2*pi/target_number_all)
    , with(coefs, summarize(
        .
      , link_displacement = (beta_dx * displacement
                             * (2 - 2/(1+exp(-cs/frac_spacing))))
      , link_repulsion = (repulsion * content
                          + nonlinearity * (content * abs(content)))
-     , link_summation_inside = content_in_hemifield * (summation + inside_outside)
-     , link_summation_outside = content_outside_hemifield * (summation - inside_outside)
-     , link_summation = link_summation_inside + link_summation_outside
+     , link_summation = (target_number_shown * content * summation)
      , link = intercept + link_displacement + link_repulsion + link_summation
      , response = plogis(link) * (1-lapse) + lapse/2
      )))
