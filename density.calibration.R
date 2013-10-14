@@ -1,15 +1,19 @@
 ## This file makes some overly ornate plots...
 
-library(ggplot2)
-library(plyr)
-library(grid)
-library(ptools)
-library(psyphy)
-source("latexing.R")
-source("icons.R")
-source("scales.R")
-source("library.R")
-source("density.rawplot.R")
+suppressPackageStartupMessages({
+  library(ggplot2)
+  library(plyr)
+  library(grid)
+  library(ptools)
+  library(psyphy)
+  source("latexing.R")
+  source("icons.R")
+  source("scales.R")
+  source("library.R")
+  source("density.rawplot.R")
+  source("stan_predictor.R")
+})
+
 setup_theme()
 
 #let's have a colorbar for the line fits and a spa
@@ -71,7 +75,7 @@ calibration.plot <-
               )
      + theme(legend.box="horizontal"))
   }
- 
+
 combined_plot <- function(row, segment, full, full.predicted, ...) {
   spacing_breaks <- sort(unique(segment$spacing))
   spacing_range <- range(segment$spacing, full.predicted$spacing)
@@ -103,25 +107,27 @@ combined_plot <- function(row, segment, full, full.predicted, ...) {
   total_table
 }
 
-
-
 `%unless_empty%` <- function(a,b) if (empty(a)) b else a
 
 datafile <- "data.Rdata"
-modelfile <- "slopeModel.RData"
+modelfile <- "SlopeModel.fit.RData"
 output <- "density.calibration.pdf"
 
-main <- function(datafile="data.Rdata", modelfile="slopeModel.RData",
-                 output="density.calibration.pdf") {
-  load(datafile)
-  load(modelfile)
-  cairo_pdf(output, onefile=TRUE)
-  on.exit(dev.off, add=TRUE)
+main <- function(datafile = "data.Rdata", modelfile = "SlopeModel.fit.RData",
+                 output = if(interactive()) NULL else "density.calibration.pdf") {
+  data <- load2env(datafile)$data
+  model <- load_stanfit(modelfile)
+  if(!is.null(output)) {
+    cairo_pdf(output, onefile=TRUE)
+    on.exit(dev.off, add=TRUE)
+  }
 
   segment <- chain(  data
-                   , subset(exp_type=="numdensity" & subject %in% names(models))
-                   , do.rename(folding=TRUE)
-                   )
+                  , subset( exp_type=="numdensity"
+                          & subject %in% model$fits$subject
+                          )
+                  , do.rename(folding=TRUE)
+                  )
 
   segment.config.vars <-
     c("spacing", "target_number_shown", "target_number_all")
@@ -137,12 +143,6 @@ main <- function(datafile="data.Rdata", modelfile="slopeModel.RData",
     mkrates(  segment
             , c(  segment.config.vars, segment.experiment.vars
                 , "side","eccentricity"))
-
-  get_model <- function(...) {
-    index <- data.frame(...)
-    match_df(model.df, index,
-             on=(names(index) %^% names(model.df)))$model[[1]]
-  }
 
   ## For this figure we describe a "configuration" from an
   ## experiment. First we have a spacing-series for a subject, showing a
@@ -166,10 +166,10 @@ main <- function(datafile="data.Rdata", modelfile="slopeModel.RData",
     data,
     subset(exp_type %in% c("spacing", "content")),
     do.rename(folding=TRUE),
-    mkrates(splits=c(
-              "displacement", "content", "spacing",
-              "target_number_all", "subject", "eccentricity")),
-    mutate(bias=0))
+    mkrates(splits=c("displacement", "content", "spacing",
+                     "target_number_all", "target_number_shown",
+                     "subject", "eccentricity")),
+    refold(fold=TRUE))
 
   #construct model predictions along each experiment condition
   #we are comparing "segment" data with earlier collected "calibration" data.
@@ -178,35 +178,10 @@ main <- function(datafile="data.Rdata", modelfile="slopeModel.RData",
   #raw fitted data, calibration
   calibration.data <-
     dlply_along(
-      segment.rates,
-      segment.experiment.vars,
-      function(row, segment.data) {
-        raw.calibration.data <-
-          match_df(calibration.dataset, row,
-                   on=segment.experiment.vars %-% "displacement")
-        predicted.data <-
-          chain(
-            displacement.sampling
-            , merge(row[!(names(row) %in% "displacement")])
-            #Ah, here's a puzzle, which spacing values do I use?
-            , merge(data.frame(
-              spacing = unique(
-                (raw.calibration.data %unless_empty% segment.rates)
-                $spacing),
-              bias=1))
-            , cbind(., predict(get_model(row), newdata=.,
-                               type="response", se.fit=TRUE)))
-        #now I also predict the spacing-dependent response for model stimuli.
-        predicted.segment.response <-
-          chain(row,
-                merge(data.frame(  spacing=unique(segment.rates$spacing)
-                                 , bias=0)),
-                cbind(., predict(get_model(row), newdata=.,
-                                 type="response", se.fit=TRUE)))
-        list(row=row, segment=segment.data, full=raw.calibration.data,
-             full.predicted=predicted.data,
-             segment.predicted = predicted.segment.response)
-      })
+      segment.rates, segment.experiment.vars,
+      getCalibrationData,
+      calibration.dataset, predictable(model), displacement.sampling
+      )
 
   combined_plots <- lapply(calibration.data, splat(combined_plot))
 
@@ -215,6 +190,48 @@ main <- function(datafile="data.Rdata", modelfile="slopeModel.RData",
   } else {
     plot(combined_plots[[5]])
   }
+}
+
+getCalibrationData <- function(row, segment.data,
+                               calibration.dataset, predictor,
+                               displacement.sampling) {
+  raw.calibration.data <-
+      match_df(calibration.dataset, row,
+               on=segment.experiment.vars %-% "displacement")
+  predicted.data <-
+
+      chain(
+        displacement.sampling
+        , merge(row[!(names(row) %in% "displacement")])
+        #Ah, here's a puzzle, which spacing values do I use?
+        , merge(data.frame(
+          spacing = unique(
+            ((raw.calibration.data %unless_empty% segment.rates)
+             $spacing)),
+          bias=1))
+        , mutate(target_number_all = 2*pi*eccentricity/spacing,
+                 target_number_shown = target_number_all)
+        , folding_predict(model=predictor, type="response", fold=TRUE)
+        , str
+        )
+
+  no(
+
+   , str)
+
+  no(
+                     , cbind(., predict(get_model(row), newdata=.,
+                                                 type="response", se.fit=TRUE)))
+  #now I also predict the spacing-dependent response for model stimuli.
+  predicted.segment.response <-
+      chain(row,
+            merge(data.frame(  spacing=unique(segment.rates$spacing)
+                             , bias=0)),
+            cbind(., predict(get_model(row), newdata=.,
+                             type="response", se.fit=TRUE)))
+  list(row=row, segment=segment.data, full=raw.calibration.data,
+       full.predicted=predicted.data,
+       segment.predicted = predicted.segment.response)
 }
 
 run_as_command()

@@ -1,4 +1,4 @@
-suppressPackageStartupMessages({
+ suppressPackageStartupMessages({
   library(vadr)
   library(plyr)
   library(rstan)
@@ -18,7 +18,7 @@ scenarios <- list(
     ##     displacement_var = '',
     ##     displacement_computation = '
     ##       displacement_factor <-
-    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
+    ##          (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
     ##          * max_sensitivity;',
     ##     displacement_R_computation = alist(
     ##       displacement_factor <-
@@ -166,7 +166,43 @@ scenarios <- list(
         'carrier_factor <- target_number_shown[n] * carrier_sensitivity;',
         carrier_R_computation=alist(
           carrier_factor <- target_number_shown * carrier_sensitivity)),
-      simple_RA_endpoints=list(
+      simple_R_endpoints=list( #repulsive
+        carrier_parameter = '
+          real<lower=-100, upper=100> endpoint_repulsion;',
+        carrier_parameter_name=c("endpoint_repulsion"),
+        carrier_var = '
+          real n_endpoints;',
+        carrier_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <-
+            target_number_shown[n] * carrier_sensitivity
+            + n_endpoints * endpoint_repulsion;',
+        carrier_R_computation=alist(
+          n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+          carrier_factor <- (
+            target_number_shown * carrier_sensitivity
+            + n_endpoints * endpoint_repulsion * target_number_shown))),
+      simple_A_endpoints=list( #additive
+        carrier_parameter = '
+          real<lower=-100, upper=100> endpoint_summation;',
+        carrier_parameter_name=c("endpoint_summation"),
+        carrier_var = '
+          real n_endpoints;',
+        carrier_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <-
+            target_number_shown[n] * carrier_sensitivity
+            + n_endpoints * endpoint_summation * target_number_shown[n];',
+        carrier_R_computation=alist(
+          n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+          carrier_factor <- (
+            target_number_shown * carrier_sensitivity
+            + n_endpoints * endpoint_summation * target_number_shown))),
+      simple_RA_endpoints=list( #repulsive and additive
         carrier_parameter = '
           real<lower=-100, upper=100> endpoint_repulsion;
           real<lower=-100, upper=100> endpoint_summation;',
@@ -179,7 +215,7 @@ scenarios <- list(
           else n_endpoints <- 2;
           carrier_factor <-
             target_number_shown[n] * carrier_sensitivity
-            + target_number_shown[n] + n_endpoints * endpoint_summation
+            + n_endpoints * endpoint_summation * target_number_shown[n]
             + n_endpoints * endpoint_repulsion;',
         carrier_R_computation=alist(
           n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
@@ -236,27 +272,34 @@ scenarios <- list(
             else n_endpoints <- 2;
             carrier_weight_inside <- target_number_shown[n]
                                      * displacement_factor;
-            carrier_norm <-
-               ( carrier_weight_inside
-                + n_endpoints * endpoint_carrier_weight ) /
-                          (n_endpoints + target_number_shown[n]);
+            carrier_norm <- (
+                carrier_weight_inside + n_endpoints * endpoint_carrier_weight
+              ) / (
+                n_endpoints + target_number_shown[n]
+              );
             carrier_factor <- (
-              carrier_sensitivity * target_number_shown[n] * displacement_factor
-                + carrier_weight_inside * n_endpoints *
-                  endpoint_carrier_factor * carrier_weight_inside
-                ) / carrier_norm;
+              (
+                carrier_sensitivity * carrier_weight_inside
+              ) + (
+                n_endpoints * endpoint_carrier_factor *
+                carrier_sensitivity * endpoint_carrier_weight
+              )
+            ) / carrier_norm;
             ',
           carrier_R_computation=alist(
             endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
             carrier_weight_inside <- target_number_shown * displacement_factor,
             carrier_norm <- (
-              target_number_shown * displacement_factor
-              + endpoints * endpoint_carrier_weight) / (
+              carrier_weight_inside + endpoints * endpoint_carrier_weight) / (
                 endpoints + target_number_shown),
             carrier_factor <- (
-              (carrier_sensitivity * carrier_weight_inside)
-              + (endpoint_carrier_factor * carrier_weight_inside)
-              ) / carrier_norm
+              (
+                carrier_sensitivity * carrier_weight_inside
+              ) + (
+                endpoints * endpoint_carrier_factor
+                * carrier_sensitivity * endpoint_carrier_weight
+              )
+            ) / carrier_norm
             )),
         local=list(
           carrier_parameter = '',
@@ -302,6 +345,7 @@ data {
   real eccentricity[N];
   int n_cw[N];
   int n_obs[N];
+  int trial_id[N];
   real blur;
   real lapse_limit;
 }
@@ -334,7 +378,7 @@ model {
     {{carrier_computation}}
     link_displacement <- displacement[n] * displacement_factor;
     link_repulsion <- (repulsion * content[n]
-                       + nonlinearity * (content[n] * abs(content[n])));
+                       + nonlinearity * (content[n] * fabs(content[n])));
     link_summation <- content[n] * carrier_factor;
     link <- intercept + link_displacement + link_repulsion + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
@@ -342,27 +386,31 @@ model {
   }
 }
 generated quantities {
-  {{displacement_var}}
-  {{carrier_var}}
-  real carrier_factor[N];
-  real displacement_factor[N];
+  real displacement_sens[N];
+  real carrier_sens[N];
   real link_displacement[N];
   real link_repulsion[N];
   real link_summation[N];
   real trial_id_stan[N];
   real link[N];
+  real fit[N];
   for (n in 1:N) {
+    {{displacement_var}}
+    {{carrier_var}}
+    real carrier_factor;
+    real displacement_factor;
     {{displacement_computation}}
     {{carrier_computation}}
+    displacement_sens[n] <- displacement_factor;
+    carrier_sens[n] <- carrier_factor;
     link_displacement[n] <- displacement[n] * displacement_factor;
     link_repulsion[n] <- (repulsion * content[n]
-                          + nonlinearity * (content[n] * abs(content[n])));
+                          + nonlinearity * (content[n] * fabs(content[n])));
     link_summation[n] <- content[n] * carrier_factor;
     link[n] <- intercept + link_displacement[n]
                + link_repulsion[n] + link_summation[n];
-    trial_id_stan[n] <- trial_id;
-    n_cw[n] ~ binomial( n_obs[n],
-      inv_logit( link ) .* (1-lapse) + lapse/2);
+    trial_id_stan[n] <- trial_id[n];
+    fit[n] <- inv_logit( link[n] ) * (1-lapse) + lapse/2;
   }
 }'
 
@@ -394,21 +442,32 @@ otherFunctions <- quote({
               "target_number_shown",
               "spacing", "eccentricity", "bias")
 
+  pars <- qe(c("lapse", "intercept",
+               "spacing_sensitivity", "carrier_sensitivity",
+               "repulsion", "nonlinearity",
+               ..(specifications$displacement_parameter_name),
+               ..(specifications$carrier_parameter_name)))
+
   relevant <- splits %v% c("n_cw", "n_obs")
 
   blur <- 0.2
   lapse_limit <- 0.05
 
+  format_data0 <- format_data
+  format_data <- mkchain[., menergy](format_data0(menergy),
+                                     mutate(format_data,
+                                            trial_id=seq_along(displacement)))
+
   stan_format <- mkchain(
-      subset(select=relevant),
-      as.list,
-      factorify,
-      put(names(.), gsub('\\.', '_', names(.))),
-      within({
-        N <- length(subject_ix)
-        blur <- blur
-        lapse_limit <- lapse_limit
-      }))
+    .[c(relevant, "trial_id")],
+    as.list,
+    factorify,
+    put(names(.), gsub('\\.', '_', names(.))),
+    within({
+      N <- length(subject_ix)
+      blur <- blur
+      lapse_limit <- lapse_limit
+    }))
 
   summarizeData <- function(.data, ...) {
     env <- list2env(.data, parent = parent.frame())
@@ -432,20 +491,22 @@ otherFunctions <- quote({
 
 #these models screw up in some way and I omit them from taking up computer time.
 losers <- c(
-    "d_soft_global_c_endpoints",
-    "d_soft_global_c_endpoints",
+  "d_soft_global_c_endpoints",
+  "d_soft_global_c_endpoints",
 #    "d_soft_global_c_global", #these suck but they need to suck for comparison.
 #    "d_soft_global_c_local",
-    "d_soft_global_c_windowed",
-#    "d_soft_local_c_local",
-    "d_soft_local_endpoints_c_local",
-    "d_soft_windowed_c_endpoints",
-    "d_soft_windowed_c_global",
-    "d_soft_windowed_c_global",
-    "d_soft_windowed_c_local",
-    "d_soft_windowed_c_windowed",
-    "d_soft_windowed_c_local"
-    )
+  "d_soft_global_c_windowed",
+  #    "d_soft_local_c_local",
+
+  "d_soft_local_endpoints_c_local",
+  "d_soft_windowed_c_repulsive_endpoints",
+  "d_soft_windowed_c_endpoints",
+  "d_soft_windowed_c_global",
+  "d_soft_windowed_c_global",
+  "d_soft_windowed_c_local",
+  "d_soft_windowed_c_windowed",
+  "d_soft_windowed_c_local"
+  )
 
 makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
                          scenarios=parent.env(environment())$scenarios,
@@ -456,6 +517,7 @@ makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
     base::source("stanFunctions.R", local=TRUE)
   })
   substituting.env <- new.env(parent=envir)
+  envir$specifications <- substituting.env
   mapply(names(selection), selection,
          FUN=function(name, value) {
            assignments <- scenarios[[name]][[value]]
@@ -483,24 +545,25 @@ using <-function(conn, fn) {
 
 compileModelEnv <- function(envir, listing_file) {
   filename <- paste0("models/", envir$model_name, ".stan.RData")
-  envir$model <- memoizedCall(stan_model,
+  envir$model <- memoizedCall(stan_model, verbose=TRUE,
                               model_name=envir$model_name,
                               model_code=envir$model_code)
   save(file=filename, list=ls(envir), envir=envir)
   message(envir$model_name)
-  writeLines(filename, listing_file)
+  filename
 }
 
 main <- function(outfile='NineModels.list') {
-  options(error=NULL)
-  using(file(outfile, open="w"), function(outconn){
+  using(file(outfile, open="w"), function(outconn) {
     chain(scenarios,
           lapply(names),
           do.call(expand.grid, .),
           as.matrix,
           alply(1, makeModelEnv),
           Filter(f=function(x) !x$model_name %in% losers),
-          lapply(compileModelEnv, outconn))
+          llply(compileModelEnv, outconn, .parallel=TRUE),
+          unlist,
+          writeLines(outconn))
   })
 }
 

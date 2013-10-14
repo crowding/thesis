@@ -82,7 +82,7 @@ model {
     link_summation <- target_number_shown[n] * content[n] * summation;
     link <- intercept + link_displacement + link_repulsion
           + link_summation + link_endpoint;
-    fit[n] <- inv_logit( link ) .* (1-lapse) + lapse/2;
+    response[n] <- inv_logit( link ) .* (1-lapse) + lapse/2;
     n_cw[n] ~ binomial( n_obs[n], fit[n]);
   }
 }

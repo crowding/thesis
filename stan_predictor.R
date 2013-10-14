@@ -85,8 +85,8 @@ invoke <- function(data, f, ...) f %()% data
 
 interpolator <- function(
   menergy,
-  interpolating=c("displacement", "content", "spacing",
-                  "extent", "fullcircle", "contrast"),
+  interpolating=c("fullcircle", "extent", "content",
+                  "displacement", "spacing", "contrast"),
   interpolated=c("norm_diff", "energy_diff"),
   matched=c()
   ) {
@@ -107,8 +107,9 @@ interpolator <- function(
                          fullcircle = target_number_all == target_number_shown,
                          contrast = round_any(content_cw + content_ccw, 0.01)))
 
-    #we have to interpolate any columns that don't have a match in the grid.
-    count_unmatched_values <-
+    #we have to interpolate any columns that don't have all matches in the grid.
+    #We'll match in a particular order??
+     count_unmatched_values <-
         mkchain( #which column value are not matched in the grid
                 list(data[[.]], menergy[[.]]),
                 lapply(unique),
@@ -135,7 +136,7 @@ interpolator <- function(
                                                 mult="first"])[interpolated])
         }
         if (any %()% lapply(interp[interpolated], is.na)) {
-          stop("can't find matches")
+          warning("can't find matches")
         } else {
           return(interp)
         }
@@ -146,7 +147,7 @@ interpolator <- function(
       interp <- sapply(
           interpolated, USE.NAMES=TRUE, simplify=FALSE,
           function(interp.var) {
-            interp.over <- menergy[unique(chunk[match.by])]
+            interp.over <- menergy[unique(chunk[match.by]),nomatch=NA]
             grid <- acast(interp.over,
                           lapply(interpolate.by, mkchain(as.name, as.quoted)),
                           value.var=interp.var, fun.aggregate=mean, drop=TRUE)

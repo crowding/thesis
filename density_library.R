@@ -57,6 +57,19 @@ extract_segment <- function(df, fold=FALSE, spindle=FALSE, collapse=FALSE,
         if(collapse) collapse(.) else .,
         labeler)
 
+c.uneval <- function(...) structure(c(NULL, ...), class=class(..1))
+
+geom_nd <- function(mapping, ...)
+    list(geom_line(mapping=mapping, ...),
+         geom_point(size=3, color="white", mapping=mapping, ...),
+         geom_point(size=1, mapping=mapping, ...),
+         geom_numdensity(fill=NA, tick_in=0, tick_out=1.5,
+                         size=1.5, weight=0.3, color="gray20", linetype=1,
+                         mapping = c(aes(number=target_number_shown,
+                                         eccentricity=eccentricity, spacing=spacing),
+                                     mapping)),
+         geom_point(size=1, mapping=mapping, ...))
+
 #a number of ggplot bits
 axes.basic <- list(proportion_scale[-1]
                    , spacing_texture_scale[-1]
@@ -70,30 +83,23 @@ plot.basic <- (ggplot(data.frame()) + aes(y=p)
 plot.wrap <- list(facet_wrap(~label))
 #
 by.number <- list(aes(x=target_number_shown),
-                  geom_line(aes(group=factor(spacing),
-                                linetype=factor(spacing))),
-                  geom_point(aes(group=factor(spacing),
-                                 linetype=factor(spacing)), size=1))
+                  geom_nd(aes(group=factor(spacing),
+                              linetype=factor(spacing))))
 #
 by.spacing <- list(  aes(x=spacing), labs(x="Spacing")
-                   , geom_line(aes(  group = factor(target_number_shown)
-                                   , color = factor(target_number_shown)))
-                   , geom_point(aes( group = factor(target_number_shown),
-                                    color = factor(target_number_shown)),
-                                size=1))
+                   , geom_nd(aes(  group = factor(target_number_shown)
+                                 , color = factor(target_number_shown))))
 #
-by.extent <- list(aes(x = extent,
-                      group = factor(target_number_shown),
-                      color = factor(target_number_shown),
-                      fill = factor(target_number_shown))
-                  , geom_line(linetype=1)
-                  , geom_line(aes(group = factor(spacing),
-                                  linetype = factor(spacing)),
-                              color="black", fill="black")
-                  , geom_point(size=1))
-
+by.extent <- list(  aes(x = extent)
+                  , geom_line(  aes(  group = factor(spacing)
+                                    , linetype = factor(spacing))
+                              , color="black", fill="black")
+                  , geom_nd(aes(  group = factor(target_number_shown)
+                                , color = factor(target_number_shown)
+                                , fill = factor(target_number_shown))))
+#
 #plot with x-axis of target number, lines of constant spacing
-plot.number <- plot.basic + by.number + plot.wrap
+ plot.number <- plot.basic + by.number + plot.wrap
 #
 #plot with x-axis of target spacing, lines of constant number
 plot.spacing <- plot.basic + by.spacing + plot.wrap
