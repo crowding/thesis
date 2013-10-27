@@ -231,9 +231,15 @@ spacing_color_scale <-
 spacing_texture_scale <-
   list(aes(linetype=factor(spacing)),
        discrete_scale(name="Spacing", "linetype", "linetype_m", function(x) {
-         paste(y <- c(1:9, LETTERS)[seq_len(x)], y, sep="")
+         paste(y <- c(1:9, LETTERS)[seq_len(x)], "1", sep="")
        }, labels=prettyprint)
        )
+
+spacing_shape_scale <-
+    list(
+      aes(shape=factor(spacing)),
+       scale_shape_manual("Spacing", labels=prettyprint, values=c(11, 6, 2, 0, 5, 1))
+      )
 
 spacing_scale_x <-
   list( aes(x=spacing),

@@ -10,6 +10,7 @@ set_cppo('fast')
 
 #displacement
 scenarios <- list(
+  #endpoint adjustments
   d=list(
     ## local=list( #for whatever reason spacing_sensitivity explodes
     ##     displacement_parameter='
@@ -67,45 +68,45 @@ scenarios <- list(
     ##             * log(   exp(- frac_spacing / blur)
     ##                   + exp(- max_sensitivity / spacing_sensitivity
     ##                         * 2 * pi / blur))))),
-    soft_local_endpoints=list(
-      displacement_parameter='
-          real <lower=spacing_sensitivity*min(frac_spacing),
-                upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
-          real<lower=0, upper=max_sensitivity> endpoint_sensitivity;
-',
-      displacement_parameter_name=c("max_sensitivity", "endpoint_sensitivity"),
-      displacement_var = '
-          real endpoints;
-          real raw_spacing_sensitivity;
-          real envelope_interior;
-          real envelope_norm;
-          ',
-      displacement_computation = '
-        raw_spacing_sensitivity <- -blur * spacing_sensitivity
-            * log(  exp(- frac_spacing[n] / blur)
-                  + exp(- max_sensitivity / spacing_sensitivity
-                          * 2 * pi() / blur));
-        if (target_number_shown[n] == target_number_all[n])
-          endpoints <- 0;
-        else endpoints <- 2;
-        envelope_interior <- pow(raw_spacing_sensitivity, 2)
-                             * target_number_shown[n];
-        envelope_norm <- (  endpoints * endpoint_sensitivity
-                            + target_number_shown[n] * raw_spacing_sensitivity);
-        displacement_factor <- envelope_interior / envelope_norm;
-        ',
-      displacement_R_computation = alist(
-        endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-        raw_spacing_sensitivity <- (
-          -blur * spacing_sensitivity
-          * log(  exp(- frac_spacing / blur)
-                + exp(- max_sensitivity / spacing_sensitivity
-                      * 2 * pi / blur))),
-        envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
-        envelope_norm <- (endpoints * endpoint_sensitivity
-                          + target_number_shown * raw_spacing_sensitivity),
-        displacement_factor <- envelope_interior / envelope_norm
-        )),
+##     soft_local_endpoints=list(
+##       displacement_parameter='
+##           real <lower=spacing_sensitivity*min(frac_spacing),
+##                 upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;
+##           real<lower=0, upper=max_sensitivity> endpoint_sensitivity;
+## ',
+##       displacement_parameter_name=c("max_sensitivity", "endpoint_sensitivity"),
+##       displacement_var = '
+##           real endpoints;
+##           real raw_spacing_sensitivity;
+##           real envelope_interior;
+##           real envelope_norm;
+##           ',
+##       displacement_computation = '
+##         raw_spacing_sensitivity <- -blur * spacing_sensitivity
+##             * log(  exp(- frac_spacing[n] / blur)
+##                   + exp(- max_sensitivity / spacing_sensitivity
+##                           * 2 * pi() / blur));
+##         if (target_number_shown[n] == target_number_all[n])
+##           endpoints <- 0;
+##         else endpoints <- 2;
+##         envelope_interior <- pow(raw_spacing_sensitivity, 2)
+##                              * target_number_shown[n];
+##         envelope_norm <- (  endpoints * endpoint_sensitivity
+##                             + target_number_shown[n] * raw_spacing_sensitivity);
+##         displacement_factor <- envelope_interior / envelope_norm;
+##         ',
+##       displacement_R_computation = alist(
+##         endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+##         raw_spacing_sensitivity <- (
+##           -blur * spacing_sensitivity
+##           * log(  exp(- frac_spacing / blur)
+##                 + exp(- max_sensitivity / spacing_sensitivity
+##                       * 2 * pi / blur))),
+##         envelope_interior <- raw_spacing_sensitivity^2 * target_number_shown,
+##         envelope_norm <- (endpoints * endpoint_sensitivity
+##                           + target_number_shown * raw_spacing_sensitivity),
+##         displacement_factor <- envelope_interior / envelope_norm
+##         )),
     soft_global=list(
       displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -125,6 +126,34 @@ scenarios <- list(
         displacement_factor <- (
           -blur *  spacing_sensitivity
           * log(  exp(- inverse_number / blur)
+                + exp(- max_sensitivity /
+                      spacing_sensitivity * 2 * pi / blur))))),
+    soft_hemi=list(
+      displacement_parameter='
+        real <lower=spacing_sensitivity*min(frac_spacing),
+              upper=spacing_sensitivity*max(frac_spacing)> max_sensitivity;',
+      displacement_parameter_name=c("max_sensitivity"),
+      displacement_var = '
+        real extent;
+        real covered;
+        real eff_number;',
+      displacement_computation = '
+        extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+        covered <- fmin(extent, 0.5);
+        //one shown equiv to two in full circle:
+        eff_number <- 4*pi() * covered / frac_spacing[n];
+        displacement_factor <-
+           -blur * spacing_sensitivity
+            * log(  exp(- eff_number / blur)
+                  + exp(- max_sensitivity / spacing_sensitivity
+                          * 2 * pi() / blur));',
+      displacement_R_computation = alist(
+        extent <- (0.0 + target_number_shown) / target_number_all,
+        covered <- pmin(extent, 0.5),
+        eff_number <- 4*pi*covered / frac_spacing,
+        displacement_factor <- (
+          -blur *  spacing_sensitivity
+          * log(  exp(- eff_number / blur)
                 + exp(- max_sensitivity /
                       spacing_sensitivity * 2 * pi / blur)))))
     ,
@@ -166,141 +195,103 @@ scenarios <- list(
         'carrier_factor <- target_number_shown[n] * carrier_sensitivity;',
         carrier_R_computation=alist(
           carrier_factor <- target_number_shown * carrier_sensitivity)),
-      simple_R_endpoints=list( #repulsive
-        carrier_parameter = '
-          real<lower=-100, upper=100> endpoint_repulsion;',
-        carrier_parameter_name=c("endpoint_repulsion"),
+      hemi=list(
+        carrier_parameter = '',
+        carrier_parameter_name=c(),
         carrier_var = '
-          real n_endpoints;',
+          real c_extent;
+          real c_covered;
+          real c_n_eff;
+        ',
         carrier_computation= '
-          if (target_number_shown[n] == target_number_all[n])
-            n_endpoints <- 0;
-          else n_endpoints <- 2;
-          carrier_factor <-
-            target_number_shown[n] * carrier_sensitivity
-            + n_endpoints * endpoint_repulsion;',
+          c_extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+          c_covered <- fmin(c_extent, 0.5);
+          c_n_eff <- pi() * c_covered / frac_spacing[n];
+          //one shown equiv to two in full circle:
+          carrier_factor <- c_n_eff * carrier_sensitivity;',
         carrier_R_computation=alist(
-          n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-          carrier_factor <- (
-            target_number_shown * carrier_sensitivity
-            + n_endpoints * endpoint_repulsion * target_number_shown))),
-      simple_A_endpoints=list( #additive
-        carrier_parameter = '
-          real<lower=-100, upper=100> endpoint_summation;',
-        carrier_parameter_name=c("endpoint_summation"),
-        carrier_var = '
-          real n_endpoints;',
-        carrier_computation= '
-          if (target_number_shown[n] == target_number_all[n])
-            n_endpoints <- 0;
-          else n_endpoints <- 2;
-          carrier_factor <-
-            target_number_shown[n] * carrier_sensitivity
-            + n_endpoints * endpoint_summation * target_number_shown[n];',
-        carrier_R_computation=alist(
-          n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-          carrier_factor <- (
-            target_number_shown * carrier_sensitivity
-            + n_endpoints * endpoint_summation * target_number_shown))),
-      simple_RA_endpoints=list( #repulsive and additive
-        carrier_parameter = '
-          real<lower=-100, upper=100> endpoint_repulsion;
-          real<lower=-100, upper=100> endpoint_summation;',
-        carrier_parameter_name=c("endpoint_summation", "endpoint_repulsion"),
-        carrier_var = '
-          real n_endpoints;',
-        carrier_computation= '
-          if (target_number_shown[n] == target_number_all[n])
-            n_endpoints <- 0;
-          else n_endpoints <- 2;
-          carrier_factor <-
-            target_number_shown[n] * carrier_sensitivity
-            + n_endpoints * endpoint_summation * target_number_shown[n]
-            + n_endpoints * endpoint_repulsion;',
-        carrier_R_computation=alist(
-          n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-          carrier_factor <- (
-            target_number_shown * carrier_sensitivity
-            + n_endpoints * endpoint_repulsion
-            + n_endpoints * endpoint_summation * target_number_shown))),
-      endpoints=list(
-        carrier_parameter = '
-                real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;',
-        carrier_parameter_name=c("endpoint_carrier_weight"),
-        carrier_var = '
-                real carrier_weight_inside;
-                real carrier_norm;
-                real n_endpoints;',
-            carrier_computation= '
-              if (target_number_shown[n] == target_number_all[n])
-                  n_endpoints <- 0;
-              else n_endpoints <- 2;
-              carrier_weight_inside <- target_number_shown[n]
-                                       * displacement_factor;
-              carrier_norm <-
-                 ( target_number_shown[n] * displacement_factor
-                  + n_endpoints * endpoint_carrier_weight ) /
-                 (n_endpoints + target_number_shown[n]);
-              carrier_factor <- carrier_sensitivity *
-                                carrier_weight_inside / carrier_norm;
-              ',
-            carrier_R_computation=alist(
-              endpoints <- ifelse(target_number_shown == target_number_all,
-                                  0, 2),
-              carrier_weight_inside <- (target_number_shown
-                                        * displacement_factor),
-              carrier_norm <- (
-                target_number_shown * displacement_factor
-                + endpoints * endpoint_carrier_weight
-                ) / (endpoints + target_number_shown),
-              carrier_factor <- (carrier_sensitivity
-                                 * carrier_weight_inside) / carrier_norm)),
-        repulsive_endpoints=list(
-          carrier_parameter = '
-            real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;
-            // a factor multiplied by the summation going on elsewhere...
-            real <lower=-10, upper=10> endpoint_carrier_factor;',
-          carrier_parameter_name=c("endpoint_carrier_weight",
-                                   "endpoint_carrier_factor"),
-          carrier_var = '
-            real carrier_weight_inside;
-            real carrier_norm;
-            real n_endpoints;',
-          carrier_computation= '
-            if (target_number_shown[n] == target_number_all[n])
-                n_endpoints <- 0;
-            else n_endpoints <- 2;
-            carrier_weight_inside <- target_number_shown[n]
-                                     * displacement_factor;
-            carrier_norm <- (
-                carrier_weight_inside + n_endpoints * endpoint_carrier_weight
-              ) / (
-                n_endpoints + target_number_shown[n]
-              );
-            carrier_factor <- (
-              (
-                carrier_sensitivity * carrier_weight_inside
-              ) + (
-                n_endpoints * endpoint_carrier_factor *
-                carrier_sensitivity * endpoint_carrier_weight
-              )
-            ) / carrier_norm;
-            ',
-          carrier_R_computation=alist(
-            endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
-            carrier_weight_inside <- target_number_shown * displacement_factor,
-            carrier_norm <- (
-              carrier_weight_inside + endpoints * endpoint_carrier_weight) / (
-                endpoints + target_number_shown),
-            carrier_factor <- (
-              (
-                carrier_sensitivity * carrier_weight_inside
-              ) + (
-                endpoints * endpoint_carrier_factor
-                * carrier_sensitivity * endpoint_carrier_weight
-              )
-            ) / carrier_norm
-            )),
+          c_extent <- (0.0 + target_number_shown) / target_number_all,
+          c_covered <- pmin(c_extent, 0.5),
+          c_n_eff <- pi * c_covered / frac_spacing,
+          carrier_factor <- c_n_eff * carrier_sensitivity)),
+      ## endpoints=list(
+      ##   carrier_parameter = '
+      ##           real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;',
+      ##   carrier_parameter_name=c("endpoint_carrier_weight"),
+      ##   carrier_var = '
+      ##           real carrier_weight_inside;
+      ##           real carrier_norm;
+      ##           real n_endpoints;',
+      ##       carrier_computation= '
+      ##         if (target_number_shown[n] == target_number_all[n])
+      ##             n_endpoints <- 0;
+      ##         else n_endpoints <- 2;
+      ##         carrier_weight_inside <- target_number_shown[n]
+      ##                                  * displacement_factor;
+      ##         carrier_norm <-
+      ##            ( target_number_shown[n] * displacement_factor
+      ##             + n_endpoints * endpoint_carrier_weight ) /
+      ##            (n_endpoints + target_number_shown[n]);
+      ##         carrier_factor <- carrier_sensitivity *
+      ##                           carrier_weight_inside / carrier_norm;
+      ##         ',
+      ##       carrier_R_computation=alist(
+      ##         endpoints <- ifelse(target_number_shown == target_number_all,
+      ##                             0, 2),
+      ##         carrier_weight_inside <- (target_number_shown
+      ##                                   * displacement_factor),
+      ##         carrier_norm <- (
+      ##           target_number_shown * displacement_factor
+      ##           + endpoints * endpoint_carrier_weight
+      ##           ) / (endpoints + target_number_shown),
+      ##         carrier_factor <- (carrier_sensitivity
+      ##                            * carrier_weight_inside) / carrier_norm)),
+      ##   repulsive_endpoints=list(
+      ##     carrier_parameter = '
+      ##       real <lower=0, upper=max_sensitivity> endpoint_carrier_weight;
+      ##       // a factor multiplied by the summation going on elsewhere...
+      ##       real <lower=-10, upper=10> endpoint_carrier_factor;',
+      ##     carrier_parameter_name=c("endpoint_carrier_weight",
+      ##                              "endpoint_carrier_factor"),
+      ##     carrier_var = '
+      ##       real carrier_weight_inside;
+      ##       real carrier_norm;
+      ##       real n_endpoints;',
+      ##     carrier_computation= '
+      ##       if (target_number_shown[n] == target_number_all[n])
+      ##           n_endpoints <- 0;
+      ##       else n_endpoints <- 2;
+      ##       carrier_weight_inside <- target_number_shown[n]
+      ##                                * displacement_factor;
+      ##       carrier_norm <- (
+      ##           carrier_weight_inside + n_endpoints * endpoint_carrier_weight
+      ##         ) / (
+      ##           n_endpoints + target_number_shown[n]
+      ##         );
+      ##       carrier_factor <- (
+      ##         (
+      ##           carrier_sensitivity * carrier_weight_inside
+      ##         ) + (
+      ##           n_endpoints * endpoint_carrier_factor *
+      ##           carrier_sensitivity * endpoint_carrier_weight
+      ##         )
+      ##       ) / carrier_norm;
+      ##       ',
+      ##     carrier_R_computation=alist(
+      ##       endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+      ##       carrier_weight_inside <- target_number_shown * displacement_factor,
+      ##       carrier_norm <- (
+      ##         carrier_weight_inside + endpoints * endpoint_carrier_weight) / (
+      ##           endpoints + target_number_shown),
+      ##       carrier_factor <- (
+      ##         (
+      ##           carrier_sensitivity * carrier_weight_inside
+      ##         ) + (
+      ##           endpoints * endpoint_carrier_factor
+      ##           * carrier_sensitivity * endpoint_carrier_weight
+      ##         )
+      ##       ) / carrier_norm
+      ##       )),
         local=list(
           carrier_parameter = '',
           carrier_parameter_name=c(),
@@ -331,8 +322,69 @@ scenarios <- list(
             exp(-2*pi*frac_shown/blur) + exp(-carrier_field/blur)),
           carrier_factor <-
           target_number_all * frac_in_carrier_field
-          * carrier_sensitivity / carrier_field))
-      ))
+          * carrier_sensitivity / carrier_field))),
+  #ENDPOINT
+  e = list(
+    none=list(
+      endpoint_parameter='',
+      endpoint_parameter_name=c(),
+      endpoint_var = '',
+      endpoint_computation='',
+      endpoint_R_computation=''),
+    R=list(
+      #repulsive
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_repulsion;',
+      endpoint_parameter_name=c("endpoint_repulsion"),
+      endpoint_var = '
+          real n_endpoints;',
+      endpoint_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <- carrier_factor + n_endpoints * endpoint_repulsion;',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- carrier_factor + (n_endpoints * endpoint_repulsion))),
+    A=list(
+      #additive
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_summation;',
+      endpoint_parameter_name=c("endpoint_summation"),
+      endpoint_var = '
+          real n_endpoints;',
+      endpoint_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <- carrier_factor
+            + n_endpoints * endpoint_summation * target_number_shown[n];',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- carrier_factor + (
+          n_endpoints * endpoint_summation * target_number_shown))),
+    RA=list(
+      #repulsive and
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_repulsion;
+          real<lower=-100, upper=100> endpoint_summation;',
+      endpoint_parameter_name=c("endpoint_summation", "endpoint_repulsion"),
+      endpoint_var = '
+          real n_endpoints;',
+      endpoint_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <-
+            target_number_shown[n] * carrier_sensitivity
+            + n_endpoints * endpoint_summation * target_number_shown[n]
+            + n_endpoints * endpoint_repulsion;',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- (
+          target_number_shown * carrier_sensitivity
+          + n_endpoints * endpoint_repulsion
+          + n_endpoints * endpoint_summation * target_number_shown)))))
 
 modelTemplate <- '
 data {
@@ -361,12 +413,14 @@ parameters {
   real <lower=0>spacing_sensitivity;
   {{displacement_parameter}}
   {{carrier_parameter}}
+  {{endpoint_parameter}}
   real repulsion;
   real nonlinearity;
 }
 model {
   {{displacement_var}}
   {{carrier_var}}
+  {{endpoint_var}}
   real carrier_factor;
   real displacement_factor;
   real link_displacement;
@@ -376,6 +430,7 @@ model {
   for (n in 1:N) {
     {{displacement_computation}}
     {{carrier_computation}}
+    {{endpoint_computation}}
     link_displacement <- displacement[n] * displacement_factor;
     link_repulsion <- (repulsion * content[n]
                        + nonlinearity * (content[n] * fabs(content[n])));
@@ -397,10 +452,12 @@ generated quantities {
   for (n in 1:N) {
     {{displacement_var}}
     {{carrier_var}}
+    {{endpoint_var}}
     real carrier_factor;
     real displacement_factor;
     {{displacement_computation}}
     {{carrier_computation}}
+    {{endpoint_computation}}
     displacement_sens[n] <- displacement_factor;
     carrier_sens[n] <- carrier_factor;
     link_displacement[n] <- displacement[n] * displacement_factor;
@@ -414,13 +471,15 @@ generated quantities {
   }
 }'
 
+
 predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
     with(coefs, within(., {
       frac_spacing <- 2*pi/target_number_all
       ...(displacement_R_computation)
       ...(carrier_R_computation)
+      ...(endpoint_R_computation)
     }))
-    , with(coefs, with(., within(list(), {
+    , with(coefs, with(., within_df(list(), {
       link_displacement <- (displacement_factor * displacement)
       link_repulsion <- (repulsion * content
                          + nonlinearity * (content * abs(content)))
@@ -434,7 +493,16 @@ otherFunctions <- quote({
   filter_data <- mkchain(
       subset(exp_type %in% c("spacing", "content", "numdensity"))
       , match_df(., subset(count(., "subject"), freq>2000), on="subject")
-      )
+    )
+
+  within_df <- function(df, expr, enclos=parent.frame()) {
+    if (is.null(names(df))) {
+      names(df) <- rep("", length(df))
+    }
+    e <- list2env(df, parent=enclos)
+    eval(substitute(expr), e)
+    as.data.frame(as.list(e))
+  }
 
   splits <- c("subject", "content",
               "displacement",
@@ -446,7 +514,8 @@ otherFunctions <- quote({
                "spacing_sensitivity", "carrier_sensitivity",
                "repulsion", "nonlinearity",
                ..(specifications$displacement_parameter_name),
-               ..(specifications$carrier_parameter_name)))
+               ..(specifications$carrier_parameter_name),
+               ..(specifications$endpoint_parameter_name)))
 
   relevant <- splits %v% c("n_cw", "n_obs")
 
@@ -491,21 +560,24 @@ otherFunctions <- quote({
 
 #these models screw up in some way and I omit them from taking up computer time.
 losers <- c(
-  "d_soft_global_c_endpoints",
-  "d_soft_global_c_endpoints",
+  "d_soft_global_c_windowed_e.*",
+
+  "d_soft_windowed_c_endpoints_e.*",
+  "d_soft_windowed_c_global_e.*",
+  "d_soft_windowed_c_global_e.*",
+  "d_soft_windowed_c_local_e.*",
+  "d_soft_windowed_c_windowed_e.*",
+  "d_soft_windowed_c_local_e.*",
+
+  "d_soft_local_endpoints_c_local.*",
+  "d_soft_windowed_c_repulsive_endpoints.*",
+  "d_soft_global_c_endpoints.*",
+  "d_soft_global_c_endpoints.*",
+
+  "d_soft_windowed_c_hemi_e_RA.*" #memory explodes during optimization???
 #    "d_soft_global_c_global", #these suck but they need to suck for comparison.
 #    "d_soft_global_c_local",
-  "d_soft_global_c_windowed",
-  #    "d_soft_local_c_local",
-
-  "d_soft_local_endpoints_c_local",
-  "d_soft_windowed_c_repulsive_endpoints",
-  "d_soft_windowed_c_endpoints",
-  "d_soft_windowed_c_global",
-  "d_soft_windowed_c_global",
-  "d_soft_windowed_c_local",
-  "d_soft_windowed_c_windowed",
-  "d_soft_windowed_c_local"
+#    "d_soft_local_c_local",
   )
 
 makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
@@ -539,7 +611,7 @@ makeModelEnv <- function(selection=lapply(scenarios, mkchain(names, .[[1]])),
   envir
 }
 
-using <-function(conn, fn) {
+using <- function(conn, fn) {
   fn(ammoc(conn, on.exit(close(conn))))
 }
 
@@ -560,12 +632,20 @@ main <- function(outfile='NineModels.list') {
           do.call(expand.grid, .),
           as.matrix,
           alply(1, makeModelEnv),
-          Filter(f=function(x) !x$model_name %in% losers),
+          filter_models,
           llply(compileModelEnv, outconn, .parallel=TRUE),
           unlist,
           writeLines(outconn))
   })
 }
 
-run_as_command()
+filter_models <- mkchain(
+  models=.,
+  vapply(function(x)x$model_name, ""),
+  lapply(losers, grepl, .),
+  Reduce(`|`, .),
+  models[!.],
+  {print(vapply(., function(x)x$model_name, "")); .}
+  )
 
+run_as_command()

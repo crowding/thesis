@@ -1,5 +1,6 @@
 #functions for spindling/folding/collapsing and plotting density data.
 source("scales.R")
+source("icons.R")
 
 #place a single error bar in the right half of each fact.
 errorbars <- function(segment, x.axis="spacing", facet="label") {
@@ -82,30 +83,66 @@ plot.basic <- (ggplot(data.frame()) + aes(y=p)
 #
 plot.wrap <- list(facet_wrap(~label))
 #
-by.number <- list(aes(x=target_number_shown),
-                  geom_nd(aes(group=factor(spacing),
-                              linetype=factor(spacing))))
+by.number.nd <- list(aes(x=target_number_shown),
+                     geom_nd(aes(group=factor(spacing),
+                                 linetype=factor(spacing))))
+by.number <- list(aes(x=target_number_shown,
+                      group=factor(spacing),
+                      linetype=factor(spacing),
+                      shape=factor(spacing)),
+                   geom_line(), geom_point(color="white", size=2.5, shape=16),
+                  geom_point(size=2.5),
+                  #geom_text(label="5", size=1.5, fontface="bold"),
+                  labs(x="Element number"),
+                  spacing_shape_scale)
 #
-by.spacing <- list(  aes(x=spacing), labs(x="Spacing")
+by.spacing.nd <- list(  aes(x=spacing), labs(x="Spacing")
                    , geom_nd(aes(  group = factor(target_number_shown)
                                  , color = factor(target_number_shown))))
+by.spacing <- list(aes(x=spacing,
+                       group=factor(target_number_shown),
+                       label=target_number_shown,
+                       color=factor(target_number_shown)),
+                   geom_line(), geom_point(color="white", size=3),
+                   geom_text(size=2.5),
+                   labs(x="Spacing"))
 #
-by.extent <- list(  aes(x = extent)
-                  , geom_line(  aes(  group = factor(spacing)
-                                    , linetype = factor(spacing))
-                              , color="black", fill="black")
-                  , geom_nd(aes(  group = factor(target_number_shown)
+by.extent.nd <- list(  aes(x = extent)
+                     , geom_line(  aes(  group = factor(spacing)
+                                       , linetype = factor(spacing))
+                                 , color="black", fill="black")
+                     , geom_nd(aes(  group = factor(target_number_shown)
+                                   , color = factor(target_number_shown)
+                                   , fill = factor(target_number_shown))))
+by.extent <- list(aes(x=extent),
+                  geom_line(aes(  group = factor(target_number_shown)
                                 , color = factor(target_number_shown)
-                                , fill = factor(target_number_shown))))
+                                , fill = factor(target_number_shown))),
+                  spacing_shape_scale,
+                  geom_line(aes(  group = factor(spacing)
+                                , linetype = factor(spacing)
+                                , shape = factor(spacing))),
+                  geom_point(color="white", size=2.5, shape=16),
+                  geom_point(size=2.5),
+                  geom_text(aes(label=factor(target_number_shown)),
+                            color="black",
+                            size=1.5, fontface="bold"),
+                  geom_text(aes(label=factor(target_number_shown),
+                                color=factor(target_number_shown)),
+                            size=1.5, fontface="bold", alpha=0.5))
 #
 #plot with x-axis of target number, lines of constant spacing
- plot.number <- plot.basic + by.number + plot.wrap
+plot.number.nd <- plot.basic + by.number.nd + plot.wrap
+plot.number <- plot.basic + by.number + plot.wrap
 #
 #plot with x-axis of target spacing, lines of constant number
+plot.spacing.nd <- plot.basic + by.spacing.nd + plot.wrap
 plot.spacing <- plot.basic + by.spacing + plot.wrap
+plot.spacing.nd <<- plot.spacing.nd
 plot.spacing <<- plot.spacing
 #
 #plot with x-axis of "extent"
+plot.extent.nd <- plot.basic + by.extent.nd + plot.wrap
 plot.extent <- plot.basic + by.extent + plot.wrap
 
 #Build ggplot layers to add predictions to a plot.

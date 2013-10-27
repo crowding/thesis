@@ -310,7 +310,19 @@ reference "sec:results-basic"
  This leaves the question of whether the mechanisms responsible for processing
  carrier and envelope motion are better characterized in terms of element
  number or spacing.
- 
+ For both carrier and envelope motion, a dependency on element spacing would
+ be consistent with a characterization of the process as 
+\noun on
+local
+\noun default
+ (where processing is sensitive to the immediate context of each element
+ but insensitive to elements farther away,) while a dependence on element
+ number would indicate a 
+\noun on
+global
+\noun default
+ process (where processing combines information across multiple elements
+ even at large separations.) 
 \begin_inset Note Note
 status collapsed
 
@@ -902,7 +914,6 @@ paperwidth]{%
 \end_layout
 
 \end_inset
-
 
 
 \begin_inset Tabular
@@ -1502,23 +1513,10 @@ reference "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
-I extended the model from 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:model"
+\begin_inset Note Note
+status open
 
-\end_inset
-
- to this dataset and fit data from both experiments.
- There were four scenarios by which the model may be extended to these stimuli,
- based on whether the sensitivity to envelope motion was determined by spacing
- (envelope local) or element number (envelope global,) and by whether the
- sensitivity to carrier motion was better determined by spacing (carrier
- local) or by element number (carrier global).
- 
-\end_layout
-
-\begin_layout Standard
+\begin_layout Plain Layout
 Our model predicts that there will be a progressive change in sensitivity
  to envelope motion as a function of spacing (or number) and there will
  be a change in sensitivity to carrier motion based on changes in the number
@@ -1541,6 +1539,11 @@ reference "fig:density-measurements"
  mechanisms to see if they agree with our data.
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Agreement with predictions of 
 \begin_inset CommandInset ref
@@ -1553,7 +1556,31 @@ reference "sec:results-basic"
 \end_layout
 
 \begin_layout Standard
-We asked how well the results from 
+I extended the model from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:model"
+
+\end_inset
+
+ to this dataset and fit data from both experiments.
+ There were four scenarios by which the model may be extended to these stimuli,
+ based on whether the sensitivity to envelope motion was determined by spacing
+ (envelope local) or element number (envelope global,) and by whether the
+ sensitivity to carrier motion was better determined by spacing (carrier
+ local) or by element number (carrier global.) Example results are shown
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-predictions"
+
+\end_inset
+
+ and summarized in 
+\end_layout
+
+\begin_layout Standard
+I asked how well the results from 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sec:results-number"
@@ -1575,42 +1602,12 @@ reference "sec:results-basic"
 \end_inset
 
 .
- There are different possible ways to obtain predictions based on the full
- circle stimuli used in 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
+ 
+\end_layout
 
-\end_inset
-
-, depending on how we interpret the coefficients 
-\begin_inset Formula $\beta_{\Delta_{x}}$
-\end_inset
-
-and 
-\begin_inset Formula $\beta_{S}$
-\end_inset
-
-.
- We can interpret the change in displacement sensitivity 
-\begin_inset Formula $\beta_{\Delta x}$
-\end_inset
-
- as being a function of the local spacing between elements or due to the
- global number of elements; we can interpret the sensitivity to carrier
- strength 
-\begin_inset Formula $\beta_{S}$
-\end_inset
-
- as being controlled by a local summation (i.e., adding up carrier motion
- over small regions of space) or a global summation (i.e.
- adding up carrier motion over a small region of space, or adding up over
- a large region).
- Thus we have four scenarios to compare: envelope local/carrier local, envelope
- local/carrier global, envelope global/carrier local, and envelope global/carrie
-r global.
+\begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Being a little cheeky here and hammering on what are the the actually correct
@@ -1643,6 +1640,82 @@ This turns out to be completely backwards.
 \end_inset
 
  
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-pred-modelfiles
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-pred-modelfiles, include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-pred-load
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-pred-load,include=FALSE,cache.extra=file.info(quad.modelfiles$modelfile)$
+mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-predict
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-predict,include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1657,12 +1730,12 @@ status open
 
 \begin_layout Plain Layout
 
-%density-predictions
+%density-predict-plot
 \end_layout
 
 \begin_layout Plain Layout
 
-<<density-predictions, fig.width=5, fig.height=8>>=
+<<density-predict-plot, fig.width=5, fig.height=8>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1744,7 +1817,7 @@ reference "sec:results-number"
 
 \end_inset
 
- (on;y the overall proportion clockwise is ajdusted to match); these predictions
+ (on;y the overall proportion clockwise is adjusted to match); these predictions
  are plotted as shaded ribbons on top of the actual data we took.
  Four rows show predictions over four assumptions (global or local summation
  of carrier motion; global or local change in envelope motion sensitivity);

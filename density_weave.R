@@ -21,10 +21,10 @@ suppressPackageStartupMessages({
   source("latexing.R")
   source("icons.R")
   source("scales.R")
-  source("slopeModel.R")
+  source("contours.R")
+  source("stan_predictor.R")
   source("density.modeling.R")
   source("density.calibration.R")
-  source("contours.R")
 })
 for (name in ls()) {
   assign(name, get(name), globalenv())
@@ -183,15 +183,63 @@ density.example.dataset <- subset(segment.folded.spindled.mutilated,
 
 ##plot with spacing...
 
-## @knitr density-predictions
+## @knitr density-pred-modelfiles
 ##Here's how I should make this more sensible, plot "actual" as another row.
 
+quad.modelfiles <- chain(
+  data.frame(carrier.local=c(TRUE, TRUE, FALSE, FALSE),
+             envelope.local=c(TRUE,FALSE, TRUE, FALSE)),
+  mutate(carrier.name=ifelse(carrier.local, "local", "global"),
+         envelope.name=ifelse(envelope.local, "local", "global")),
+  mutate(modelfile=paste0("models/d_soft_", envelope.name, "_c_",
+                          carrier.name, "_e_none.fit.RData")))
+
+## @knitr density-pred-load
+quad.models <- chain(
+  quad.modelfiles,
+  mutate(model=lapply(modelfile, load_stanfit)))
+
+## @knitr density-predict
+quad.preds <- chain(
+  quad.models,
+  adply(1, splat(function(model, ...) {
+    pred <- predict(predictable(model[[1]]), segment,
+                    type="response", se.fit=TRUE)
+    cbind(segment, data.frame(pred), model=NA)
+  })),
+  ddply(c("carrier.local", "envelope.local"),
+        mutilate.predictions,
+        fold=TRUE, spindle=TRUE, collapse=TRUE))
+
+## @knitr density-predict-plot
+pred.spacing <- function(data) {
+  list(
+    aes(x=spacing,
+        group=factor(target_number_shown),
+        label=target_number_shown,
+        color=factor(target_number_shown),
+        fill=factor(target_number_shown)),
+    geom_line(data=data, aes(y=fit)),
+    geom_line(data=data, aes(y=fit)),
+    geom_point(data=data, aes(y=fit), color="white", size=2),
+    geom_ribbon(data=data, color="transparent", alpha=0.2,
+                aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+    geom_text(data=data, aes(y=fit), size=2.5),
+    labs(x="Spacing"))
+}
+
+quad.match <- merge(data.frame(subject=density.example.subjects),
+                    rbind.fill(quad.conditions, data.frame(carrier.local=NA)))
+
+
 (condition_prediction_plot(
-  quad.predictions, segment.folded.spindled.mutilated,
-  match=data.frame(subject=density.example.subjects),
+  quad.preds,
+  data = mutate(segment.folded.spindled.mutilated,
+                carrier.local=NA, envelope.local =NA),
+  match=quad.match,
   orientation="over",
   conditions=quad.conditions)
- + theme(aspect.ratio=1))
+  + theme(aspect.ratio=1))
 
 ##
 

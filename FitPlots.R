@@ -141,10 +141,6 @@ maxll <- function(stanenv, split) {
     )
 }
 
-colwise_se <- mkchain(colwise(sd)(.), put(names(.), paste0(names(.), ".sd")))
-
-colwise_se_frame <- mkchain(colwise(sd)(.))
-
 column_quantiles <- mkchain(
   lapply(.,
     mkchain(

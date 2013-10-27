@@ -1,5 +1,20 @@
 #scratchpad for testing/debugging code I'm refining elsewhere
 
+(ggplot(subset(samps, endpoint=="R"))
+ + aes(fill=subject, color=subject, y=lp__, x=displacement)
+ + geom_violin()
+ )
+
+orng <- range(optimized$lp__)
+
+ddply(samps, .(subject, endpoint, carrier, displacement),
+      function(x) summarize(
+        x,
+        c = length(lp__),
+        within = sum(lp__ <= orng[1] | lp__ >= orng[2]))
+      )
+
+
 library(vadr)
 
 source_attach <- function(filename) {

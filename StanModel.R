@@ -90,12 +90,16 @@ main <- function(infile="data.RData",
     # then also get the max-likelihood parameters. And the Hessian? Nah.
     # Note that we don't restrict the params here.
     startpoint <- normalize_coefs(maxll(as.data.frame(fit)))
+    #optimizing occasionally kills everything! So save a temp file.
     hash <- list("optimizing", e$model@model_name, e$model@model_code,
                  e$model@model_cpp,
                  stan_data, init=startpoint)
+    filename <- paste0("optimizing_", digest(hash), ".RData")
+    save(file=filename, hash, e, fit, split, chunk)
     l = (loadCache(hash) %||% optimizing(e$model, stan_data, init=startpoint))
     saveCache(l, hash)
     optimized = c(l$par, lp__=list(l$value))
+    unlink(filename)
 
     quickdf(list(fit = list(fit), optimized=list(optimized)))
   })

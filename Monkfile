@@ -129,14 +129,20 @@
 --invisible --phony compare
 
 --command --once Rscript --input --once CompareStanFits.R
---output --once models/comparison_d_{0}.pdf
---input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)\.fit\.RData$
+--output --once models/comparison_d_{0}_c_{1}.pdf
+--input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-xA_Z_]*)\\.fit\\.RData$
 --invisible --phony plot
 --invisible --phony compare
 
 --command --once Rscript --input --once CompareStanFits.R
---output --once models/comparison_c_{1}.pdf
---input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)\.fit\.RData$
+--output --once models/comparison_c_{1}_e_{2}.pdf
+--input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-xA_Z_]*)\\.fit\\.RData$
+--invisible --phony plot
+--invisible --phony compare
+
+--command --once Rscript --input --once CompareStanFits.R
+--output --once models/comparison_d_{0}_e_{2}.pdf
+--input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-xA_Z_]*)\\.fit\\.RData$
 --invisible --phony plot
 --invisible --phony compare
 
@@ -261,45 +267,10 @@ $(abspath --output {0}.pdf ) pdf
 --command --output --invisible --match sensitivity-plot\.RData
 --output --invisible results.tex
 
-#some diagnostics
---command Rscript --input --match 'DiagnoseBadCalc\.R'
---input --invisible "models/d_soft_local_c_global.stan.RData"
---input --invisible "SoftMinModel.stan.RData"
---input --invisible "data.RData"
---input --invisible "motion_energy.csv"
---output --invisible "diagnose/fit_segment_manual.fit.RData"
---output --invisible "diagnose/fit_segment_subst.fit.RData"
---output --invisible "diagnose/fit_circle_manual.fit.RData"
---output --invisible "diagnose/fit_circle_subst.fit.RData"
---invisible --phony diagnose
-
 --command --once Rscript
 --input --once compareLogProbs.R
 --output --once models/compare_lp.pdf
 --input --match models/.*\\.fit\\.RData
---invisible --phony --once plot
-
-#and nominate the plots from those fits under "diagnose
---command --output --match --invisible diagnose(.*)\.pdf
---invisible --phony diagnose
-
-#and the coefficient comparisons...
---command --once Rscript --input --once CompareStanFits.R
---output --once diagnose/compare_{1}.pdf
---input --match --once '(.*(circle|segment).*)\.fit\.RData$'
---invisible --phony diagnose
-
-#And some plots of residuals...
---command --once Rscript --input --once modeling_resids.R
---output --once models/resids.pdf
---input --match models/.*\\.fit\\.RData$
---invisible --phony --once diagnose
---invisible --phony --once plot
-
---command --once Rscript --input --once modeling_resids.R
---output --once stuff_resids.pdf
---input --match SlopeModel_segment.*\\.fit\\.RData$
---invisible --phony --once diagnose
 --invisible --phony --once plot
 
 --command --once Rscript --input --once CompareStanFits.R

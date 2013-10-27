@@ -316,17 +316,16 @@ condition_prediction_plot <- function(predictions, data, match, conditions,
   facet.fmla <- switch(orientation,
                        down=subject ~ carrier.local + envelope.local,
                        over=carrier.local + envelope.local ~ subject)
-  if (!is.missing(match)) {
-    data <- merge(data, match)
-    predictions <- merge(predictions, match)
+  if (!missing(match)) {
+    data <- match_df(data, match)
+    predictions <- match_df(predictions, match)
   }
-  chain(conditions
-        , expanded.data=merge(data)
+  chain(data
         , plot.spacing %+% .
+        , +pred.spacing(predictions)
         , +facet_grid(facet.fmla, labeller=condition_facet_labeller)
-        , +density_prediction_layers(predictions)
-        , +labs(title="Predictions for Experiment 2 from Experiment 1")
-        , +errorbars(expanded.data,
+        , +labs(title="Predictions under locality/globality assumptions")
+        , +errorbars(data,
                      facet=c("carrier.local", "envelope.local", "subject")))
 }
 
@@ -359,13 +358,31 @@ condition_prediction_colormap_plot <- function(
  )
 }
 
+
+ifelna <- function(test, yes, no, na=NA) {
+    if (is.atomic(test)) 
+        storage.mode(test) <- "logical"
+    else test <- if (isS4(test)) 
+        as(test, "logical")
+    else as.logical(test)
+    ans <- test
+    ok <- !(nas <- is.na(test))
+    if (any(test[ok])) 
+        ans[test & ok] <- rep(yes, length.out = length(ans))[test & ok]
+    if (any(!test[ok])) 
+        ans[!test & ok] <- rep(no, length.out = length(ans))[!test & ok]
+    if (any(nas))
+        ans[nas] <- rep(na, length.out=length(ans))[nas]
+    ans
+}
+
 condition_facet_labeller <- function(var, value) {
   switch(
     var,
     carrier.local=
-    paste("Carrier", ifelse(value, "local", "global")),
+    ifelna(value, "Carrier local", "Carrier global", "Observed"),
     envelope.local=
-    paste("Envelope", ifelse(value, "local", "global")),
+    ifelna(value, "Envelope local", "Envelope global", ""),
     subject=paste("Observer", toupper(value)))
 }
 

@@ -81,6 +81,10 @@ optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {
 
 maxll <- mkchain(as.data.frame, .[which.max(.$lp__)[[1]],])
 
+colwise_se <- mkchain(colwise(sd)(.), put(names(.), paste0(names(.), ".sd")))
+
+colwise_se_frame <- mkchain(colwise(sd)(.))
+
 invoke <- function(data, f, ...) f %()% data
 
 interpolator <- function(
