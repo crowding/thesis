@@ -288,3 +288,13 @@ $(abspath --output {0}.pdf ) pdf
 --invisible --phony plot
 --invisible --phony check
 TRUE
+
+--command --once Rscript --input --once collect_times.R
+--output --once models/timings.RData
+--input --match .*\\.fit.RData
+--invisible --phony --once fit
+
+--command --once Rscript --input --once modeling_resids.R
+--output --once models/residuals.pdf
+--input --match .*\\.fit.RData
+--invisible --phony --once plot

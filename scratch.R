@@ -24,7 +24,17 @@ source_attach <- function(filename) {
 }
 source_attach("library.R")
 
+getOvershoots <- function(file="overshoots.txt") {
+  collection <- data.frame()
+  makeActiveBinding("overshoots", function(value) {
+    collection <<- rbind_fill(collection, value)
+  })
+  source(file, local=TRUE)
+}
 
+getOvershoots("overshoots.txt")
+
+bind[a=b, b=c] <- {print("what"); list(a=1, b=2)}
 
 A <- load2env("diagnose/fit_circle_manual.fit.RData")
 B <- load2env("diagnose/fit_circle_subst.fit.RData")

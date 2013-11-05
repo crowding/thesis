@@ -15,9 +15,14 @@ main <- function(infile, outfile) {
     base::source("stanFunctions.R", local=TRUE)
     base::source(infile, local=TRUE)
 
-    model <- memoizedCall(stan_model,
-                          model_name=strip_extension(infile),
-                          model_code=model_code)
+    hash <- list("stan_model",
+                 model_name=strip_extension(infile),
+                 model_code=model_code,
+                 stan_version=packageVersion("rstan"))
+    ((model <- loadCache(hash)) %||%
+     ammoc(model <- stan_model(model_name=strip_extension(infile),
+                               model_code=model_code),
+           saveCache(model, hash)))
     save(file=outfile, list=ls())
   })
 }

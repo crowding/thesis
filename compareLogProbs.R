@@ -6,58 +6,59 @@ library(vadr)
 
 source("library.R")
 
-files <-
+
+test <- function() {
+  files <-
     c("models/d_soft_local_c_global_e_none.fit.RData",
-    "models/d_soft_global_c_global_e_none.fit.RData",
-    "models/d_soft_hemi_c_global_e_none.fit.RData",
-    "models/d_soft_local_c_hemi_e_none.fit.RData",
-    "models/d_soft_global_c_hemi_e_none.fit.RData",
-    "models/d_soft_hemi_c_hemi_e_none.fit.RData",
-    "models/d_soft_windowed_c_hemi_e_none.fit.RData",
-    "models/d_soft_local_c_local_e_none.fit.RData",
-    "models/d_soft_global_c_local_e_none.fit.RData",
-    "models/d_soft_hemi_c_local_e_none.fit.RData",
-    "models/d_soft_local_c_windowed_e_none.fit.RData",
-    "models/d_soft_hemi_c_windowed_e_none.fit.RData",
-    "models/d_soft_local_c_global_e_R.fit.RData",
-    "models/d_soft_global_c_global_e_R.fit.RData",
-    "models/d_soft_hemi_c_global_e_R.fit.RData",
-    "models/d_soft_local_c_hemi_e_R.fit.RData",
-    "models/d_soft_global_c_hemi_e_R.fit.RData",
-    "models/d_soft_hemi_c_hemi_e_R.fit.RData",
-    "models/d_soft_windowed_c_hemi_e_R.fit.RData",
-    "models/d_soft_local_c_local_e_R.fit.RData",
-    "models/d_soft_global_c_local_e_R.fit.RData",
-    "models/d_soft_hemi_c_local_e_R.fit.RData",
-    "models/d_soft_local_c_windowed_e_R.fit.RData",
-    "models/d_soft_hemi_c_windowed_e_R.fit.RData",
-    "models/d_soft_local_c_global_e_A.fit.RData",
-    "models/d_soft_global_c_global_e_A.fit.RData",
-    "models/d_soft_hemi_c_global_e_A.fit.RData",
-    "models/d_soft_local_c_hemi_e_A.fit.RData",
-    "models/d_soft_global_c_hemi_e_A.fit.RData",
-    "models/d_soft_hemi_c_hemi_e_A.fit.RData",
-    "models/d_soft_windowed_c_hemi_e_A.fit.RData",
-    "models/d_soft_local_c_local_e_A.fit.RData",
-    "models/d_soft_global_c_local_e_A.fit.RData",
-    "models/d_soft_hemi_c_local_e_A.fit.RData",
-    "models/d_soft_local_c_windowed_e_A.fit.RData",
-    "models/d_soft_hemi_c_windowed_e_A.fit.RData",
-    "models/d_soft_local_c_global_e_RA.fit.RData",
-    "models/d_soft_global_c_global_e_RA.fit.RData",
-    "models/d_soft_hemi_c_global_e_RA.fit.RData",
-    "models/d_soft_local_c_hemi_e_RA.fit.RData",
-    "models/d_soft_global_c_hemi_e_RA.fit.RData",
-    "models/d_soft_hemi_c_hemi_e_RA.fit.RData",
-    "models/d_soft_local_c_local_e_RA.fit.RData",
-    "models/d_soft_global_c_local_e_RA.fit.RData",
-    "models/d_soft_hemi_c_local_e_RA.fit.RData",
-    "models/d_soft_local_c_windowed_e_RA.fit.RData",
-    "models/d_soft_hemi_c_windowed_e_RA.fit.RData")
+      "models/d_soft_global_c_global_e_none.fit.RData",
+      "models/d_soft_hemi_c_global_e_none.fit.RData",
+      "models/d_soft_local_c_hemi_e_none.fit.RData",
+      "models/d_soft_global_c_hemi_e_none.fit.RData",
+      "models/d_soft_hemi_c_hemi_e_none.fit.RData",
+      "models/d_soft_windowed_c_hemi_e_none.fit.RData",
+      "models/d_soft_local_c_local_e_none.fit.RData",
+      "models/d_soft_global_c_local_e_none.fit.RData",
+      "models/d_soft_hemi_c_local_e_none.fit.RData",
+      "models/d_soft_local_c_windowed_e_none.fit.RData",
+      "models/d_soft_hemi_c_windowed_e_none.fit.RData",
+      "models/d_soft_local_c_global_e_R.fit.RData",
+      "models/d_soft_global_c_global_e_R.fit.RData",
+      "models/d_soft_hemi_c_global_e_R.fit.RData",
+      "models/d_soft_local_c_hemi_e_R.fit.RData",
+      "models/d_soft_global_c_hemi_e_R.fit.RData",
+      "models/d_soft_hemi_c_hemi_e_R.fit.RData",
+      "models/d_soft_windowed_c_hemi_e_R.fit.RData",
+      "models/d_soft_local_c_local_e_R.fit.RData",
+      "models/d_soft_global_c_local_e_R.fit.RData",
+      "models/d_soft_hemi_c_local_e_R.fit.RData",
+      "models/d_soft_local_c_windowed_e_R.fit.RData",
+      "models/d_soft_hemi_c_windowed_e_R.fit.RData",
+      "models/d_soft_local_c_hemi_e_RE.fit.RData",
+      "models/d_soft_local_c_global_e_A.fit.RData",
+      "models/d_soft_hemi_c_global_e_A.fit.RData",
+      "models/d_soft_local_c_hemi_e_A.fit.RData",
+      "models/d_soft_global_c_hemi_e_A.fit.RData",
+      "models/d_soft_hemi_c_hemi_e_A.fit.RData",
+      "models/d_soft_windowed_c_hemi_e_A.fit.RData",
+      "models/d_soft_local_c_local_e_A.fit.RData",
+      "models/d_soft_global_c_local_e_A.fit.RData",
+      "models/d_soft_hemi_c_local_e_A.fit.RData",
+      "models/d_soft_local_c_windowed_e_A.fit.RData",
+      "models/d_soft_hemi_c_windowed_e_A.fit.RData",
+      "models/d_soft_local_c_hemi_e_AE.fit.RData",
+      "models/d_soft_local_c_global_e_RA.fit.RData",
+      "models/d_soft_global_c_global_e_RA.fit.RData",
+      "models/d_soft_hemi_c_global_e_RA.fit.RData",
+      "models/d_soft_global_c_hemi_e_RA.fit.RData",
+      "models/d_soft_hemi_c_hemi_e_RA.fit.RData",
+      "models/d_soft_local_c_local_e_RA.fit.RData",
+      "models/d_soft_global_c_local_e_RA.fit.RData",
+      "models/d_soft_hemi_c_local_e_RA.fit.RData",
+      "models/d_soft_local_c_windowed_e_RA.fit.RData",
+      "models/d_soft_hemi_c_windowed_e_RA.fit.RData")
 
-plotfile <- "models/compare_lp.pdf"
+  plotfile <- "models/compare_lp.pdf"
 
-if (FALSE) {
   main %<<% dots(plotfile=plotfile, pdfout=TRUE) %()% files
 }
 
@@ -66,14 +67,15 @@ main <- function(plotfile, ..., pdfout=!interactive()) {
   if (pdfout) {
     cat("Outputting to ", plotfile, "\n")
     cairo_pdf(plotfile, width=18, height=24, onefile=TRUE)
-    on.exit(dev.off())
   }
   if (!exists("logprobs")) {
     logprobs <- getprobs(files)
   }
   collapsed_plots(logprobs)
   violin_plots(logprobs)
-  dev.off()
+  if (pdfout) {
+    dev.off()
+  }
 }
 
 
@@ -122,7 +124,7 @@ label_varvalue <- function(variable, value) {
   paste(variable, "=", value)
 }
 
-violin_plots <- function(samples) {
+violin_plots <- function(samples, fix=NULL) {
   #shows the posterior distributions over each parameter for each subject
   plots <- chain(
     cor = c("displacement", "carrier", "subject", "endpoint"),
@@ -130,15 +132,26 @@ violin_plots <- function(samples) {
                 stringsAsFactors=FALSE),
     .[apply(., 1, function(x) length(setdiff(cor, x)) == 0), ])
 
+  if (!is.null(fix)) {
+    plots <- subset(plots, fixvar %in% names(fix))
+  }
+
   dlply_along(plots, .(fixvar), function(vargroup, varchunk) {
     varchunk$row <- seq_len(nrow(varchunk))
     #generate a page for each value of vargroup
 
     ddply_along(samples, vargroup$fixvar[[1]], function(fixgroup, samps) {
       fixgroup <- unfactor(fixgroup)
+      if (!is.null(fix)
+          && !((names(fixgroup)[[1]] %in% names(fix))
+               && (fixgroup[[1]] %in% fix[[names(fixgroup)[[1]]]]))) {
+        return()
+      }
+      browser()
       #a row for each in vargroup
+
       label <- str_match(deparse(fixgroup, control=c()), '\\((.*)\\)')[,2]
-      cat(label, "\n")
+      message(label)
       samps <- normalize(samps)
       optimized <- subset(samps, class=="optimized")
       samps <- subset(samps, class=="sample")
@@ -159,7 +172,7 @@ violin_plots <- function(samples) {
           + geom_point(data=optimized, shape=4)
           + geom_line(data=optimized, size=0.5, linetype="11", alpha=0.5,
                       aes(group=`.(colorvar)`))
-          + coord_trans(ytrans=asinh_trans(), limy = orng * 1.1)
+          + coord_trans(ytrans=asinh_trans(), limy = orng * 1.1 + c(-1, 0))
           + scale_y_continuous(breaks=trans_breaks("asinh", "sinh", 5))
           + theme_bw(9)
           + theme(panel.grid.major = element_blank(),
@@ -215,7 +228,7 @@ collapsed_plots <- function(samples) {
       + geom_point(data=optimized, shape=4)
       + geom_line(data=optimized, size=0.5, linetype="11", alpha=0.5,
                   aes(group=`.(colorvar)`))
-      + coord_trans(ytrans=asinh_trans(), limy = orng * 2)
+      + coord_trans(ytrans=asinh_trans(), limy = orng * 2 + c(-1, 0))
       + scale_y_continuous(breaks=trans_breaks("asinh", "sinh", 5))
       + theme_bw(9)
       + theme(panel.grid.major = element_blank(),
@@ -228,7 +241,6 @@ collapsed_plots <- function(samples) {
   grid.newpage()
   grid.draw(table)
 }
-
 
 normalize <- function(samples, group=c()) {
   samples <- ddply(samples, c("subject", group), mutate, lp__ = lp__ - max(lp__))

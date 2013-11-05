@@ -1,12 +1,12 @@
- suppressPackageStartupMessages({
+suppressPackageStartupMessages({
   library(vadr)
   library(plyr)
   library(rstan)
   library(knitr)
   library(R.cache)
   source("library.R")
+  set_cppo('fast')
 })
-set_cppo('fast')
 
 #displacement
 scenarios <- list(
@@ -346,6 +346,28 @@ scenarios <- list(
       endpoint_R_computation=alist(
         n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
         carrier_factor <- carrier_factor + (n_endpoints * endpoint_repulsion))),
+    RE=list(
+      #repulsive with extent factor
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_repulsion;
+          real<lower=-10, upper=10> extent_summation;',
+      endpoint_parameter_name=c("endpoint_repulsion", "extent_summation"),
+      endpoint_var = '
+          real n_endpoints;
+          real e_extent;',
+      endpoint_computation= '
+          e_extent <- (0.0 + target_number_shown[n]) / target_number_all[n];
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <- carrier_factor + n_endpoints * endpoint_repulsion
+            + e_extent * extent_summation * target_number_shown[n] * content[n];',
+      endpoint_R_computation=alist(
+        e_extent <- target_number_shown / target_number_all,
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- carrier_factor + (
+          n_endpoints * endpoint_repulsion
+          + e_extent * extent_summation * target_number_shown * content))),
     A=list(
       #additive
       endpoint_parameter = '
@@ -363,6 +385,29 @@ scenarios <- list(
         n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
         carrier_factor <- carrier_factor + (
           n_endpoints * endpoint_summation * target_number_shown))),
+    AE=list(
+      #additive with extent factor
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_summation;
+          real<lower=-10, upper=10> extent_summation;',
+      endpoint_parameter_name=c("endpoint_summation", "extent_summation"),
+      endpoint_var = '
+          real n_endpoints;
+          real e_extent;',
+      endpoint_computation= '
+          e_extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <- carrier_factor
+            + n_endpoints * endpoint_summation * target_number_shown[n]
+            + e_extent * extent_summation * target_number_shown[n] * content[n];',
+      endpoint_R_computation=alist(
+        e_extent <- target_number_shown / target_number_all,
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- carrier_factor + (
+          n_endpoints * endpoint_summation * target_number_shown
+          + e_extent * extent_summation * target_number_shown * content))),
     RA=list(
       #repulsive and
       endpoint_parameter = '
@@ -384,7 +429,34 @@ scenarios <- list(
         carrier_factor <- (
           target_number_shown * carrier_sensitivity
           + n_endpoints * endpoint_repulsion
-          + n_endpoints * endpoint_summation * target_number_shown)))))
+          + n_endpoints * endpoint_summation * target_number_shown))),
+    RAE=list(
+      #repulsive and additive with extent factor
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_repulsion;
+          real<lower=-100, upper=100> endpoint_summation;
+          real<lower=-10, upper=10> extent_summation;',
+      endpoint_parameter_name=c(
+        "extent_repulsion", "endpoint_summation", "extent_summation"),
+      endpoint_var = '
+          real n_endpoints;
+          real e_extent;',
+      endpoint_computation= '
+          e_extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <- carrier_factor
+            + n_endpoints * endpoint_summation * target_number_shown[n]
+            + e_extent * extent_summation * target_number_shown[n] * content[n]
+            + n_endpoints * endpoint_repulsion;',
+      endpoint_R_computation=alist(
+        e_extent <- target_number_shown / target_number_all,
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- carrier_factor + (
+          n_endpoints * endpoint_summation * target_number_shown
+          + n_endpoints * endpoint_repulsion
+          + e_extent * extent_summation * target_number_shown * content)))))
 
 modelTemplate <- '
 data {
@@ -559,9 +631,15 @@ otherFunctions <- quote({
 })
 
 #these models screw up in some way and I omit them from taking up computer time.
+#...
 losers <- c(
+  "d_(?:soft_windowed|soft_hemi|soft_global)_c_.*_e_(?:RE|AE|RAE|RR)",
+  "d_.*_c_(?:windowed|local|global)_e_(?:RE|AE|RAE|RR)",
   "d_soft_global_c_windowed_e.*",
 
+  "d_soft_local_c_hemi_e_RA",
+  "d_soft_global_c_global_e_A",
+  
   "d_soft_windowed_c_endpoints_e.*",
   "d_soft_windowed_c_global_e.*",
   "d_soft_windowed_c_global_e.*",
@@ -617,9 +695,15 @@ using <- function(conn, fn) {
 
 compileModelEnv <- function(envir, listing_file) {
   filename <- paste0("models/", envir$model_name, ".stan.RData")
-  envir$model <- memoizedCall(stan_model, verbose=TRUE,
-                              model_name=envir$model_name,
-                              model_code=envir$model_code)
+  hash <- list("stan_model",
+               model_name=envir$model_name,
+               model_code=envir$model_code,
+               stan_version=packageVersion("rstan"))
+  ((model <- loadCache(hash)) %||%
+   ammoc(model <- stan_model(model_name=envir$model_name,
+                             model_code=envir$model_code),
+         saveCache(model, hash)))
+  envir$model <- model
   save(file=filename, list=ls(envir), envir=envir)
   message(envir$model_name)
   filename
@@ -637,6 +721,7 @@ main <- function(outfile='NineModels.list') {
           unlist,
           writeLines(outconn))
   })
+  unlink("overshoots.txt")
 }
 
 filter_models <- mkchain(

@@ -1,9 +1,11 @@
-library(grid)
-library(ggplot2)
-library(plyr)
-library(vadr)
-source("library.R")
-source("stan_predictor.R")
+suppressPackageStartupMessages({
+  library(grid)
+  library(ggplot2)
+  library(plyr)
+  library(vadr)
+  source("library.R")
+  source("stan_predictor.R")
+})
 
 fitfile <- "models/d_soft_local_c_repulsive_endpoints.fit.RData"
 
@@ -26,6 +28,7 @@ main <- function(outfile="checks/models/d_soft_local_c_repulsive_endpoints.pdf",
     }
   } else {
     message("No link information found!")
+    grid.newpage()
   }
 }
 

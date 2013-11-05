@@ -1,3 +1,5 @@
+library(digest)
+library(R.cache)
 library(scales)
 library(grid)
 library(rstan)
@@ -57,7 +59,7 @@ collect_fit_data <- function(model, extract,
                           melt(id.vars=c(".n", identifiers)), #long format
                           unfactor
                           )),
-        rbind.fill %()% .) 
+        rbind.fill %()% .)
 }
 
 violinPlot <- function(samples, optimized) {
@@ -213,9 +215,24 @@ crossPlots <- function(samples, optimized) {
 }
 
 main <- function(outfile, ...) {
+  filehashes <- lapply(list(...), digest, file=TRUE)
+  if (file.exists(outfile)) {
+    outhash <- digest(outfile, file=TRUE)
+    x <- loadCache(key=filehashes)
+    if (identical(x, outhash)) {
+      print("match found")
+      touchFile(outfile)
+      return(NULL)
+    }
+  }
+
   cairo_pdf(width=10.5, height=8, outfile, onefile=TRUE)
   on.exit(dev.off, add=TRUE)
   plotStanFits(c(...))
+  dev.off()
+
+  outhash <- digest(outfile, file=TRUE)
+  saveCache(outhash, key=filehashes)
 }
 
 try_command <- mkchain(strsplit(" +"), unlist, .[-1:-2], main %()% .)

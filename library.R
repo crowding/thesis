@@ -109,7 +109,7 @@ predict_from_model_frame <- function(
 }
 
 predict_from_model <- function(
-  model, newdata=model$data, se.fit=TRUE) {
+  model, newdata=quickdf(as.list(model$data)), se.fit=TRUE) {
   #chunk prediction because predict.gnm does something odd
   newdata$.chunk <- floor(seq_len(nrow(newdata))/1000)
   ddply(newdata, ".chunk",

@@ -238,7 +238,7 @@ spacing_texture_scale <-
 spacing_shape_scale <-
     list(
       aes(shape=factor(spacing)),
-       scale_shape_manual("Spacing", labels=prettyprint, values=c(11, 6, 2, 0, 5, 1))
+       scale_shape_manual("Spacing", labels=prettyprint, values=c(11, 5, 0, 2, 6, 1))
       )
 
 spacing_scale_x <-
