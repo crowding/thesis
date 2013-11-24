@@ -897,5 +897,263 @@ reference "sub:results-induced-modeling"
 
 \end_layout
 
+\begin_layout Subsection
+Number and spacing
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:everything-numdensity"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:numdensity-data"
+
+\end_inset
+
+ Data from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:density"
+
+\end_inset
+
+, after 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-measurements"
+
+\end_inset
+
+ Vertical axis measures the proportion of responding 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to a stimulus, while the horizontal axis measures inter-element spacing;
+ colors and labels show the number of moving elements shown.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:density-methods"
+
+\end_inset
+
+ for details.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-summation"
+
+\end_inset
+
+ depicts the repulsion to carrier motion 
+\begin_inset Formula $M_{I}$
+\end_inset
+
+ for all observers who participated in the experiment.
+ The construction is described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:results-repulsion"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:numdensity-quad-predictions"
+
+\end_inset
+
+ Data from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:density"
+
+\end_inset
+
+, after 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-measurements"
+
+\end_inset
+
+ Vertical axis measures the proportion of responding 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to a stimulus, while the horizontal axis measures inter-element spacing;
+ colors and labels show the number of moving elements shown.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:density-methods"
+
+\end_inset
+
+ for details.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%numdensity
+\end_layout
+
+\begin_layout Plain Layout
+
+<<everything-numdensity,fig.width=7,fig.height=7,cache.extra=file.info("density-save.
+RData",message=FALSE)$mtime>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+load("density-save.RData")
+\end_layout
+
+\begin_layout Plain Layout
+
+invisible(lapply(ls(),function(x) assign(x, get(x), globalenv()))) #make
+ everything global
+\end_layout
+
+\begin_layout Plain Layout
+
+grid.draw(density.data.plot)
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:everything-number-density"
+
+\end_inset
+
+ Data from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+; The experiment is described in strength of the repulsion effect as a function
+ of carrier strength.
+ This is a version of 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-induced-model-plot"
+
+\end_inset
+
+ showing all observers; see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-induced-modeling"
+
+\end_inset
+
+ for details on construction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \end_body
 \end_document

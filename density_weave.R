@@ -181,7 +181,107 @@ density.example.dataset <- subset(segment.folded.spindled.mutilated,
  + theme(aspect.ratio=1)
  + errorbars(density.example.dataset))
 
+density.data.plot <-
+    chain(plot.spacing %+% segment.folded.spindled.mutilated,
+          + theme(aspect.ratio=1),
+          + errorbars(segment.folded.spindled.mutilated),
+          ggplotGrob)
+
 ##plot with spacing...
+
+## @knitr density-extent-interaction
+
+extent.models <- chain(
+  segment,
+  subset(abs(content) > 0 & displacement/sign(content) < 0.45),
+  ddply("subject", summarize, model=I(list(glm(
+    cbind(n_cw, n_ccw) ~ content:(spacing*target_number_shown)+content,
+    family=binomial(link=logit))))))
+
+extent.fmlas <- list(
+  interaction=(
+    cbind(n_cw, n_ccw) ~ content:(spacing*target_number_shown)+content),
+  interaction.no.spacing=(
+    cbind(n_cw, n_ccw) ~ content:spacing:target_number_shown
+    + content:spacing+content),
+  interaction.no.number=(
+    cbind(n_cw, n_ccw) ~ content:spacing:target_number_shown
+    + content:target_number_shown+content),
+  full=(
+    cbind(n_cw, n_ccw)
+    ~ content:(factor(interaction(spacing, target_number_shown)))+content),
+  null=(
+    cbind(n_cw, n_ccw)
+    ~ content:spacing + content:target_number_shown + content),
+  full.number=(
+    cbind(n_cw, n_ccw)
+    ~ content:spacing + content:factor(target_number_shown) + content),
+  full.spacing=(
+    cbind(n_cw, n_ccw)
+    ~ content:factor(spacing) + content:target_number_shown + content),
+  null.number=(
+    cbind(n_cw, n_ccw) ~ content:spacing + content),
+  null.spacing=(
+    cbind(n_cw, n_ccw) ~ content:factor(target_number_shown) + content))
+
+extent.models <- chain(
+  segment,
+  subset(abs(content) > 0 & displacement/sign(content) < 0.45),
+  ddply("subject", function(x) {
+    quickdf(lapply(
+      extent.fmlas,
+      function(f)(I(list(glm(f, data=x, family=binomial(link=logit)))))))
+  }))
+
+if (FALSE) {
+  extent.preds <- chain(
+    extent.models,
+    rename(c("interaction"="model")),
+    .[c("subject", "model")],
+    predict_from_model_frame(collapse=TRUE))
+  (plot.number %+% segment.folded.spindled.mutilated
+   + prediction_layer(extent.preds))
+}
+
+lp.frame <- function(frame) {
+  colwise(function(col) {
+    if(is.list(col) && ("lm" %in% class(col[[1]]))) {
+      vapply(col, logLik, 0)
+    } else(col)
+  })(frame)
+}
+
+extent.lp.frame <- lp.frame(extent.models)
+extent.lp <- numcolwise(sum)(extent.lp.frame)
+pseudo_r2 <- function(frame, null, model, full) {
+  (frame[[model]]-frame[[null]]) / (frame[[full]]-frame[[null]])
+}
+
+r2.interaction <- pseudo_r2(extent.lp, "null", "interaction", "full")
+r2.spacing <- pseudo_r2(extent.lp, "null.spacing", "null", "full.spacing")
+r2.number <- pseudo_r2(extent.lp, "null.number", "null", "full.number")
+
+extent.coefs <- chain(
+  extent.models,
+  .[c("subject", "interaction")],
+  rename(c("interaction"="model")),
+  adply(., 1, mkchain(.$model[[1]], summary, .$coefficients,
+                      as.data.frame, mutate(., coef=rownames(.), model=NA))),
+  rename(c(`Pr(>|z|)`="p", "Estimate"="est", `Std. Error`="se", "z value"="z")),
+  subset(coef=="content:spacing:target_number_shown"))
+
+extract_pvals <- mkchain(
+  x=.,
+  drop_columns(extent.models, names(extent.fmlas) %-% .),
+  rename(structure("model", names=x)),
+  adply(., 1, mkchain(.$model[[1]], summary, .$coefficients,
+                      as.data.frame, mutate(., coef=rownames(.), model=NA))),
+  rename(c(`Pr(>|z|)`="p", "Estimate"="est", `Std. Error`="se", "z value"="z")),
+  drop_columns(c("est", "se", "z", "model")),
+  dcast(subject ~ coef, value.var="p"))
+
+extract_pvals("null") -> null.pvals
+extract_pvals("interaction.no.spacing")
 
 ## @knitr density-pred-modelfiles
 ##Here's how I should make this more sensible, plot "actual" as another row.
@@ -189,8 +289,8 @@ density.example.dataset <- subset(segment.folded.spindled.mutilated,
 quad.modelfiles <- chain(
   data.frame(carrier.local=c(TRUE, TRUE, FALSE, FALSE),
              envelope.local=c(TRUE,FALSE, TRUE, FALSE)),
-  mutate(carrier.name=ifelse(carrier.local, "local", "global"),
-         envelope.name=ifelse(envelope.local, "local", "global")),
+  mutate(carrier.name=ifelse(carrier.local, "local", "hemi"),
+         envelope.name=ifelse(envelope.local, "local", "hemi")),
   mutate(modelfile=paste0("models/d_soft_", envelope.name, "_c_",
                           carrier.name, "_e_none.fit.RData")))
 
@@ -212,25 +312,8 @@ quad.preds <- chain(
         fold=TRUE, spindle=TRUE, collapse=TRUE))
 
 ## @knitr density-predict-plot
-pred.spacing <- function(data) {
-  list(
-    aes(x=spacing,
-        group=factor(target_number_shown),
-        label=target_number_shown,
-        color=factor(target_number_shown),
-        fill=factor(target_number_shown)),
-    geom_line(data=data, aes(y=fit)),
-    geom_line(data=data, aes(y=fit)),
-    geom_point(data=data, aes(y=fit), color="white", size=2),
-    geom_ribbon(data=data, color="transparent", alpha=0.2,
-                aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
-    geom_text(data=data, aes(y=fit), size=2.5),
-    labs(x="Spacing"))
-}
-
 quad.match <- merge(data.frame(subject=density.example.subjects),
                     rbind.fill(quad.conditions, data.frame(carrier.local=NA)))
-
 
 (condition_prediction_plot(
   quad.preds,
@@ -239,48 +322,51 @@ quad.match <- merge(data.frame(subject=density.example.subjects),
   match=quad.match,
   orientation="over",
   conditions=quad.conditions)
-  + theme(aspect.ratio=1))
+ + theme(aspect.ratio=1,
+         title=element_text(size=rel(1)))
+ + labs(title="Predictions under locality/globality scenarios"))
 
-##
+all.match <- merge(data.frame(subject=unique(segment$subject)),
+                    rbind.fill(quad.conditions, data.frame(carrier.local=NA)))
 
-## and calculate deviances
-unadjusted.deviances <- chain(quad.models,
-                   ddply(c("subject", names(quad.conditions)),
-                         summarize,
-                         deviance=vapply(model, chain, 0, extractAIC, `[`(2))),
-                   acast(carrier.local ~ envelope.local ~ subject, sum,
-                         value.var="deviance", margins=),
-                   put(names(dimnames(.)),
-                       c("carrier.local", "envelope.local", "subject")))
+chain(
+  condition_prediction_plot(
+    quad.preds,
+    data = mutate(segment.folded.spindled.mutilated,
+                  carrier.local=NA, envelope.local =NA),
+    match=all.match,
+    orientation="down",
+    conditions=quad.conditions),
+  + theme_bw(10),
+  + theme(aspect.ratio=1,
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()),
+  + labs(title="Predictions under locality/globality scenarios"),
+  ggplotGrob) -> all.quad.prediction.plot
 
-unadjusted.winner <- chain(unadjusted.deviances,
-                           apply(names(quad.conditions), sum),
-                           melt(value.name="deviance"),
-                           arrange(deviance))
+if(FALSE) {
+  grid.newpage(); grid.draw(all.quad.prediction.plot)
+}
 
-each.unadjusted.winner <- chain(unadjusted.deviances,
-                                melt(value.name="deviance"),
-                                ddply(., "subject", chain,
-                                      arrange(deviance), .[1,]))
+## @knitr density-predict-likelihoods
+quad.subject.lls <- chain(
+  quad.models,
+  adply(., 1, mkchain(.$model[[1]]$fits,
+                      mutate(ll=vapply(optimized, `[[`, 0, "lp__"),
+                             model=NA, fit=NA, optimized=NA))),
+  drop_columns(c("model", "fit", "optimized", "modelfile")))
 
-adj.deviances <- chain(adj.models,
-                   ddply(c("subject", names(quad.conditions)),
-                         summarize,
-                         deviance=vapply(model, chain, 0, extractAIC, `[`(2))),
-                   acast(carrier.local ~ envelope.local ~ subject, sum,
-                         value.var="deviance", margins=),
-                   put(names(dimnames(.)),
-                       c("carrier.local", "envelope.local", "subject")))
+quad.sum.lls <- chain(
+  quad.subject.lls,
+  ddply(c("carrier.local", "envelope.local"),
+        numcolwise(sum)),
+  arrange(desc(ll)))
 
-adj.winner <- chain(adj.deviances,
-                           apply(names(quad.conditions), sum),
-                           melt(value.name="deviance"),
-                           arrange(deviance))
-
-each.adj.winner <- chain(unadjusted.deviances,
-                         melt(value.name="deviance"),
-                         ddply(., "subject", chain,
-                               arrange(deviance), .[1,]))
+best.subject.lls <- chain(
+  quad.subject.lls,
+  ddply("subject", mkchain(
+    arrange(desc(ll)),
+    `[`(1,))))
 
 ## @knitr density-combined-model
 source("combined.model.R")
@@ -300,3 +386,8 @@ source("combined.model.R")
   subset(selected.fits, subject %in% density.example.subjects),
   combined.data)
  + theme(aspect.ratio=1))
+
+## @density-save
+save(file="density-save.RData",
+     all.quad.prediction.plot,
+     density.data.plot)

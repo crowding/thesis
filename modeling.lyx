@@ -614,7 +614,7 @@ These three components contribute to the modeled subjects' responses according
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=(1-\lambda)\mathrm{logit}(M_{\Delta}+M_{S}+M_{I}+k)+\frac{\lambda}{2}
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\left(1-\lambda\right)\mathrm{logit}\left(M_{\Delta}+M_{S}+M_{I}+k\right)+\frac{\lambda}{2}
 \]
 
 \end_inset

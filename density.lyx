@@ -85,7 +85,7 @@ knitr
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -142,7 +142,7 @@ external=TRUE,results="hide",echo=FALSE,stop_on_error=2L)
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -175,7 +175,7 @@ read_chunk("density_weave.R")
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -203,7 +203,7 @@ status open
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -239,7 +239,7 @@ name "sec:results-number"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -637,6 +637,13 @@ We also chose left versus right...
 
 \begin_layout Subsection
 Methods
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:density-methods"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1247,7 +1254,7 @@ reference "fig:results-contours"
  Some observers were tested using more than one value of envelope displacement
  and/or carrier strength, but results were qualitatively similar between
  the configurations tested, so I show them here averaged over the different
- stimuli used (while our modeling still accounts for the particular values
+ stimuli used (while the modeling still accounts for the particular values
  used.)
 \end_layout
 
@@ -1350,7 +1357,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -1403,6 +1410,7 @@ reference "sec:results-number"
  strength and element number) held constant.
  Colors indicate different numbers of elements on the display.
  Error bars show the standard error at each data point (same for all points.)
+ The 
 \end_layout
 
 \end_inset
@@ -1461,24 +1469,273 @@ clockwise
 \end_inset
 
  to a stimulus at a particular value of spacing and of element number, with
- the spacing values organized along the x-axis and the response rates along
- the y-axis.
- The response patterns of these two observers appear very different.
+ the spacing values indicated on the horizontal axis and element numbers
+ indicated by color.
+ The response patterns of these two observers appear different.
  NJ's response probability changes little with element spacing, while being
  greatly affected by changes in element number.
  PBM, on the other hand, appears to change his response probability along
  with changes in spacing, while being little affected by changes in element
  number.
  However, there are also common patterns.
- There does not appear to be much interaction between spacing and slope;
- the lines traced out by changing spacing at a smaller number of elements
- parallel the lines traced out by changing spacing at a larger number of
- elements, although the two lines may be offset with respect to each other.
+ Clearly PBM has a higher sensitivity to changes in spacing, while NJ has
+ a higher sensitivity to changes in element number (for the particular stimulus
+ values used.) In both cases there does not appear to be much interaction
+ between spacing and element number; the lines traced out by changing spacing
+ at a smaller number of elements are roughly parallel to the lines traced
+ out by changing spacing at a larger number of elements;
 \end_layout
 
 \begin_layout Standard
+The model constructed in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:modeling"
+
+\end_inset
+
+ predicts that there will be a progressive change in sensitivity to envelope
+ motion as a function of spacing (or number) and there will be a change
+ in sensitivity to carrier motion based on changes in the number or elements
+ (or their spacing).
+ Thus, as either spacing or number changes, the proportion of responses
+ clockwise will progressively change, with the amount of change dependent
+ on the observer's particular sensitivity to envelope and carrier motion
+ and the particular stimulus parameters.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-extent-interaction
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-extent-interaction>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A logistic regression model was used to check these qualitative predictions.
+ Considering only the data from 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+, the data may be empirically fit by a logistic regression; for fixed values
+ of carrier and envelope motion, a simple regression model is 
+\begin_inset Formula 
+\[
+\Pr\left(\mathrm{clockwise}\right)=\mathrm{logit}\left(\beta_{N}CN+\beta_{S}CS+\beta_{E}CNS+\beta_{0}C+I\right),
+\]
+
+\end_inset
+
+where, 
+\begin_inset Formula $\beta_{N}$
+\end_inset
+
+ controls the change in motion sensitivity as a function of element number,
+ 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ the sensitivity as a function of spacing, 
+\begin_inset Formula $\beta_{E}$
+\end_inset
+
+ the interaction term due to the stimulus extent.
+ 
+\begin_inset Formula $\beta_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $I$
+\end_inset
+
+ are intercept and bias terms.
+ Note that each term includes a factor of 
+\begin_inset Formula $C$
+\end_inset
+
+, whose sign randomly alternates from trial to trial; the regression is
+ modeling the response to carrier motion strength in terms of the number
+ of elements and the spacing.
+ (The spatial displacement can be omitted for this regression, because it
+ always has same relation to carrier motion strength in this data, and each
+ data point is tested with the same set of values.) 
+\end_layout
+
+\begin_layout Standard
+The quality of fit for 
+\begin_inset Formula $\beta_{N}$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ are quite good, achieving 
+\begin_inset Formula $R_{L}^{2}$
+\end_inset
+
+ scores of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{latex.format(r2.number, digits=2)}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{latex.format(r2.spacing, digits=2)}
+\end_layout
+
+\end_inset
+
+, respectively, aggregated over all observers (as described in 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-goodness"
+
+\end_inset
+
+, these values compare the model against a null model with constant effect
+ and a full model saturated over each value of the given variable.) In the
+ absence of an interaction term, 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ was found significantly different from zero at the 
+\begin_inset Formula $p<0.05$
+\end_inset
+
+ level for 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(null.pvals$`content:target_number_shown` < 0.05)}
+\end_layout
+
+\end_inset
+
+/
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{nrow(null.pvals)}
+\end_layout
+
+\end_inset
+
+ observers, and 
+\begin_inset Formula $\beta_{N}$
+\end_inset
+
+ significantly differed from zero for 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(null.pvals$`content:spacing` < 0.05)}
+\end_layout
+
+\end_inset
+
+/
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{nrow(null.pvals)}
+\end_layout
+
+\end_inset
+
+ observers.
+ Thus the response rates depend on both spacing and number.
+ The support for the interaction term 
+\begin_inset Formula $\beta_{E}$
+\end_inset
+
+ is weaker.
+ When models included the interaction term, the resulting coefficients varied
+ in sign, and aggregated over all observers only obtained a 
+\begin_inset Formula $R_{L}^{2}$
+\end_inset
+
+ score of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{latex.format(r2.interaction, digits=2)}
+\end_layout
+
+\end_inset
+
+.
+ Thus the prediction that responses should be characterized by dependence
+ on number and spacing without much interaction appear to hold.
+ In the next section I will evaluate how quantitative model fit may account
+ for data from both this experiment and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+.
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 At first glance 
@@ -1510,33 +1767,175 @@ reference "sec:results-basic"
 \end_inset
 
 
-\end_layout
+\begin_inset Note Note
+status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Note Note
 status open
 
 \begin_layout Plain Layout
-Our model predicts that there will be a progressive change in sensitivity
- to envelope motion as a function of spacing (or number) and there will
- be a change in sensitivity to carrier motion based on changes in the number
- or elements (or their spacing).
- Thus, as spacing or number changes, the response rate will progressively
- change, as either envelope or carrier motion makes a larger contribution,
- despite the envelope motion and carrier strength remaining the same for
- all stimuli.
- So we expect to see the same overall features as in 
+There's actually not a consistent interaction (which is good.)
+\end_layout
+
+\end_inset
+
+In addition to the clear dependence on the spacing and the number of elements,
+ observers' responses appear to show an interaction with the overall size
+ of the stimulus.
+ This is shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:density-extent"
+
+\end_inset
+
+.
+ This figure plots the same response rates as 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:density-measurements"
 
 \end_inset
 
-, i.e.
- some consistent relationship of response rate to changes in spacing and
- another consistent relationship of response rate to changes in density,
- but we must make some assumptions about the envelope- or carrier- motion
- mechanisms to see if they agree with our data.
+ but the horizontal axis now measures the circumferential spatial extent
+ of the stimulus (defined for convenience as the number of elements times
+ the inter-element spacing.) With this plotting it appears that there is
+ an interaction between the spatial extent and the number of elements in
+ the; lines connecting identical numbers of elements are clumped together
+ at the left side of the graph and diverge at the right side of the graph.
+ In other words, adding an element to a large stimulus appears to cause
+ a greater effect than adding an element to a smaller stimulus.
+\end_layout
+
+\begin_layout Plain Layout
+With reference to this regression I find that interaction term is significant
+ for and positive for 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{"all"}
+\end_layout
+
+\end_inset
+
+ of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{"howmany"}
+\end_layout
+
+\end_inset
+
+ observers (largest p-value 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{"all"}
+\end_layout
+
+\end_inset
+
+ for observer 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{"someone"}
+\end_layout
+
+\end_inset
+
+.) While this provides a descriptive account of responses in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+, showing that there is an interaction between number and spacing, the next
+ section will evaluate how the data from this experiment compares against
+ the model presented in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:modeling"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%density-extent
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-extent, fig.width=5, fig.height=2.5>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:density-extent"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1563,51 +1962,67 @@ reference "sec:model"
 
 \end_inset
 
- to this dataset and fit data from both experiments.
- There were four scenarios by which the model may be extended to these stimuli,
- based on whether the sensitivity to envelope motion was determined by spacing
- (envelope local) or element number (envelope global,) and by whether the
- sensitivity to carrier motion was better determined by spacing (carrier
- local) or by element number (carrier global.) Example results are shown
- in 
+ to the data from 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:density-predictions"
-
-\end_inset
-
- and summarized in 
-\end_layout
-
-\begin_layout Standard
-I asked how well the results from 
-\begin_inset CommandInset ref
-LatexCommand nameref
 reference "sec:results-number"
 
 \end_inset
 
- could have been predicted by the model discussed in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:model"
-
-\end_inset
-
- and fit to data taken from 
+ and fit data from both experiments.
+ There are four general scenarios under which the model may be extended
+ to these stimuli, based on whether the sensitivity to envelope motion was
+ determined by spacing (envelope local) or element number (envelope global,)
+ and by whether the sensitivity to carrier motion was determined by spacing
+ (carrier local) or by element number (carrier global.) These four models
+ act similarly on the data from 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sec:results-basic"
 
 \end_inset
 
-.
+, but differ in their predictions for this experiment.
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ models calculated the sensitivities to displacement as a function of the
+ number of elements falling within a hemifield (that is, the trials from
  
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ are considered to have an 
+\begin_inset Formula $N$
+\end_inset
+
+ equal to half the number of elements that were actually displayed over
+ the entire stimulus.) This appeared to fit better than using the full element
+ count, and matches the result that the effect of crowding appears to be
+ confined to a hemifield 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Liu:2009ly"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Being a little cheeky here and hammering on what are the the actually correct
@@ -1716,6 +2131,31 @@ status collapsed
 \end_inset
 
 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%density-predict-likelihoods
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-predict-likelihoods,include=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1735,7 +2175,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<density-predict-plot, fig.width=5, fig.height=8>>=
+<<density-predict-plot, fig.width=6, fig.height=8>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1763,24 +2203,28 @@ name "fig:density-predictions"
 \end_inset
 
 Alternate predictions for Experiment 2.
- Data for two observers are shown one in each column.
- The data in the four columns shows four predictions for the same observer,
- constructed using only data from Experiment 1.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(if we include two graphs in this figure) Note that the model is capable
- of predicting two apparently different patterns of behavior; one in which.
- The different patterns of behavior seen here are understood as products
- of PBM's higher sensitivity to envelope displacement versus NJ's higher
- sensitivity to total motion energy.
-\end_layout
+ Data for two observers are shown, one in each column.
+ Each row shows a model predictions under a particular scenario for envelope
+ and carrier motion processing.
+ The models are fit so data collected in this experiment as well as data
+ from 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
 
 \end_inset
 
+.
+ The bottom row shows observed data.
+ Width of shaded region in predictions shows 
+\begin_inset Formula $\pm$
+\end_inset
 
+standard error of fit; error bar in bottom row shows 
+\begin_inset Formula $\pm$
+\end_inset
+
+standard error of observed rates.
 \end_layout
 
 \end_inset
@@ -1794,7 +2238,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-These four sets of predictions are shown in 
+Example results are shown in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:density-predictions"
@@ -1802,27 +2246,68 @@ reference "fig:density-predictions"
 \end_inset
 
 .
- In this figure the shaded ribbons with dotted lines plot response rates
- predicted almost entirely from the data taken from 
+ These show the model predictions corresponding to four scenarios (labeled
+ on the right side).
+ For comparison the observed data is shown in the bottom row.
+ Visually, these predictions confirm that both the entirely-local and entirely-g
+lobal scenarios cannot match the data.
+ When both carrier and envelope processing depends on global element number,
+ there is no change in response rate with spacing (top row,) and when both
+ carrier and envelope motion sensitivity depend on local spacing, there
+ is no change in response rate with element number (fourth row.) The two
+ remaining alternatives are carrier global/envelope local (row 2) and carrier
+ global/envelope local (row 2).
+ Between these two, the former appears to fit the data better; it fits with
+ the highest likelihood out of the four models for 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{with(best.subject.lls, sum(!carrier.local & envelope.local))}
+\end_layout
+
+\end_inset
+
+/
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{nrow(best.subject.lls)}
+\end_layout
+
+\end_inset
+
+ out of 9 observers.
+ (Plots for all observers are shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
+reference "fig:everything-density-predictions"
+
+\end_inset
+
+.)
+\end_layout
+
+\begin_layout Standard
+These results suggest that the spacing-dependent change in sensitivity to
+ envelope motion found in 
+\begin_inset CommandInset ref
+LatexCommand ref
 reference "sec:results-basic"
 
 \end_inset
 
- with little input from 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-number"
-
-\end_inset
-
- (on;y the overall proportion clockwise is adjusted to match); these predictions
- are plotted as shaded ribbons on top of the actual data we took.
- Four rows show predictions over four assumptions (global or local summation
- of carrier motion; global or local change in envelope motion sensitivity);
- two columns correspond to models that were fit to two example observers.
- The entire set is shown in the appendix in 
+ is determined at a relatively small spatial scale, while the sensitivity
+ to carrier motion is determined by summation over a larger area.
+ There are still substantial remaining differences between the model fits
+ and data for this experiment, which can be observed in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:everything-density-predictions"
@@ -1830,188 +2315,57 @@ reference "fig:everything-density-predictions"
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-When carrier motion or envelope motion is interpreted as 
-\begin_inset Quotes eld
-\end_inset
-
-global
-\begin_inset Quotes erd
-\end_inset
-
- (i.e.
- acting over a large field) we have extrapolated from 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
+ One possible explanation for the difference is the influence of the stationary
+ flankers located on either end of the array of objects.
+ The intended purpose of these flankers was to avoid giving away the envelope
+ motion by the motion of the outermost elements, since effective crowding
+ requires flankers on either side of a target 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Toet:1992db,Pelli:2004km"
 
 \end_inset
 
-'s model stimuli by assuming that the global summation happens over one
- hemifield.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(is this true for the MCMC model? Ought it be?)
-\end_layout
-
-\end_inset
-
- That is, the displacement sensitivity is interpreted as a function of the
- number of elements that fall in one hemifield, and the carrier motion sensitivi
-ty similarly.
- On the other hand, when carrier or envelope motion is interpreted as 
-\begin_inset Quotes eld
-\end_inset
-
-local
-\begin_inset Quotes erd
-\end_inset
-
- the carrier and displacement sensitivity is constructed as a function of
- spacing, without regard to the extent of the stimulus.
- We do note that in the raw data there is little appearance of saturating
- behavior as a function of the extent of the stimulus; adding another element
- or changing the spacing seems to have the same relative effect for larger
- stimuli as for smaller, so we conclude that effective regions of both envelope
- and carrier motion are either larger or smaller than all the extents tested.
- That is, if the size of a effective region for either carrier or envelope
- motion fell in the range of extents tested, we would see a bend in the
- lines plotted in these figures, resulting in an interaction between spacing
- and number, rather than a consistent slope and apparently independent effects
- of slope and number.
- This suggests that if either motion mechanism depends on the global stimulus
- properties, it would have to have an interaction region larger than the
- largest stimulus we used in figure 2 ( which spanned a circumferential
- distance 
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-$
-\backslash
-Sexpr{format(max(with(segment,extent/eccentricity)), digits=2)}$
-\end_layout
-
-\end_inset
-
- times eccentricity), suggesting an entire hemifield.
-  On the other hand, because of the minimum size of stimuli that we tested,
- interaction regions with radius smaller than roughly 
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-$
-\backslash
-Sexpr{format(min(with(segment,extent/eccentricity))/2, digits=1)}$
-\end_layout
-
-\end_inset
-
- times eccentricity would be classified as 
-\begin_inset Quotes eld
-\end_inset
-
-local.
-\begin_inset Quotes erd
-\end_inset
-
- We return to the question of exactly how large the spatial interaction
- regions might be subsequently.
- 
-\end_layout
-
-\begin_layout Standard
-In 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:density-predictions"
-
-\end_inset
-
- we see the best agreement with the model projections is in the second row,
- where the response to carrier strength is taken to be global (so that changing
- the number of elements affects the carrier strength summation) and the
- change in spacing sensitivity appears to be local (so that adding elements
- does not change the response; only the distance from an attended element
- to the nearest flanker does.) This model, compared to the alternatives,
- manages to capture the slope of the relation between spacing and response
- rate, even though these two observers had very different slopes.
- It does not capture the overall response rate or the effect of element
- number on response rate as well.
- Nevertheless, aggregating the residual deviances over all observers tested,
- we find that the least deviance between prediction and observation is given
- when the carrier motion mechanism is taken to be 
-\begin_inset Quotes eld
-\end_inset
-
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-
-\backslash
-Sexpr{if(unadjusted.winner$carrier.local[1]) stop("nope") else "global"}
-\end_layout
-
-\end_inset
-
-
-\begin_inset Quotes erd
-\end_inset
-
- and the envelope motion mechanism is interpreted to be 
-\begin_inset Quotes eld
-\end_inset
-
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-
-\backslash
-Sexpr{if(unadjusted.winner$envelope.local[1]) "local" else stop("nono")}
-\end_layout
+, and is weaker for targets closer to the ends of an array 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Felisbert:2005ve"
 
 \end_inset
 
 .
-\begin_inset Quotes erd
-\end_inset
-
-
+ While the flankers prevented the envelope motion from becoming uncrowded,
+ they may have induced other side effects, by virtue of being more salient
+ as well as stationary in both carrier and envelope motion.
 \end_layout
 
 \begin_layout Standard
-We tentatively conclude that for the data 
+It is also possible that envelope motion sensitivity is determined by a
+ mixture of local and longer-range spatial interactions.
+ There are mixed reports of the how the strength of crowding changes with
+ the number of flankers in an array; in some experiments adding more flankers
+ causes more crowding, while other experiments, and in some experiments
+ the effects are nonmonotonic nonmonotonic effects.
+\end_layout
+
+\begin_layout Standard
+While the present dataset cannot distinguish between these alternatives,
+ the addition of a single parameter dependent on the presence of the endpoints
+ does reconcile the data from 
 \begin_inset CommandInset ref
 LatexCommand nameref
-reference "sec:results-basic"
+reference "BROKEN: Ref: sec:results-basic"
 
 \end_inset
 
  and 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand nameref
 reference "sec:results-number"
 
 \end_inset
 
- to be consistent with each other, the summation of carrier motion happens
- over a large region and the relevant region of influence of flankers on
- envelope motion detection is smaller.
- 
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2251,10 +2605,29 @@ Sexpr{format(minwidth/(2*pi*20/3), digits=1)}
 
 \begin_layout Standard
 With the addition of parameters for the size and strength of the summation
- region, a single model makes a good fit to data from both Experiment 1
- and Experiment 2.
- The predictions from this model for Experiment 2's data for two observers
- are shown in 
+ region, a single model makes a good fit to data from both 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-basic"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ The predictions from this model for 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+'s data for two observers are shown in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:density-combined-model"
@@ -2262,24 +2635,8 @@ reference "fig:density-combined-model"
 \end_inset
 
  and the entire set are shown in the appendix.
- The fit of this combined model to Experiment 1 data is shown in
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:density-combined-model"
-
-\end_inset
-
- for two observers.
- The entire set is shown in the appendix in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:everything-density-predictions"
-
-\end_inset
-
-.
- The fit to data from Experiment 1 does not qualitatively change, so we
- do not reproduce new versions of those fits here.
+ The fit to data from Experiment 1 does not qualitatively change, so I do
+ not reproduce new versions of those fits here.
  
 \end_layout
 
@@ -2324,7 +2681,14 @@ name "fig:density-combined-model"
 
 \end_inset
 
-Predictions for Experiment 2 from a model combining data from both experiments.
+Predictions for 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:results-number"
+
+\end_inset
+
+ from a model combining data from both experiments.
  The model here fits values from both 
 \begin_inset CommandInset ref
 LatexCommand nameref
@@ -2399,7 +2763,7 @@ Sensitivity to carrier strength as a function of the stimulus extent
 
 .
  This evaluates the observers' sensitivity to a fixed increment of carrier
- motion evenly spread over a reagion of a fixed size.
+ motion evenly spread over a region of a fixed size.
  The 
 \begin_inset Quotes eld
 \end_inset
@@ -2511,6 +2875,34 @@ global
  covers the entire circle.
  However, different observers show different combinations of effects in
  this measurement.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%density-save
+\end_layout
+
+\begin_layout Plain Layout
+
+<<density-save>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+@
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

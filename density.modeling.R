@@ -310,6 +310,22 @@ recast_all_models <- function(
   list(models=models, predictions=predictions)
 }
 
+pred.spacing <- function(data) {
+  list(
+    aes(x=spacing,
+        group=factor(target_number_shown),
+        label=target_number_shown,
+        color=factor(target_number_shown),
+        fill=factor(target_number_shown)),
+    geom_line(data=data, aes(y=fit)),
+    geom_line(data=data, aes(y=fit)),
+    geom_point(data=data, aes(y=fit), color="white", size=2),
+    geom_ribbon(data=data, color="transparent", alpha=0.2,
+                aes(y=fit, ymin=fit-se.fit, ymax=fit+se.fit)),
+    geom_text(data=data, aes(y=fit), size=2.5),
+    labs(x="Spacing"))
+}
+
 condition_prediction_plot <- function(predictions, data, match, conditions,
                                       orientation = c("down", "over")) {
   orientation <- match.arg(orientation)
@@ -324,7 +340,6 @@ condition_prediction_plot <- function(predictions, data, match, conditions,
         , plot.spacing %+% .
         , +pred.spacing(predictions)
         , +facet_grid(facet.fmla, labeller=condition_facet_labeller)
-        , +labs(title="Predictions under locality/globality assumptions")
         , +errorbars(data,
                      facet=c("carrier.local", "envelope.local", "subject")))
 }
