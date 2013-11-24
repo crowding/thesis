@@ -301,7 +301,8 @@ bin_along_resid.motion_energy_model <-
 #values that can be plotted on top of the model fit and can be used to
 #visually assess model fit.
 bin_along_resid.default <- function(model, data, responsevar, split, along,
-                                    bins=6, restrict, fold=FALSE) {
+                                    bins=6, restrict, fold=FALSE,
+                                    resid.model = NULL) {
   # if we are binning "folded"
   missing.restrict <- missing(restrict)
   data <- unmkrates(data, splits)
@@ -469,6 +470,12 @@ binom_se_upper <- function(n, p)
 binom_se_lower <- function(n, p)
   binom.confint(bound_prob(p)*n, n, methods="wilson", p=0.682)$lower
 
+flip_prob <- function(response, folded=TRUE) {
+  if(is.logical(response))
+      ifelse(folded, !response, response)
+  else ifelse(folded, response, 1-response)
+}
+
 fold_trials <- function(data, fold.trial) {
   #fold.trial a vector of booleans to say which trials to fold.
   refold_me <- function(trials, fold) {
@@ -476,16 +483,24 @@ fold_trials <- function(data, fold.trial) {
     cw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_cw(.*)")
     ccw_cols <- str_match_matching(sort(colnames(trials)), "(.*)_ccw(.*)")
     diff_cols <- str_match_matching(sort(colnames(trials)), "(.*)_diff(.*)")
-    link_cols <- str_match_matching(sort(colnames(trials)), "(.*)link_(.*)")[,1]
+    link_cols <- str_match_matching(sort(colnames(trials)), "link(.*)")[,1]
+    fit_cols <- str_match_matching(sort(colnames(trials)), "^fit(.*)")[,1]
+    response_cols <- str_match_matching(sort(colnames(trials)), "^response(.*)")[,1]
+    p_cols <- str_match_matching(sort(colnames(trials)), "^p_(.*)")[,1]
     content_cols <- (
         str_match_matching(sort(colnames(trials)), "(.*)content(.*)")[,1] %-%
         cw_cols[,1] %-% ccw_cols[,1])
     if (any(cw_cols[,c(2,3)] != ccw_cols[,c(2,3)])) stop("hmm")
-    Map(a=cw_cols[,1], b=ccw_cols[,1],
-        f=function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL})
-    lapply(diff_cols[,1], function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
-    lapply(content_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
-    lapply(link_cols, function(c) {trials[fold, c] <<- -trials[fold, c]; NULL})
+    negate_col <- function(c) {trials[fold, c] <<- -trials[fold, c]; NULL}
+    not_col <- function(c) {trials[fold, c] <<- flip_prob(trials[fold, c]); NULL}
+    swap_cols <- function(a,b) {trials[fold, c(a,b)] <<- trials[fold, c(b,a)]; NULL}
+    Map(a=cw_cols[,1], b=ccw_cols[,1], f=swap_cols)
+    lapply(diff_cols[,1], negate_col)
+    lapply(content_cols, negate_col)
+    lapply(link_cols, negate_col)
+    lapply(response_cols, not_col)
+    lapply(fit_cols, not_col)
+    lapply(p_cols, not_col)
     trials
   }
   #p <- NA
@@ -495,11 +510,6 @@ fold_trials <- function(data, fold.trial) {
         #n_ccw and n_cw were already taken care of...
         mutate_when_has(
           displacement = (ifelse(folded, -displacement, displacement)),
-          response = (if(is.logical(response))
-                      ifelse(folded, !response, response)
-                      else ifelse(folded, response, 1-response)),
-          fit = ifelse(folded, 1-fit, fit),
-          p = ifelse(folded, 1-p, p),
           .bin.total_yes = ifelse(
             folded, .bin.total_n - .bin.total_yes, .bin.total_yes),
           .bin.total_pred = ifelse(

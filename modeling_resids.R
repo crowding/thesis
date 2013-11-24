@@ -6,7 +6,7 @@ source("stan_predictor.R")
 source("library.R")
 
 #we might want to plot collapsed residuals
-modelfile="SlopeModel_segment_adj.fit.RData"
+modelfile="models/d_soft_local_c_hemi_e_A.fit.RData"
 
 main <- function(outfile="residuals.pdf",
                  ...) {
@@ -120,6 +120,7 @@ chunk_resid <- function(x) {
   total_var <- sum(x$response * (1-(x$response)) * x$n_obs)
   links <- str_match_matching(sort(colnames(x)), "link_.*")[,1]
   pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
+  deviance_resid <- 0
   quickdf(c(list(n_obs = sum(x$n_obs), total_obs = total_obs,
                  total_pred = total_pred, total_var = total_var,
                  pearson_resid = pearson_resid),
@@ -127,13 +128,39 @@ chunk_resid <- function(x) {
             colwise(function(.) sum(.) / total_var)(x[links])))
 }
 
+chunk_resid_with_old <- function(chunk) {
+  if ("response.old" %in% names(chunk)) {
+    oldchunk <- chain(
+      chunk,
+      drop_columns("response"),
+      rename(c(response.old="response")),
+      chunk_resid,
+      rename(., structure(paste0(names(.), ".old"), names=names(.))))
+    newchunk <- chunk_resid(chunk)
+    cbind(oldchunk, newchunk)
+  } else chunk_resid(chunk)
+}
+
 #Compute Pearson residuals over some splits. Don't bin yet?
 pearson_resids <- function(model, data=model$data, split,
-                           responsevar="terms", fold=TRUE) {
-    chain(model,
-          predict(data, type="terms"),
-          refold(fold=fold),
-          ddply_keeping_unique_cols(split, chunk_resid))
+                           fold=TRUE,
+                           resid.model=NULL) {
+  chain(model,
+        predict(data, type="terms")) -> predictions
+  if (!is.null(resid.model)) {
+    predictions$link.old <- predictions$link
+    predictions$response.old <- predictions$response
+    refit <- resid.model(data=predictions)
+    predictions$link <- predict(refit, type="link")
+    predictions$response <- predict(refit, type="response")
+  }
+  chain(predictions,
+        refold(fold=fold),
+        ddply_keeping_unique_cols(split, chunk_resid_with_old)) -> resids
+  if (!is.null(resid.model)) {
+    attr(resids, "resid.model") <- refit
+  }
+  resids
 }
 
 run_as_command()

@@ -7,10 +7,10 @@ suppressPackageStartupMessages({
   source("stan_predictor.R")
 })
 
-fitfile <- "models/d_soft_local_c_repulsive_endpoints.fit.RData"
+fitfile <- "models/d_soft_hemi_c_local_e_AB.fit.RData"
 
-main <- function(outfile="checks/models/d_soft_local_c_repulsive_endpoints.pdf",
-                 fitfile="models/d_soft_local_c_repulsive_endpoints.fit.RData",
+main <- function(outfile="checks/models/d_soft_local_c_local_e_AB.pdf",
+                 fitfile= "models/d_soft_local_c_local_e_AB.fit.RData",
                  plot=FALSE) {
   x <- load_stanfit(fitfile)
   if (!interactive()) {

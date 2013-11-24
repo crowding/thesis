@@ -331,6 +331,21 @@ scenarios <- list(
       endpoint_var = '',
       endpoint_computation='',
       endpoint_R_computation=''),
+    B=list(
+      #bias
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_intercept;',
+      endpoint_parameter_name=c("endpoint_intercept"),
+      endpoint_var = '
+          real n_endpoints;',
+      endpoint_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          offset <- offset + endpoint_intercept * n_endpoints;',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        offset <- offset + endpoint_intercept * n_endpoints)),
     R=list(
       #repulsive
       endpoint_parameter = '
@@ -385,6 +400,26 @@ scenarios <- list(
         n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
         carrier_factor <- carrier_factor + (
           n_endpoints * endpoint_summation * target_number_shown))),
+    AB=list(
+      #additive biased
+      endpoint_parameter = '
+          real<lower=-100, upper=100> endpoint_summation;
+          real<lower=-100, upper=100> endpoint_intercept;',
+      endpoint_parameter_name=c("endpoint_summation", "endpoint_intercept"),
+      endpoint_var = '
+          real n_endpoints;',
+      endpoint_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          carrier_factor <- carrier_factor
+            + n_endpoints * endpoint_summation * target_number_shown[n];
+          offset <- offset + endpoint_intercept * n_endpoints;',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        carrier_factor <- carrier_factor + (
+          n_endpoints * endpoint_summation * target_number_shown),
+        offset <- offset + endpoint_intercept * n_endpoints)),
     AE=list(
       #additive with extent factor
       endpoint_parameter = '
@@ -495,11 +530,14 @@ model {
   {{endpoint_var}}
   real carrier_factor;
   real displacement_factor;
+  real offset;
   real link_displacement;
   real link_repulsion;
   real link_summation;
+  real link_offset;
   real link;
   for (n in 1:N) {
+    offset <- 0;
     {{displacement_computation}}
     {{carrier_computation}}
     {{endpoint_computation}}
@@ -507,7 +545,8 @@ model {
     link_repulsion <- (repulsion * content[n]
                        + nonlinearity * (content[n] * fabs(content[n])));
     link_summation <- content[n] * carrier_factor;
-    link <- intercept + link_displacement + link_repulsion + link_summation;
+    link_offset <- intercept + offset;
+    link <- link_offset + link_displacement + link_repulsion + link_summation;
     n_cw[n] ~ binomial( n_obs[n],
       inv_logit( link ) .* (1-lapse) + lapse/2);
   }
@@ -518,6 +557,7 @@ generated quantities {
   real link_displacement[N];
   real link_repulsion[N];
   real link_summation[N];
+  real link_offset[N];
   real trial_id_stan[N];
   real link[N];
   real fit[N];
@@ -527,6 +567,8 @@ generated quantities {
     {{endpoint_var}}
     real carrier_factor;
     real displacement_factor;
+    real offset;
+    offset <- 0;
     {{displacement_computation}}
     {{carrier_computation}}
     {{endpoint_computation}}
@@ -536,7 +578,8 @@ generated quantities {
     link_repulsion[n] <- (repulsion * content[n]
                           + nonlinearity * (content[n] * fabs(content[n])));
     link_summation[n] <- content[n] * carrier_factor;
-    link[n] <- intercept + link_displacement[n]
+    link_offset[n] <- intercept + offset;
+    link[n] <- link_offset[n] + link_displacement[n]
                + link_repulsion[n] + link_summation[n];
     trial_id_stan[n] <- trial_id[n];
     fit[n] <- inv_logit( link[n] ) * (1-lapse) + lapse/2;
@@ -547,6 +590,7 @@ generated quantities {
 predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
     with(coefs, within(., {
       frac_spacing <- 2*pi/target_number_all
+      offset <- 0
       ...(displacement_R_computation)
       ...(carrier_R_computation)
       ...(endpoint_R_computation)
@@ -556,7 +600,8 @@ predictorTemplate <- quote(stan_predict <- mkchain[., coefs](
       link_repulsion <- (repulsion * content
                          + nonlinearity * (content * abs(content)))
       link_carrier <- (content * carrier_factor)
-      link <- intercept + link_displacement + link_repulsion + link_carrier
+      link_offset <- (intercept+offset)
+      link <- link_offset + link_displacement + link_repulsion + link_carrier
       response <- plogis(link) * (1-lapse) + lapse/2
     })))
     , as.data.frame))
@@ -637,9 +682,12 @@ losers <- c(
   "d_.*_c_(?:windowed|local|global)_e_(?:RE|AE|RAE|RR)",
   "d_soft_global_c_windowed_e.*",
 
+  #memory a splode
+  "d_soft_local_c_hemi_e_B",
+
   "d_soft_local_c_hemi_e_RA",
   "d_soft_global_c_global_e_A",
-  
+
   "d_soft_windowed_c_endpoints_e.*",
   "d_soft_windowed_c_global_e.*",
   "d_soft_windowed_c_global_e.*",

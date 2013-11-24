@@ -19,7 +19,7 @@ getprocs <- function() {
   data
 }
 
-main <- function(thresh=4e6, interval=5) {
+main <- function(thresh=6e6, interval=5) {
   thresh <- as.numeric(thresh)
   repeat {
     procs <- getprocs()

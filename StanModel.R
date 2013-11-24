@@ -59,6 +59,17 @@ getSampling <- function(object, ..., chains=4, init, parallel=FALSE) {
   }
 }
 
+findInit <- function(object, stan_data, parallel,
+                     seeds=sample.int(.Machine$integer.max, 10), pars, ...) {
+  # start by optimizing a few, random times
+  if (missing(pars)) pars <- TRUE
+  inits <- lapply(seeds, function(x) optimizing(object, seed=x, ...))
+  i <- which.max(vapply(inits, `[[`, 0, "value"))
+  print(pars)
+  as.list(inits[[i]]$par[pars])
+}
+
+
 with_time <- function(x) {
   timing <- system.time(result <- x)
   attr(result, "time") <- timing
@@ -95,6 +106,7 @@ main <- function(infile="data.RData",
   fits <- ddply_along(.parallel=FALSE,
                       e$data, e$model_split, function(split, chunk) {
     stan_data <- e$stan_format(chunk)
+#    if(interactive() && split$subject=="nj") debug(sample_optimize)
     so <- sample_optimize(e, stan_data, iter=iter,
                           warmup=warmup, parallel=parallel)
     bind[sample=fit, optimize=optimized] <- so
@@ -109,9 +121,15 @@ main <- function(infile="data.RData",
       old.lp <- max(optimized$lp__)
       old.sd <- max(sd(as.data.frame(fit)$lp__))
       cat("retrying due to overshoot", overshoot, "sd", old.sd, "\n")
+      ## print(interactive())
+      print(split$subject)
+      ## if(interactive() && split$subject=="nj") {
+      ##   print("what the hell")
+      ##   debug(sample_optimize)
+      ## }
       startpoint <- optimized[ifelse(is.na(e$pars), TRUE, e$pars)]
       so <- sample_optimize(e, stan_data, iter=iter,
-                          warmup=warmup, init=startpoint, parallel=parallel)
+                            warmup=warmup, init=startpoint, parallel=parallel)
       bind[sample=fit, optimize=optimized] <- so
       overshoot <- ((max(optimized$lp__) - (max(as.data.frame(fit)$lp__))) /
                     sd(as.data.frame(fit)$lp__))
@@ -119,7 +137,7 @@ main <- function(infile="data.RData",
       overshoot <- cbind(model_name=e$model@model_name, split,
                          old.overshoot=old.overshoot,
                          old.lp=old.lp, old.sd=old.sd,
-                         lp=lp,
+                          lp=lp,
                          sd=sd(as.data.frame(fit)$lp__),
                          overshoot=overshoot,
                          overshot=overshot)
@@ -130,7 +148,7 @@ main <- function(infile="data.RData",
                          overshoot=overshoot,
                          overshot=overshot)
     }
-
+    if(interactive() && split$subject=="nj") undebug(sample_optimize)
     print(split)
     print(fit)
     print(overshoot)
@@ -138,7 +156,6 @@ main <- function(infile="data.RData",
          append=file.exists("overshoots.txt"))
 
     attr(fit, "overshoot") <- overshoot
-
     quickdf(list(fit = list(fit), optimized=list(optimized)))
   })
   e$fits <- asisify(fits)
@@ -149,17 +166,24 @@ main <- function(infile="data.RData",
 sample_optimize <- function(e, stan_data, iter, warmup, init, parallel) {
   #Gather samples
   #make sure "parameters" are set correctly...
-  if (!missing(init)) {
-    hash <- list("sampling",
-                 e$model@model_name, e$model@model_code, e$model@model_cpp,
-                 data=stan_data, warmup=warmup, iter=iter,
-                 pars=e$pars, init=init, version=packageVersion("rstan"))
-  } else {
-    hash <- list("sampling",
-                 e$model@model_name, e$model@model_code, e$model@model_cpp,
-                 data=stan_data, warmup=warmup, iter=iter,
-                 pars=e$pars, version=packageVersion("rstan"))
+  if (missing(init)) {
+    #we'll have to find an init point
+    init_hash <- list("findInit", e$model@model_name,
+                      e$model@model_code, e$model@model_cpp, data=stan_data,
+                      pars=e$pars, version=packageVersion("rstan"))
+    #f <- findCache(init_hash)
+    #if (!is.null(f)) unlink(f)
+    (init <- loadCache(init_hash) %||%
+     ammoc(init <- findInit(e$model, data=stan_data,
+                            parallel=parallel, pars=e$pars),
+           saveCache(init, init_hash)))
+    print(init)
   }
+
+  hash <- list("sampling",
+               e$model@model_name, e$model@model_code, e$model@model_cpp,
+               data=stan_data, warmup=warmup, iter=iter, init=init,
+               pars=e$pars, version=packageVersion("rstan"))
 
   cat("hash", digest(hash), "\n")
   ((fit <- loadCache(hash)) %||%
@@ -173,17 +197,20 @@ sample_optimize <- function(e, stan_data, iter, warmup, init, parallel) {
   # And the Hessian at max likelihood? Nah.
   # Note that we don't restrict the params here -- max-ll includes
   # posterior predictions
-  startpoint <- normalize_coefs(maxll(as.data.frame(fit)))
+
+  startpoint <- normalize_coefs(maxll(as.data.frame(fit))[
+    if (is.null(e$pars)) TRUE else e$pars])
   #optimizing occasionally kills everything! So save a temp file.
   hash <- list("optimizing", e$model@model_name, e$model@model_code,
                e$model@model_cpp,
                stan_data, init=startpoint, version=packageVersion("rstan"))
-  #filename <- paste0("optimizing_", digest(hash), ".RData")
-  #save(file=filename, hash, e, fit)
+  filename <- paste0("optimizing_", digest(hash), ".RData")
+  save(file=filename, hash, e, fit)
   ((l <- loadCache(hash)) %||%
-   ammoc(l <- optimizing(e$model, stan_data, init=startpoint), saveCache(l, hash)))
+   ammoc(l <- optimizing(e$model, stan_data, init=startpoint, samplefile = "tmp.dump"),
+         saveCache(l, hash)))
   #optimized = c(l$par, lp__=list(l$value))
-  #unlink(filename)
+  unlink(filename)
 
   list(sample=fit, optimize=c(l$par, lp__=list(l$value)))
 }
