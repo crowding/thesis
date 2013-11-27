@@ -50,6 +50,10 @@ getSampling <- function(object, ..., chains=4, init, parallel=FALSE) {
       init <- rep(init, chains)
     } else if (!is.list(init[[1]])) {
       init <- rep(list(init), chains)
+    } else {
+      tmp <- init
+      tmp[seq_len(chains)] <- init
+      init <- tmp
     }
     seeds <- sample.int(.Machine$integer.max, chains)
     l <- llply(.parallel=parallel, seq_len(chains),
