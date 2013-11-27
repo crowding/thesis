@@ -23,7 +23,7 @@ collect_times <- function(files) {
 run_partial <- function(out="models/timings_partial.RData",
                         files=dir("models", "*.fit.RData", full.names=TRUE),
                         cutoff,
-                        cutoff.interval=as.difftime(20, units="hours")) {
+                        cutoff.interval=as.difftime(2, units="days")) {
   info <- file.info(files)
   if (missing(cutoff)) {
     files <- chain(
@@ -65,14 +65,14 @@ both_versions <- function(
   })
 }
 
-bad <- function(n=5) {
+bad <- function(n=20) {
   data <- both_versions()
   chain(data,
         dcast(model_name + subject~version, value.var="time"),
         mutate(slowdown=`2.0.1`/`1.3.0`),
         subset(is.finite(slowdown)),
         arrange(desc(slowdown)),
-        head(20))
+        head(n))
 }
 
 run_as_command()

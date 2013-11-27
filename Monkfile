@@ -1,5 +1,5 @@
 #use dependency discovery for R/MATLAB
-@monk/autodep/dependencies.monkfile
+# @monk/autodep/dependencies.monkfile
 
 #make a few plots relevant to motion ehergy
 

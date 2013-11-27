@@ -115,7 +115,10 @@ main <- function(infile="data.RData",
     overshoot <- ((max(optimized$lp__) - (max(as.data.frame(fit)$lp__))) /
                   sd(as.data.frame(fit)$lp__))
     overshot <- FALSE
-    if (overshoot > 0.25 || sd(as.data.frame(fit)$lp__) > 4) {
+    max_overshoot <-
+        if (packageVersion("rstan") >= package_version("2.0.0"))
+            3 else 0.3
+    if (overshoot > max_overshoot || sd(as.data.frame(fit)$lp__) > 4) {
       overshot <- TRUE
       old.overshoot <- overshoot
       old.lp <- max(optimized$lp__)
@@ -148,7 +151,7 @@ main <- function(infile="data.RData",
                          overshoot=overshoot,
                          overshot=overshot)
     }
-    if(interactive() && split$subject=="nj") undebug(sample_optimize)
+    #if(interactive() && split$subject=="nj") undebug(sample_optimize)
     print(split)
     print(fit)
     print(overshoot)
