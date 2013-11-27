@@ -33,29 +33,35 @@ normalize_coefs <- function(coefs) {
 }
 
 getSampling <- function(object, ..., chains=4, init, parallel=FALSE) {
-  if (parallel) {
-    seeds <- sample.int(.Machine$integer.max, chains)
-    if (!missing("init")) {
-      l <- llply(.parallel=parallel, seq_len(chains),
-                 function(x) with_time(sampling(
-                   object, chain_id=x, chains=1,
-                   init=list(init), seed=seeds[[x]], ...)))
-    } else {
-      l <- llply(.parallel=parallel, seq_len(chains),
-                 function(x) with_time(sampling(
-                   object, chain_id=x, chains=1,
-                   seed=seeds[[x]], ...)))
+  if (!missing("init")) {
+    if (is.character(init)) {
+      NULL
+    } else if (length(names(init))==0) {
+      if (is.na(init) || length(init) == 0)
+          init <- "random"
+    } else if (!is.list(init) || !is.list(init[[1]])) {
+      init <- rep(list(init), chains)
     }
+  } else {
+    init <- "random"
+  }
+  if (parallel) {
+    if (!is.list(init)) {
+      init <- rep(init, chains)
+    } else if (!is.list(init[[1]])) {
+      init <- rep(list(init), chains)
+    }
+    seeds <- sample.int(.Machine$integer.max, chains)
+    l <- llply(.parallel=parallel, seq_len(chains),
+               function(x) with_time(sampling(
+                 object, chain_id=x, chains=1,
+                 init=init[x], seed=seeds[[x]], ...)))
     timesum <- Reduce(`+`, lapply(l, attr, "time"))
     combined <- sflist2stanfit(l)
     attr(combined, "time") <- timesum
     combined
   } else {
-    if (!missing("init")) {
-      with_time(sampling(object, chains=chains, init=rep(list(init), chains), ...))
-    } else {
-      with_time(sampling(object, chains=chains, ...))
-    }
+    with_time(sampling(object, chains=chains, init=init, ...))
   }
 }
 
@@ -106,8 +112,9 @@ main <- function(infile="data.RData",
   fits <- ddply_along(.parallel=FALSE,
                       e$data, e$model_split, function(split, chunk) {
     stan_data <- e$stan_format(chunk)
-#    if(interactive() && split$subject=="nj") debug(sample_optimize)
-    so <- sample_optimize(e, stan_data, iter=iter,
+    #    if(interactive() && split$subject=="nj") debug(sample_optimize)
+    init <- if (exists("init", e)) e$init() else "random"
+    so <- sample_optimize(e, stan_data, iter=iter, init=init,
                           warmup=warmup, parallel=parallel)
     bind[sample=fit, optimize=optimized] <- so
     #now if max sampling is too far below optimized, there's a problem
@@ -117,7 +124,7 @@ main <- function(infile="data.RData",
     overshot <- FALSE
     max_overshoot <-
         if (packageVersion("rstan") >= package_version("2.0.0"))
-            3 else 0.3
+            5 else 0.3
     if (overshoot > max_overshoot || sd(as.data.frame(fit)$lp__) > 4) {
       overshot <- TRUE
       old.overshoot <- overshoot
@@ -140,7 +147,7 @@ main <- function(infile="data.RData",
       overshoot <- cbind(model_name=e$model@model_name, split,
                          old.overshoot=old.overshoot,
                          old.lp=old.lp, old.sd=old.sd,
-                          lp=lp,
+                         lp=lp,
                          sd=sd(as.data.frame(fit)$lp__),
                          overshoot=overshoot,
                          overshot=overshot)
@@ -202,7 +209,7 @@ sample_optimize <- function(e, stan_data, iter, warmup, init, parallel) {
   # posterior predictions
 
   startpoint <- normalize_coefs(maxll(as.data.frame(fit))[
-    if (is.null(e$pars)) TRUE else e$pars])
+    if (is.null(e$pars) || all(is.na(e$pars))) TRUE else e$pars])
   #optimizing occasionally kills everything! So save a temp file.
   hash <- list("optimizing", e$model@model_name, e$model@model_code,
                e$model@model_cpp,

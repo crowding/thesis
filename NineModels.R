@@ -673,6 +673,24 @@ otherFunctions <- quote({
     mget(ls(env), env)
   }
 
+  init <- function() {
+    all(pars %in% names(initValues)) || stop("write an init value")
+    list(initValues[pars])
+  }
+
+  initValues <- list(lapse=0.025,
+                     intercept=0,
+                     carrier_sensitivity=0.5,
+                     max_sensitivity=4,
+                     spacing_sensitivity=1,
+                     repulsion=-2,
+                     nonlinearity=2,
+                     max_sensitivity=3,
+                     displacement_field=pi,
+                     carrier_field=pi,
+                     endpoint_intercept=0,
+                     endpoint_repulsion=0,
+                     extent_summation=0)
 })
 
 #these models screw up in some way and I omit them from taking up computer time.
