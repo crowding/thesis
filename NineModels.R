@@ -334,7 +334,7 @@ scenarios <- list(
     B=list(
       #bias
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_intercept;',
+          real<lower=-5, upper=5> endpoint_intercept;',
       endpoint_parameter_name=c("endpoint_intercept"),
       endpoint_var = '
           real n_endpoints;',
@@ -349,7 +349,7 @@ scenarios <- list(
     R=list(
       #repulsive
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_repulsion;',
+          real<lower=-5, upper=5> endpoint_repulsion;',
       endpoint_parameter_name=c("endpoint_repulsion"),
       endpoint_var = '
           real n_endpoints;',
@@ -364,8 +364,8 @@ scenarios <- list(
     RE=list(
       #repulsive with extent factor
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_repulsion;
-          real<lower=-10, upper=10> extent_summation;',
+          real<lower=-5, upper=5> endpoint_repulsion;
+          real<lower=-5, upper=5> extent_summation;',
       endpoint_parameter_name=c("endpoint_repulsion", "extent_summation"),
       endpoint_var = '
           real n_endpoints;
@@ -386,7 +386,7 @@ scenarios <- list(
     A=list(
       #additive
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_summation;',
+          real<lower=-5, upper=5> endpoint_summation;',
       endpoint_parameter_name=c("endpoint_summation"),
       endpoint_var = '
           real n_endpoints;',
@@ -403,8 +403,8 @@ scenarios <- list(
     AB=list(
       #additive biased
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_summation;
-          real<lower=-100, upper=100> endpoint_intercept;',
+          real<lower=-5, upper=5> endpoint_summation;
+          real<lower=-5, upper=5> endpoint_intercept;',
       endpoint_parameter_name=c("endpoint_summation", "endpoint_intercept"),
       endpoint_var = '
           real n_endpoints;',
@@ -423,7 +423,7 @@ scenarios <- list(
     AE=list(
       #additive with extent factor
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_summation;
+          real<lower=-5, upper=5> endpoint_summation;
           real<lower=-10, upper=10> extent_summation;',
       endpoint_parameter_name=c("endpoint_summation", "extent_summation"),
       endpoint_var = '
@@ -446,8 +446,8 @@ scenarios <- list(
     RA=list(
       #repulsive and
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_repulsion;
-          real<lower=-100, upper=100> endpoint_summation;',
+          real<lower=-5, upper=5> endpoint_repulsion;
+          real<lower=-5, upper=5> endpoint_summation;',
       endpoint_parameter_name=c("endpoint_summation", "endpoint_repulsion"),
       endpoint_var = '
           real n_endpoints;',
@@ -468,9 +468,9 @@ scenarios <- list(
     RAE=list(
       #repulsive and additive with extent factor
       endpoint_parameter = '
-          real<lower=-100, upper=100> endpoint_repulsion;
-          real<lower=-100, upper=100> endpoint_summation;
-          real<lower=-10, upper=10> extent_summation;',
+          real<lower=-5, upper=5> endpoint_repulsion;
+          real<lower=-5, upper=5> endpoint_summation;
+          real<lower=-5, upper=5> extent_summation;',
       endpoint_parameter_name=c(
         "extent_repulsion", "endpoint_summation", "extent_summation"),
       endpoint_var = '
