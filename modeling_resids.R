@@ -32,6 +32,7 @@ plot_model <-  function(modelfile) {
                                  unit(c(1,1), "null")),
                   widths=unit(1, "null"))
   table <- gtable_add_grob(table, title, 1, 1)
+
   qeply({
     resids <- pearson_resids(model,
                              split=c("full_circle", ..(split)),
@@ -42,6 +43,7 @@ plot_model <-  function(modelfile) {
                  ..(aes), weight=n_obs))
       + geom_point()
       + scale_size_area()
+      + coord_cartesian(ylim=.(ylim))
       + facet_grid(~full_circle, scales="free", space="free_x",
                    labeller = (function(var, value)
                                ifelse(value, "Full circle", "Segment")))
@@ -54,7 +56,8 @@ plot_model <-  function(modelfile) {
     facet = c(2,3),
     split = list(c("spacing", "target_number_all"), alist("spacing", "subject")),
     aes = list(NULL, alist(color = factor(subject))),
-    coloring = list(NULL, scale_color_brewer("Observer", type="qual", palette=3))
+    coloring = list(NULL, scale_color_brewer("Observer", type="qual", palette=3)),
+    ylim = list(c(-20, 20), c(-5, 5))
     )
   grid.newpage()
   grid.draw(table)
@@ -167,7 +170,7 @@ run_as_command()
 
 
 if(FALSE) {
-  #this actually makes no sense to do, sionce we're targeting distractions
+  #this actually makes no sense to do, since we're targeting distractions
   # as well as the problems with link vs. binary residual
   # and this makes weirdly weighted data.
 

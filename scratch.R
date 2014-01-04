@@ -1,192 +1,57 @@
 #scratchpad for testing/debugging code I'm refining elsewhere
+source("modeling_resids.R")
 
-(ggplot(subset(samps, endpoint=="R"))
- + aes(fill=subject, color=subject, y=lp__, x=displacement)
- + geom_violin()
- )
+print(modelfile)
+model <- load_stanfit(modelfile)
+if (all(model$data$full_circle)) return()
+model_name <- paste0(model$model_name, " ", modelfile)
+model <- predictable(model)
 
-orng <- range(optimized$lp__)
+resids <- pearson_resids(
+  model,
+  split=c("full_circle", "spacing", "target_number_all", "subject",
+          sgn="sign(content)"),
+  fold=TRUE)
 
-ddply(samps, .(subject, endpoint, carrier, displacement),
-      function(x) summarize(
-        x,
-        c = length(lp__),
-        within = sum(lp__ <= orng[1] | lp__ >= orng[2]))
-      )
+unfolded_resids <- pearson_resids(
+  model,
+  split=c("full_circle", "spacing", "target_number_all", "subject",
+          sgn="sign(content)"),
+  fold=FALSE)
 
-
-library(vadr)
-
-source_attach <- function(filename) {
-  e <- new.env(parent=globalenv())
-  source(filename, e)
-  attach(e, name=filename)
-}
-source_attach("library.R")
-
-getOvershoots <- function(file="overshoots.txt") {
-  collection <- data.frame()
-  makeActiveBinding("overshoots", function(value) {
-    collection <<- rbind_fill(collection, value)
-  })
-  source(file, local=TRUE)
-}
-
-getOvershoots("overshoots.txt")
-
-bind[a=b, b=c] <- {print("what"); list(a=1, b=2)}
-
-A <- load2env("diagnose/fit_circle_manual.fit.RData")
-B <- load2env("diagnose/fit_circle_subst.fit.RData")
-
-ls(A)
-
-A$stan_predict
-B$stan_predict
-
-microbenchmark(
-    a=mapply(list, a=1:100, b=letters[1:100], MoreArgs=list(c="ha")),
-    b=mply(list, c="ha")(a=1:100, b=letters[1:100]))
-
-
-a <- function(N) {
-  x <- 0
-  for (i in 1:N) {
-    x <- x + rnorm(1, mean=i)
+refold <- function(data, fold=TRUE) {
+  if(fold == "over") {
+    fold.trial <- TRUE
+  } else {
+    fold.trial <- with(data, fold & ((content < 0)
+                                     | (content == 0 & displacement < 0)))
   }
-  x
-}
-0
-#this function explodes when enableJIT(3) is on
-#this function explodes when enableJIT(3) is on
-
-options(enableJIT=3)
-
-b <- qe(function(N) .(`{`)(
-    .(`<-`)(x,0),
-    .(`for`)(
-        i,
-        .(`:`)(1, N),
-        .(`{`)(
-            .(`<-`)(
-                x,
-                .(`+`)(
-                    x,
-                    .(`rnorm`)(1, mean=i))))),
-    x))
-
-microbenchmark(
-    a(1000), b(1000))
-
-microbenchmark(
-    a(1000), b(1000))
-
-
-fun <- macro(function(...) {
-  args <- list(...)
-  anames = all.vars(substitute(x(...)))
-  qq(function(.=..(
-      qqply(`.(name)`=parent.env(environment())$`.(name)`
-            )(name=anames))) {
-    ..(args)
-  })
-})
-
-
-
-if(FALSE) {
-
-  grid <- diag(5)
-  data <- melt(expand.grid(x=seq(.5, 1.5, len=5), y=seq(0.5, 1.5, len=5)),
-               c("x", "y"))
-  ref <- list(seq(0, 2, len=5), seq(0, 2, len=5))
-  test <- interp.nd(data, grid, ref)
-  acast(cbind(data, test), x ~ y)
-
-data <- array(floor(runif(30)*11)/10, c(10,3))
-grid <- array(floor(runif(27)*11)/10, c(3,3,3))
-ref <- rep(list(seq(0, 1, length=3)), 3)
-
-interp.nd(data, grid, ref)
-
-x <- lennon
-
-data(lennon)
-data <- melt(expand.grid(x=seq(0.5, 1.5, len=512), y=seq(0.5, 1.5, len=512)),
-             c("x", "y"))
-grid <- lennon
-ref <- list(seq(0, 2, len=256), seq(0, 2, len=256))
-test <- interp.nd(data, grid, ref)
-interpolated <- acast(cbind(data, var=test), x ~ y)
-
-range(interpolated)
-range(lennon)
-
+  fold_trials(data, fold.trial)
 }
 
-names(grids$spacing_content)
+overfolded_resids <- pearson_resids(
+  model,
+  split=c("full_circle", "spacing", "target_number_all", "subject",
+          sgn="sign(content)"),
+  fold="over")
 
-acast(grids$spacing_content, spacing ~ content, value_var=)
+(ggplot(resids,
+        aes(x=spacing,
+            weight=n_obs,
+            color = factor(subject)))
+ + geom_point(aes(y=total_obs/n_obs, size=n_obs))
+ + geom_line(aes(y=total_pred/n_obs))
+ + scale_size_area()
+ + facet_grid(.(sgn,full_circle), scales="free", space="free_x",
+              labeller = interply(".(..1) = .(..2)"))
+ + coord_trans(xtrans="sqrt")
+ + scale_color_brewer("Observer", type="qual", palette=3))
 
-ggplot(grids$spacing_content,
-       aes(spacing, content, fill=)) + geom_tile()
+#How about if we fold data twice, now, what is different?
+data1 <- chain(model, predict(type="terms"))
+data2 <- chain(model, predict(type="terms"))
+data1 <- numcolwise(identity)(data1)
+data2 <- numcolwise(identity)(data2)
+sort(vapply(data2 - data1, sd, 0, USE.NAMES=TRUE))
 
-ls()
-
-model$model$stan_predict
-
-##  [1] "spacing"                 "content"
-##  [3] "displacement"            "eccentricity"
-##  [5] "bias"                    "target_number_all"
-##  [7] "target_number_shown"     "carrier.factor"
-##  [9] "envelope.factor"         "check"
-## [11] "content_cw"              "content_ccw"
-## [13] "side"                    "content_local"
-## [15] "content_global"          "full_circle"
-## [17] "extent"                  "number_shown_as_spacing"
-## [19] "pred"                    "fullcircle"
-## [21] "norm_diff"               "energy_diff"
-
-microbenchmark(
-    a=do.call(list, as.list(letters)),
-    b=qe(list(..(letters))),
-    c=list %()% letters)
-
-env.list <- macro(function(...) {
-  names <- list(...)
-  qq(function(`.(names)`=..(missing_value(length(names)))) environment())
-})
-
-env.list.2 <- macro(function(...) {
-  names <- list(...)
-  qe(function(`.(names)`=..(missing_value(length(names)))) environment())
-})
-
-fab <- function(a, b, c, d, e) environment()
-fab2 <- function() function(a, b, c, d, e) environment()
-
-#b and f are misleadingly slow when enableJIT(3) -- microbenchmark artifact
-microbenchmark(
-    a = env.list("a", "b", "c", "d", "e")(1, 2, 3, 4, 5),
-    a1 = env.list.2("a", "b", "c", "d", "e")(1, 2, 3, 4, 5),
-    b = (function(a,b,c,d,e) environment())(1,2,3,4,5),
-    c = fab(1,2,3,4,5),
-    c1 = fab2()(1,2,3,4,5),
-    d = list2env(list(a=1, b=2, c=3, d=4, b=5)),
-    e = list2env(do.call(list, list(a=1,b=2,c=3,d=4,e=5))),
-    f = do.call(function(a,b,c,d,e) environment(), list(a=1,b=2,c=3,d=4,e=5)),
-    g = do.call(fab, list(a=1,b=2,c=3,d=4,e=5)))
-
-
-#diagnose something wrong with my predictions, by taking predictions from the
-#computed values of Stan.
-
-my.subset <- function(...) {
-  result <- base::`[`(...)
-
-  # 
-  result
-}
-
-
-chain(d$data, (e$filter_data)(), (e$format_data)(menergy))
+data2 %<~% chain(refold(fold="over"), refold(fold="over"))

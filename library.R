@@ -472,8 +472,15 @@ binom_se_lower <- function(n, p)
 
 flip_prob <- function(response, folded=TRUE) {
   if(is.logical(response))
-      ifelse(folded, !response, response)
-  else ifelse(folded, response, 1-response)
+      real_ifelse(folded, !response, response)
+  else real_ifelse(folded, 1-response, response)
+}
+
+#because 'ifelse' doesn't recycle over test...
+real_ifelse <- function(test, yes, no) {
+  ix <- cbind(as.vector(no), as.vector(yes))
+  sel <- cbind(seq_len(nrow(ix)), as.numeric(test)+1)
+  ix[sel]
 }
 
 fold_trials <- function(data, fold.trial) {
@@ -509,7 +516,7 @@ fold_trials <- function(data, fold.trial) {
                        xor(folded, fold.trial) else fold.trial)),
         #n_ccw and n_cw were already taken care of...
         mutate_when_has(
-          displacement = (ifelse(folded, -displacement, displacement)),
+          displacement = (ifelse(fold.trial, -displacement, displacement)),
           .bin.total_yes = ifelse(
             folded, .bin.total_n - .bin.total_yes, .bin.total_yes),
           .bin.total_pred = ifelse(
@@ -928,30 +935,6 @@ declare_data <- function(...) {
 factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x)) {
   if (filter(x)) factor(x, levels=unique(x)) else x
 }
-
-assignment_target <- function(x) {
-  switch(
-      class(x),
-      name=x,
-      character=as.name(x),
-      call = switch(head<- class(x[[1]]),
-                    name = assignment_target(x[[2]]),
-                    character = assignment_target(x[[2]]),
-                    stop("that doesn't look like an assignment target")),
-      stop("that doesn't look like an assignment target"))
-}
-
-put <- macro(function(assignment, value) {
-  target <- assignment_target(assignment)
-  template(
-      (
-          function(`.(target)`) {
-            .(assignment) <- .(value);
-            .(target)
-          }
-      )(.(target))
-  )
-})
 
 alter <- macro(function(assignment, ...) {
   target <- assignment_target(assignment)
