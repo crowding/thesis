@@ -8,8 +8,12 @@ load_stanfit <- function(file, menergy=read.csv("motion_energy.csv")) {
   #inject a motion-energy interpolator if necessary. An interpolator modifies
   #a data frame. This one interpolates over "norm_diff"
   if (!exists("interpolator", e, inherits=FALSE)) {
-    message("building interpolator for motion energy...")
-    e$interpolator <- do.call(interpolator, c(list(menergy), e$interpolator.args))
+    delayedAssign(
+      "interpolator", {
+        message("building interpolator for motion energy...")
+        interpolator %()% c(list(menergy), e$interpolator.args)
+      },
+      assign.env=e)
   }
   e
 }
@@ -37,33 +41,40 @@ predict.stanenv <- function(object, newdata=object$data,
                             samples=Inf
                             ) {
   ddply_along(
-      newdata, object$model_split,
-      .progress=if(!is.null(summary)) "text" else "none",
-      function(split, chunk) {
-        fit <- merge(object$fits, split)$fit[[1]]
-        coefs <- as.data.frame(fit)
-        #usually we select the canonical model by optimization
-        #note that we expect stan_predict to work on EITHER single coefs
-        #and many data or single data and many coefs
-        if (!is.null(summary)) {
-          #we either summarize over all coefs, or select one set of coefs
-          #selected_coefs <- selector(object, split)
-          ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
-          subset_coefs <- coefs[ix,]
-          summary <- adply(chunk, 1,
-                           mkchain(object$stan_predict(coefs=subset_coefs),
-                                   summary),
-                           .progress="text")
-          cbind(chunk, summary)
-        } else {
-          selected_coefs <- selector(object, split)
-          fit <- object$stan_predict(coefs=selected_coefs, chunk)
-          if (any(is.na(fit))) {
-            browser()
-          }
-          cbind(chunk, fit)
-        }
-      })
+    newdata, object$model_split,
+    object=object,
+    selector=selector,
+    samples=samples,
+    summary=summary,
+    .progress=if(!is.null(summary)) "text" else "none",
+    predict_split)
+}
+
+predict_split <- function(split, chunk, object, selector, samples, summary) {
+  fit <- merge(object$fits, split)$fit[[1]]
+  coefs <- as.data.frame(fit)
+  #usually we select the canonical model by optimization
+  #note that we expect stan_predict to work on EITHER single coefs
+  #and many data or single data and many coefs
+  if (!is.null(summary)) {
+    #we either summarize over all coefs, or select one set of coefs
+    #selected_coefs <- selector(object, split)
+    ix <- sample(nrow(coefs), min(samples, nrow(coefs)))
+    subset_coefs <- coefs[ix,]
+    summary <- adply(chunk, 1,
+                     mkchain(object$stan_predict(coefs=subset_coefs),
+                             summary),
+                     .progress="text")
+    out <- cbind(chunk, summary)
+  } else {
+    selected_coefs <- selector(object, split)
+    fit <- object$stan_predict(coefs=selected_coefs, chunk)
+    if (any(is.na(fit))) {
+      browser()
+    }
+    out <- cbind(chunk, fit)
+  }
+  out
 }
 
 optimized <- function(stanenv, split, startpoint=maxll(stanenv, split)) {

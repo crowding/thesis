@@ -472,7 +472,7 @@ scenarios <- list(
           real<lower=-5, upper=5> endpoint_summation;
           real<lower=-5, upper=5> extent_summation;',
       endpoint_parameter_name=c(
-        "extent_repulsion", "endpoint_summation", "extent_summation"),
+        "endpoint_repulsion", "endpoint_summation", "extent_summation"),
       endpoint_var = '
           real n_endpoints;
           real e_extent;',
@@ -698,13 +698,13 @@ otherFunctions <- quote({
 #...
 losers <- c(
   "d_(?:soft_windowed|soft_hemi|soft_global)_c_.*_e_(?:RE|AE|RAE|RR)",
-  "d_.*_c_(?:windowed|local|global)_e_(?:RE|AE|RAE|RR)",
+  "d_.*_c_(?:windowed|local|global)_e_(?:RAE|RR)",
   "d_soft_global_c_windowed_e.*",
 
   #memory a splode
   "d_soft_local_c_hemi_e_B",
 
-  "d_soft_local_c_hemi_e_RA",
+  #"d_soft_local_c_hemi_e_RA",
   "d_soft_global_c_global_e_A",
 
   "d_soft_windowed_c_endpoints_e.*",

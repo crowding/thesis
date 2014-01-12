@@ -6,7 +6,6 @@ library(vadr)
 
 source("library.R")
 
-
 test <- function() {
   files <-
     c("models/d_soft_local_c_global_e_none.fit.RData",

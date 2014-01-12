@@ -2,7 +2,7 @@ library(plyr)
 library(vadr)
 library(gtable)
 library(ggplot2)
-source("stan_predictor.R")
+source("stan_predictor.R", local=TRUE)
 source("library.R")
 
 #we might want to plot collapsed residuals
@@ -43,11 +43,10 @@ plot_model <-  function(modelfile) {
                  ..(aes), weight=n_obs))
       + geom_point()
       + scale_size_area()
-      + coord_cartesian(ylim=.(ylim))
-      + facet_grid(~full_circle, scales="free", space="free_x",
+      + facet_grid(~full_circle, scales="free_x", space="free_x",
                    labeller = (function(var, value)
                                ifelse(value, "Full circle", "Segment")))
-      + coord_trans(xtrans="sqrt")
+      + coord_trans(xtrans="sqrt", limy=c(-15, 15))
       + .(coloring)
       + geom_smooth(fill=NA))
     table <- gtable_add_grob(table, grob, .(facet), 1)
@@ -56,8 +55,7 @@ plot_model <-  function(modelfile) {
     facet = c(2,3),
     split = list(c("spacing", "target_number_all"), alist("spacing", "subject")),
     aes = list(NULL, alist(color = factor(subject))),
-    coloring = list(NULL, scale_color_brewer("Observer", type="qual", palette=3)),
-    ylim = list(c(-20, 20), c(-5, 5))
+    coloring = list(NULL, scale_color_brewer("Observer", type="qual", palette=3))
     )
   grid.newpage()
   grid.draw(table)
@@ -76,7 +74,9 @@ plot_model <-  function(modelfile) {
     scale_size_area(),
     theme(aspect.ratio=1),
     geom_hline(y=0, linetype="11", size=0.5, alpha=0.5),
-    geom_point())
+    geom_point(),
+    coord_cartesian(ylim=c(-5, 5))
+    )
 
   table <- chain(
     gtable(widths=unit(c(1,1,1), "null"),
@@ -105,6 +105,7 @@ plot_model <-  function(modelfile) {
       ggplot(resids, aes(.(xcoord), pearson_resid, color=factor(subject)))
       + geom_point() + geom_line()
       + scale_color_brewer("Observer", type="qual", palette=3)
+      + constants
       + theme(aspect.ratio=1))
     table <- gtable_add_grob(table, grob, 3, .(col))
     NULL
@@ -117,57 +118,7 @@ plot_model <-  function(modelfile) {
   #plot the individual link columns aggregated over the scale of the residuals?
 }
 
-chunk_resid <- function(x) {
-  total_obs <- sum(x$n_cw)
-  total_pred <- sum(x$response * x$n_obs)
-  total_var <- sum(x$response * (1-(x$response)) * x$n_obs)
-  links <- str_match_matching(sort(colnames(x)), "link_.*")[,1]
-  pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
-  deviance_resid <- 0
-  quickdf(c(list(n_obs = sum(x$n_obs), total_obs = total_obs,
-                 total_pred = total_pred, total_var = total_var,
-                 pearson_resid = pearson_resid),
-            #also add in "scaled term predictors"
-            colwise(function(.) sum(.) / total_var)(x[links])))
-}
-
-chunk_resid_with_old <- function(chunk) {
-  if ("response.old" %in% names(chunk)) {
-    oldchunk <- chain(
-      chunk,
-      drop_columns("response"),
-      rename(c(response.old="response")),
-      chunk_resid,
-      rename(., structure(paste0(names(.), ".old"), names=names(.))))
-    newchunk <- chunk_resid(chunk)
-    cbind(oldchunk, newchunk)
-  } else chunk_resid(chunk)
-}
-
-#Compute Pearson residuals over some splits. Don't bin yet?
-pearson_resids <- function(model, data=model$data, split,
-                           fold=TRUE,
-                           resid.model=NULL) {
-  chain(model,
-        predict(data, type="terms")) -> predictions
-  if (!is.null(resid.model)) {
-    predictions$link.old <- predictions$link
-    predictions$response.old <- predictions$response
-    refit <- resid.model(data=predictions)
-    predictions$link <- predict(refit, type="link")
-    predictions$response <- predict(refit, type="response")
-  }
-  chain(predictions,
-        refold(fold=fold),
-        ddply_keeping_unique_cols(split, chunk_resid_with_old)) -> resids
-  if (!is.null(resid.model)) {
-    attr(resids, "resid.model") <- refit
-  }
-  resids
-}
-
 run_as_command()
-
 
 if(FALSE) {
   #this actually makes no sense to do, since we're targeting distractions

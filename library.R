@@ -296,7 +296,7 @@ bin_along_resid.motion_energy_model <-
     NextMethod("bin_along_resid", model, restrict=restrict)
   }
 
-#bin observations, using an "average" that retains the Pearson
+#bin observations, using an "average" that retains the Pearsonq
 #residual with respect to the model. The intention is to bin towards
 #values that can be plotted on top of the model fit and can be used to
 #visually assess model fit.
@@ -390,6 +390,57 @@ bin_grid_resid <- function(model, grid, data=model$data, coords, fold=FALSE) {
   stopifnot(with(gridded, abs(.new_resid - pearson_resid) <= 0.01))
   drop_columns(gridded, grep("^\\.", names(gridded), value=TRUE))
 }
+
+## Also functions to compute Pearson resids without the binning...
+chunk_resid <- function(x) {
+  total_obs <- sum(x$n_cw)
+  total_pred <- sum(x$response * x$n_obs)
+  total_var <- sum(x$response * (1-(x$response)) * x$n_obs)
+  links <- str_match_matching(sort(colnames(x)), "link_.*")[,1]
+  pearson_resid <- (total_obs - total_pred) / sqrt(total_var)
+  deviance_resid <- 0
+  quickdf(c(list(n_obs = sum(x$n_obs), total_obs = total_obs,
+                 total_pred = total_pred, total_var = total_var,
+                 pearson_resid = pearson_resid),
+            #also add in "scaled term predictors"
+            colwise(function(.) sum(.) / total_var)(x[links])))
+}
+
+chunk_resid_with_old <- function(chunk) {
+  if ("response.old" %in% names(chunk)) {
+    oldchunk <- chain(
+      chunk,
+      drop_columns("response"),
+      rename(c(response.old="response")),
+      chunk_resid,
+      rename(., structure(paste0(names(.), ".old"), names=names(.))))
+    newchunk <- chunk_resid(chunk)
+    cbind(oldchunk, newchunk)
+  } else chunk_resid(chunk)
+}
+
+#Compute Pearson residuals over some splits. Don't bin yet?
+pearson_resids <- function(model, data=model$data, split,
+                           fold=TRUE,
+                           resid.model=NULL) {
+  chain(model,
+        predict(data, type="terms")) -> predictions
+  if (!is.null(resid.model)) {
+    predictions$link.old <- predictions$link
+    predictions$response.old <- predictions$response
+    refit <- resid.model(data=predictions)
+    predictions$link <- predict(refit, type="link")
+    predictions$response <- predict(refit, type="response")
+  }
+  chain(predictions,
+        refold(fold=fold),
+        ddply_keeping_unique_cols(split, chunk_resid_with_old)) -> resids
+  if (!is.null(resid.model)) {
+    attr(resids, "resid.model") <- refit
+  }
+  resids
+}
+
 
 suffix <- function(df, suffix) {
   names(df) <- paste0(names(df), suffix)
@@ -937,8 +988,8 @@ factor_in_order <- function(x, filter=function(x) is.character(x) || is.factor(x
 }
 
 alter <- macro(function(assignment, ...) {
-  target <- assignment_target(assignment)
-  template(
+  target <- vadr:::assignment_target(assignment)
+  qq(
       (
           function(`.(target)`) {
             .(assignment) <-

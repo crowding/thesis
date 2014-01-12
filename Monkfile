@@ -130,19 +130,19 @@
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once models/comparison_d_{0}_c_{1}.pdf
---input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-xA_Z_]*)\\.fit\\.RData$
+--input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-zA-Z_]*)\\.fit\\.RData$
 --invisible --phony plot
 --invisible --phony compare
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once models/comparison_c_{1}_e_{2}.pdf
---input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-xA_Z_]*)\\.fit\\.RData$
+--input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-zA-Z_]*)\\.fit\\.RData$
 --invisible --phony plot
 --invisible --phony compare
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once models/comparison_d_{0}_e_{2}.pdf
---input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-xA_Z_]*)\\.fit\\.RData$
+--input --match models/d_([a-zA-Z_]*)_c_([a-zA-Z_]*)_e_([a-zA-Z_]*)\\.fit\\.RData$
 --invisible --phony plot
 --invisible --phony compare
 
