@@ -12,20 +12,19 @@ suppressPackageStartupMessages({
 scenarios <- list(
   #endpoint adjustments
   d=list(
-    ## local=list( #for whatever reason spacing_sensitivity explodes
-    ##     displacement_parameter='
-    ##       real<lower=0.01, upper=100> max_sensitivity;',
-    ##     displacement_parameter_name="max_sensitivity",
-    ##     displacement_var = '',
-    ##     displacement_computation = '
-    ##       displacement_factor <-
-    ##          (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
-    ##          * max_sensitivity;',
-    ##     displacement_R_computation = alist(
-    ##       displacement_factor <-
-    ##         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing)))
-    ##* max_sensitivity)
-    ##     ) ,
+    local=list( #for whatever reason spacing_sensitivity explodes
+        displacement_parameter='
+          real<lower=0.01, upper=100> max_sensitivity;',
+        displacement_parameter_name="max_sensitivity",
+        displacement_var = '',
+        displacement_computation = '
+          displacement_factor <-
+             (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
+             * max_sensitivity;',
+        displacement_R_computation = alist(
+          displacement_factor <-
+            (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * max_sensitivity)
+        ),
     soft_local=list(
       displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -704,6 +703,9 @@ losers <- c(
   #memory a splode
   "d_soft_local_c_hemi_e_B",
 
+  "d_local_c_(?!global|hemi)",
+  "d_local_.*_e_(?!none)",
+
   #"d_soft_local_c_hemi_e_RA",
   "d_soft_global_c_global_e_A",
 
@@ -794,7 +796,7 @@ main <- function(outfile='NineModels.list') {
 filter_models <- mkchain(
   models=.,
   vapply(function(x)x$model_name, ""),
-  lapply(losers, grepl, .),
+  lapply(losers, grepl, ., perl=TRUE),
   Reduce(`|`, .),
   models[!.],
   {print(vapply(., function(x)x$model_name, "")); .}
