@@ -272,11 +272,13 @@ $(abspath --output {0}.pdf ) pdf
 --output --once models/compare_lp.pdf
 --input --match models/.*\\.fit\\.RData
 --invisible --phony --once plot
+--invisible --phony --once compare
 
 --command --once Rscript --input --once CompareStanFits.R
 --output --once SlopeModel_segment_comparison.pdf
 --input --match --once SlopeModel_segment.*\\.fit\\.RData$
---invisible --phony plot
+--invisible --phony --once plot
+--invisible --phony --once compare
 
 --command --output --match --once --invisible .*_recording.fit.RData$
 600 500 TRUE
@@ -298,3 +300,4 @@ TRUE
 --output --once models/residuals.pdf
 --input --match .*\\.fit.RData
 --invisible --phony --once plot
+--invisible --phony --once compare

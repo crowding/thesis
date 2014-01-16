@@ -6,60 +6,14 @@ library(vadr)
 
 source("library.R")
 
-test <- function() {
-  files <-
-    c("models/d_soft_local_c_global_e_none.fit.RData",
-      "models/d_soft_global_c_global_e_none.fit.RData",
-      "models/d_soft_hemi_c_global_e_none.fit.RData",
-      "models/d_soft_local_c_hemi_e_none.fit.RData",
-      "models/d_soft_global_c_hemi_e_none.fit.RData",
-      "models/d_soft_hemi_c_hemi_e_none.fit.RData",
-      "models/d_soft_windowed_c_hemi_e_none.fit.RData",
-      "models/d_soft_local_c_local_e_none.fit.RData",
-      "models/d_soft_global_c_local_e_none.fit.RData",
-      "models/d_soft_hemi_c_local_e_none.fit.RData",
-      "models/d_soft_local_c_windowed_e_none.fit.RData",
-      "models/d_soft_hemi_c_windowed_e_none.fit.RData",
-      "models/d_soft_local_c_global_e_R.fit.RData",
-      "models/d_soft_global_c_global_e_R.fit.RData",
-      "models/d_soft_hemi_c_global_e_R.fit.RData",
-      "models/d_soft_local_c_hemi_e_R.fit.RData",
-      "models/d_soft_global_c_hemi_e_R.fit.RData",
-      "models/d_soft_hemi_c_hemi_e_R.fit.RData",
-      "models/d_soft_windowed_c_hemi_e_R.fit.RData",
-      "models/d_soft_local_c_local_e_R.fit.RData",
-      "models/d_soft_global_c_local_e_R.fit.RData",
-      "models/d_soft_hemi_c_local_e_R.fit.RData",
-      "models/d_soft_local_c_windowed_e_R.fit.RData",
-      "models/d_soft_hemi_c_windowed_e_R.fit.RData",
-      "models/d_soft_local_c_hemi_e_RE.fit.RData",
-      "models/d_soft_local_c_global_e_A.fit.RData",
-      "models/d_soft_hemi_c_global_e_A.fit.RData",
-      "models/d_soft_local_c_hemi_e_A.fit.RData",
-      "models/d_soft_global_c_hemi_e_A.fit.RData",
-      "models/d_soft_hemi_c_hemi_e_A.fit.RData",
-      "models/d_soft_windowed_c_hemi_e_A.fit.RData",
-      "models/d_soft_local_c_local_e_A.fit.RData",
-      "models/d_soft_global_c_local_e_A.fit.RData",
-      "models/d_soft_hemi_c_local_e_A.fit.RData",
-      "models/d_soft_local_c_windowed_e_A.fit.RData",
-      "models/d_soft_hemi_c_windowed_e_A.fit.RData",
-      "models/d_soft_local_c_hemi_e_AE.fit.RData",
-      "models/d_soft_local_c_global_e_RA.fit.RData",
-      "models/d_soft_global_c_global_e_RA.fit.RData",
-      "models/d_soft_hemi_c_global_e_RA.fit.RData",
-      "models/d_soft_global_c_hemi_e_RA.fit.RData",
-      "models/d_soft_hemi_c_hemi_e_RA.fit.RData",
-      "models/d_soft_local_c_local_e_RA.fit.RData",
-      "models/d_soft_global_c_local_e_RA.fit.RData",
-      "models/d_soft_hemi_c_local_e_RA.fit.RData",
-      "models/d_soft_local_c_windowed_e_RA.fit.RData",
-      "models/d_soft_hemi_c_windowed_e_RA.fit.RData")
-
-  plotfile <- "models/compare_lp.pdf"
-
-  main %<<% dots(plotfile=plotfile, pdfout=TRUE) %()% files
-}
+test <- mkchain[
+  .="NineModels.list",
+  plotfile="models/compare_lp.pdf"](
+    readLines,
+    grep(pattern="models/", value=TRUE),
+    gsub(".stan.", ".fit.", .),
+    main %<<<% dots(plotfile=plotfile, pdfout=TRUE) %()% .
+    )
 
 main <- function(plotfile, ..., pdfout=!interactive()) {
   files <- list(...)
@@ -77,14 +31,8 @@ main <- function(plotfile, ..., pdfout=!interactive()) {
   }
 }
 
-
-test <- function() {
-  files <- file.path("models", dir("models", "fit.RData"))
-  main %()% c("likelihoods.pdf", files)
-}
-
 getprobs <- function(files) {
-  ldply(files, getprob)
+  ldply(files, getprob, .parallel=TRUE)
 }
 
 split_array <- function(a, dim) alply(a, dim, identity)
@@ -141,21 +89,17 @@ violin_plots <- function(samples, fix=NULL) {
 
     ddply_along(samples, vargroup$fixvar[[1]], function(fixgroup, samps) {
       fixgroup <- unfactor(fixgroup)
+      label <- str_match(deparse(fixgroup, control=c()), '\\((.*)\\)')[,2]
+      message(label)
       if (!is.null(fix)
           && !((names(fixgroup)[[1]] %in% names(fix))
                && (fixgroup[[1]] %in% fix[[names(fixgroup)[[1]]]]))) {
         return()
       }
-      browser()
-      #a row for each in vargroup
 
-      label <- str_match(deparse(fixgroup, control=c()), '\\((.*)\\)')[,2]
-      message(label)
-      samps <- normalize(samps)
-      optimized <- subset(samps, class=="optimized")
-      samps <- subset(samps, class=="sample")
-      rng <- range(samples$lp__)
-      orng <- range(optimized$lp__)
+      quants <- make_boxes(samps)
+      rng <- range(c(quants$q.0, quants$q.100)) + c(-5, 5)
+      #a row for each in vargroup
 
       labelgrob <- textGrob(label=label, gp=gpar(fontsize=18))
       table <- gtable(widths = unit(c(1), "null"),
@@ -163,17 +107,19 @@ violin_plots <- function(samples, fix=NULL) {
                                        unit(rep(1, nrow(varchunk)), "null")))
       do.call(qeply({
         the.plot <- (
-          ggplot(samps)
-          + aes(`.(xvar)`, lp__, fill=`.(colorvar)`, color=`.(colorvar)`)
+          ggplot(quants)
+          + aes(`.(xvar)`, lp__, fill=`.(colorvar)`, color=`.(colorvar)`,
+                middle=q.50, ymin=q.0, ymax=q.100,
+                lower=q.25, upper=q.75)
           + scale_fill_discrete(guide = guide_legend(ncol=2))
-          + facet_grid(.~`.(gridvar)`, labeller=label_varvalue)
-          + geom_violin(data=samps, size=0.1, alpha=0.5, position="identity")
-          + geom_point(data=optimized, shape=4)
-          + geom_line(data=optimized, size=0.5, linetype="11", alpha=0.5,
-                      aes(group=`.(colorvar)`))
-          + coord_trans(ytrans=asinh_trans(), limy = orng * 1.1 + c(-1, 0))
+          + facet_grid(.~`.(gridvar)`)
+#          + (stat="identity", size=0.1, alpha=0.2)
+          + geom_line(size=0.25, aes(group=`.(colorvar)`))
+          + geom_point(size=0.5)
+          + coord_trans(ytrans=asinh_trans(), limy = rng)
           + scale_y_continuous(breaks=trans_breaks("asinh", "sinh", 5))
           + theme_bw(9)
+          + labs(title=".(gridvar)")
           + theme(panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.x = element_text(angle=-30, hjust=0, size=rel(0.6))))
@@ -183,25 +129,49 @@ violin_plots <- function(samples, fix=NULL) {
       table <- gtable_add_grob(table, labelgrob, 1, 1)
       grid.newpage()
       grid.draw(table)
+
     })
   })
+}
+
+#hate "#" in names...
+rename_quantile <- sub %<<<% dots(".*?([0-9]+).*", "q.\\1")
+
+make_boxes <- function(samples, collapse=character(0)) {
+
+  samps <- data.table(samples)
+
+  keys <- c("displacement", "carrier", "endpoint", "subject")
+  keysi <- c(keys, "sample.id")
+  keys_s <- setdiff(keys, collapse)
+
+  optim <- chain(samps,
+                 .[class=="optimized"],
+                 .[, list(lp__=sum(lp__)), by=keys_s],
+                 .[, lp__ := lp__ - max(lp__), by="subject"],
+                 .[, lp__ := lp__-max(lp__)-50],
+                 )
+
+  samps <- chain(samps,
+                 .[class=="sample"],
+                 data.table,
+                 .[, sample.id := seq_along(lp__), by=keys],
+                 .[, list(lp__=sum(lp__)), by=c(keys_s, "sample.id")],
+                 merge(optim, by=keys_s),
+                 .[, lp__ := lp__.x - max(lp__.x) + lp__.y,
+                   by=keys_s],
+                 )
+
+  quants <- chain(samps,
+                  .[, c(lp__=max(lp__), as.list(quantile(lp__))), by=keys_s],
+                  setnames(., names(.), rename_quantile(names(.)))
+                  )
 }
 
 collapsed_plots <- function(samples) {
   #then, again summing over observers
 
-  chain(
-    samples,
-    data.table,
-    .[, lp__ := lp__ - max(lp__), by=subject],
-    .[, sample_id := seq_along(lp__),
-      by=list(displacement, carrier, endpoint, class, subject)],
-    .[, list(lp__ = sum(lp__), over = length(lp__)),
-      by=list(displacement, carrier, endpoint, class, sample_id)],
-    .[, lp__ := lp__ - max(lp__)],
-    .[, list(lp__=max(lp__)),
-      by=list(displacement, carrier, endpoint, class)]
-    ) -> samps
+  quants <- make_boxes(samples, collapse="subjects")
 
   plots <- chain(
     cor = c("displacement", "carrier", "endpoint"),
@@ -210,40 +180,38 @@ collapsed_plots <- function(samples) {
     .[apply(., 1, function(x) length(setdiff(cor, x)) == 0), ],
     mutate(., row = seq_len(nrow(.))))
 
-  optimized <- subset(samps, class=="optimized")
-  samps <- subset(samps, class=="sample")
-  rng <- range(samples$lp__)
-  orng <- range(optimized$lp__)
+  rng <- range(c(quants$q.0, quants$q.100)) + c(-5, 5)
+
   table <- gtable(widths = unit(c(1), "null"),
                   heights = unit(rep(1, nrow(plots)), "null"))
-
   do.call(qeply({
     the.plot <- (
-      ggplot(samps)
-      + aes(`.(xvar)`, lp__, fill=`.(colorvar)`, color=`.(colorvar)`)
+      ggplot(quants)
+      + aes(`.(xvar)`, lp__, fill=`.(colorvar)`, color=`.(colorvar)`,
+            middle=q.50, ymin=q.0, ymax=q.100,
+            lower=q.25, upper=q.75)
       + scale_fill_discrete(guide = guide_legend(ncol=2))
-      + facet_grid(.~`.(gridvar)`, labeller=label_varvalue)
-      + geom_violin(data=samps, size=0.1, alpha=0.5, position="identity")
-      + geom_point(data=optimized, shape=4)
-      + geom_line(data=optimized, size=0.5, linetype="11", alpha=0.5,
+      + facet_grid(.~`.(gridvar)`)
+      ## + geom_boxplot(stat="identity", size=0.1, alpha=0.2,
+      ##                position="dodge")
+      + geom_line(size=0.25,
                   aes(group=`.(colorvar)`))
-      + coord_trans(ytrans=asinh_trans(), limy = orng * 2 + c(-1, 0))
+      + geom_point(size=0.5)
+      + coord_trans(ytrans=asinh_trans(),
+                    limy = rng
+                    )
       + scale_y_continuous(breaks=trans_breaks("asinh", "sinh", 5))
       + theme_bw(9)
+      + labs(title=".(gridvar)")
       + theme(panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
               axis.text.x = element_text(angle=-30, hjust=0, size=rel(0.6))))
     table <- gtable_add_grob(table, ggplotGrob(the.plot), .(row), 1)
     NULL
   }), plots)
-
-  grid.newpage()
+  #grid.newpage()
   grid.draw(table)
-}
 
-normalize <- function(samples, group=c()) {
-  samples <- ddply(samples, c("subject", group), mutate, lp__ = lp__ - max(lp__))
-  samples <- mutate(samples, lp__ = lp__ / abs(quantile(lp__, 0.95)))
 }
 
 run_as_command()

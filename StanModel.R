@@ -9,6 +9,8 @@ suppressPackageStartupMessages({
   source("stan_predictor.R")
 })
 
+`%&&%` <- function(x, y) if (!is.null(x)) y else NULL
+
 infile <- "data.RData"
 grid <- "motion_energy.csv"
 modelfile <- "SlopeModel.stan.RData"
@@ -136,7 +138,7 @@ main <- function(infile="data.RData",
       old.sd <- max(sd(as.data.frame(fit)$lp__))
       cat("retrying due to overshoot", overshoot, "sd", old.sd, "\n")
       ## print(interactive())
-      print(split$subject)
+      ##print(split$subject)
       ## if(interactive() && split$subject=="nj") {
       ##   print("what the hell")
       ##   debug(sample_optimize)
@@ -163,9 +165,11 @@ main <- function(infile="data.RData",
                          overshot=overshot)
     }
     #if(interactive() && split$subject=="nj") undebug(sample_optimize)
-    print(split)
-    print(fit)
-    print(overshoot)
+    if (attr(fit, "cached")){
+      print(split)
+      print(fit)
+      print(overshoot)
+    }
     dump("overshoot", file="overshoots.txt",
          append=file.exists("overshoots.txt"))
 
@@ -200,12 +204,14 @@ sample_optimize <- function(e, stan_data, iter, warmup, init, parallel) {
                pars=e$pars, version=packageVersion("rstan"))
 
   cat("hash", digest(hash), "\n")
-  ((fit <- loadCache(hash)) %||%
+  (ammoc(fit <- loadCache(hash),
+         fit %&&% (attr(fit, "cached") <- FALSE)) %||%
    ammoc(fit <- getSampling(e$model, data=stan_data,
                             warmup=warmup, iter=iter,
                             parallel=parallel,
                             pars=e$pars, init=init),
-         saveCache(fit, hash)))
+         saveCache(fit, hash),
+         attr(fit, "cached") <- TRUE))
 
   # then also get the max-likelihood parameters.
   # And the Hessian at max likelihood? Nah.
