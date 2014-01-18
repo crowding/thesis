@@ -115,7 +115,7 @@ violin_plots <- function(samples, fix=NULL) {
           + facet_grid(.~`.(gridvar)`)
 #          + (stat="identity", size=0.1, alpha=0.2)
           + geom_line(size=0.25, aes(group=`.(colorvar)`))
-          + geom_point(size=0.5)
+          + geom_point(size=0.75)
           + coord_trans(ytrans=asinh_trans(), limy = rng)
           + scale_y_continuous(breaks=trans_breaks("asinh", "sinh", 5))
           + theme_bw(9)
@@ -147,8 +147,8 @@ make_boxes <- function(samples, collapse=character(0)) {
 
   optim <- chain(samps,
                  .[class=="optimized"],
-                 .[, list(lp__=sum(lp__)), by=keys_s],
                  .[, lp__ := lp__ - max(lp__), by="subject"],
+                 .[, list(lp__=sum(lp__)), by=keys_s],
                  .[, lp__ := lp__-max(lp__)-50],
                  )
 
@@ -171,7 +171,7 @@ make_boxes <- function(samples, collapse=character(0)) {
 collapsed_plots <- function(samples) {
   #then, again summing over observers
 
-  quants <- make_boxes(samples, collapse="subjects")
+  quants <- make_boxes(samples, collapse="subject")
 
   plots <- chain(
     cor = c("displacement", "carrier", "endpoint"),
@@ -196,7 +196,7 @@ collapsed_plots <- function(samples) {
       ##                position="dodge")
       + geom_line(size=0.25,
                   aes(group=`.(colorvar)`))
-      + geom_point(size=0.5)
+      + geom_point(size=0.75)
       + coord_trans(ytrans=asinh_trans(),
                     limy = rng
                     )

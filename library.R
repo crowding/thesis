@@ -146,11 +146,14 @@ mutilate.predictions <-
           labeler)
   }
 
-folding_predict <- function(model, newdata=model$data, type="link", fold=FALSE, ...) {
+folding_predict <- function(model, newdata=model$data,
+                            type="link", fold=FALSE, ...,
+                            out = "avg") {
   pred <- predict(model, newdata=newdata, type=type, ...)
+  pred2 <- pred
   if(fold) {
     pred2 <- predict(model, newdata=fold_trials(newdata, TRUE), type=type, ...)
-    switch(class(pred),
+    avg <- switch(class(pred),
            list = Map(a=pred, b=pred2, n = names(pred), f=function(a, b, n) {
              switch(n,
                     se.fit = (a + b) / 2,
@@ -165,8 +168,9 @@ folding_predict <- function(model, newdata=model$data, type="link", fold=FALSE, 
              response=(pred+(1-pred2))/2,
              (pred - pred2) / 2))
   } else {
-    pred
+    avg <- pred
   }
+  switch(out, one=pred, two=pred2, avg=avg)
 }
 
 collapse <- function(data) {
@@ -567,15 +571,15 @@ fold_trials <- function(data, fold.trial) {
                        xor(folded, fold.trial) else fold.trial)),
         #n_ccw and n_cw were already taken care of...
         mutate_when_has(
-          displacement = (ifelse(fold.trial, -displacement, displacement)),
-          .bin.total_yes = ifelse(
-            folded, .bin.total_n - .bin.total_yes, .bin.total_yes),
-          .bin.total_pred = ifelse(
-            folded, .bin.total_n - .bin.total_pred, .bin.total_pred),
-          .bin.total_resid = ifelse(
-            folded, -.bin.total_resid, .bin.total_resid),
-          .bin.pred = ifelse(
-            folded, 1-.bin.pred, .bin.pred)),
+          displacement = (real_ifelse(fold.trial, -displacement, displacement)),
+          .bin.total_yes = real_ifelse(
+            fold.trial, .bin.total_n - .bin.total_yes, .bin.total_yes),
+          .bin.total_pred = real_ifelse(
+            fold.trial, .bin.total_n - .bin.total_pred, .bin.total_pred),
+          .bin.total_resid = real_ifelse(
+            fold.trial, -.bin.total_resid, .bin.total_resid),
+          .bin.pred = real_ifelse(
+            fold.trial, 1-.bin.pred, .bin.pred)),
         refold_me(fold.trial))
 }
 

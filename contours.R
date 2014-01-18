@@ -29,11 +29,14 @@ dev.fun <- dev.new
 
 noop <- function(...) NULL
 
-main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
-                 outlist = "contours/contours.list", fold=c(FALSE, TRUE),
+main <- function(infile = "slopeModel.RData",
+                 grid = "motion_energy.csv",
+                 outlist = "contours/contours.list",
+                 fold = c(FALSE, TRUE),
                  dev.fun = (if(interactive()) noop
                             else cairo_pdf %<<% dots(width=8, height=6)),
-                 devoff = (if (interactive()) noop else dev.off)) {
+                 devoff = (if (interactive()) noop else dev.off)
+                 ) {
 
   out <- match.fun(dev.fun)
   fold <- if(is.logical(fold)) fold[[1]] else match.arg(fold)
@@ -49,7 +52,6 @@ main <- function(infile = "slopeModel.RData", grid = "motion_energy.csv",
   open3d(windowRect=c(100L, 100L, 768L, 512L))
   on.exit(rgl.close(), add=TRUE)
   (Map %<<% model.df)(f = function(model, subject, ...) tryCatch({
-
     subject <- as.character(subject)
     cat("plotting subject ", subject, "\n")
     dev.fun(pdf.file <- replace_extension(outlist, "pdf",
@@ -86,7 +88,7 @@ plot_contours <- function(model, subject, motion.energy,
   if (is.motion.energy) {
     ##in motion energy models we can only evaluate stimuli whose
     ##motion energies have been precomputed
-    stop("extract sampling form motion energy limited to range of stimuli")
+    stop("extract sampling from motion energy limited to range of stimuli")
     ##Use geom_tile since we are not guaranteed even spacing. Is there a
     ##way to draw this interpolated?
     geom <- geom_tile()
