@@ -164,6 +164,8 @@ plot_vars <- function(preds) {
         merge(plotpreds,
               by="trial_id")) -> diffs
 
+  diffs <- subset(diffs, value < 1e5)
+
   par(bg="black")
   print(
     ggplot(diffs, aes(value, diff))

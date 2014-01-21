@@ -41,6 +41,81 @@ scenarios <- list(
         displacement_factor <-
         (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * max_sensitivity)
       ),
+    glocal=list(
+      displacement_parameter='
+          real<lower=0.01, upper=100> max_sensitivity;
+          real<lower=0, upper=1> globality;',
+      displacement_parameter_name=c("max_sensitivity", "globality"),
+      displacement_var = '
+          real inverse_number;',
+      displacement_computation = '
+          inverse_number <- 2*pi() / target_number_shown[n];
+          displacement_factor <-
+             (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number)))
+             * max_sensitivity * globality +
+             (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
+             * max_sensitivity * (1-globality);',
+      displacement_R_computation = alist(
+        inverse_number <- 2*pi/target_number_shown,
+        displacement_factor <-
+        globality * max_sensitivity * (
+          2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number)))
+        + (1-globality)*max_sensitivity * (
+          2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))))
+      ),
+    hemi=list(
+      displacement_parameter='
+          real<lower=0.01, upper=100> max_sensitivity;',
+      displacement_parameter_name="max_sensitivity",
+      displacement_var = '
+          real inverse_number;
+          real extent;
+          real covered;
+          real eff_number;',
+      displacement_computation = '
+          extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+          covered <- fmin(extent, 0.5);
+          //one shown equiv to two in full circle:
+          eff_number <- 4*pi() * covered / frac_spacing[n];
+
+          inverse_number <- 2*pi() / eff_number;
+          displacement_factor <-
+             (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number)))
+             * max_sensitivity;',
+      displacement_R_computation = alist(
+        inverse_number <- 2*pi/target_number_shown,
+        displacement_factor <-
+        (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * max_sensitivity)
+      ),
+    hemi_glocal=list(
+      displacement_parameter='
+          real<lower=0.01, upper=100> max_sensitivity;
+          real<lower=0, upper=1> globality;',
+      displacement_parameter_name=c("max_sensitivity", "globality"),
+      displacement_var = '
+          real inverse_number;
+          real extent;
+          real covered;
+          real eff_number;',
+      displacement_computation = '
+          extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+          covered <- fmin(extent, 0.5);
+          //one shown equiv to two in full circle:
+          eff_number <- 4*pi() * covered / frac_spacing[n];
+
+          inverse_number <- 2*pi() / eff_number;
+          displacement_factor <-
+            (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number)))
+            * max_sensitivity * globality;
+          displacement_factor <- displacement_factor +
+            (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
+            * max_sensitivity * (1-globality);',
+      displacement_R_computation = alist(
+        inverse_number <- 2*pi/target_number_shown,
+        displacement_factor <- max_sensitivity *
+        (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * globality +
+        (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * (1-globality))
+      ),
     soft_local=list(
       displacement_parameter='
           real <lower=spacing_sensitivity*min(frac_spacing),
@@ -308,14 +383,52 @@ scenarios <- list(
       ##         )
       ##       ) / carrier_norm
       ##       )),
-        local=list(
-          carrier_parameter = '',
-          carrier_parameter_name=c(),
-          carrier_var = '',
-          carrier_computation = '
+      local=list(
+        carrier_parameter = '',
+        carrier_parameter_name=c(),
+        carrier_var = '',
+        carrier_computation = '
             carrier_factor <- 2*pi()*frac_spacing[n] * carrier_sensitivity;',
-          carrier_R_computation=alist(
-            carrier_factor <- 2*pi* frac_spacing * carrier_sensitivity))
+        carrier_R_computation=alist(
+          carrier_factor <- 2*pi* frac_spacing * carrier_sensitivity)),
+      glocal=list(
+        carrier_parameter = '
+            real <lower=0, upper=1> c_globality;',
+        carrier_parameter_name=c("c_globality"),
+        carrier_var = '',
+        carrier_computation='
+            carrier_factor <-
+              c_globality * target_number_shown[n] * carrier_sensitivity  +
+              (1-c_globality) * 2*pi()*frac_spacing[n] * carrier_sensitivity;',
+        carrier_R_computation=alist(
+          carrier_factor <- (
+            c_globality * target_number_shown * carrier_sensitivity +
+            (1-c_globality) * 2*pi * frac_spacing * carrier_sensitivity))),
+      hemi_glocal=list(
+        carrier_parameter = '
+            real <lower=0, upper=1> c_globality;',
+        carrier_parameter_name=c("c_globality"),
+        carrier_var = '
+          real c_extent;
+          real c_covered;
+          real c_n_eff;
+        ',
+        carrier_computation= '
+          c_extent <- (0.0 + target_number_shown[n]) / target_number_all[n]; //[0,1]
+          c_covered <- fmin(c_extent, 0.5);
+          c_n_eff <- pi() * c_covered / frac_spacing[n];
+          //one shown equiv to two in full circle:
+          carrier_factor <- carrier_sensitivity * (
+            c_n_eff * (1-c_globality) +
+            (1-c_globality) * 2*pi()*frac_spacing[n]);',
+        carrier_R_computation=alist(
+          c_extent <- (0.0 + target_number_shown) / target_number_all,
+          c_covered <- pmin(c_extent, 0.5),
+          c_n_eff <- pi * c_covered / frac_spacing,
+          carrier_factor <- carrier_sensitivity*(
+            c_n_eff * (1-c_globality) +
+            (1-c_globality) * 2*pi * frac_spacing
+            )))
       ## windowed=list(
       ##   carrier_parameter = '
       ##     real<lower=min(frac_spacing), upper=2*pi()> carrier_field;',
@@ -339,7 +452,7 @@ scenarios <- list(
       ##     carrier_factor <-
       ##     target_number_all * frac_in_carrier_field
       ##     * carrier_sensitivity / carrier_field))
-      ),
+   ),
   #ENDPOINT
   e = list(
     none=list(
@@ -362,6 +475,57 @@ scenarios <- list(
           offset <- offset + endpoint_intercept * n_endpoints;',
       endpoint_R_computation=alist(
         n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        offset <- offset + endpoint_intercept * n_endpoints)),
+    C=list(
+      #endpoints change crowding
+      endpoint_parameter = '
+          real<lower=0.1, upper=2> endpoint_sensitivity;',
+      endpoint_parameter_name=c("endpoint_sensitivity"),
+      endpoint_var = '
+          real n_endpoints;',
+      endpoint_computation= '
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+          displacement_factor <- displacement_factor
+            * (1 + endpoint_sensitivity*n_endpoints);',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        displacement_factor <-
+            displacement_factor * (1+endpoint_sensitivity*n_endpoints))),
+    sCB=list( #adjust sensitivity per side/endpoints, bias per endpoints
+      #bias
+      endpoint_parameter = '
+          real<lower=-5, upper=5> endpoint_sensitivity;
+          real<lower=-5, upper=5> endpoint_side;
+          real<lower=-5, upper=5> endpoint_intercept;',
+      endpoint_parameter_name=c("endpoint_sensitivity", "endpoint_side",
+                                "endpoint_intercept"),
+      endpoint_var = '
+          real n_endpoints;
+          real sign_content;',
+      endpoint_computation= '
+          if (content[n] > 0)
+            sign_content <- 1;
+          else if (content[n] < 0)
+            sign_content <- -1;
+          else
+            sign_content <- 0;
+
+          if (target_number_shown[n] == target_number_all[n])
+            n_endpoints <- 0;
+          else n_endpoints <- 2;
+
+          displacement_factor <- displacement_factor *
+            (1 + endpoint_sensitivity*n_endpoints) *
+            (1 + endpoint_side*sign_content);
+          offset <- offset + endpoint_intercept * n_endpoints;',
+      endpoint_R_computation=alist(
+        n_endpoints <- ifelse(target_number_shown == target_number_all, 0, 2),
+        offset <- offset + endpoint_intercept * n_endpoints,
+        displacement_factor <- displacement_factor *
+            (1 + endpoint_sensitivity*n_endpoints) *
+            (1 + endpoint_side*sign(content)),
         offset <- offset + endpoint_intercept * n_endpoints)),
     R=list(
       #repulsive
@@ -437,7 +601,6 @@ scenarios <- list(
           n_endpoints * endpoint_summation * target_number_shown))),
     sA=list(
       #additive with skew (different on each side)
-      #affected by running the thing.
       endpoint_parameter = '
           real<lower=-5, upper=5> endpoint_summation;
           real<lower=-5, upper=5> endpoint_bias;',
@@ -466,7 +629,6 @@ scenarios <- list(
           * (endpoint_bias * sign(content) + endpoint_summation)))),
     sAB = list(
       #additive with skew (different on each side)
-      #affected by running the thing.
       endpoint_parameter = '
           real<lower=-5, upper=5> endpoint_summation;
           real<lower=-5, upper=5> endpoint_intercept;
@@ -614,7 +776,7 @@ parameters {
   real <lower=0, upper=lapse_limit> lapse;
   real intercept;
   real carrier_sensitivity;
-  real <lower=0>spacing_sensitivity;
+  real <lower=0,upper=1000>spacing_sensitivity;
   {{displacement_parameter}}
   {{carrier_parameter}}
   {{endpoint_parameter}}
@@ -789,7 +951,11 @@ otherFunctions <- quote({
                      endpoint_repulsion=0,
                      endpoint_summation=0,
                      endpoint_bias=0,
-                     extent_summation=0)
+                     endpoint_side=0,
+                     extent_summation=0,
+                     endpoint_sensitivity=1,
+                     globality=0.5,
+                     c_globality=0.5)
 })
 
 #these models screw up in some way and I omit them from taking up computer time.
@@ -802,8 +968,18 @@ losers <- c(
   "d_(?!local|global).*windowed",
   "d_(?!local|global).*windowed",
 
+  "d_glocal_c_(?!glocal)",
+  "d_(?!glocal).*_c_glocal",
+  "d_glocal.*_e_(?!none|sAB)",
+  "d_hemi_glocal_c_(?!hemi_glocal)",
+  "d_(?!hemi_glocal).*_c_hemi_glocal",
+  "d_hemi_glocal.*_e_(?!none|sAB)",
+
+  "soft_",
+
   "c_hemi_e_(?!none)",
-  "d_(?:local|global)_.*_e_(?!none|B|A|AB|sA|sAB|RB)",
+  "d_hemi_c_.*_e_(?!none)",
+  "d_(?:local|global)_.*_e_(?!none|B|A|AB|sA|sAB)",
 
   #"d_soft_local_c_hemi_e_RA",
   "d_soft_global_c_global_e_A",
