@@ -83,7 +83,10 @@ scenarios <- list(
              (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number)))
              * max_sensitivity;',
       displacement_R_computation = alist(
-        inverse_number <- 2*pi/target_number_shown,
+        extent <- (0.0 + target_number_shown) / target_number_all,
+        covered <- pmin(extent, 0.5),
+        eff_number <- 4*pi*covered / frac_spacing,
+        inverse_number <- 2*pi/eff_number,
         displacement_factor <-
         (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * max_sensitivity)
       ),
@@ -111,7 +114,10 @@ scenarios <- list(
             (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing[n])))
             * max_sensitivity * (1-globality);',
       displacement_R_computation = alist(
-        inverse_number <- 2*pi/target_number_shown,
+        extent <- (0.0 + target_number_shown) / target_number_all,
+        covered <- pmin(extent, 0.5),
+        eff_number <- 4*pi*covered / frac_spacing,
+        inverse_number <- 2*pi/eff_number,
         displacement_factor <- max_sensitivity *
         (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * globality +
         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * (1-globality))
@@ -959,7 +965,7 @@ otherFunctions <- quote({
 })
 
 #these models screw up in some way and I omit them from taking up computer time.
-#... or I just don't want it.
+#... or I just don't want them any more.
 losers <- c(
   "d_(?:soft_windowed|soft_hemi|soft_global)_c_.*_e_(?:RE|AE|RAE|RR)",
   "d_.*_c_(?:windowed|local|global)_e_(?:RAE|RR)",
@@ -970,19 +976,19 @@ losers <- c(
 
   "d_glocal_c_(?!glocal)",
   "d_(?!glocal).*_c_glocal",
-  "d_glocal.*_e_(?!none|sAB)",
+  "d_glocal.*_e_(?!none|sA|sAB)",
   "d_hemi_glocal_c_(?!hemi_glocal)",
   "d_(?!hemi_glocal).*_c_hemi_glocal",
-  "d_hemi_glocal.*_e_(?!none|sAB)",
+  "d_hemi_glocal.*_e_(?!none|sA|sAB)",
 
   "soft_",
 
   "c_hemi_e_(?!none)",
   "d_hemi_c_.*_e_(?!none)",
-  "d_(?:local|global)_.*_e_(?!none|B|A|AB|sA|sAB)",
-
+  "d_(?:local|global).*_.*_e_(?!none|B|A$|AB|sA|sAB)",
   #"d_soft_local_c_hemi_e_RA",
   "d_soft_global_c_global_e_A",
+  ".*_AE",
 
   "d_soft_windowed_c_endpoints_e.*",
   "d_soft_windowed_c_global_e.*",

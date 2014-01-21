@@ -216,7 +216,8 @@ predict.predictable <- function (
            link=list(fit=df$link, se.fit=dfse$link),
            terms=list(fit=df, se.fit=dfse))
   } else {
-    df = predict(object$stanenv, newdata)
+    df <- predict(object$stanenv, newdata)
+    df <- df[order(df$.order),]
     result = switch(type, response=df$response, link=df$link, terms=df)
   }
   result

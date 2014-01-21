@@ -4,7 +4,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(plyr)
   library(grid)
-  library(ptools)
+  library(vadr)
   library(psyphy)
   source("latexing.R")
   source("icons.R")

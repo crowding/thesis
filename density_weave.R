@@ -18,6 +18,7 @@ suppressPackageStartupMessages({
   library(plyr)
   library(grid)
   library(vadr)
+  library(reshape2)
   source("latexing.R")
   source("icons.R")
   source("scales.R")
@@ -30,7 +31,7 @@ for (name in ls()) {
   assign(name, get(name), globalenv())
 } #coz saved function
 setup_theme()
-density.example.subjects <- c("pbm", "nj")
+density.example.subjects <- c("pbm", "nj", "ns")
 
 ## @knitr do-not-run
 if (!interactive()) {
@@ -52,6 +53,8 @@ segment <- chain(load2env("data.RData")$data
                  , subset(exp_type=="numdensity"
                           & subject %in% unique(circle.model$fits$subject))
                  , do.rename(folding=TRUE))
+
+i.care.about <- unique(segment$subject)
 
 load("numbers.RData")
 #load("slopeModel.RData")
@@ -289,15 +292,15 @@ extract_pvals("interaction.no.spacing")
 quad.modelfiles <- chain(
   data.frame(carrier.local=c(TRUE, TRUE, FALSE, FALSE),
              envelope.local=c(TRUE,FALSE, TRUE, FALSE)),
-  mutate(carrier.name=ifelse(carrier.local, "local", "hemi"),
-         envelope.name=ifelse(envelope.local, "local", "hemi")),
-  mutate(modelfile=paste0("models/d_soft_", envelope.name, "_c_",
-                          carrier.name, "_e_none.fit.RData")))
+  mutate(carrier.name=ifelse(carrier.local, "local", "global"),
+         envelope.name=ifelse(envelope.local, "local", "global")), #or make it include hemi??
+  mutate(modelfile=paste0("models/d_", envelope.name, "_c_",
+                          carrier.name, "_e_sA.fit.RData")))
 
 ## @knitr density-pred-load
 quad.models <- chain(
   quad.modelfiles,
-  mutate(model=lapply(modelfile, load_stanfit)))
+  mutate(model=I(lapply(modelfile, load_stanfit))))
 
 ## @knitr density-predict
 quad.preds <- chain(
@@ -323,8 +326,8 @@ quad.match <- merge(data.frame(subject=density.example.subjects),
   orientation="over",
   conditions=quad.conditions)
  + theme(aspect.ratio=1,
-         title=element_text(size=rel(1)))
- + labs(title="Predictions under locality/globality scenarios"))
+         title = element_text(size=rel(1)))
+ + labs(title="Predictions for local and global models"))
 
 all.match <- merge(data.frame(subject=unique(segment$subject)),
                     rbind.fill(quad.conditions, data.frame(carrier.local=NA)))
@@ -341,51 +344,131 @@ chain(
   + theme(aspect.ratio=1,
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()),
-  + labs(title="Predictions under locality/globality scenarios"),
+  + labs(title="Predictions for local and global models"),
   ggplotGrob) -> all.quad.prediction.plot
 
 if(FALSE) {
   grid.newpage(); grid.draw(all.quad.prediction.plot)
 }
 
+## @knitr density-j-test
+
+jtest <- function(a, b, data = a$data) {
+  #NB. to deal with lapse rate, backconvert rates into binomial link.
+  a <- predictable(a)
+  b <- predictable(b)
+  a.preds <- predict(a, data, type="response")
+  b.preds <- predict(b, data, type="response")
+  fam <- binomial(link="logit")
+  a.link <- fam$linkfun(a.preds)
+  b.link <- fam$linkfun(b.preds)
+  a.test <- glm(cbind(data$n_cw, data$n_ccw) ~ offset(a.link) + b.link - 1,
+                family=binomial(link="logit"))
+  b.test <- glm(cbind(data$n_cw, data$n_ccw) ~ offset(b.link) + a.link - 1,
+                family=binomial(link="logit"))
+  chain(cbind(vadr::alter(summary(a.test)$coefficients, dimnames[[2]], paste0(".a")),
+              vadr::alter(summary(b.test)$coefficients, dimnames[[2]], paste0(".b"))),
+        .[1,],
+        rename(c("Pr(>|z|).a"="p.a", "Pr(>|z|).b"="p.b")))
+}
+
+chain(quad.models,
+      merge(.,., by=c(), suffixes=c(".a", ".b")),
+      subset(modelfile.a < modelfile.b),
+      {print(nrow(.)); .},
+      mdply(function(model.a, model.b, ...) {
+        cat(".")
+        x <- jtest(model.a[[1]], model.b[[1]])
+      }),
+      drop_columns(c("model.a", "model.b"))) -> full.jtests
+
+chain(quad.models,
+      merge(.,., by=c(), suffixes=c(".a", ".b")),
+      subset(modelfile.a < modelfile.b),
+      {print(nrow(.)); .},
+      mdply(function(model.a, model.b, ...) {
+        cat(".")
+        ddply(model.a[[1]]$data, "subject", jtest, a=model.a[[1]], b=model.b[[1]])
+      }),
+      drop_columns(c("model.a", "model.b")),
+      subset(subject %in% i.care.about)) -> subject.jtests
+
+## @knitr density-j-test-interpret
+
+joinby <-  c("carrier.local.a", "envelope.local.a",
+             "carrier.local.b", "envelope.local.b")
+pr <- c(joinby, c("p.a", "p.b", "Estimate.a", "Estimate.b",
+                  "modelfile.a", "modelfile.b"))
+
+mkchain[., data=full.jtests](
+  put(names, joinby),
+  as.list,
+  quickdf,
+  join(data),
+  .[pr],
+  mutate(favorA = p.b / p.a)) -> get_test
+
+get_test(c(TRUE, FALSE, FALSE, TRUE)) #favors A
+get_test(c(TRUE, FALSE, TRUE, TRUE)) #favors B?
+get_test(c(FALSE, FALSE, TRUE, FALSE)) #favors B
+
+print(get_test(c(TRUE, FALSE, FALSE, TRUE), subject.jtests)) #favors A
+print(get_test(c(TRUE, FALSE, TRUE, TRUE), subject.jtests)) #favors 
+print(get_test(c(FALSE, FALSE, TRUE, FALSE), subject.jtests)) #favors B
+
 ## @knitr density-predict-likelihoods
 quad.subject.lls <- chain(
   quad.models,
   adply(., 1, mkchain(.$model[[1]]$fits,
-                      mutate(ll=vapply(optimized, `[[`, 0, "lp__"),
+                      mutate(lp__=vapply(optimized, `[[`, 0, "lp__"),
                              model=NA, fit=NA, optimized=NA))),
+  subset(subject %in% i.care.about),
   drop_columns(c("model", "fit", "optimized", "modelfile")))
 
-quad.sum.lls <- chain(
+displacement.better <- chain(
   quad.subject.lls,
+  subset(carrier.local==FALSE),
+  ddply(., c("subject"),
+        mkchain(arrange(desc(lp__)), .[1,])))
+
+carrier.better <- chain(
+  quad.subject.lls,
+  subset(envelope.local==TRUE),
+  ddply(., c("subject"),
+        mkchain(arrange(desc(lp__)), .[1,])))
+
+quad.max.ll <- chain(
+  quad.models,
+      adply(1, function(row) { # for each model,
+        adply(row$model[[1]]$fits, 1, function(fitrow) {
+          #each subject fit w/in each mdoel
+          samples <- as.data.frame(fitrow$fit[[1]])
+          data.frame(lp__ = max(samples$lp__)) #get max log prob
+        })
+      }),
+      drop_columns(c("model", "optimized"))
+      )
+
+quad.sum.lls <- chain(
+  quad.max.ll,
+  subset(subject %in% segment$subject),
   ddply(c("carrier.local", "envelope.local"),
         numcolwise(sum)),
-  arrange(desc(ll)))
+  arrange(desc(lp__)))
 
 best.subject.lls <- chain(
   quad.subject.lls,
+  subset(subject %in% i.care.about),
   ddply("subject", mkchain(
-    arrange(desc(ll)),
+    arrange(desc(lp__)),
     `[`(1,))))
 
-## @knitr density-combined-model
-source("combined.model.R")
-load("combined.model.RData")
-
 ## @knitr density-combined-model-plot
-source("combined.model.R")
-(plot_segment_fit(
-  subset(selected.fits, subject %in% density.example.subjects),
-  subset(prediction.dataset, subject %in% density.example.subjects),
-  subset(segment.folded.spindled.mutilated, subject %in% density.example.subjects))
- + theme(aspect.ratio=1))
+preds <- subset(quad.preds, (carrier.local==FALSE) & (envelope.local==TRUE))
 
-## @density-extent-profile
-source("combined.model.R")
-(make_extent_plots(
-  subset(selected.fits, subject %in% density.example.subjects),
-  combined.data)
- + theme(aspect.ratio=1))
+(plot.spacing %+% segment.folded.spindled.mutilated
+ + density_prediction_layers(preds, connect="number")
+ )
 
 ## @density-save
 save(file="density-save.RData",

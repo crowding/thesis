@@ -41,12 +41,13 @@ interp.nd <- function (data, grid, ref = lapply(dim(grid), seq_len),
     y <- 1:length(x)
     clamp(approx(x, y, data[,dim], rule=rule)$y, 1, length(x))
   })
+  if (ndim == 1) dim(loc) <- c(length(loc), 1) #oh, FFS, sapply.
   lower <- floor(loc)
   lower <- sapply(seq_along(ref),
                   function(dim) clamp(lower[, dim],
                                       1, length(ref[[dim]]) - 1))
   remainder <- loc - lower
-  #weights shall be calculated for each of 2^N dimensions.
+  #weights shall be calculated for each of 2^N neighbors.
   neighbors <- as.matrix(do.call(expand.grid, rep(list(c(0,1)), ndim)))
   apply(neighbors, 1, function(neighbor) {
     neighbor_rep <- rep(1, nout) %o% neighbor
