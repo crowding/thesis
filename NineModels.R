@@ -119,8 +119,8 @@ scenarios <- list(
         eff_number <- 4*pi*covered / frac_spacing,
         inverse_number <- 2*pi/eff_number,
         displacement_factor <- max_sensitivity *
-        (2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * globality +
-        (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * (1-globality))
+        ((2 - 2/(1+exp(-1/spacing_sensitivity/inverse_number))) * globality +
+         (2 - 2/(1+exp(-1/spacing_sensitivity/frac_spacing))) * (1-globality)))
       ),
     soft_local=list(
       displacement_parameter='

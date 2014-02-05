@@ -68,6 +68,13 @@ knitr
 
 \begin_layout Section
 Introduction
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:introduction"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

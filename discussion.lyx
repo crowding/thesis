@@ -75,64 +75,835 @@ Outline
 \end_layout
 
 \begin_layout Itemize
-Discussion
-\end_layout
-
-\begin_layout Itemize
-Review of results
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
- Summation for carrier motion is LARGE in spatial extent
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
- Summation for envelope motion is absent; rather crowding at medium scale
-\end_layout
-
-\begin_layout Itemize
- Repulsion effect.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
- Otherwise no interaction between carrier and envelope?
-\end_layout
-
-\begin_layout Itemize
-Prev.
- work on conflicting first-order and positional cues
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-In psychophysics
+Intro paragraph.
+ Why have I been doing all this again?
 \end_layout
 
 \begin_deeper
 \begin_layout Standard
-Mather, Chubb/Sperling/Anstis reverse phi stimuli
+Physical motion can be defined simply as an object changing position over
+ time.
+ Visual motion is more challenging to define.
+ We presume that it is advantageous for perceptions of visual motion to
+ have correspondence to changing positions of objects.
+ However, the most well-understood mechanisms of visual motion seem to have
+ little to do with explicitly tracking changes in position.
+ First-order motion mechanisms are rather understood as signaling the presence
+ of spatiotemporal correlations of luminance within limited, stationary
+ windows.
+ With the idea of gaining an understanding of how motion as represented
+ in the visual system can correspond to objects moving in physical space,
+ I constructed illusions such as 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:demo"
+
+\end_inset
+
+, combining the motion of a carrier, wave, producing first-order motion,
+ with the motion of an envelope that changed position over time.
+ This produced the novel effect of motion that changes appearance based
+ on the Investigating how the parameters of these stimuli affected the appearanc
+e of visual motion led to a model of how first-order and motion and position-def
+ined motion interact.
+ These experiments revealed differing and complementary characteristics
+ of how the two types of motion are processed.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Carrier motion and envelope motion processing mechanisms are distinguished
+ by opposite effects of identical flankers.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+First-order motion exhibits obligatory summation over space
+\end_layout
+
+\begin_deeper
+\begin_layout Subsubsection*
+First order motion exhibits obligatory summation over large areas
 \end_layout
 
 \begin_layout Standard
- Zanker "theta motion"
+When observers are asked to detect weak broadband motion signals in noise,
+ they can integrate localized motion signals over relatively large regions
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Williams:1984aa,Downing:1989aa,Fredericksen:1994wv"
+
+\end_inset
+
+; this has been modeled in terms of summation of first-order motion mechanisms.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Had some confusion over whether summation is linear or nonlinear.
+ Resolved by Burr, Morrone and Vaina 1995: since I have no noise and no
+ distractors we would expect linear summation.
+\end_layout
+
+\end_inset
+
+ In the case of optic flow stimuli, which may include the rotational carrier
+ motion stimuli used in my experiments, summation can take place over much
+ of the visual field 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Morrone:1995aa,Burr:1998ys"
+
+\end_inset
+
+.
+ These results relate to detection or direction discrimination at threshold
+ and not to suprathreshold appearance or to the integration with other forms
+ of motion.
+ In the present experiments it appears that the large-scale summation of
+ first-order motion is not only possible but obligatory.
+ Even when first-order motion strongly conflicts with higher-order motion,
+ in conditions where observers report a perception of two overlaid motions,
+ their motion judgements are influenced by first-order motion in proportion
+ to the density of elements multiplied by the strength of the motion signal.
+ In a small control experiment I asked observers to attend selectively and
+ report either the position-defined motion, discounting the carrier motion,
+ or to the global impression of motion; this did not produce any significant
+ differences.
 \end_layout
 
 \begin_layout Standard
- Why can we see our envelope motion in the periphery but not Zanker style
- stimuli?
+With an aim of discovering the extent of this spatial summation I controlled
+ the circumferential extent of stimuli in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+.
+ A limited extent of spatial summation ought to have resulted in saturation
+ with stimuli of larger extents which would have resulted resulting in either
+ a significant interaction of number and spacing or a better fit of responses
+ to element spacing rather than number.
+ However, linear summation and dependence on first order motion to number
+ still gave a good account of observers' behavior in this experiment.
+ While the coefficient of linearity for stimuli in a single hemifield differed
+ from that needed to account for stimuli spanning both hemifields (as in
+ 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+), unrestricted linear summation still provided the best account of sensitivity
+ to carrier motion for stimuli subtending up to 160 degrees of arc.
+\end_layout
+
+\begin_layout Standard
+Note that the extent of this spatial summation is larger than that of the
+ effective receptive field size for motion detecting units in 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+I can't find anyone who's tried to psychophysically measure the RF size
+ for eccentric stimuli.
+ Anderson, Burr and Morrone did it for central stimuli.
+\end_layout
+
+\end_inset
+
+ V1 or even MT 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Mikami:1986vn,Livingstone:2001ao"
+
+\end_inset
+
+, and appears to be larger than the objects that we have experience in tracking
+ in peripheral vision.
+ One might then wonder how obligatory large-scale summation could be part
+ of a mechanism that parses the motion of objects from a possibly cluttered
+ environment containing multiple moving objects.
+ It seems significant that in the present study, all carrier motions were
+ directed in the same rotational direction within each trial.
+ This might selectively activate global flow mechanisms which integrate
+ over the whole scene 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Snowden:1997vn,Price:2004ys"
+
+\end_inset
+
+.
+ In this case masking optic flow integration by adding iso-eccentric noise
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Maruya:2013aa"
+
+\end_inset
+
+ might suppress summation.
+ This explanation requires that optic flow is processed for first-order
+ motion independently of other types, for which there is some evidence 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Aaen-Stockdale:2007dq"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Another possibility is that first-order motion in my stimuli is integrated
+ across space as a kind of contour integration.
+ Detection of a motion element is facilitated when it aligns in direction
+ and position with another moving element 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Verghese:2000aa,Verghese:2002aa"
+
+\end_inset
+
+; when extended to contours formed of image motion, this effect increases
+ with the number of element in a path 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Ledgeway:2002aa"
+
+\end_inset
+
+.
+ If motion-defined contour integration is selective for first-order motion,
+ it may explain the large extent of summation I observed in my experiments.
+ This would require that contour integration take place at an earlier or
+ parallel stage to mechanisms responding to changes in position, since the
+ strength of summation did not depend on the degree to which first-order
+ motion conflicted with position-defined motion.
+ However, I also observed summation at larger inter-element separations
+ than has been found for detection of motion-defined contours in noise 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Watt:2008aa"
+
+\end_inset
+
+.
+ To test if contour integration accounts for first-order-motion summation
+ in these stimuli, one might adjust the stimulus and task to require segmenting
+ the wheel into multiple pieces 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Verghese:1997aa,Burr:2009kx"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Paragraph*
+Position-defined motion does not pool
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Position-defined-motion does not summate
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Do we expect pos.
+ def.
+ motion to summate?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+We might or might not expect the same global summation for position-defined
+ motion that we observed for luminance-defined motion.
+ Second-order motion does not appear to define contours 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hess:2000aa"
+
+\end_inset
+
+, and evidence for any processing of second-order optic flow stimuli is
+ mixed at best 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Cassanello:2011uq,Allard:2013aa"
+
+\end_inset
+
+.
+ Even without either of these mechanisms, one might expect observers to
+ be able to pool position-defined motion from multiple identically moving
+ elements, simply as a combination of multiple cues within a single modality.
+ So it is reasonable to expect at least some improvement of sensitivity
+ to position-defined motion when the number of elements is increased.
+ However I did not find this.
+ The highest sensitivities to envelope motion were achieved when the fewest
+ elements were on screen.
+ Even when elements were separated by more than their retinal eccentricity,
+ so that crowding should not be an issue, there was no improvement in sensitivit
+y to envelope motion when extra elements were added.
+ Instead, sensitivity to envelope motion remained constant for larger separation
+s between elements, and declined as element separation decreased.
+\end_layout
+
+\begin_layout Standard
+Since each element also carried some carrier motion, adding more elements
+ to the stimulus adds more first-order motion.
+ Some studies appear to find that first-order noise interferes with detection
+ of second-order stimuli 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Edwards:1995fk,Aaen-Stockdale:2012aa"
+
+\end_inset
+
+.
+ These studies found that the interference between first- and second- order
+ stimuli scaled with the modulation strength of the first-order stimuli.
+ However, the first-order component to the stimuli I used was not noise,
+ but rather all elements carried identical signals; moreover first-order
+ motion was co-located with the position-defined motion, so that there was
+ no spatial interference between signal and noise elements as in the studies
+ just mentioned.
+ I found that varying the strength of the first-order motion signal led
+ to no changes in the sensitivity to position-defined motion, only a change
+ in bias.
+ So interference from first order motion on position-defined motion does
+ not appear to occur in my stimulus, so does not explain the decline in
+ sensitivity to envelope motion.
+\end_layout
+
+\begin_layout Standard
+It is surprising that envelope motion becomes less, rather than more visible
+ when 
+\begin_inset Quotes eld
+\end_inset
+
+flankers
+\begin_inset Quotes erd
+\end_inset
+
+ which in fact carry identical information are added.
+ This may represent a constraint on how position-defined motion is processed.
+ It may also represent a limitation of spatial attention, which multiple-object-
+tracking studies have shown is limited to approximately 2 elements per hemifield
+ However, note that since all elements are identical, it is not necessary
+ to distinguish target from non-target as in MOT studies, unless attentional
+ tracking is in fact necessary to extract position-defined motion.
+ It may also be the case that mechanisms require more time than the 500
+ ms stimulus duration; the illusion presented by illustrates a case where
+ linking multiple object motions takes considerably longer than that
 \end_layout
 
 \end_deeper
 \end_deeper
 \begin_layout Itemize
- Tse, Shapiro illusions
+\begin_inset Note Greyedout
+status open
+
+\begin_layout Plain Layout
+Position-defined motion sensitivity is destroyed by flanking objects
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection*
+Position-defined motion sensitivity is limited by crowding
+\end_layout
+
+\begin_layout Standard
+A different explanation of a loss in sensitivity to envelope motion is that
+ it is a loss in sensitivity to position itself (and thus to changes in
+ position.) Some studies have found that localization or form perception
+ of second-order stimuli is much poorer than for first-order stimuli 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zanker:1997vn,Allen:2004aa"
+
+\end_inset
+
+.
+ On the other hand, other studies find very good spatial precision for second-or
+der motion stimuli 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Banton:1993ab,Volz:1996aa"
+
+\end_inset
+
+.
+ My experiments resolve this apparent difference by showing that the sensitivity
+ to position-defined movement is limited by spatial interference from neighborin
+g elements.
+ In the studies mentioned above, poor resolution was found for motion stimuli
+ embedded in noise, while good performance was found for stimuli that were
+ isolated against a gray background.
+\end_layout
+
+\begin_layout Standard
+In my experiments I determined that the sensitivity to envelope motion was
+ controlled by the spacing between each element and its nearest neighbors.
+ This finding is typical of the visual phenomenon of crowding (see 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Pelli:2008ao,Whitney:2011vn"
+
+\end_inset
+
+for reviews).
+ In crowding the discrimination or identification of a feature suffers when
+ surrounded by flankers.
+ One can define a 
+\begin_inset Quotes eld
+\end_inset
+
+critical distance
+\begin_inset Quotes erd
+\end_inset
+
+ as the target-flanker separation which achieves some set elevation of threshold
+ for discrimination or recognition, analogous to how parameter 
+\begin_inset Formula $\beta_{\Delta}$
+\end_inset
+
+ operates in the model in this thesis.
+ A typical finding has critical spacing approximately half the retinal eccentric
+ity, which is in line with my findings for envelope motion.
+ However, since 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ did not distinguish between element spacing and element number as the explanato
+ry variable, I constructed 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sub:results-number"
+
+\end_inset
+
+ to compare these possibilities.
+ The results appear to favor element spacing, though the sensitivity of
+ this check was less than desired.
+\end_layout
+
+\begin_layout Standard
+To my knowledge these experiments are the first to establish crowding as
+ the bottleneck limiting sensitivity to position-defined motion.
+ Previously, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Bex:2005zm"
+
+\end_inset
+
+ established that crowding affects perception of first-order motion in the
+ near periphery.
+ However, there is an important difference between the first-order case
+ and the position-defined case; for first-order motion, the perceived motion
+ is affected by the motion carried by the flanker, undergoing 
+\begin_inset Quotes eld
+\end_inset
+
+compulsory averaging,
+\begin_inset Quotes erd
+\end_inset
+
+ which was consistent with what I found for first-order motion.
+ But for position-defined motion I found there was no summation.
+ In the literature it seems that there are two manifestations of the crowding
+ effect depending on the stimulus: object-level and feature-level.
+ At the feature level, discrimination of elementary features like orientation,
+ motion direction, spatial frequency, hue, and contrast is impaired in the
+ presence of flankers, and there is compulsory averaging 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Parkes:2001aa"
+
+\end_inset
+
+: the perceived feature is some mixture of the target and flanker features.
+ At object level, stimuli such as letters, objects, and faces, being juxtapositi
+ons of multiple features, cannot be recognized in the presence of flankers,
+ but pooling is less obvious; phenomenally the disparate features are mixed
+ into a 
+\begin_inset Quotes eld
+\end_inset
+
+jumble
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zigler:1930aa"
+
+\end_inset
+
+.
+ For envelope motion to show no summation suggests that the process subserving
+ envelope motion detection in the visual system does not encode changes
+ in position prior to the crowding bottleneck, but afterwards.
+ Thus position-defined motion is not an elementary feature in the way that
+ first-order motion is.
+ Instead it can be considered at the object level as a juxtaposition of
+ multiple features, if we allow the multiple features to be arranged over
+ time as well as space.
+ In other words the detection of envelope motion rests on an encoding and
+ comparison of successive positions, rather than a low-level encoding of
+ movement 
+\emph on
+per se.
+
+\emph default
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+ Accordingly, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Seiffert:1998uq"
+
+\end_inset
+
+ found that position displacement provided the better account of second-order
+ stimuli, while first-order motion was better accounted for in the usual
+ motion-energy terms.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A recent hypothesis for the mechanism of visual crowding is that outside
+ the fovea, the visual system computes a sort of reduced or 
+\begin_inset Quotes eld
+\end_inset
+
+summary statistic
+\begin_inset Quotes erd
+\end_inset
+
+ representation of the regional content of a scene 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Balas:2009aa,Freeman:2011aa"
+
+\end_inset
+
+; this summary encodes the density of basic features (e.g.
+\begin_inset space \space{}
+\end_inset
+
+orientation and first-order motion) as well as some second-order interactions
+ between features like junctions and collinearity.
+ This summary-statistic model is derived from models of texture perception,
+ which effectively makes the claim that crowding and texture are the same
+ thing (or, as 
+\begin_inset CommandInset citation
+LatexCommand citeauthor
+key "Parkes:2001aa"
+
+\end_inset
+
+ put it, 
+\begin_inset Quotes eld
+\end_inset
+
+`crowding' is simply the name we give to texture perception when we do not
+ wish it to occur.
+\begin_inset Quotes erd
+\end_inset
+
+) Crucially, a summary-statistic representation fails to preserve the relative
+ position of features when more than one object occupies a given region.
+ For example, when targets consist of two crossed bars, the relative location
+ of the intersection (which distinguishes a 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+ from a 
+\begin_inset Quotes eld
+\end_inset
+
+T
+\begin_inset Quotes erd
+\end_inset
+
+) is lost or averaged with the flanker 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Greenwood:2009aa,Dakin:2010kx,Greenwood:2012fk"
+
+\end_inset
+
+.
+ Recognition tasks which depend on combinations features, like letter recognitio
+n, are thus made more difficult under crowded conditions.
+ An account of crowding as a loss of position information is a natural fit
+ for what we see in 
+\begin_inset Quotes eld
+\end_inset
+
+position-defined
+\begin_inset Quotes erd
+\end_inset
+
+ motion; since position information becomes less precise under crowding,
+ so does the motion signal computed from successive positions.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+move towards conclusion....
+\end_layout
+
+\end_inset
+
+ It seems likely that many aspects of motion vision in the near periphery
+ may be explained by spatial interference (crowding) which limits the precision
+ of perceived position and changes thereof, and it is an interesting exercise
+ to re-interpret the literature on this basis.
+ I have engaged in some mild re-interpretation when relating the current
+ findings to the extant literature on visual motion; as discussed in the
+ 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:introduction"
+
+\end_inset
+
+, several different boundaries have been drawn between simple and complex
+ motion stimuli, so some re-interpretation is always necessary.
+ I have attempted to based on the details of the stimuli used by each .
+ have been drawn contrast-modulated stimuli used by Aaen-Stockdale et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand citeyearpar
+key "Aaen-Stockdale:2007dq,Aaen-Stockdale:2012aa"
+
+\end_inset
+
+ form an interesting case.
+ They are intermediate between the case where motion stimuli is fully embedded
+ in noise and the case where motion elements are isolated; a relatively
+ small number of dots are used, and the dots are not randomly replotted.
+ This study found that thresholds for second-order radial motion were higher
+ than rotational motion, which aligns with the finding that the spatial
+ interference due to crowding extends more radially than Brownian motion,
+ and there are only a moderate number of dots.
+\end_layout
+
+\begin_layout Standard
+In these experiments, stimuli were exclusively presented in the near periphery,
+ and all stimuli combined a variable envelope motion with a suprathreshold
+ first-order motion.
+ There are several reasons to believe that the performance for detecting
+ envelope motion should be poor in this situation.
+ One is that the localization of second-order stimuli in the near periphery
+ has been found to be poor, compared to first-order stimuli.
+ .
+ Visibility of a moving target declines with increasing eccentricity 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Grzywacz:1995dq"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Itemize
- Hedges et al
+I find that When envelope motion is visible, it dominates the appearance
+ of motion, and has been shown to actively interfere with discrimination
+ of carrier motion direction 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hedges:2011aa"
+
+\end_inset
+
+ perception of envelope motion dominated 
+\end_layout
+
+\begin_layout Standard
+My experiments appear to show that this loss in precision is dependent on
+ the spacing between a stimulus element and its immediate flankers.
+ Sensitivity to position displacement declined as the spacing between adjacent,
+ identical targets decreased, a finding typical of crowding (which see below.)
+ Note that in these experiments, all moving elements were identical and
+ carried the same motion information.
+ In this case it would be reasonable to expect that observers to be able
+ to pool multiple noisy motion signals over space, as can be done for separated
+ patches of first-order motion in the near periphery 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Burr:2009kx"
+
+\end_inset
+
+.
+ This would tend to counteract a crowding-related decline of sensitivity
+ to position shifts.
+ However, this did not happen.
+ Even for small numbers of elements, widely spaced enough that crowding
+ can not be expected to affect precision of localization, no pooling was
+ found; sensitivity to envelope motion only declined when more elements
+ were added.
+ This is contrary to the situation for first-order motion and may reflect
+ a difference between the two systems.
+ 
+\end_layout
+
+\begin_layout Standard
+does not exhibit any pooling or summation, either globally (as discussed
+ in 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:results-no-pooling"
+
+\end_inset
+
+) or between neighboring targets.
+ Rather, reducing the inter-element spacing causes sensitivity to position-defin
+ed motion to drop.
+\end_layout
+
+\begin_layout Standard
+A dependence of sensitivity on target-flanker spacing is a typical finding
+ of visual crowding, a class of phenomena for which there is an active literatur
+e 
+\end_layout
+
+\begin_layout Itemize
+When gaze moves between the two wheels in from the compelling illusion in
+ also involves a change in eccentricity.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+An aspect of the illusion in (<<<) that is not covered in the experiments
+ reported here is that the 
+\end_layout
+
+\begin_layout Subsubsection*
+saddfasd
+\end_layout
+
+\begin_layout Standard
+(Bex and Dakin) have investigated the extent to which sensitivity to first-order
+ motion is limited by crowding.
+\end_layout
+
+\begin_layout Itemize
+Repulsive effect (relation to induced)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+When I began investigating the workings of reversal illusion shown in figure
+ 1, I started by asking observers to judge the direction of motion of
+\end_layout
+
+\begin_layout Itemize
+, Early experiment designs sought to capture the 
+\begin_inset Quotes eld
+\end_inset
+
+reversal
+\begin_inset Quotes erd
+\end_inset
+
+ by presenting and seeking an inter-stimulus spacing that caused a reversal
+ of perceived motion.
+ The 
+\end_layout
+
+\begin_layout Itemize
+The combination of with possibly conflicting revealed another effect which
+ was
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Relation to crowding.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Quotes eld
+\end_inset
+
+repulsive
+\begin_inset Quotes erd
+\end_inset
+
+ effect
+\end_layout
+
+\begin_layout Itemize
+Present dataset is not sufficient to characterize the functional form of
+ this effect, but it is consistent with a sibtractive interaction between
+ different channels of motion processing.
+ (Derrington et al.)
+\end_layout
+
+\begin_layout Itemize
+Effect is nonlinear (perhaps saturating) in terms of the relative contrast
+ of forward and against motions.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Hedges et al
 \end_layout
 
 \begin_deeper
@@ -143,17 +914,17 @@ Actually, we see no reduction in envelope motion sensitivity as a function
 
 \end_deeper
 \begin_layout Itemize
- In eye movements and physiology
+In eye movements and physiology
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
- Eye movements
+Eye movements
 \end_layout
 
 \begin_deeper
 \begin_layout Standard
- Butzer & Ilg
+Butzer & Ilg
 \end_layout
 
 \begin_layout Standard
@@ -161,31 +932,31 @@ Hawken/Gegenfurtner
 \end_layout
 
 \begin_layout Standard
- Wilmer/Nakayama (not using a conflict stimulus but pretty relevant)
+Wilmer/Nakayama (not using a conflict stimulus but pretty relevant)
 \end_layout
 
 \end_deeper
 \end_deeper
 \begin_layout Itemize
- Physiology
+Physiology
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
- Ilg & Churan
+Ilg & Churan
 \end_layout
 
 \begin_layout Itemize
- Hedges et al
+Hedges et al
 \end_layout
 
 \begin_layout Itemize
- (maybe mix in with other section on MT physiology)
+(maybe mix in with other section on MT physiology)
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
- Neurophych
+Neurophych
 \end_layout
 
 \begin_deeper
@@ -211,7 +982,7 @@ Hawken/Gegenfurtner
 
 \begin_deeper
 \begin_layout Itemize
- Subjective appearance is important
+Subjective appearance is important
 \end_layout
 
 \end_deeper
@@ -221,7 +992,7 @@ Hawken/Gegenfurtner
 
 \begin_deeper
 \begin_layout Itemize
- Danger: long range system is also effective for most "short range" stimuli
+Danger: long range system is also effective for most "short range" stimuli
 \end_layout
 
 \end_deeper
@@ -331,50 +1102,17 @@ DEMO: show that induced motion is much stronger when inducer carrier is
 \end_deeper
 \end_deeper
 \begin_layout Subsection
-History of our displays
-\end_layout
-
-\begin_layout Subsection
-Displays which put lower level and higher level motion in conflict
+Existing work which puts lower level and higher level motion in conflict
 \end_layout
 
 \begin_layout Standard
-Motion perception appears to be mediated by multiple processes that operated
- in different ways and may interact in some other ways.
+Motion perception appears to be mediated by multiple processes that operate
+ separately in some ways and interact interact in some other ways.
  In most cases, the first order motion and higher order motion of a moving
  object will agree; however, when they conflict, the manner in which conflicts
- are resolved may reveal an interaction between the two systems and help
- our understanding of motion perception.
- To put our studies in context we review some previous examples of the use
- of conflicting first-order and higher order motions.
-\end_layout
-
-\begin_layout Paragraph
-Contrast reversing apparent motion stimuli
-\end_layout
-
-\begin_layout Standard
-Anstis 1970; Braddick 1974; anstis and Rogers 1974
-\end_layout
-
-\begin_layout Standard
-must mention 
-\begin_inset Quotes eld
-\end_inset
-
-flicker motion
-\begin_inset Quotes erd
-\end_inset
-
- (anstis 1980? 
-\begin_inset Quotes eld
-\end_inset
-
-in preparation
-\begin_inset Quotes erd
-\end_inset
-
-)
+ are resolved may reveal an interaction between the two systems.
+ Previous work has put suprathreshold first-order and position-defined motion
+ in conflict, which I review here.
 \end_layout
 
 \begin_layout Paragraph
@@ -927,8 +1665,8 @@ Handwavy.
  are very large.
  In our stimuli, moving objects have contrast and orientation which makes
  objects salient, in addition to their first order motion.
- If the perceptual resolution for these static cues is finer than that for
- motion 
+ If the perceptual resolution for contrast edges is finer than that for
+ motion defined edges, 
 \begin_inset Note Note
 status open
 
@@ -961,8 +1699,7 @@ Another way to construct a stimulus that opposes first-order and higher
  as Gabor functions whose envelopes progressively change position.
  We treat these as the same class of stimuli because they share in common
  the fact that there is a localized contrast cue to their changing position,
- and because the carrier motion component is narrowband compared to the
- random dot kinematograms used in theta motion.
+ and because the carrier motion component is narrowband.
 \end_layout
 
 \begin_layout Standard
@@ -984,8 +1721,8 @@ key "Shapiro:2009aa"
 \end_inset
 
 .
- When viewed in the periphery, these stimuli appear to travel at a steep
- angle away from fixation a combination of both carrier.
+ When viewed in the periphery, these stimuli appear to travel at an angle
+ away from fixation a combination of both carrier.
  This motion seems to carry the perceived location of the object far away
  from the veridical location.
  It is not clear whether this apparently change in position is measurable
@@ -1011,16 +1748,15 @@ e between central and peripheral vision, or only due to a parameteric difference
 \end_inset
 
  We noticed that the perceived direction of motion could be affected not
- only by the retinal eccentricity but by the proximity of the object to
- nearby objects.
- The fact was was was noticed by us (
+ only by the retinal eccentricity but by the proximity of the target to
+ adjacent flankers (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "Meilstrup:2008aa"
 
 \end_inset
 
-; demonstrated in figures ) A similar display was constructed independently
+; demonstrated in figures) A similar display was constructed independently
  by 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -1142,14 +1878,13 @@ Not sure whether I want to get into the effects of stimulsu sdiration or
 \end_layout
 
 \begin_layout Standard
-In some of our experiments not covered in detail here 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Meilstrup:2008aa"
 
 \end_inset
 
- we also studied oculomotor saccade and pursuit responses to carrier/envelope
+ showed data on oculomotor saccade and pursuit responses to carrier/envelope
  motion stimuli.
  
 \begin_inset Note Note
@@ -1164,13 +1899,13 @@ status collapsed
 
  Participants made saccades towards a target moving on a circle of constant
  eccentricity, after which they followed the target in smooth pursuit.
- For human observers, we found that observers readily produced pursuit in
- agreement with envelope rather than carrier motion; however both the position
- of the initial saccade endpoint and the postsaccadic pursuit velocity was
- biased by the direction of carrier motion.
- We trained a rhesus macaque on the same task and found that the monkey
- could also generate pursuit to targets in peripheral vision in agreement
- with their envelope motion.
+ For human observers, it was found that observers readily produced pursuit
+ in agreement with envelope rather than carrier motion; however both the
+ position of the initial saccade endpoint and the postsaccadic pursuit velocity
+ was biased by the direction of carrier motion.
+ I trained a rhesus macaque on the same task and found that the monkey could
+ also generate pursuit to targets in peripheral vision in agreement with
+ their envelope motion.
  When placing multiple identically moving elements on the screen, with one
  designated as the target, we found that the precision of the saccade endpoint
  and the postsaccadic pursuit velocity was limited by target-flanker spacing;
@@ -1217,7 +1952,6 @@ key "Hedges:2011aa"
 
  report on electrophysiological responses in area MT to carrier/envelope
  stimuli similar to the ones used in the present work.
- 
 \end_layout
 
 \begin_layout Standard
@@ -1496,9 +2230,9 @@ magni-phi,
 \begin_inset Quotes erd
 \end_inset
 
- shows this most clearly; at high frame rates speeds, the motion caused
- by the successive extinguishing of each of a circle of discs does not take
- on the shape of the discs themselves, while at lower frame rates the motion
+ shows this most clearly; at high frame rates, the motion caused by the
+ successive extinguishing of each of a circle of discs does not take on
+ the shape of the discs themselves, while at lower frame rates the motion
  .
 \end_layout
 
@@ -1734,7 +2468,23 @@ apparent motion
 \end_layout
 
 \begin_layout Subsubsection
-Local and global motion 
+A note on terminology: 
+\begin_inset Quotes eld
+\end_inset
+
+local
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+global
+\begin_inset Quotes erd
+\end_inset
+
+ 
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:local-and-global-are-ill-defined"
@@ -1745,8 +2495,8 @@ name "sub:local-and-global-are-ill-defined"
 \end_layout
 
 \begin_layout Standard
-A dichotomy that is often constructed to discuss competing processes or
- dichotomies in spatial vision is 
+Differences in scale among stimuli or processes in spatial vision are often
+ framed as 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1817,12 +2567,9 @@ global
 \begin_inset Quotes erd
 \end_inset
 
- are convenient terms with which to frame discussions about spatial vision;
- exploring differences in processing over spatial scales gives a useful
- handle on a number of problems in visual perception.
- However such a generally applicable distinction also also carries with
- it some ambiguities about which particular version of that distinction
- is applicable in any one work.
+ are convenient terms in that exploring differences in processing over spatial
+ scales gives a useful handle on a number of problems in visual perception.
+ However because they are so general they can be ambiguous.
  Many works use 
 \begin_inset Quotes eld
 \end_inset
@@ -1902,7 +2649,7 @@ But the most generic term is just one of differing spatial scales.
 \end_layout
 
 \begin_layout Standard
-In the case of our stimulus, neither the carrier or envelope motion 
+In the case of my stimulus, neither the carrier or envelope motion 
 \emph on
 as a stimulus
 \emph default
@@ -1983,26 +2730,16 @@ key "Tse:2006bq,Shapiro:2010aa,Shapiro:2011aa,Hedges:2011aa"
 
 \end_inset
 
-.)
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
+; however 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citealp
 key "Butzer:1997ys"
 
 \end_inset
 
- buck this trend and use local/global a sense consistent with what the visual
- system is doing.
- Nice.
-\end_layout
-
-\end_inset
-
- Based on the results of our experiments, we assert the opposite: the carrier
- motion mechanism is more global then the envelope motion mechanism.
+ makes the opposite assignment.) The results of the experiments, tend to
+ indicate that the carrier motion mechanism is more global then the envelope
+ motion mechanism.
 \end_layout
 
 \begin_layout Standard
@@ -2360,12 +3097,43 @@ Perhaps for a section about neurophysiology of visual motion.
 \end_layout
 
 \begin_layout Subsection
-Induced motion;
+Induced motion
+\end_layout
+
+\begin_layout Standard
+Another context in which motion can is that if induced motion.
+ A familiar example of induced motion occurs when the moon is visible through
+ low-lying clouds.
+ When the clouds move with the wind, it gives rise to an illusion of the
+ moon appearing to move in the opposite direction, while the clouds appear
+ to be stationary.
+ 
+\end_layout
+
+\begin_layout Standard
+A common theme is that induced motion effect is nonlinearly dependent on
+ the contrasts of the various components.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Murkami and Shimojo 1993.
+ Motion capture.
+ Motion capture is an effect that is more easily seen parafoveally or peripheral
+ly.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-An interpretation of motion sensing in terms of processing with limited
- input
+Motion processing systems may compensate for each others' limitations
 \end_layout
 
 \begin_layout Standard
@@ -2841,22 +3609,6 @@ Wallis and Bex 2011 find that crowding (letterforms) is associated with
  They use an adaptation-induced-blindness technique and ask for observer
  reports of how many flankers were seen.
  Reference this in discussion or motivation of number/density experiment.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Murkami and Shimojo 1993.
- Motion capture.
- Motion capture is an effect that is more easily seen parafoveally or peripheral
-ly.
 \end_layout
 
 \end_inset
