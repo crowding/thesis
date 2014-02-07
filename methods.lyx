@@ -1497,12 +1497,9 @@ I used staircase procedures to collect data relating the proportion of clockwise
  configuration, were run concurrently, with each staircase operating independent
 ly and trials from all staircases being randomly interleaved.
  Example data from this procedure is shown in 
-\begin_inset Note Greyedout
-status open
-
-\begin_layout Plain Layout
-(figure to be placed in Results section)
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:results-spacing-collapse"
 
 \end_inset
 
@@ -1599,9 +1596,9 @@ counterclockwise.
 \begin_layout Standard
 In some cases observers exhibit a bias toward clockwise or counterclockwise
  responses.
- We include a global bias term in our model to account for this - this is
+ I include a global bias term in our model to account for this - this is
  the only term in the model that is not symmetric.
- We fit the model using unfolded data.
+ I fit the model using unfolded data.
  When drawing fitted curves to illustrate model predictions, I sum out the
  bias by averaging the model predictions for clockwise and counterclockwise
  conditions.
