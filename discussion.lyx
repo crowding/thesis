@@ -92,7 +92,7 @@ reference "mov:demo"
 
 \end_inset
 
-, produced the novel effect that the apearance of motion favors its first-order
+, produced the novel effect that the appearance of motion favors its first-order
  or position-defined components as a function of the spacing between elements.
  Investigating how the parameters of these stimuli affected the appearance
  of visual motion led to a model of how first-order and position-defined
@@ -1386,16 +1386,16 @@ Putting first order motion in conflict with position
 
 \begin_layout Standard
 Motion perception appears to be mediated by multiple processes that operate
- separately in some ways and interact interact in some other ways.
+ separately in some ways and interact in some other ways.
  In most cases, the first order motion and higher order motion of a moving
  object will agree; however, when they conflict, the manner in which conflicts
  are resolved may reveal an interaction between the two systems.
- Like my study, previous work has put suprathreshold first-order and position-de
-fined motion in conflict, which I will briefly review.
+ Previous work has also put suprathreshold first-order and position-defined
+ motion in conflict, which I will briefly review.
 \end_layout
 
 \begin_layout Paragraph
-Reverse phi motion stimuli
+Reverse phi motion
 \end_layout
 
 \begin_layout Standard
@@ -1448,28 +1448,46 @@ key "Mather:1985rt"
 
 \end_inset
 
+Reverse-phi motion combines a spatial displacement with a contrast inversion;
+ following Fourier analysis, the motion energy is directed opposite the
+ displacement.
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anstis:1970aa,Anstis:1975aa"
 
-\begin_inset Formula $ $
 \end_inset
 
+.
+ Most investigations of reversed phi use conditions where the first order
+ component is dominant.
+ but when stimulus features are salient enough, the displacement can be
+ seen opposing the motion.
+ For example, if there is only one luminance edge, apparent motion follows
+ the movement of the edge and not the motion energy 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Anstis:1981aa"
 
+\end_inset
+
+.
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Mather:1985rt"
 
 \end_inset
 
- constructed such a display by perturbing a grating of alternating light
- and dark stripes, as illustrated in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:mather-stimulus"
-
+ used a display with a single moving 
+\begin_inset Quotes eld
 \end_inset
 
-.
- The luminance-defined motion is given by matching light bars to light,
- and dark bars to dark frame-by-frame, which produces motion to the left
+wide
+\begin_inset Quotes erd
+\end_inset
+
+ bar that alternated polarity against a textured background, as illustrated
  in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1478,52 +1496,9 @@ reference "fig:mather-stimulus"
 \end_inset
 
 .
- At the same time there were salient 
-\begin_inset Quotes eld
-\end_inset
-
-wide
-\begin_inset Quotes erd
-\end_inset
-
- bar on this display, formed of two adjacent bars of the same polarity.
- This wide bars move to the right while reversing polarity on each frame.
- This gives a second-order (position-defined) motion in opposition to the
- first order motion.
- As a discrete motion stimulus that reverses contrast polarity on every
- frame, this is a type of 
-\begin_inset Quotes eld
-\end_inset
-
-reversed phi
-\begin_inset Quotes erd
-\end_inset
-
- stimulus 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Anstis:1970aa,Anstis:1975aa"
-
-\end_inset
-
-, although most investigations of reversed phi use conditions where the
- first order component is dominant.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
-
-
-\begin_inset CommandInset citation
-LatexCommand citeauthor
-key "Mather:1985rt"
-
-\end_inset
-
- found that the motion that was seen in this display depended on the size
- of the bar and the retinal eccentricity at which the stimulus was viewed;
- in central vision, the second-order motion (rightward in 
+ The motion that was seen in this display depended on the size of the bar
+ and the retinal eccentricity at which the stimulus was viewed; in central
+ vision, the position-defined motion (rightward in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:mather-stimulus"
@@ -1533,67 +1508,42 @@ reference "fig:mather-stimulus"
 ) was seen at moderate to large bar sizes.
  However, at a retinal eccentricity of 5 degrees, only the first-order motion
  component (leftward) was seen.
- Motion after effects were always opposite first order motion regardless
- of the apparent motion seen.
- Similarly, we saw that whether carrier or envelope motion was seen in our
- stimulus was influenced by retinal eccentricity, but we do see envelope
- motion at parafoveal eccentricities, conditional on the amount of clutter,
- as demonstrated in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "fig:wheels"
-
-\end_inset
-
- (and all of our stimuli reported in our experiments are outside central
- vision.)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
-
-
+ Similarly 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Chubb:1989fj"
 
 \end_inset
 
- used a windowed contrast-reversing grating with widely spaced bars, so
- that the bars stepped (for instance) leftward while reversing contrast,
- as in reverse phi stimuli.
- They found that the direction of apparent motion reversed depending on
- viewing distance, with the apparent motion being leftward (agreeing with
- the step direction) when viewed from near distances in central vision,
- but rightward when viewed from farther distances, or near distances in
- peripheral vision.
+ used a reverse phi grating with widely spaced bars, and observed that the
+ direction of apparent motion reversed depending on viewing distance, with
+ the apparent motion agreeing with the step direction when viewed from near
+ distances in central vision, but agreeing with first-order motion when
+ viewed from farther distances, or near distances in peripheral vision.
+ In both cases motion after effects were always opposite first order motion
+ regardless of the apparent motion seen.
+ In my experiments I saw similar effects of retinal eccentricity and feature
+ separation.
  
 \begin_inset CommandInset citation
 LatexCommand citeauthor
-key "Chubb:1988kx"
+key "Chubb:1989fj"
 
 \end_inset
 
- explained the apparent motion opposite the step direction as being in accordanc
-e with the Fourier content of the stimulus, while they proposed a second-order
- mechanism (rectifying the contrast before proceeding as normal motion analysis)
- for the other.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Do I have anything clever to say about this? Moving right along...
-\end_layout
-
+ proposed a second-order mechanism (i.e.
+\begin_inset space \space{}
 \end_inset
 
-
+a motion-energy detector with a rectifying input nonlinearity) where the
+ reversal would be explained by a lower limit on spatial frequency sensitivity
+ for the second-order channel.
+ In the light of my present results, I would favor an explanation based
+ on feature visibility, which is crowded out in peripheral vision.
 \end_layout
 
 \begin_layout Paragraph
-Theta motion stimuli
+Theta motion
 \end_layout
 
 \begin_layout Standard
@@ -1667,7 +1617,7 @@ theta
 \end_inset
 
  motion.
- Diagram is from 
+ Figure is from 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Lindner:2000aa"
@@ -1679,10 +1629,6 @@ key "Lindner:2000aa"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -1700,8 +1646,8 @@ key "Zanker:1990aa,Zanker:1993uq"
 \end_inset
 
  constructed stimuli consisting of a windowed random-dot kinematogram, where
- the object motion (defined by the boundaries of the window) and random
- dots were allowed to take different directions of motion.
+ the object motion (defined by the boundaries of the window) and windowed
+ texture were allowed to take different directions of motion.
  Since the target and background are only distinguishable by the difference
  in motion, this has been called 
 \begin_inset Quotes eld
@@ -1744,108 +1690,31 @@ theta
  motion.
  
 \begin_inset CommandInset citation
-LatexCommand citeauthor
+LatexCommand citet
 key "Zanker:1993uq"
 
 \end_inset
 
  found that the direction of window motion was readily perceived in central
  vision but only the texture motion was visible in peripheral vision.
- .
- 
-\begin_inset CommandInset citation
-LatexCommand citeauthor
-key "Zanker:1993uq"
-
-\end_inset
-
- also analyzed all local, discrete functions of stimulus luminance and found
- there was no single-layer motion detector (as enumerated over this function
- space) that would serve to detect both Fourier motion and theta motion;
- that is, neither first or second order (input rectifying) motion detectors
- could explain the perceptions of object motion from both Fourier and theta
- motion stimuli.
- A two layer network model was proposed to account for perception of both
- Fourier and theta motion.
-\end_layout
-
-\begin_layout Standard
-The issue of perception of theta stimuli in peripheral vision was revisited
- by 
+ To compare the sensitivity to each component, 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Zanker:1997vn"
 
 \end_inset
 
-.
- Here the interior dots of theta motion were configured to move at right
- angles to the object motion, rather than always opposing, so that they
- would not bias motion direction judgements.
- Still it was found by measurement of noise thresholds that object motion
- detection was severely impaired in the periphery as compared to detection
- of Fourier motion.
+ oriented texture motion at right angles to window motion; detection of
+ window motion was particularly impaired in the near periphery.
 \end_layout
 
 \begin_layout Standard
-To us it appears the most salient distinction between theta motion stimuli
- and reverse-phi stimuli is that theta motion stimuli only have one notional
- 
-\begin_inset Quotes eld
-\end_inset
-
-object.
-\begin_inset Quotes erd
-\end_inset
-
- Reverse-phi stimuli were typically presented as repeating patterns or gratings,
- in which case we would expect the first-order motion component to dominate
- and the higher order motion to be obscured by crowding.
- Notably, a reverse-phi stimulus containing only one luminance edge had
- apparent motion consistent with the movement of the edge and not the first-orde
-r motion energy 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Anstis:1981aa"
-
-\end_inset
-
-.
- As we have found in our experiments, the sensitivity to envelope (i.e.
- object) motion depends critically on the spacing between the putative objects,
- with critical spacings larger than the typical spacing of the repetition
- of second-order components used in reverse phi stimuli; with this in mind
- it is not surprising that the higher-order component of reverse phi motion
- is invisible in the periphery.
-\end_layout
-
-\begin_layout Paragraph
-Visibility of higher order motion in parafoveal vision with theta and carrier/en
-velope stimuli 
-\begin_inset CommandInset label
-LatexCommand label
-name "par:reconcile-zanker"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Zanker:1997vn"
-
-\end_inset
-
- found that stimuli that oppose first-order and higher order motions make
- the higher order motions invisible in the periphery, for even a single
- moving object.
- In contrast we find that our higher order (envelope) motion is perfectly
- visible in the periphery, and even tends to be more salient and precise
- than the carrier motion, as long as the moving object is not crowded by
- flanking objects.
- How can we reconcile these results? 
+In contrast I found that higher order (envelope) motion was perfectly visible
+ in the periphery, and even tends to be more salient and precise than the
+ carrier motion, as long as the moving object is not crowded by flanking
+ objects.
+ How can we reconcile these results? There is a difference in how the stimuli
+ are constructed: 
 \begin_inset CommandInset citation
 LatexCommand citeauthor
 key "Zanker:1997vn"
@@ -1854,19 +1723,10 @@ key "Zanker:1997vn"
 
 's experiments had the motion stimulus shown against a noise background,
  so that the first order motion or flicker was the only cue by which the
- objects could be detected.
- Our experiment does not have a comparable measure; objects were shown against
- a featureless background and are visible as spots that have locally high
- contrast and a definite orientation.
+ object could be located.
+ In my stimuli the object stands against a flat background, so that it is
+ locatable by the local contrast.
  Under these conditions the direction of object motion is clearly visible.
- We saw that first order motion 
-\emph on
-per se
-\emph default
- does not interfere with object motion detection in our experiment; there
- is no amount of carrier motion that interferes with the sensitivity to
- envelope motion, it only gives a bias.
- 
 \end_layout
 
 \begin_layout Standard
@@ -1877,85 +1737,31 @@ key "Zanker:1997vn"
 
 \end_inset
 
-'s results with our own might be that the features available to the higher
- order motion mechanism do not include first order motion itself.
+'s results with our own is that the features available to track the position
+ of do not include first order motion itself.
  To be more specific, the 
 \emph on
 location
 \emph default
- of first order motion is not available to the higher order motion mechanisms.
- This would lead to the observed result that pure 
-\begin_inset Quotes eld
-\end_inset
-
-motion-defined motion
-\begin_inset Quotes erd
-\end_inset
-
- such as 
+ of first order motion may not be readily available to a feature tracking
+ mechanism, while the location of other features (such a localized orientation
+ and contrast) is.
+ Alternately, motion might be bound together with other features at a stage
+ earlier than that at which feature tracking operates, so that in 
 \begin_inset CommandInset citation
 LatexCommand citeauthor
 key "Zanker:1997vn"
 
 \end_inset
 
-'s is not visible in the periphery, but other types of 
-\emph on
-
-\begin_inset Quotes eld
-\end_inset
-
-feature-defined motion
-\begin_inset Quotes erd
-\end_inset
-
-
-\emph default
- (such as ours) are.
- Indeed our results in these experiments are that first order motion outside
- central vision exhibits obligatory summation over large areas.
- This consonant with the fact that receptive field sizes in MT, which may
- be the first place that first order motion information is available to
- perceptual processes,
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-Handwavy.
- I'm trying to get at why MT feeds perception rather than V1 with its tiny
- RFs.
- Thinking of attentional modulation indices, which are present in MT but
- absent in V1, as well as MT's correlation with perceptual decisions as
- in perception of bimodal rotating cylinders 
-\end_layout
-
-\end_inset
-
- are very large.
- In our stimuli, moving objects have contrast and orientation which makes
- objects salient, in addition to their first order motion.
- If the perceptual resolution for contrast edges is finer than that for
- motion defined edges, 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-this ought to have a cite...
-\end_layout
-
-\end_inset
-
-, object motion may be based on those features instead; it would then be
- limited by the same bottlenecks that limit the localization of those features,
- i.e.
- crowding.
- This would explain why our observers have no difficulty with detecting
- envelope motion even when carrier motions conflict, so long as flankers
- are distant.
+'s stimulus there is no distinct feature to bind motion to.
+ Either alternative would explain why observers have no difficulty with
+ detecting isolated motion in the periphery even when carrier motion conflicts,
+ so long as flankers are distant.
 \end_layout
 
 \begin_layout Paragraph
-Windowed grating or carrier/envelope motion stimuli
+Windowed texture or carrier/envelope stimuli
 \end_layout
 
 \begin_layout Standard
@@ -1963,12 +1769,8 @@ Windowed grating or carrier/envelope motion stimuli
 Another way to construct a stimulus that opposes first-order and higher
  order motion is to have a moving window define the higher order motion,
  while the moving window modulates the contrast of an underlying moving
- grating.
- A similar technique is to use localized space-time contrast profiles such
- as Gabor functions whose envelopes progressively change position.
- We treat these as the same class of stimuli because they share in common
- the fact that there is a localized contrast cue to their changing position,
- and because the carrier motion component is narrowband.
+ texture.
+ My stimuli fall into this class, as well as some others.
 \end_layout
 
 \begin_layout Standard
@@ -1985,23 +1787,16 @@ key "Tse:2006aa"
  A similar illusion was presented by 
 \begin_inset CommandInset citation
 LatexCommand citet
-key "Shapiro:2009aa"
+key "Shapiro:2008aa,Shapiro:2009aa"
 
 \end_inset
 
 .
- When viewed in the periphery, these stimuli appear to travel at an angle
- away from fixation a combination of both carrier.
- This motion seems to carry the perceived location of the object far away
- from the veridical location.
- It is not clear whether this apparently change in position is measurable
- by a behavioral assay.
- 
-\end_layout
-
-\begin_layout Standard
-It is clear from viewing these stimuli that their appearance can be markedly
- different between central and peripheral vision.
+ When viewed in the periphery, the motion appears distinctly diagonal, and
+ its perceived position position seems to drift far from its true position
+ (though whether the apparent position shift correlates to position judgements
+ has not been well tested.) Additionally the appearance shifts markedly between
+ central and peripheral vision.
  
 \begin_inset Note Note
 status collapsed
@@ -2018,34 +1813,69 @@ e between central and peripheral vision, or only due to a parameteric difference
 
  We noticed that the perceived direction of motion could be affected not
  only by the retinal eccentricity but by the proximity of the target to
- adjacent flankers (
+ adjacent flankers (Meilstrup and Shadlen 
 \begin_inset CommandInset citation
-LatexCommand citealp
-key "Meilstrup:2008aa"
+LatexCommand citeyear
+key "Meilstrup:2008aa,Meilstrup:2010aa"
 
 \end_inset
 
-; demonstrated in figures) A similar display was constructed independently
- by 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Shapiro:2008aa"
-
-\end_inset
-
- .
- 
-\end_layout
-
-\begin_layout Paragraph
-Initiation of smooth pursuit eye movements to conflicting motion stimuli
+); the psychophysics of these stimuli are explored in this thesis.
 \end_layout
 
 \begin_layout Standard
-Response measures other than the direction or velocity of perceived motion
- can also be used to investigate conflicts between first order and higher
- order motion processing.
- Pursuit eye movements are one promising alternative.
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hedges:2011aa"
+
+\end_inset
+
+ asked observers to judge the carrier motion for stimuli that combine carrier
+ and envelope motion.
+ This was found to be very difficult; when envelope motion is available
+ it 
+\begin_inset Quotes eld
+\end_inset
+
+captures
+\begin_inset Quotes erd
+\end_inset
+
+ the carrier motion, introducing a bias and elevating the threshold.
+ Note that these results somewhat differ from mine, particularly that I
+ did not find the sensitivities of carrier and envelope motion to interact.
+ This may be due to the totally disjoint manipulations and task employed:
+ I left the temporal interval and length of envelope pulses constant, varying
+ the spatial displacement, carrier strength, and inter-element spacing,
+ and asked observers to report the overall impression of motion.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hedges:2011aa"
+
+\end_inset
+
+ left the spatial displacement and carrier content constant, manipulated
+ the temporal interval and length of envelope pulses, and asked specifically
+ for a judgement of carrier motion ignoring envelope.
+ (Seemingly one could not characterize the same type of stimulus in any
+ two more different ways.) It is worth noting that I found what appears to
+ be a subtractive interaction between carrier and envelope velocity, which
+ may color the results if not modeled.
+\end_layout
+
+\begin_layout Paragraph
+Pursuit eye movements to conflicting motion stimuli
+\end_layout
+
+\begin_layout Standard
+Response measures other than appearance or detection judgements can also
+ be used to investigate motion processing; pursuit eye movements are one
+ promising avenue.
  
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -2053,68 +1883,21 @@ key "Butzer:1997ys"
 
 \end_inset
 
- recorded pursuit eye movements made to theta-motion stimuli.
- A step-ramp paradigm 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Rashbass:1961la"
-
-\end_inset
-
- was used, with the target stepping into the periphery before moving in
- the opposite direction, so the results of this experiment speak to processing
- of higher order motion in the periphery.
- It was found that observers could initiate pursuit to targets whose object
- motion disagreed with their Fourier motion.
- However, the initial velocity of the pursuit was slower for theta motion
- Fourier motion for the first couple of hundred milliseconds.
- The pursuit response to theta motion was essentially the same as for drift-bala
-nced motion.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
-
-
-\begin_inset CommandInset citation
-LatexCommand citet
-key "Hawken:2001bs"
-
-\end_inset
-
- use a stimulus termed 
-\begin_inset Quotes eld
-\end_inset
-
-theta motion,
-\begin_inset Quotes erd
-\end_inset
-
- but it displays a RDK inside of a moving window against a blank gray background
-, rather than the static or dynamic noise background which was used by Zanker
- et al.
- Therefore there is a localized contrast cue to the location of the moving
- object.
- Based on the discussion 
-\begin_inset CommandInset ref
-LatexCommand vpageref
-reference "par:reconcile-zanker"
-
-\end_inset
-
- we think these stimuli are more comparable to windowed envelope/carrier
- motion stimuli than to theta motion stimuli.
+ recorded pursuit eye movements made to theta motion stimuli.
+ Observers could initiate pursuit to targets whose object motion disagreed
+ with their Fourier motion, but the initial velocity of the pursuit was
+ slower for the first couple of hundred milliseconds.
  
 \begin_inset CommandInset citation
-LatexCommand citeauthor
+LatexCommand citet
 key "Hawken:2001bs"
 
 \end_inset
 
- found that the carrier motion condition (agreeing, disagreeing, or neutral
- with respect to the envelope motion) affected the initial pursuit velocity
- for targets with slow envelope motion (
+ used a windowed texture stimulus and found that the carrier motion condition
+ (agreeing, disagreeing, or neutral with respect to the envelope motion)
+ affected the initial pursuit velocity for targets with slow envelope motion
+ (
 \begin_inset Formula $1^{\circ}\mathrm{s}^{-1}$
 \end_inset
 
@@ -2130,31 +1913,15 @@ key "Hawken:2001bs"
 \end_layout
 
 \begin_layout Standard
-Most of these studies found that oculomotor responses to envelope motion
- were delayed with respect to the response to first-order motion.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Not sure whether I want to get into the effects of stimulsu sdiration or
- response time we've seen.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
+We have presented pilot data 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Meilstrup:2008aa"
 
 \end_inset
 
- showed data on oculomotor saccade and pursuit responses to carrier/envelope
- motion stimuli.
+ on oculomotor saccade and pursuit responses to carrier/envelope motion
+ stimuli.
  
 \begin_inset Note Note
 status collapsed
@@ -2166,75 +1933,100 @@ status collapsed
 
 \end_inset
 
- Participants made saccades towards a target moving on a circle of constant
+ Observers made saccades towards a target moving on a circle of constant
  eccentricity, after which they followed the target in smooth pursuit.
- For human observers, it was found that observers readily produced pursuit
- in agreement with envelope rather than carrier motion; however both the
- position of the initial saccade endpoint and the postsaccadic pursuit velocity
- was biased by the direction of carrier motion.
- I trained a rhesus macaque on the same task and found that the monkey could
- also generate pursuit to targets in peripheral vision in agreement with
- their envelope motion.
- When placing multiple identically moving elements on the screen, with one
- designated as the target, we found that the precision of the saccade endpoint
- and the postsaccadic pursuit velocity was limited by target-flanker spacing;
- when flankers were less than about half the eccentricity from the target,
- saccade endpoint errors became large and pursuit velocities started to
- follow the carrier motion rather than the envelope.
+ For human observers, it was found that observers readily initiated pursuit
+ in the same direction as the envelope rather than carrier motion; however
+ both the position of the initial saccade endpoint and the postsaccadic
+ pursuit velocity was biased by the carrier motion.
+ This is consistent with the psychophysics on uncrowded stimuli we saw here.
+ We also trained a rhesus macaque on the same task and found that the monkey
+ could also generate pursuit in agreement with envelope motion (but this
+ required some training; pursuit velocities agreeing with carrier motion
+ were more prevalent than for human observers.) It also appeared that the
+ precision of saccades was affected by target-flanker spacing, similarly
+ to the psychophysical results reported here.
 \end_layout
 
 \begin_layout Paragraph
-Neurophysiology of conflicting motion stimuli
+Possible neurophysiology of position-defined motion
 \end_layout
 
 \begin_layout Standard
 \align block
-The neurophysiological response to conflicting lower-order and higher-order
- motion stimuli has been explored by a small number of studies.
+Much work on the neurophysiology underlying motion perception has focused
+ on cortical areas V1, MT, and MST.
+ Area MT take input from V1 and integrates it over a larger area, resolving
+ one-dimensional motion signals into two-dimensional texture motion 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Movshon:1985hb,Simoncelli:1998hb,Rust:2006el"
+
+\end_inset
+
+.
+ Because MT has a much larger receptive field size than V1, it is an attractive
+ hypothesis that motion that carries an object over space might be extracted
+ in that area.
+ However, increasing evidence indicates that position-defined motion actually
+ has no representation in MT and probably not in MST 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Livingstone:2001ao,Ilg:2004qc,Hedges:2011aa"
+
+\end_inset
+
+.
+ Although position-based feature tracking appears to be a primary driver
+ of motion appearance, overriding first-order motion when available, how
+ exactly it is implemented remains an open question.
+\end_layout
+
+\begin_layout Standard
+Viewing position-defined motion as a feature integration problem, analogous
+ to letter recognition, may be useful.
+ In this thesis I have found that position-defined motion suffers crowding
+ in the same way that object recognition does, and unlike the spatial summation
+ that first-order motion exhibits.
+ It may then use similar mechanisms; detecting a change in position of a
+ feature over time may be analogous to detecting multiple features in a
+ particular relative arrangement, as is done in object recognition.
+ This leads to an interesting hypothesis: the appearance of object motion
+ may be determined in the ventral stream, while most work has focused on
+ the dorsal stream.
+ There is some evidence for processing of long-range apparent motion in
+ the ventral stream 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Vaina:2004kx,Zhuo:2003aa"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Unfortunately, the neural loci responsible for crowding remain as mysterious
+ as those for object motion.
+ The spatial interference in crowding is roughly scaled the same as a receptive
+ field in V4, which has made V4 one suggestion for a locus of crowding 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Motter:2002aa,Motter:2006aa,Liu:2009ly"
+
+\end_inset
+
+.
+ As it happens, some effects relating to the integration of visual motion
+ and position also have correlates in V4.
  
 \begin_inset CommandInset citation
-LatexCommand citet
-key "Ilg:2004qc"
+LatexCommand citep
+key "Sundberg:2006oe,Fischer:2011aa"
 
 \end_inset
 
- recorded from neurons in areas MT and MST of macaques who performed a direction
- discrimination task using Fourier, drift-balanced, or theta motion.
- Monkeys were able to correctly judge the object direction of theta motion,
- but when neurons were directionally selective for the stimuli, their modulation
- agreed in sign only with the first-order motion direction of the stimulus.
- Some cells showed a weaker modulation to theta motion than to the equivalent
- Fourier motion, but this does not appear to be sufficient to explain the
- correct perception of object motion.
-\end_layout
 
-\begin_layout Standard
-\begin_inset Formula $ $
-\end_inset
-
-
-\begin_inset CommandInset citation
-LatexCommand citeauthor
-key "Hedges:2011aa"
-
-\end_inset
-
- report on electrophysiological responses in area MT to carrier/envelope
- stimuli similar to the ones used in the present work.
-\end_layout
-
-\begin_layout Standard
-Although much of the literature on motion processing in connection is focused
- on areas MT and MST, the findings here for conflicting stimuli and others
- discussed in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:not-mt"
-
-\end_inset
-
- seem to indicate it is unlikely that perception of object motion can be
- explained by the activity in these areas.
 \end_layout
 
 \begin_layout Standard
@@ -2742,9 +2534,6 @@ apparent motion
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Note Note
 status collapsed
 
@@ -2790,9 +2579,6 @@ key "VerghesePreeti2002,Verghese:1999lq,Watamaniuk:1995qf"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Note Note
 status collapsed
 
@@ -2831,9 +2617,6 @@ I'm thinking of MOT literature here.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
 \begin_inset Note Note
 status collapsed
 
@@ -2859,296 +2642,70 @@ Perhaps for a section about neurophysiology of visual motion.
 \end_layout
 
 \begin_layout Subsection
-Motion processing systems may compensate for each others' limitations
+Motion processing systems may complement each others' limitations
 \end_layout
 
 \begin_layout Standard
-The motion stimuli a person must interpret in a real-world task such as
- driving a car or catching a ball are in many ways much more complicated
- than the stimuli we construct in an artificial experimental setting.
- However, in this this work we have identified two ways in which motion
- perception appears to be profoundly limited, which would appear to only
- become worse as the scenery becomes more complicated.
+The motion stimuli a person must interpret in the real-world task are in
+ many ways much more complicated than the stimuli we construct in an artificial
+ experimental setting.
+ However, in this thesis I have identified two ways in which motion perception
+ appears to be profoundly limited, both of which would appear to only become
+ worse as the scenery becomes more complicated.
  The first order mechanism which detects carrier motion in our experiment
- is sensitive to very small amounts of motion spread among noise, but has
- little idea of the position of objects producing that motion.
- In the other hand, the global motion system is confounded by clutter, losing
- the ability to track and takes several hundred milliseconds to detect a
- change in position of an object, and is less precise than the first-order
- system.
+ is known to be sensitive to very small amounts of motion spread among noise,
+ but has little idea of the position of objects producing that motion.
+ In the other hand, the position-defined motion system is confounded by
+ clutter, takes several hundred milliseconds to detect a change in position
+ of an object, and is less precise than the first-order system.
 \end_layout
 
 \begin_layout Standard
 How, then, can the visual system make sense of typical, cluttered visual
- scene?
-\end_layout
-
-\begin_layout Subsection
-The interactions of different motion-sensing systems in motion perception
-\end_layout
-
-\begin_layout Subsection
-The physiology of lower- and higher- order motion perception
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-can probably grab from my generals essay on this one.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Higher order motion is not in MT, probably not in MST
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:not-mt"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Paragraph
-Cast 
-\begin_inset Quotes eld
-\end_inset
-
-availability of information as parameterized
-\begin_inset Quotes erd
-\end_inset
-
- as the constraining factor
-\end_layout
-
-\begin_layout Paragraph
-(interaction of cortical constraints on the organization of information;
- crowding constrains object localization and MT constrains motion localization.)
-\end_layout
-
-\begin_layout Standard
-We have seen that, and have determined that the 
-\end_layout
-
-\begin_layout Standard
-We should discuss the ways in which this stimulus differs from crowding
- (and yet, how the phenomena are similar.) Draw the connection between 
-\begin_inset Quotes eld
-\end_inset
-
-feature spread
-\begin_inset Quotes erd
-\end_inset
-
- and crowding.
- I.e.
- Several studies have 
-\end_layout
-
-\begin_layout Standard
-First there is the question of what kind of motion system the long-range
- component is engaging.
- We have tried to avoid the tempting terms 
-\begin_inset Quotes eld
-\end_inset
-
-local
-\begin_inset Quotes erd
-\end_inset
-
- and 
-\begin_inset Quotes eld
-\end_inset
-
-global
-\begin_inset Quotes erd
-\end_inset
-
- to describe the two 
-\end_layout
-
-\begin_layout Standard
-\paragraph_spacing single
-Another form of large-scale integration of short range motion occurs in
- the computation of optic flow, which term 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-need cite that describes optic flow stimuli generally.
-\end_layout
-
-\end_inset
-
- describes a pattern of motion over the entire visual field that is consistent
- with being generated by the motion of an observer through the environment,
- opposed to the motion of objects relative to a stationary observer.
- The simplest examples of optic flow stimuli are patterns such as global
- expantion or contraction, or rotation around a central point.
- The patterns of motion that in our motion illusion are consistent with
- a rotation around the axis parallel to the viewer's gaze, so an optic flow
- mechanism is likely being driven my our stimulus.
- This raises the question of whether optic flow mechanisms are involved
- in the illusion of reversal.
- [some sense of] However, [no second order global motion] [our experiment
- on number versus shape] [however we found that...]
-\end_layout
-
-\begin_layout Standard
-\paragraph_spacing single
-In the monkey, it appears that [the dorsal subdivision of] area MST is specializ
-ed for optic flow patterns.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-cite
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-These terms are slippery.
- Here's what we think they can be allowed to mean
-\end_layout
-
-\begin_layout Itemize
- In which case, envelope motion is LOCAL and carrier GLOBAL!
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Physiology of motion perception
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
- Review all these negative results.
- Wherever "high level" motion is, it is not in MT or MSTl
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
- Review suggestive studies about V4 (esp.
- in relation to crowding)
-\end_layout
-
-\begin_layout Itemize
- Point out coincidence of V4 RF size to crowding distance
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
- A story about how it all might work
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Why are there motion mechanisms with these large deficits?
-\end_layout
-
-\begin_layout Itemize
- The deficits are complementary
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
- Precise in velocity (even mixtures of velocities e.g.
- transparent motion) but knows nothing about space
-\end_layout
-
-\begin_layout Itemize
- spatially specific but has no idea of the overall 
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
- What's the deal with induced motion?
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
- It may be the signature of a mechanism that rectifies 
-\begin_inset Quotes eld
-\end_inset
-
-globally
-\begin_inset Quotes erd
-\end_inset
-
- pooled motion with object motion
-\end_layout
-
-\begin_layout Itemize
-Our psychophysics did not uncover this kind of interaction, BUT:
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-DEMO: show that induced motion is much stronger when inducer carrier is
- not predicted from envelope
-\end_layout
-
-\begin_layout Standard
-(the unaccounted-for motion energy "leaks out" into other objects nearby)
-\end_layout
-
-\end_deeper
-\end_deeper
-\end_deeper
-\begin_layout Subsection
-Conclusions
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-move towards conclusion....
-\end_layout
-
-\end_inset
-
- It seems likely that many aspects of motion vision in the near periphery
- may be explained by spatial interference (crowding) which limits the precision
- of perceived position and changes thereof, and it is an interesting exercise
- to re-interpret the literature on this basis.
- I have engaged in some mild re-interpretation when relating the current
- findings to the extant literature on visual motion; as discussed in the
- 
-\begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:introduction"
-
-\end_inset
-
-, several different boundaries have been drawn between simple and complex
- motion stimuli, so some re-interpretation is always necessary.
- I have attempted to based on the details of the stimuli used by each .
- have been drawn contrast-modulated stimuli used by Aaen-Stockdale et al.
- 
+ scene? The stimuli I use are artificial, with the first-order motion designed
+ to be uninformative of the position-defined motion and vice versa.
+ In more realistic settings, the two components will be mutually informative.
+ In that case, the different sensitivities and bottlenecks of the two systems
+ may complement each other.
+ The subtractive interactions I observed between first-order and position-define
+d motion may help to boost the visibility of isolated features so that they
+ can be tracked; there is evidence that localized first-order motion, when
+ it can be bound to a feature, boosts the visibility of that feature allowing
+ it to be detected in clutter 
 \begin_inset CommandInset citation
-LatexCommand citeyearpar
-key "Aaen-Stockdale:2007dq,Aaen-Stockdale:2012aa"
+LatexCommand citep
+key "Watamaniuk:1995qf,Verghese:1999lq,Verghese:2002aa"
 
 \end_inset
 
- form an interesting case.
- They are intermediate between the case where motion stimuli is fully embedded
- in noise and the case where motion elements are isolated; a relatively
- small number of dots are used, and the dots are not randomly replotted.
- This study found that thresholds for second-order radial motion were higher
- than rotational motion, which aligns with the finding that the spatial
- interference due to crowding extends more radially than Brownian motion,
- and there are only a moderate number of dots.
+.
+ Large scale image motion detected by the first order system is typically
+ generated by the movement of the organism through the environment, and
+ parsing the movement of objects requires discounting the motion signal
+ of the background.
+ While the first-order system is by far more understood in terms of its
+ mechanism, the position-tracking system may be the more important for understan
+ding the phenomenal experience of visual motion.
+ It seems likely that many aspects of motion vision may be explained by
+ by the same processes that underlie phenomena of spatial interference,
+ texture perception, and object recognition.
+\end_layout
+
+\begin_layout Subsection
+Acknowledgements
+\end_layout
+
+\begin_layout Standard
+The pulsed apparent-motion stimuli I used in these experiments were originally
+ devised by Michael Shadlen.
+ I performed the experiments in his laboratory with his gracious support
+ and advisement.
+ Ione Fine assisted greatly with the organization and preparation of this
+ manuscript and served as a second advisor and very effective manager in
+ the later stages of this project.
+ Thanks are also due to John Palmer, Geoff Boynton, and Tony Movshon for
+ exchanging ideas and for crucial pieces of advice regarding psychophysical
+ measurement and modeling.
 \end_layout
 
 \begin_layout Standard
