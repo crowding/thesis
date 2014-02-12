@@ -106,7 +106,7 @@ reference "mov:demo"
  
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 First order motion exhibits obligatory pooling over large areas
 \end_layout
 
@@ -169,9 +169,9 @@ reference "sec:results-number"
 
 .
  A limited extent of spatial summation ought to have resulted in saturation
- with stimuli of larger extents which would have resulted resulting in either
- a significant interaction of number and spacing or a better fit of responses
- to element spacing rather than number.
+ with stimuli of larger extents which would have resulted in either a significan
+t interaction of number and spacing or a better fit of responses to element
+ spacing rather than number.
  However, linear summation and dependence on first order motion to number
  still gave a good account of observers' behavior in this experiment.
  While the coefficient of linearity for stimuli in a single hemifield differed
@@ -291,7 +291,7 @@ key "Verghese:1997aa,Burr:2009kx"
 .
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Position-defined motion does not pool among objects
 \end_layout
 
@@ -393,7 +393,7 @@ key "Anstis:2011vn"
  multiple object motions.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Sensitivity to position-defined motion is limited by crowding
 \end_layout
 
@@ -650,7 +650,7 @@ position-defined
  so does the motion signal computed from successive positions.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 First-order and position-defined motion have a subtractive interaction
 \end_layout
 
@@ -891,7 +891,7 @@ reference "fig:model"
 , but this is only a proposal.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Local and global motion (a note on terminology) 
 \begin_inset CommandInset label
 LatexCommand label
@@ -1098,7 +1098,7 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-As it turns out, the first-order motion mechanism is able to do this pooling
+As it turns out, the first-order motion mechanism is able to do this pooling
  over area, while the position-defined motion mechanism cannot.
  Moreover, the first-order mechanism does not appear to particularly care
  about the 
