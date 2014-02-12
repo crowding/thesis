@@ -43,7 +43,11 @@ buildModel <- function(modelList, update.arg) {
   update.arg <- substitute(update.arg)
   lapply(modelList, function(model) {
     fmla <- eval(substitute(update(model$formula, arg), list(arg=update.arg)))
-    gnm(formula=fmla, family=family(model), data=model$data, verbose=F)
+    x <- gnm(formula=fmla, family=family(model), data=model$data, verbose=T)
+    if (is.null(x)) {
+      warning("couldn't fit model for .(..1)" %#% unique(model$data$subject))
+      model
+    } else x
   })
 }
 
@@ -565,13 +569,16 @@ weakest.second.test <- which.max(second.model.test)
 p.level <- 0.05
 
 ## @knitr results-induced-additionally
-linear.slopes <- sapply(repulsion.models$linear.model,
-                        function(x) x$coefficients[["content"]])
-second.slopes <- sapply(repulsion.models$model,
-                        function(x) x$coefficients[["content"]])
+getCoefs <- function(models, whatcoef)
+  sapply(models, function(x)
+         if (whatcoef %in% names(x$coefficients)) {
+           x$coefficients[[whatcoef]]
+         } else NA)
+
+linear.slopes <- getCoefs(repulsion.models$linear.model, "content")
+second.slopes <- getCoefs(repulsion.models$model, "content")
 curve.coef.name <- "I(content * abs(content))"
-second.curves <- sapply(repulsion.models$model,
-                        function(x) x$coefficients[[curve.coef.name]])
+second.curves <- getCoefs(repulsion.models$model, curve.coef.name)
 carissas.wierd <- names(second.slopes[second.slopes > 0 | second.curves < 0])
 #^ that is not the name of the subject. It's a seattle rock band.
 
