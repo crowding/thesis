@@ -30,7 +30,7 @@
 --input motion_energy.csv
 --output slopeModel.RData
 --output slopeModel.pdf
---output --invisible inset_all_bias.pdf
+--output --invisible inset_carrier.pdf
 --output --invisible inset_sensitivity.pdf
 
 --command Rscript

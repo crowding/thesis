@@ -130,21 +130,8 @@ reference "fig:model"
 \end_inset
 
 .
- Conceptually the model combines two signals to produce decisions about
- motion direction: 
-\begin_inset Formula $M_{\Delta}$
-\end_inset
-
- is an estimate of the change of position of a tracked target, corresponding
- to envelope motion in these stimuli, and is computed within a restricted
- region illustrated as the smaller, black dotted circle.
- 
-\begin_inset Formula $M_{S}$
-\end_inset
-
- is a sum of first order motion energy (carrier motion in these stimuli)
- inside a larger region illustrated by the green dashed outline.
- As can be seen in 
+ The model combines two signals to produce decisions about motion direction
+ (
 \series bold
 
 \begin_inset CommandInset ref
@@ -155,31 +142,64 @@ reference "mov:carenv"
 
 
 \series default
-A, a rightward carrier on a stationary envelope may produce a perception
- of leftward motion.
- This might be accounted for by a comparison of first-order and higher order
- signals, so that differences between carrier and envelope are adjusted
- in favor of the envelope (to support motion).
- This is schematized in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:model-visual-schematic"
-
-\end_inset
-
-D, and appears In our model as a nonlinear repulsion term 
-\begin_inset Formula $M_{I}$
-\end_inset
-
- appearing along with 
+A): 
 \begin_inset Formula $M_{\Delta}$
 \end_inset
 
- and 
+ is an estimate of the change of position of a tracked target, corresponding
+ to envelope motion in these stimuli, and is computed within a restricted
+ region illustrated as the smaller, yellow dotted circle.
+ The sensitivity to changes in position is a function of the spacing between
+ elements (
+\series bold
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:carenv"
+
+\end_inset
+
+
+\series default
+B).
+ 
 \begin_inset Formula $M_{S}$
 \end_inset
 
-.
+ is a sum of first order motion energy (carrier motion in these stimuli)
+ inside a larger region illustrated by the blue dashed outline.
+ The sensitivity to first order motion depends on the number of elements
+ falling within the region (
+\series bold
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:carenv"
+
+\end_inset
+
+
+\series default
+C).
+ These two signals are compared by subtraction, producing a difference signal
+ 
+\begin_inset Formula $M_{I}$
+\end_inset
+
+ (
+\series bold
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "mov:carenv"
+
+\end_inset
+
+
+\series default
+D), then all signals are combined to produce a decision.
+ The carrier motion input to the subtraction is normalized (it does not
+ depend on the number of elements).
 \end_layout
 
 \begin_layout Standard
@@ -195,29 +215,15 @@ For
 .
  However, as spacing decreases and there are more elements within the summation
  region, we expect signals from multiple elements to sum, so that the local
- motion signal is proportionate to the direction content of individual elements
- and inversely proportional to the spacing.
-\end_layout
-
-\begin_layout Standard
+ motion signal is proportionate to the direction content of individual elements.
 \begin_inset Formula 
 \begin{align*}
-M_{S} & =\beta_{S}\frac{2\pi C}{S}\text{\ \ or\ \ }M_{s}=\beta_{S}CN
+M_{s}=\beta_{S}CN
 \end{align*}
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Note that 
-\begin_inset Formula $M_{S}$
-\end_inset
-
- can be expressed in terms of either element number or spacing, since the
- two are inversely related in Experiment 1.
- In Experiment 2 I attempt to disentangle these alternatives.
 \end_layout
 
 \begin_layout Standard
@@ -262,10 +268,8 @@ name "fig:model-visual-schematic"
  The background shows a typical motion stimulus.
  The motion stimulus contains two sources of information.
  The positional displacement of an individual, attended element is computed
- within a limited region, as illustrated by the smaller, black dashed circle.
- First order motion energy is summed over a larger region, a summation of
- motion energy over most or all of the visual field, illustrated by the
- red dashed line.
+ within a limited region, as illustrated by the smaller, circle.
+ First order motion energy is summed over a larger region.
  
 \series bold
 B.
@@ -277,27 +281,7 @@ name "fig:model-uncertainty"
 
 \end_inset
 
- The higher order motion mechanism takes differences of a noisy estimate
- of the envelope position of a given element.
- Crowding interferes with estimates of position so that the sensitivity
- to changes in position position 
-\begin_inset Formula $\beta(S)$
-\end_inset
-
- is an increasing function of the flanker spacing 
-\begin_inset Formula $S$
-\end_inset
-
-.
- We illustrate a 
-\begin_inset Quotes eld
-\end_inset
-
-critical region
-\begin_inset Quotes erd
-\end_inset
-
- as the black dashed circle where interference occurs between elements.
+ The sensitivity to displacements depends on the distance between elements.
  
 \begin_inset CommandInset label
 LatexCommand label
@@ -310,19 +294,15 @@ name "fig:model-summation"
 C.
 
 \series default
- The first order mechanism sums motion energy over a large field.
- This mechanism is not subject to crowding; more elements in this field
- contribute more to the first-order motion signal.
- This summation region is outlined in green.
+ The sensitivity to carrier motion strength scales with the number of elements.
  
 \series bold
 D.
 
 \series default
- The lower order and higher order signals are combined to yield a decision;
- there may be interactions between signals if they conflict.
- Thus, at wide spacings adding carrier motion to a stationary envelope may
- result in repulsion (shaded red region of panel C.) 
+ If first-order velocity differs from position-defined velocity, the difference
+ adds a third signal.
+ All signals are weighted to produce a decision.
 \end_layout
 
 \end_inset
@@ -347,9 +327,9 @@ For
 \end_inset
 
  will then be inversely proportional to the uncertainty in element position.
- We assume that as flanking elements come closer to the tracked element,
- the visual system will be less able to isolate a single element to determine
- its position, so the sensitivity to changes in position will decline.
+ As flanking elements come closer to the tracked element, the visual system
+ will be less able to isolate a single element to determine its position,
+ so the sensitivity to changes in position will decline.
  We model this by making the sensitivity 
 \begin_inset Formula $\beta_{\Delta}(S)$
 \end_inset
@@ -386,18 +366,7 @@ the
 \begin_layout Standard
 \begin_inset Formula 
 \[
-M_{\Delta}=\beta_{\Delta}\Delta_{X}\text{, where}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\beta_{\Delta}(S)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)\ \ \text{or}\ \ \beta_{}(N)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{N}{N_{c}}}}\right)
+M_{\Delta}=\beta_{\Delta}\left(S\right)\Delta_{X}\text{, where }\beta_{\Delta}\left(S\right)=\beta_{0}\left(2-\frac{2}{1+e^{-\frac{S_{C}}{S}}}\right)
 \]
 
 \end_inset
@@ -457,30 +426,6 @@ key "Levi:2002ph,Pelli:2008ao,Whitney:2011vn"
 \end_inset
 
 .
- This function has envelope motion sensitivity reaching an asymptote for
- large spacing, so once elements are sufficiently far apart the number of
- elements does not affect sensitivity much.
- Again, the dependence of envelope sensitivity on envelope spacing may equivalen
-tly be expressed as a function of the number of elements, as along as elements
- are distributed evenly around the circle.
- 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-This formula for 
-\begin_inset Formula $\beta(S)$
-\end_inset
-
- is the way it is to satisfy three desiderata; the sensitivity should approach
- an asymptote at wide spacing, the sensitivity should approach zero at narrow
- spacing, and there should be a scale parameter.
- 
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -493,7 +438,7 @@ These two forms for
 \end_inset
 
 capture the phenomenon that decreasing the spacing between elements has
- opposite effects on the first-order and higher-order motion mechanisms.
+ opposite effects on the first-order and position-defined motion mechanisms.
  For the carrier motion signal, cramming more elements into the summation
  region increases the strength of the signal, since it is a simple summation
  of motion energy within that region.
@@ -518,11 +463,15 @@ reference "mov:carenv"
 
 A, it might appear to some observers that the carrier motion leftward with
  a stationary envelope results in perceived motion rightward, and vice versa.
- We account for this by a third component in the model 
+ I account for this by adding a comparison between carrier and envelope
+ velocity, which generates a third component in the model 
 \begin_inset Formula $M_{I}$
 \end_inset
 
-, which is a function of the average carrier strength per element.
+.
+ Since carrier motion has a high temporal frequency its effective speed
+ is high, so this can I let this depend on the carrier strength per element
+ only.
  It has a linear term controlled by a coefficient 
 \begin_inset Formula $\beta_{I_{a}}$
 \end_inset
@@ -614,13 +563,13 @@ These three components contribute to the modeled subjects' responses according
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\left(1-\lambda\right)\mathrm{logit}\left(M_{\Delta}+M_{S}+M_{I}+k\right)+\frac{\lambda}{2}
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,s,n\right)=\left(1-\lambda\right)\mathrm{logit}^{-1}\left(M_{\Delta}+M_{S}+M_{I}+k\right)+\frac{\lambda}{2}
 \]
 
 \end_inset
 
 where 
-\begin_inset Formula $\mathrm{logit}(r)=\left(1+e^{-r}\right)^{-1}$
+\begin_inset Formula $\mathrm{logit^{-1}}(r)=\left(1+e^{-r}\right)^{-1}$
 \end_inset
 
  is the standard logistic cumulative distribution function.
@@ -659,7 +608,7 @@ where
 \begin_inset Formula $\lambda$
 \end_inset
 
- was intended to improve the robustness of the fit 
+ is intended to improve the robustness of the fit 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Wichmann:2001kx"

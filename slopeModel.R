@@ -180,16 +180,6 @@ main <- function(infile = "data.RData", grid = "motion_energy.csv",
   plot_curves(models)
 }
 
-example_plots <- function(model.df) {
-
-}
-
-illustrative_plots <- function(model.df) {
-  #illustrate sensitivity changes with spacing...
-
-  #we want an x-axis: spacing, a y-axis: sensitivity
-}
-
 plot_curves <- function(models, prefix="../writing/inset_") {
   #plot interesting curves from each model (one per subject.)
   #plot curves in a way that is informative when included in a figure file.
@@ -212,14 +202,14 @@ plot_curves <- function(models, prefix="../writing/inset_") {
     ggplot(sensitivity_data)
     + aes(x=spacing, y=s)
     + geom_line()
-    + scale_x_continuous(limits=c(0, 10),
+    + scale_x_continuous("Spacing", limits=c(0, 10),
                          breaks = c(0, m$coefficients["cs"], 10),
                          labels = c(0, "cs", 10))
-    + scale_y_continuous("sensitivity", limits= c(0, m$coefficients["beta_dx"]),
+    + scale_y_continuous("Position sensitivity", limits= c(0, m$coefficients["beta_dx"]),
                          breaks = c(0, m$coefficients["beta_dx"]),
-                         labels = c("0", "\u03B2\u2080")
+                         labels = expression(0, beta[0])
                          )
-    )
+        )
   cairo_pdf(file=paste(prefix, "sensitivity.pdf", sep=""),
             width=3, height=2)
   print(sensitivity_plot)
@@ -227,9 +217,12 @@ plot_curves <- function(models, prefix="../writing/inset_") {
 
   #another way to get at this is to run a prediction.
   bias_all_data <-
-    expand.grid(spacing=seq(0, 10, len=200), content=0.2, displacement=0, bias=1)
+      expand.grid(spacing=seq %()% c(range(allData$spacing), len=200),
+                  content=0.2, displacement=0, bias=1)
   bias_all_data <- cbind(bias_all_data, p=predict(m, bias_all_data, type="response")
                          )
+  bias_all_data %<~% transform(target_number_all = 2*pi*20/3/spacing)
+
   bias_all_plot <- (
     ggplot(bias_all_data)
     + proportion_scale
@@ -248,7 +241,7 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   bias_all_plot2 <- (
     ggplot(bias_all_data)
     + aes(y = localbias)
-    + scale_y_continuous("Bias", labels=replace_arrows)
+    + scale_y_continuous("Bias")
     + aes(x=spacing)
     + geom_line()
     + geom_ribbon(aes(ymin=pmin(0, localbias), ymax=localbias), color=NA, fill="green", alpha=0.5)
@@ -259,26 +252,40 @@ plot_curves <- function(models, prefix="../writing/inset_") {
   print(bias_all_plot2)
   dev.off()
 
+  carrier_sensitivity_plot <- (
+    ggplot(bias_all_data)
+    + aes(y=localbias, x=target_number_all)
+    + scale_y_continuous("Carrier sensitivity", labels=NULL)
+    + scale_x_continuous("No. elements")
+    + geom_line()
+    )
+  cairo_pdf(file=paste(prefix, "carrier.pdf", sep=""), width=3, height=2)
+  print(carrier_sensitivity_plot)
+  dev.off()
+
   #and for my last trick some plot of the distant bias
   wide_content_data <-
-    expand.grid( content = seq(-1, 1, len=200), spacing=10, displacement=0, bias=1)
+      expand.grid(content = seq(-1, 1, len=200), spacing=10,
+                  displacement=0, bias=1)
   wide_content_data <- cbind(wide_content_data,
                              localbias=predict(m, wide_content_data)
-                                      - predict(m, mutate(wide_content_data, content=-content)))
+                             - predict(m, mutate(wide_content_data,
+                                                 content=-content)))
   wide_content_plot <- (
     ggplot(wide_content_data)
     + geom_line()
     + aes(y = localbias)
     + scale_y_continuous("Bias", labels=replace_arrows)
     + aes(x=content)
-    + scale_x_continuous(name="Direction content (at 10 degrees spacing)",labels=newline_arrows, expand=c(0,0))
+    + scale_x_continuous(name="Direction content (at 10 degrees spacing)",
+                         labels=newline_arrows, expand=c(0,0))
     + geom_ribbon(aes(
-                    ymin=ifelse(content>0, pmin(0, localbias), 0),
-                    ymax=ifelse(content>0, 0,             pmax(0, localbias))),
+      ymin=ifelse(content>0, pmin(0, localbias), 0),
+      ymax=ifelse(content>0, 0,             pmax(0, localbias))),
                   color=NA, fill="red", alpha=0.5)
     + geom_ribbon(aes(
-                    ymin=ifelse(content>0, pmax(0, bias), 0),
-                    ymax=ifelse(content>0, 0,             pmin(0, localbias))),
+      ymin=ifelse(content>0, pmax(0, bias), 0),
+      ymax=ifelse(content>0, 0,             pmin(0, localbias))),
                   color=NA, fill="green", alpha=0.5)
     )
   cairo_pdf(file=paste(prefix, "wide_content.pdf", sep=""), width=3, height=2)
@@ -289,7 +296,6 @@ plot_curves <- function(models, prefix="../writing/inset_") {
 
   #plot sensitivity as a function of spacing for all subjects.
   #just going to...
-
 }
 
 as.names <- function(names, value=missing_value()) {

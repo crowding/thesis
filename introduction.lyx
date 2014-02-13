@@ -184,14 +184,13 @@ higher order
 
 \begin_layout Standard
 Accurate motion perception is essential for visually guided movement; complex
- behaviors such as chasing prey, escaping predators, running while avoiding
- obstacles, or catching a thrown ball require that an organism be able to
- rapidly determine the position and velocity of a moving object, and to
- anticipate its trajectory through space.
- Psychological research on motion perception has established that local
- and global motion are processed by separate mechanisms, an idea that dates
- back to Wertheimer's phenomenological distinction between the sensations
- elicited by faster 
+ behaviors such as chasing prey, escaping predators, avoiding obstacles,
+ or catching a thrown ball require that an organism be able to rapidly determine
+ the position and velocity of a moving object, and to anticipate its trajectory
+ through space.
+ Psychological research on motion perception has established that motion
+ can processed by separate mechanisms, an idea that dates back to Wertheimer's
+ phenomenological distinction between the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -199,7 +198,7 @@ phi
 \begin_inset Quotes erd
 \end_inset
 
- and slower 
+ sensation elicited by faster motion and the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -207,7 +206,7 @@ beta
 \begin_inset Quotes erd
 \end_inset
 
- stimuli (
+ sensation elicited by slower motion (
 \begin_inset CommandInset citation
 LatexCommand citealt
 key "Wertheimer:1912aa"
@@ -235,15 +234,11 @@ key "Steinman:2000ap"
 
 \begin_layout Standard
 It is generally believed that there are multiple classes of motion mechanisms.
- One of these, the 
-\noun on
-first-order
-\noun default
- motion mechanism, seems to respond to local spatiotemporal correlations
- in luminance contrast, at relatively short timescales and in small regions
- of space.
+ One of these, the first-order motion mechanism, seems to respond to local
+ spatiotemporal correlations in luminance contrast, at relatively short
+ timescales and in small regions of space.
  It is generally agreed that the first-order motion mechanism originates
- with the direction selective response of cells in area V1.
+ with the direction selective response of cells in cortical area V1.
  Classic models of first-order motion detection use linear filters tuned
  to certain combinations of spatial and temporal frequencies, with the outputs
  of several such filters being combined nonlinearly 
@@ -255,14 +250,14 @@ key "Adelson:1985ea,Watson:1985aa"
 
 .
  With some embellishments, the responses observed from cells in area V1
- are largely compatible with this type of model 
+ are largely compatible with this model 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Movshon:1978qq,Rust:2005vu,Touryan:2005aa,Chen:2007aa"
 
 \end_inset
 
-, and models of higher order processing can be built on this basis 
+, and models of higher order processing can be built atop this basis 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Graham:2011aa"
@@ -289,11 +284,15 @@ However, these first-order mechanisms cannot by themselves fully explain
  For example, perceiving visual motion does not necessarily require moving
  features to differ in mean luminance from the background, and does not
  require motion energy in the Fourier domain.
- Many forms of 
+ Many forms of
 \noun on
-higher-order
+ 
 \noun default
- motion stimuli have been constructed that would not be consistently detectable
+higher-order
+\noun on
+ 
+\noun default
+motion stimuli have been constructed that would not be consistently detectable
  to first-order mechanisms, but these stimuli still elicit strong sensations
  of movement 
 \begin_inset CommandInset citation
@@ -303,8 +302,8 @@ key "Derrington:1985aa,Chubb:1988kx,Zanker:1990aa"
 \end_inset
 
 .
- These higher order stimuli have been used to provide evidence for and character
-ize motion sensing systems separate from the first-order mechanisms.
+ These stimuli have been used to provide evidence for and characterize motion
+ sensing systems separate from the first-order mechanisms.
  They have been constructed variously by modulations in contrast, texture,
  or other stimulus features, but generally involve the change in position,
  over time, of some feature in the image 
@@ -346,10 +345,10 @@ key "Ilildreth:1982aa,Adelson:1982jr"
 
 \end_inset
 
- Combining the component motion signals from V1 cells spanning a larger
- area might allow disambiguation of the true velocity.
- This extraction of first-order pattern motion from component motion appears
- to be one of the roles of visual area MT 
+ Combining the component motion signals from V1 cells sensing different
+ orientations might allow disambiguation of the true velocity.
+ This extraction of pattern motion from component motion appears to be one
+ of the roles of visual area MT 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Movshon:1985hb,Simoncelli:1998hb,Rust:2006el"
@@ -358,9 +357,9 @@ key "Movshon:1985hb,Simoncelli:1998hb,Rust:2006el"
 
 .
  However, this computation of pattern motion cannot completely explain motion
- perception either, as it introduces a problem in the loss of spatial selectivit
-y.
- If motion information is pooled over a large area, the motion of the background
+ perception either, as combining different motion signals allows the object's
+ motion to be mixed with irrelevant background motion.
+ If motion information is pooled over larger areas, the motion of the background
  grass will create a subset of the pooled signals that are substantially
  incorrect; an MT cell analyzing the motion of the zebra will mix together
  signals from the zebra's stripes with signals from the grassy background.
@@ -368,9 +367,10 @@ y.
 \end_layout
 
 \begin_layout Standard
-A related problem is that in computing an accurate velocity of a pattern
- discards information about the location of the stimulus.
- The computation in MT resolves texture motion but appears to lose information
+A related problem is that computing the velocity of a pattern discards informati
+on about its location, because receptive fields must be larger to collect
+ pattern motion.
+ The computation in MT resolves pattern motion but appears to lose information
  about where the motion is occurring within the large MT receptive fields
  
 \begin_inset CommandInset citation
@@ -380,17 +380,15 @@ key "Majaj:2007aa"
 \end_inset
 
 .
- This is puzzling because often the ostensible purpose served by motion
- perception to track and anticipate the change in position of a physical
- object.
+ This is puzzling because the ostensible purpose of motion perception is
+ often to track and anticipate the change in position of a physical object.
  Consider tracking an animal moving through obscuring tall grass, or watching
  waves pass over choppy water.
  The stalks of grass, or the foam and texture on the water, do not progressively
  change position; they only oscillate in place as the movement passes under
  them.
- A computation based on first-order or pattern motion would generally track
- the oscillation of the surface texture rather than that of the underlying
- movement.
+ A computation based on pattern motion would generally track the oscillation
+ of the surface texture rather than that of the underlying movement.
  However it is the underlying movement that is more relevant, and often
  dominates the perception of motion.
  
@@ -400,9 +398,8 @@ key "Majaj:2007aa"
 Literature on visual motion processing has drawn many different demarcations
  between types of motion.
  Various papers have discussed first-order versus second-order, short-range
- vs.
- long-range, local vs.
- global, textural versus figural, and so on, based on particular distinctions
+ versus long-range, local vs.
+ global, textural versus figural, and so on, based on particular demarcations
  drawn among stimulus properties or proposed mechanisms 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -412,25 +409,55 @@ key "Nishida:2011kx"
 
 .
  For the purposes of this thesis I will also have to pick a demarcation.
- The tension in the problem of motion perception alluded to by the examples
- of animals in the grass and waves on the water is that of combining information
- about first-order signals, for which we are reasonably confident of the
- mechanism, with information about spatial position.
- This information about the changing spatial position of an object is what
- I will be referring to as higher-order motion.
- Tracking the zebra might require integrating locally occurring first-order
- motion signals motion signals over space and time in a way that is consistent
- with the global change in position of an object, while discarding adjacent
- signals that are inconsistent with the object's trajectory.
+ The examples of animals in the grass and waves on the water draw a contrast
+ between the first-order motion produced by an object, and the fact that
+ the object changes position over time.
+ The latter is what I will be referring to as position-defined motion.
+ A moving object generally produces both first-order and position-defined
+ motion.
+ To track the zebra might require integrating first-order motion signals
+ over space and time as the zebra changes position, while discarding adjacent
+ signals that are inconsistent with its trajectory.
+ However most proposed first-order motion mechanisms do not detect changes
+ in position.
+ For first-order motion processing we are reasonably confident of the mechanisms
+ involved, but mechanisms that detect changes in position are less well
+ understood.
+ 
+\end_layout
+
+\begin_layout Standard
+Note that selecting any demarcation involves some reinterpretation when
+ reading the literature.
+ There is an extensive literature on second-order motion but not all of
+ it is applicable to position-defined motion.
+ A typical model for second-order motion processing functions analogously
+ to first-order motion but with a rectifying input nonlinearity.
+ The position-defined stimuli I will use in this thesis might be detectable
+ as second-order in this sense, but will be outside the temporal frequency
+ range thought to apply to this type of mechanism 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lu:2001fv"
+
+\end_inset
+
+.
+ Some papers on second-order motion stimuli use stimuli that are not position-de
+fined, but others use second-order stimuli that also happen to involve the
+ movement of salient features.
+ I consider the latter results to be potentially informative of position-defined
+ motion processing.
 \end_layout
 
 \begin_layout Standard
 \paragraph_spacing single
-There is evidence that perception of higher order motion stimuli may have
- a separate neural substrate from first-order motion.
- For example, adding higher order motion to a display does not appear to
- change the threshold of detection for first-order motion, and any effects
- in the other direction are weak and nonselective (
+There is evidence that perception of position-defined motion stimuli may
+ have a separate neural substrate from first-order motion.
+ For example, adding position-defined motion noise to a display does not
+ appear to change the threshold of detection for first-order motion, and
+ it is unclear whether adding first-order motion noise interferes with detecting
+ position-defined motion (
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "Edwards:1995fk,Nishida:1997aa,Cassanello:2011uq"
@@ -445,10 +472,10 @@ key "Hedges:2011aa"
 \end_inset
 
 ).
- When differing first-order and higher order components are present in a
- stimulus, the motion after-effect is always directed against the first-order
- component, whereas perception of the stimulus is often determined by the
- higher order component 
+ When differing first-order and position-defined components are present
+ in a stimulus, the motion after-effect is always determined by the first-order
+ component, whereas appearance of the stimulus is often determined by the
+ position-defined motion 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Derrington:1985aa,Chubb:1989fj,Nishida:1992aa"
@@ -457,7 +484,8 @@ key "Derrington:1985aa,Chubb:1989fj,Nishida:1992aa"
 
 .
  Neuropsychological evidence suggests a double dissociation between first-order
- and higher-order motion processing deficits in a number of patients 
+ and position-defined motion processing deficits in a number of patients
+ 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Vaina:1996pi,Vaina:2004kx"
@@ -466,10 +494,10 @@ key "Vaina:1996pi,Vaina:2004kx"
 
 , suggesting that different motion mechanisms may have anatomically distinct
  pathways.
- Another difference between first-order and higher-order stimuli that suggests
- different mechanisms is that the former seems to be capable of tracking
- objects through a feature object over distances larger than what can be
- achieved through individual local filters.
+ Another difference between first-order and position-defined stimuli that
+ suggests different mechanisms is that the latter seems to be capable of
+ tracking objects through over distances larger than what can be achieved
+ through individual local filters.
  
 \begin_inset Quotes eld
 \end_inset
@@ -484,7 +512,7 @@ Long-range
 \end_layout
 
 \begin_layout Standard
-Interestingly, the physiological substrate of higher-order motion processing
+Interestingly, the physiological substrate of position-defined motion processing
  is still unclear.
  Cortical area MT (or somewhere downstream) has been proposed as a locus
  of integration between motion and position information 
@@ -498,9 +526,9 @@ key "Nishida:1999aa,McGraw:2004aa,Mather:2009aa"
  While the receptive fields of cells in cortical areas MT and MST are large
  enough that they might be able to integrate information about objects that
  change position, recordings of these cells find their responses dominated
- by first-order motion and showing little to no selectivity to higher-order,
- position-defined motion, even when the higher-order motion corresponds
- better to the experience of viewing these stimuli 
+ by first-order motion and showing little to no selectivity to position-defined
+ motion, even when the latter corresponds better to the experience of viewing
+ these stimuli 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Livingstone:2001ao,Ilg:2004qc,Hedges:2011aa"
@@ -522,8 +550,8 @@ key "Nishida:2011kx"
 
 .
  In this thesis I examine the combination of these two types of motion using
- a display that contains first-order and higher-order components whose direction
- of motion can be independently manipulated.
+ a display that contains first-order and position-defined components whose
+ direction of motion can be independently manipulated.
 \end_layout
 
 \begin_layout Standard
@@ -774,8 +802,7 @@ reference "mov:demo"
 
 \end_inset
 
- provides examples of first order and higher order motion, and how they
- can interact.
+ provides examples of first order and higher order motion.
  The elements are Gabor-like stimuli that can be understood as a carrier
  grating windowed by a spatial envelope.
  The envelope moves independently of the carrier, so that the 
@@ -792,7 +819,7 @@ envelope
 \emph default
  produces 
 \emph on
-higher order motion
+position-defined motion
 \emph default
 .
  
@@ -802,17 +829,15 @@ reference "mov:demo"
 
 \end_inset
 
-A illustrates the difference between first-order and higher-order motion.
- On the left is a single element with carrier (i.e.
- first-order) motion but no envelope motion.
- On the right side, the element has envelope motion but its carrier motion
- is balanced.
- The higher order motion on the right is seen as a clear progressive change
- in position, while the first order motion on the left has an appearance
- more like a flicker.
+A illustrates the difference between first-order and position-defined motion.
+ On the left is a single element with carrier motion but no envelope motion.
+ On the right side, the element has envelope motion but its no carrier motion
+ (only an equivalent amount of flicker).
+ The motion on the right is seen as a clear progressive change in position,
+ while the motion on the left has an appearance more like a flicker that
+ has a direction to it.
  (The position of the element on the left does appear to shift slightly,
- opposite its first-order motion.
- This is an example of motion-induced position shift; 
+ in an example of motion-induced position shift; 
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "De-Valois:1991jt,Ramachandran:1990aa"
