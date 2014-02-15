@@ -7,6 +7,7 @@ library(vadr)
 library(plyr)
 library(lmtest)
 library(reshape2)
+library(gtable)
 opts_chunk$set(cache.extra=file.info(
     c("slopeModel.R", "latexing.R",
       "slopeModel.RData", "motion_energy.csv"))$mtime)
@@ -27,6 +28,7 @@ if (!interactive()) {
 ## ----------------------------------------------------------------------
 
 ## @knitr results-loadData
+load("data.RData")
 load("slopeModel.RData")
 motion.energy <- read.csv("motion_energy.csv")
 bind[plot.displacement, plot.content, plot.spacing] <- (
@@ -126,44 +128,117 @@ print(ggplot(shuffle(spacing.collapse.plotdata$bubbles))
 ## ----------------------------------------------------------------------
 ## @knitr results-summation-increases
 
-summation.increases.plotdata <- ziprbind(Map(
-  model = models[c("nj","ns","pbm")],
-  targnum = list(c(20, 5)),
-  strength = list(c(0.1, 0.4)),
-  f = function(model, targnum, strength) {
-    bubbles <- chain(
-      model$data
-      , refold(fold=TRUE)
-      , subset((exp_type == "content")
-               & (target_number_shown %in% targnum)
-               & (content %in% strength))
-      , mkrates)
-    predictions <- makePredictions(model, bubbles, fold=TRUE)
-    list(bubbles = bubbles, predictions = predictions)
+# draw a figure illustrating carrier motion sensitivity
+
+lookfor <- list(
+  expand.grid(folded_direction_content=c(0.1, 0.2), target_number_shown=c(5, 20))
+)
+chain(data,
+      do.rename(folding=FALSE),
+      subset(exp_type %in% c("content", "spacing")),
+      subset(subject %in% names(models)),
+      ddply("subject", function(d) {
+        for (l in lookfor) {
+          matches <- match_df(l, d)
+          if(nrow(matches) == nrow(l)) return(match_df(d, l))
+          NULL
+        }
+      })) -> summation.data
+
+chain(summation.data,
+      ddply(., c("subject", "target_number_shown"),
+            mkchain(
+              glm(formula = response
+                  ~ displacement
+                  + content
+                  + sign(content),
+                  family=binomial(link=logit)),
+              list, I, data.frame(model=.)))) -> summation.models
+
+chain(summation.models,
+      mdply(., function(model, ...) {
+        chain(model[[1]],
+              c(coefficients(.), sd=sqrt(diag(vcov(.)))),
+              as.array, t, as.data.frame,
+              mutate(model=NA))
+      })) -> summation.sensitivities
+
+sensitivities.plot <- (
+  ggplot(
+    summation.sensitivities,
+    aes(x = target_number_shown,
+        y = content,
+        ymin = content - sd.content,
+        ymax = content + sd.content,
+        group = subject,
+        label = toupper(subject)))
+  + scale_y_continuous("Carrier sensitivity")
+  + scale_x_continuous("Number of elements", breaks=c(5, 20), limits=c(2,23))
+  + geom_hline(yintercept=0, color="gray")
+  + geom_point()
+  + geom_line(color="black")
+  + guides(color="none")
+  + geom_text(data=subset(summation.sensitivities, target_number_shown==5),
+              color="black", hjust=1.3, size=2.5)
+  + theme(aspect.ratio=2)
+  )
+
+summation.intercepts <- chain(
+  summation.models,
+  mdply(., function(model, ...) {
+    chain(expand.grid(displacement=0,
+                      content=c(0.1,0.2)),
+          cbind(., folding_predict(model[[1]], fold=TRUE,
+                                   newdata=., se.fit=TRUE,
+                                   type='response')),
+          mutate(model=NA))
+  }),
+  dcast(subject+target_number_shown+displacement~abs(content), value.var="fit"))
+
+summation.curves <- chain(
+  summation.models,
+  mdply(., function(model, ...) {
+    chain(seq(-0.5, 0.5, len=100),
+          expand.grid(displacement=., content=c(0.1, 0.2), model=NA),
+          cbind(., folding_predict(model[[1]], fold=TRUE,
+                                   newdata=., se.fit=TRUE,
+                                   type='response')))
   }))
 
-print(ggplot(summation.increases.plotdata$bubbles)
-      + geom_hline(y=0.5, color="gray")
-      + geom_vline(x=0, color="gray")
-      + displacement_scale
-      + proportion_scale
-      + balloon
-      + content_color_scale
-      + labs(title="Carrier strength has more effect at reduced spacing",
-             color="Carrier\nstrength")
-      + aes(group=content)
-      #+ geom_point(size=2)# + binom_pointrange()
-      + ribbonf(summation.increases.plotdata$predictions)
-      + no_grid
-      + theme(plot.title=element_text(size=rel(1.0)),
-              strip.background=element_rect(colour=NA, fill="gray90"),
-              aspect.ratio=1)
-      + facet_spacing_subject
-      + coord_cartesian(xlim=c(-0.35, 0.35))
-      + label_count(summation.increases.plotdata$bubbles,
-                    c("spacing", "subject"),
-                    size=3, y=-Inf, x=-Inf)
-      )
+summation.bubbles <- chain(summation.data, refold(fold=TRUE), mkrates)
+summation.examples <- data.frame(subject=c("nj", "pbm"))
+
+summation.plot <- (
+  ggplot(data=match_df(summation.curves, summation.examples))
+  + aes(x=displacement, y=fit, yend=NA_real_,
+        color=factor(content), group=factor(content))
+  + (geom_point(
+    data=match_df(summation.bubbles, summation.examples),
+    aes(size=n_obs, y=p)))
+  + scale_size_area("Trials", max_size=3)
+  + scale_color_discrete("Carrier strength")
+  + scale_y_continuous("P(Response CW)", breaks=c(0,0.5,1))
+  + scale_x_continuous("Envelope displacement", breaks=c(-0.25, 0, 0.25),
+                       limits=c(-0.4, 0.4))
+  + geom_line()
+  + (geom_segment(
+    data=match_df(summation.intercepts, summation.examples),
+    color="black",
+    aes(group=NA, xend=displacement, y=`0.1`, yend=`0.2`),
+    arrow=arrow(length=unit(0.05, "inches"), type="closed")))
+  + facet_grid(subject ~ target_number_shown,
+               labeller=function(var, value) {
+                 switch(var,
+                        target_number_shown=paste(value, "elements"),
+                        subject = paste("Observer", toupper(value)))
+               })
+  + theme(aspect.ratio=1,
+          legend.position="top"))
+
+tab <- gtable(widths=unit(c(1.4, 1), "null"), heights=unit(c(1), "null"))
+tab %<~% gtable_add_grob(ggplotGrob(summation.plot), 1, 1)
+tab %<~% gtable_add_grob(ggplotGrob(sensitivities.plot), 1, 2)
+grid.draw(tab)
 
 ## ----------------------------------------------------------------------
 ## @knitr results-spacing-sensitivity
