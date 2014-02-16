@@ -81,49 +81,125 @@ bind[narrow.spacings, wide.spacings] <-
 ## ----------------------------------------------------------------------
 ## @knitr results-spacing-collapse
 
-spacing.collapse.plotdata <- ziprbind(Map(
-  model = list(models$pbm, models$cj, models$jb),
-  match_content = c(0.15, 0.4, 0.2),
-  match_number = list(c(4, 20)
-    ),
-  f = function(model, match_content, match_number) list(
-    bubbles = bubbles <- chain(
-      model$data,
-      subset(abs(content) == match_content),
-      subset(target_number_all %in% match_number),
-      refold(fold=TRUE),
-      mkrates),
-    predictions = (makePredictions(model, bubbles,
-                                   splits=splits %-% "exp_type", fold=TRUE)))))
+lookfor.spacing <- list(
+  expand.grid(folded_direction_content=c(0.2), target_number_shown=c(5, 20))
+#  expand.grid(folded_direction_content=c(0.15), target_number_shown=c(5, 20)),
+#  expand.grid(folded_direction_content=c(0.4), target_number_shown=c(5, 20)),
+#  expand.grid(folded_direction_content=c(0.1), target_number_shown=c(5, 20))
+  )
 
-print(ggplot(shuffle(spacing.collapse.plotdata$bubbles))
-      + displacement_scale
-      + proportion_scale
-      + coord_cartesian(xlim=c(-0.6, 0.6))
-      + spacing_color_scale
-      + aes(group=spacing)
-      + ribbonf(spacing.collapse.plotdata$predictions)
-      + balloon
-      # + geom_point(size=3)
-      # + binom_pointrange()
-      + facet_grid( ~ subject,
-                   labeller=function(var, value) sprintf("Observer %s", toupper(value)))
-      + no_grid
-      + theme(aspect.ratio=1)
-      + labs(title=paste(sep="\n","Sensitivity to envelope motion collapses at smaller spacings"))
-      + theme(plot.title=element_text(size=rel(1.0)),
-              strip.background=element_rect(colour=NA, fill="gray90"))
-      + with_arg(inherit.aes=FALSE, show_guide=FALSE,
-                 data=ddply(spacing.collapse.plotdata$bubbles,
-                    c("subject", "content"),
-                   summarize, content = content[1], n_obs = sum(n_obs)),
-                 geom_text(aes(
-                   label = sprintf("C = %0.2g", content)),
-                             x=Inf, y=-Inf, size=3, vjust=-0.5, hjust=1.05),
-                 geom_text(aes(
-                   label = sprintf("N = %d", n_obs),
-                   x = -Inf, y = Inf, size = 6, vjust = 1.5, hjust = -0.2)))
-        )
+chain(data,
+      do.rename(folding=FALSE),
+      subset(exp_type %in% c("content", "spacing")),
+      subset(subject %in% names(models)),
+      ddply("subject", function(d) {
+        retval <- data.frame()
+        for (l in lookfor.spacing) {
+          matches <- match_df(l, d)
+          if (nrow(matches) == nrow(l)) {
+            values <- match_df(d, l)
+            if (nrow(values) > nrow(retval)) retval <- values
+          }
+        }
+        retval
+      }),
+      mutate(label=paste("Observer", toupper(subject)))
+      ) -> spacing.data
+
+chain(
+  spacing.data,
+  ddply(., c("subject", "spacing"),
+        mkchain(
+          glm(formula = response ~ displacement + content,
+              family=binomial(link=logit)),
+          list, I, data.frame(model=.))),
+  mutate(label=paste("Observer", toupper(subject)))) -> spacing.models
+
+
+chain(spacing.models,
+      mdply(., function(model, ...) {
+        chain(model[[1]],
+              c(coefficients(.), sd=sqrt(diag(vcov(.)))),
+              as.array, t, as.data.frame,
+              mutate(model=NA))
+      })) -> spacing.sensitivities
+
+`subset<-` <- function(x, subset, value) {
+  expr <- substitute(subset)
+  subset <- eval(expr, x, parent.frame())
+  if (!is.logical(subset))
+      stop("'subset' must be logical")
+  x[subset & !is.na(subset), ] <- value
+  x
+}
+
+spacing.sensitivities$dodge <- 0
+subset(spacing.sensitivities, subject=="jb")$dodge <- 0.2
+subset(spacing.sensitivities, subject=="je")$dodge <- 0.1
+subset(spacing.sensitivities, subject=="cj")$dodge <- -0.5
+subset(spacing.sensitivities, subject=="ns")$dodge <- 0.2
+subset(spacing.sensitivities, subject=="nj")$dodge <- -0.2
+(ggplot(
+  spacing.sensitivities,
+  aes(x = spacing,
+      y = displacement,
+      ymin = displacement - sd.displacement,
+      ymax = displacement + sd.displacement,
+      group = subject,
+      color = factor(spacing),
+      label = toupper(subject)))
+ + scale_y_continuous("Displacement sensitivity")
+ + scale_x_continuous("Element Spacing",
+                      breaks=unique(spacing.sensitivities$spacing),
+                      labels=function(x)sprintf("%0.2f", as.numeric(x)),
+                      limits=c(1.5, 9.5))
+ + geom_hline(yintercept=0, color="gray")
+ + geom_line(color="black")
+ + geom_point()
+ + guides(color="none")
+ + geom_text(aes(y=displacement+dodge),
+             data=subset(spacing.sensitivities, spacing==max(spacing)),
+             color="black", hjust=-0.3, size=2.5)
+ + theme(aspect.ratio=2)
+ ) -> spacing.sensitivity.plot
+
+spacing.curves <- chain(
+  spacing.models,
+  mdply(., function(model, ...) {
+    chain(seq(-0.5, 0.5, len=100),
+          expand.grid(displacement=., content=c(0.2),
+                      model=NA),
+          cbind(., folding_predict(model[[1]], fold=TRUE,
+                                   newdata=., se.fit=TRUE,
+                                   type='response')))
+  }))
+
+spacing.bubbles <- chain(spacing.data, refold(fold=TRUE),
+                         mkrates(splits=c("displacement", "spacing", "subject")))
+spacing.examples <- data.frame(subject=c("pbm", "nj", "cj", "tl"))
+
+spacing.plot <- (
+  ggplot(data=match_df(spacing.curves, spacing.examples))
+  + aes(x=displacement, y=fit, yend=NA_real_,
+        color=factor(spacing), group=factor(spacing))
+  + (geom_point(
+    data=match_df(spacing.bubbles, spacing.examples),
+    aes(size=n_obs, y=p)))
+  + scale_size_area("Trials", max_size=4)
+  + scale_color_discrete("Element spacing (degrees)",
+                         labels=function(x)sprintf("%0.2f", as.numeric(x)))
+  + scale_y_continuous("P(Response CW)", breaks=c(0,0.5,1))
+  + scale_x_continuous("Envelope displacement", breaks=c(-0.25, 0, 0.25),
+                       limits=c(-0.5, 0.5))
+  + geom_line()
+  + facet_wrap(~label, ncol=2)
+  + theme(aspect.ratio=1,
+          legend.position="top"))
+
+stab <- gtable(widths=unit(c(1.4, 1), "null"), heights=unit(c(1), "null"))
+stab %<~% gtable_add_grob(ggplotGrob(spacing.plot), 1, 1)
+stab %<~% gtable_add_grob(ggplotGrob(spacing.sensitivity.plot), 1, 2)
+grid.draw(stab)
 
 ## ----------------------------------------------------------------------
 ## @knitr results-summation-increases
@@ -205,7 +281,10 @@ summation.curves <- chain(
                                    type='response')))
   }))
 
-summation.bubbles <- chain(summation.data, refold(fold=TRUE), mkrates)
+summation.bubbles <- chain(
+  summation.data,
+  refold(fold=TRUE),
+  mkrates(splits=c("displacement", "spacing", "subject", "content")))
 summation.examples <- data.frame(subject=c("nj", "pbm"))
 
 summation.plot <- (
