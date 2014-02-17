@@ -595,23 +595,25 @@ summation.plot.r2 <- label_r2(summation.tests)
 
 summation_plot <- function(data=summation.plot.data, labels=summation.plot.r2) (
     ggplot(subset(data, type=="points"))
-    + spacing_scale_x
-    + aes(y=fit)
-    + geom_point(aes(size=n_obs), alpha=0.5)
-    + error.segment
-    + scale_size_area()
-    + no_grid
-    + with_arg(data=subset(data, type=="curve"),
-               geom_ribbon(alpha=0.1,
-                           aes(ymin=fit-se.fit, ymax=fit+se.fit)),
-               geom_line())
-    + facet_wrap(~observer, scales="free_y")
-    + r2_label(data, labels, x=Inf, hjust=1)
-    + labs(title="Sensitivity to carrier motion is inversely related to spacing"
-           , y=expression(paste("Carrier sensitivity " , beta[S] + beta[I][a]))
-           , size="N")
-    + xaxis
-    + theme(aspect.ratio=1))
+  #    + spacing_scale_x
+  + aes(x=2*pi*20/3/spacing)
+  + scale_x_continuous("Number of elements", breaks=c(5, 10, 15, 20, 25))
+  + aes(y=fit)
+  + geom_point(aes(size=n_obs), alpha=0.5)
+  + geom_segment(aes(y=fit-se.fit, yend = fit+se.fit, xend=2*pi*20/3/spacing))
+  + scale_size_area("Trials")
+  + no_grid
+  + with_arg(data=subset(data, type=="curve"),
+             geom_ribbon(alpha=0.1,
+                         aes(ymin=fit-se.fit, ymax=fit+se.fit)),
+             geom_line())
+  + facet_wrap(~observer, scales="free_y")
+  + r2_label(data, labels, x=Inf, y=-Inf, hjust=1, vjust=-0.5)
+  + labs(title="Sensitivity to carrier motion scales with number of elements"
+         , y=expression(paste("Carrier sensitivity " , beta[S] + beta[I][a]))
+         , size="N")
+  + xaxis
+  + theme(aspect.ratio=1))
 summation_plot(subset(summation.plot.data,
                       subject %in% sensitivity.example.subjects))
 

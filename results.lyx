@@ -500,7 +500,11 @@ name "fig:results-spacing-collapse"
 \end_inset
 
  When spacing is reduced, sensitivity to envelope motion decreases.
- Data from three observers is shown, each showing two spacings.
+ 
+\noun on
+Left:
+\noun default
+ Data from four observers is shown, each showing two spacings.
  Carrier strength was fixed at 
 \begin_inset Formula $C=0.2$
 \end_inset
@@ -520,16 +524,22 @@ clockwise
 \end_inset
 
  to that stimulus.
- Curves are drawn from overall fits of the model described in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:model"
-
-\end_inset
-
-, using data from a larger range of spacings and carrier strengths.
- The points on the graph are scaled according to the number of trials made
- at those stimulus configurations.
+ Curves show a psychometric function fit.
+ 
+\noun on
+Right:
+\noun default
+ Displacement sensitivities.
+ Displacement sensitivities correspond to the slopes of the psychometric
+ functions.
+ Lower sensitivities are seen at narrow spacings and higher sensitivities
+ are seen at wider spacings.
+ 
+\noun on
+Note: 
+\noun default
+Points on the graph are scaled according to the number of trials made at
+ those stimulus configurations.
  Therefore larger points are expected to lie closer to the model fit, while
  smaller points have more uncertainty and may be expected to lie farther
  from the model fit.
@@ -540,7 +550,6 @@ reference "sec:model"
 \end_inset
 
  or 0.
- When spacings are reduced, psychometric functions fit with shallower slopes.
 \end_layout
 
 \end_inset
@@ -701,7 +710,11 @@ name "fig:results-summation-increases"
 \end_inset
 
 Adding more elements increases the sensitivity to carrier motion.
- Left: An example subset of the data from 
+ 
+\noun on
+Left:
+\noun default
+ An example subset of the data from 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sec:results-basic"
@@ -718,8 +731,12 @@ reference "sec:results-basic"
  to carrier motion corresponds to the vertical separation between psychometric
  functions, indicated by black arrows.
  When more elements are added, the sensitivity to carrier motion increases
- (arrows extend upwards.) Right: Carrier sensitivity is measured, for 5 and
- 20 elements, using an increment of carrier strength from 0.1 to 0.2.
+ (arrows extend upwards.) 
+\noun on
+Right:
+\noun default
+ Carrier sensitivity is measured, for 5 and 20 elements, using an increment
+ of carrier strength from 0.1 to 0.2.
  Increasing the number of elements increases carrier sensitivity for each
  observer.
  Note that most observers have negative carrier sensitivity when fewer elements
@@ -1048,7 +1065,7 @@ Sexpr{toupper(example.contour.subject)}
 \begin_inset Formula $S$
 \end_inset
 
- in degrees, envelope motion 
+ in degrees of visual angle, envelope motion 
 \begin_inset Formula $\Delta x$
 \end_inset
 
@@ -1057,23 +1074,29 @@ Sexpr{toupper(example.contour.subject)}
 \end_inset
 
 .
- The background color scale indicates the probability of responding clockwise
- predicted by our model.
+ The color scale indicates the probability of responding clockwise according
+ to the model fit.
  Four planar sections through the three-dimensional space are shown, and
  correspond to the four panels in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
 
 .
- Red shades indicate stimuli for which the model predicts responses that
- agree with the direction of carrier motion (whose strength is plotted on
- the vertical axis) and blue shades indicate stimuli where the model's predicts
- responses that disagree with the direction of carrier motion.
+ Red shades indicate stimuli for which the model predicts clockwise responses
+ (i.e.
+\begin_inset space \space{}
+\end_inset
+
+
+\begin_inset Formula $P>0.5$
+\end_inset
+
+) and blue indicates predicted counterclockwise responses.
  In both cases the luminance depends the difference between the response
- probability and 0.5, with response probabilities further from 0.5 are colored
+ probability and 0.5, with response probabilities further from 0.5 colored
  darker and more saturated.
  Yellow contour lines are placed at response probabilities of 0.1, 0.3, 0.5,
  0.7 and 0.9.
@@ -1310,7 +1333,7 @@ reference "fig:results-3d"
 \end_layout
 
 \begin_layout Standard
-Each panel in 
+The colored background in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:results-contours"
@@ -1359,7 +1382,8 @@ reference "fig:results-contours"
  circle is plotted for each bin.
  The circles are drawn with area proportional to the number of trials they
  summarize.
- The shade within the circle is a weighted average of the observer's responses.
+ The shade within the circle is a weighted average of the observer's responses,
+ as explained below.
  Any difference between the shading inside the circle and that of the background
  indicates a residual between the model and the subset of observed data
  summarized in that circle.
@@ -1409,9 +1433,9 @@ Upper left
  The response probability varies in the unseen dimension, so that one circle
  may combine stimuli for which the observer tends to respond clockwise with
  stimuli for which the observer tends to respond counterclockwise.
- Indeed since I used a staircase procedure to choose envelope displacement,
- the the mean response probability in each bin clusters around 0.5, which
- would not be useful to display.
+ Since I used a staircase procedure to choose envelope displacement, the
+ the mean response probability in each bin clusters around 0.5, which would
+ not be useful to display.
  Since the data are not uniformly sampled throughout the stimulus configuration
  space, adjacent bins collect trials with a different sampling in the unseen
  dimension, as determined by the staircase procedure.
@@ -1433,11 +1457,11 @@ Instead the shading within each circle is determined by computing the Pearson
 \begin_inset Formula $x_{i}$
 \end_inset
 
- and responses are 
-\begin_inset Formula $y_{i},$
+, and binary responses 
+\begin_inset Formula $y_{i}\in\left\{ 0,1\right\} $
 \end_inset
 
- falling within a bin centered on a certain stimulus configuration 
+, falling within a bin centered on a mean stimulus 
 \begin_inset Formula $\bar{x}$
 \end_inset
 
@@ -1450,7 +1474,7 @@ Instead the shading within each circle is determined by computing the Pearson
 \begin_inset Formula $y_{i}$
 \end_inset
 
- and corresponding model predictions 
+ and corresponding predicted probabilities 
 \begin_inset Formula $\widehat{\mu}_{i}$
 \end_inset
 
@@ -1465,13 +1489,14 @@ R=\dfrac{\sum_{i}\left(y_{i}-\widehat{\mu}_{i}\right)}{\sqrt{\sum_{i}\widehat{\m
 
 \end_inset
 
-which is the total difference between data and observation scaled by the
- expected standard error.
- If the model 
-\begin_inset Formula $\widehat{\mu}$
+which is the total difference between data and observation, scaled by the
+ standard deviation of the predicted count (the predicted count being the
+ sum over each Bernoulli
+\begin_inset Formula $\left(\widehat{\mu}_{i}\right)$
 \end_inset
 
- is a function of the stimulus parameters 
+ random variable.) If the model is a function of the stimulus parameters
+ 
 \begin_inset Formula $x$
 \end_inset
 
@@ -1516,7 +1541,7 @@ reference "fig:results-contours"
 \begin_inset Formula $\bar{y}\left(x\right)=\widehat{\mu}\left(x\right)$
 \end_inset
 
-; if all the parameters happen to fall at the bin center so that all 
+; if all the trial parameters coincide with the bin center so that all 
 \begin_inset Formula $x_{i}=x$
 \end_inset
 
@@ -1528,7 +1553,7 @@ reference "fig:results-contours"
 \begin_inset Formula $\bar{y}\left(x\right)=\frac{1}{n}\sum_{i}y_{i}$
 \end_inset
 
-, and for a given set of random observations 
+; and for a given set of random observations 
 \begin_inset Formula $y_{i}$
 \end_inset
 
@@ -1559,7 +1584,7 @@ reference "sub:results-goodness"
 
 \end_inset
 
- will consider model predictions and data one variable at a time, at which
+ I will consider model predictions and data one variable at a time, at which
  point I can display standard errors of observed and predicted data and
  obtain goodness of fit statistics.
  However, the areas of the plotted circles in 
@@ -1588,6 +1613,17 @@ With the unequal sampling, applying t-tests to the residual would not correspond
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+I say, below in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:results-goodness"
+
+\end_inset
+
+ I will...
 \end_layout
 
 \begin_layout Subsubsection
@@ -1850,7 +1886,13 @@ key "Akaike:1974aa"
 
 \end_inset
 
-.
+ That is to say, the same strength of repulsion appears to exist for spare
+ displays as for dense displays; when very dense, repulsion is usually overwhelm
+ed by the summation (
+\begin_inset Formula $M_{S}$
+\end_inset
+
+) term.
 \end_layout
 
 \begin_layout Standard
@@ -1956,16 +1998,44 @@ name "sub:results-goodness"
 
 \begin_layout Standard
 This model captures the effect of three factors - carrier strength, envelope
- motion and spacing - that each affect perceived motion.
- This model also captures variation in the appearance of these stimuli between
- observers, since changes in model parameters can lead to different predicted
- perceptions of the same stimuli.
- In the following sections I attempt to check the model's performance in
- describing behavior with reference to its three components.
- This will help evaluate and provide some justification for the particular
- functional forms that have chosen in our model, as well as show how hte
- general form of each effect is consistent across observers, while their
- proportions vary.
+ motion and spacing - that each affect apparent motion.
+ The model is phrased in terms of three effects: summation of carrier motion,
+ crowding of envelope motion, and repulsion driven by carrier motion strength.
+ This model potentially allows for variation in the appearance of these
+ stimuli between observers.
+ I have shown that it fits qualitatively, in so far as its fit appears to
+ capture some of the variation in observed responses.
+ But to justify each choice made in modeling the data I should try to justify
+ the inclusion of each effect, by showing that including each effect produces
+ a model that better captures each observers' data.
+\end_layout
+
+\begin_layout Standard
+There is inter-subject variability; identical stimuli produce different
+ appearances of motion in different observers.
+ The model I have proposes that this variability is due to different proportions
+ the same underlying effects.
+ To check this, I will evaluate each effect separately and discuss how they
+ apply to each observer.
+ One of my goals is to show that despite this variability, the same qualitative
+ effects appear in each observer; that is, effects should be present in
+ each observer, though they may vary in proportion.
+\end_layout
+
+\begin_layout Standard
+In the following sections I attempt to check the model's performance in
+ describing behavior with reference to the three proposed effects.
+ This will help evaluate and provide some justification for each component
+ of the model, and will also show whether each effect is consistent across
+ observers.
+ The goal is to justify the inclusion of each of the three effects, and
+ by looking at each effect to show that it whether it is consistent across
+ each observer.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Statistical considerations for binary psychophysical data
 \end_layout
 
 \begin_layout Standard
@@ -1973,11 +2043,31 @@ Tests of goodness of fit such as residual deviance and Pearson
 \begin_inset Formula $\chi^{2}$
 \end_inset
 
- operate by comparing the predictions to those of a saturated model, one
- with as many parameters as observations that captures all the variance.
+ operate by comparing the predictions of the proposed model to those of
+ a saturated model, one with as many parameters as observations, that captures
+ all the variance, as well as to a null model, which only includes an intercept.
  However the idea of a saturated model does not have a perfect equivalent
- in the case of binary responses, and analogous fit tests are problematic
- when the predictors are not evenly grouped 
+ in the case of binary responses; since an observer will respond both 
+\begin_inset Quotes eld
+\end_inset
+
+yes
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+no
+\begin_inset Quotes erd
+\end_inset
+
+ to the same stimulus, one cannot capture all the variance, and for cases
+ where the observer always gives the same answer, this leads to undefined
+ likelihood values.
+ Standard goodness-of-fit checks are also problematic when the sampling
+ is not evenly grouped over the predictors 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Collett:2003aa"
@@ -1992,7 +2082,8 @@ key "Hosmer:aa"
 
 \end_inset
 
-, both being situations which characterize this dataset.
+.
+ Both of these situations apply to this dataset.
 \end_layout
 
 \begin_layout Standard
@@ -2001,11 +2092,12 @@ status open
 
 \begin_layout Plain Layout
 Some idea of the difficulty can come from considering the effect of sampling
- procedure; I use adaptive staircase to draw data from the parameters which
- give more information, but those are also the parameters for which the
- observer gives a mixture of yes and no responses.
- A model-agnostic of deviance or goodness of fit adapted from linear regression
- will necessarily be higher under adaptive sampling: you cannot fully eliminate
+ procedure.
+ I use adaptive staircases to sample data around parameter values parameters
+ which give more information, but those are also the parameters for which
+ the observer gives a mixture of yes and no responses.
+ A deviance or goodness of fit adapted from linear regression will show
+ a worse fit under adaptive sampling, because you cannot fully eliminate
  deviance or residuals when an observer says both 
 \begin_inset Quotes eld
 \end_inset
@@ -2022,20 +2114,11 @@ no
 \begin_inset Quotes erd
 \end_inset
 
- to the same stimulus in different trials; adjusting measures of residual
- to account for the compression of the logistic function as was done in
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:results-contours"
-
-\end_inset
-
- would make a model fit measure specific to a particular model.
- A model-agnostic measure of deviance with data taken under adaptive sampling
- will be higher than under a fixed procedure that samples the tails heavily,
- even though the adaptive sampling procedure produces a more accurate parameter
- estimate for the same number of samples.
+ to the same stimulus in different trials.
+ But I employ adaptive sampling because those trials near threshold are
+ more informative, and should thus lead to a more accurate model given the
+ same number of trials; the deviance statistic is not measuring what is
+ desired.
 \end_layout
 
 \end_inset
@@ -2044,11 +2127,14 @@ reference "sub:results-contours"
 \end_layout
 
 \begin_layout Standard
-Further, applying an complete goodness of fit test to a model with multiple
- effects involving multiple predictors would not give a useful evaluation
- of how well each component effect is capturing behavior.
- Therefore it would be most instructive to focus on the fit for each effect
- considered separately.
+Rather than an overall goodness of fit test, I wish to evaluate each effect
+ separately.
+ Applying an overall goodness of fit test to a model with multiple effects
+ involving multiple predictors would not give a useful evaluation of how
+ well each component effect is capturing behavior.
+ To examine each effect I would like diagnostic model checks that focus
+ on each effect in turn, that is, partial goodness of fit checks for each
+ effect.
  Since I sampled a discrete set of spacings and of carrier strength, this
  can be done by expanding the proposed model 
 \begin_inset Formula $m_{P}$
@@ -2062,22 +2148,10 @@ Further, applying an complete goodness of fit test to a model with multiple
 \begin_inset Formula $E$
 \end_inset
 
-; i.e.
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
- 
-\end_layout
-
-\end_inset
-
-adding indicator variables for each value of spacing or carrier strength,
- and fitting the sensitivity in terms of those indicators.
- This builds a 
+; while the proposed model fits carrier sensitivity as a function of spacing
+ (say,) the saturated model would fit a separate value of sensitivity at
+ each spacing.
+ This makes a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2089,17 +2163,18 @@ effect saturated
 \begin_inset Formula $m_{S,E}$
 \end_inset
 
-; a corresponding process builds a null or intercept model 
+; refitting the model without the proposed effect builds a null or intercept
+ model 
 \begin_inset Formula $m_{0,E}$
 \end_inset
 
 .
  Then the success of each effect term can be characterized by nested comparisons
  between null, proposed (
-\begin_inset Formula $m_{L})$
+\begin_inset Formula $m_{P}$
 \end_inset
 
- and saturated models 
+) and saturated models 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Tsiatis:1980aa,Archer:2007aa"
@@ -2118,10 +2193,18 @@ R_{L,E}^{2}=\frac{L\left(m_{P}\right)-L\left(m_{0,E}\right)}{L\left(m_{P}\right)
 
 \end_inset
 
-Perhaps more importantly, building effect-saturated models allows visual
- comparison of, e.g., how the sensitivity to carrier motion varies over each
- discrete value of spacing tested, versus the model's behavior over the
- same question.
+
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset Formula $R_{L,E}^{2}$
+\end_inset
+
+ statistic can be interpreted as the proportion of available likelihood
+ that is captured by the proposed model, relative to a null model.
+ Building effect-saturated models will allow for visual comparison of the
+ saturated model to the proposed models.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2297,7 +2380,7 @@ Sexpr{element.numbers}
  elements using a logistic regression model formulated as 
 \begin_inset Formula 
 \[
-\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}\left(\beta_{n}\Delta_{X}+k_{\left|C\right|,n}C+b_{\left|C\right|,n}\right)
+\Pr\left(\mathrm{clockwise}\mid\Delta x,C,n\right)=\mathrm{logit}^{-1}\left(\beta_{n}\Delta_{X}+k_{\left|C\right|,n}C+b_{\left|C\right|,n}\right)
 \]
 
 \end_inset
@@ -2367,7 +2450,7 @@ Sexpr{switch(sum(results.pooling.change$signif), "one", stop())}
 
  observer (whose sensitivity 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -2415,8 +2498,7 @@ How does Anstis and Kim's illusion work when we don't have any pooling?
 \end_layout
 
 \begin_layout Subsubsection
-With shorter distances between elements, sensitivity to envelope motion
- declines.
+At narrow element spacings, sensitivity to envelope motion declines.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-sensitivity"
@@ -2468,7 +2550,7 @@ name "fig:results-spacing-sensitivity"
 
 \end_inset
 
-Sensitivity to displacement collapses as spacing decreases.
+Sensitivity to displacement collapses at narrow spacing.
  In each subplot, the horizontal axis denotes spacing, while the vertical
  axis measures sensitivity to direction content (corresponding to the slopes
  of the psychometric functions shown in 
@@ -2752,8 +2834,7 @@ status open
 \end_layout
 
 \begin_layout Subsubsection
-At shorter distances, carrier motion summates, causing an increase in sensitivit
-y to carrier direction content.
+When more elements are added, carrier motion summates.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-summation"
@@ -2808,14 +2889,14 @@ name "fig:results-spacing-summation"
 
 \end_inset
 
-The sensitivity to carrier direction content increases at smaller spacings.
+The sensitivity to carrier motion scales with the number of elements.
  The vertical axis measures the sensitivity to carrier motion 
 \begin_inset Formula $M_{s}\left(S\right)$
 \end_inset
 
- as a function of spacing.
+ as a function of the number of elements used in the stimulus.
  Individually plotted points are obtained by letting this coefficient vary
- freely for each value of spacing; curves indicate model predictions.
+ freely for each value of spacing; lines indicate model fits.
  Vertical segments at each point indicate 
 \begin_inset Formula $\pm$
 \end_inset
@@ -2825,9 +2906,8 @@ The sensitivity to carrier direction content increases at smaller spacings.
  Because the sensitivity and amount of repulsion vary between observers,
  each panel has a different scale on the vertical axis; the dotted horizontal
  line indicates a sensitivity of 0, which marks the boundary between assimilatio
-n and repulsion for small amounts of carrier strength.
- Data from three observers are shown here; the complete set is shown in
- 
+n and repulsion.
+ Data from three observers is shown here; the complete set is shown in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:everything-summation"
@@ -2849,8 +2929,8 @@ reference "fig:everything-summation"
 
 \begin_layout Standard
 While the sensitivity to envelope motion decreases as flanking elements
- are brought closer, the sensitivity to carrier motion increases at the
- same time.
+ are brought closer, the sensitivity to carrier motion increases as more
+ elements are added.
  I assessed this effect using the same technique as before, forming a saturated
  model by dropping the term 
 \begin_inset Formula $M_{s}\left(S\right)$
@@ -2861,27 +2941,34 @@ While the sensitivity to envelope motion decreases as flanking elements
 \end_inset
 
  for each distinct value of spacing.
- The saturated model also covers the linear repulsion term 
+ The saturated model drops the linear repulsion term 
 \begin_inset Formula $\beta_{I_{a}}C$
 \end_inset
 
  (as it is proportional to carrier strength and thus linearly dependent
- with the dummy variables.) The other components of the model remain, including
+ with the indicator terms.) The other components of the model remain, including
  the nonlinear component of repulsion 
 \begin_inset Formula $\beta_{I_{b}}C\left|C\right|$
 \end_inset
 
 .
- The null model retains the term 
+ The intercept model retains the term 
 \begin_inset Formula $\beta_{I_{a}}C$
 \end_inset
 
  (i.e.
  it has a constant sensitivity to carrier motion that does not vary with
- spacing.) For data at a few spacings tested at a carrier strength of 1,
- responses align completely with carrier motion direction, which leads to
- undefined likelihoods for those data in the saturated model; those data
- are disregarded for purposes of model comparison.
+ the number of elements.) For data at a few spacings tested at a carrier
+ strength of 1, there are some all-clockwise or all-counterclockwise responses,
+ which leads to undefined likelihoods for those data in the saturated model;
+ those data are disregarded for purposes of model comparison 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Collett:2003aa"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -2906,8 +2993,6 @@ clockwise
 \end_inset
 
  in proportion to a small change in the carrier strength.
- For several observers the inverse proportion to spacing captures the response
- very well.
  Likelihood ratio tests show significant improvements from null to proposed
  models for 
 \begin_inset ERT
@@ -2923,8 +3008,7 @@ Sexpr{if (all(summation.tests[, "pval", "uncensored.flat.model", "uncensored.mod
 
 \end_inset
 
- of observers; in aggregate, the proposed model is successful, obtaining
- 
+ observers; in aggregate, the proposed model is successful, obtaining 
 \begin_inset ERT
 status collapsed
 
@@ -2938,21 +3022,19 @@ Sexpr{hosmer_lemeshow_r2(aggregate.summation.tests)}$
 \end_inset
 
  with reference to null and saturated models.
- The functional form relating carrier sensitivity to the inverse of spacing
- appears to be a good fit, obtaining 
+ For several observers the proposed linear relation between number of elements
+ and carrier sensitivity captures the response very well, obtaining 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
-$R^2_L=
-\backslash
-Sexpr{hosmer_lemeshow_r2(aggregate.summation.tests)}$
+$R^2_L > 0.9$
 \end_layout
 
 \end_inset
 
- over 0.9 for 
+ for 
 \begin_inset ERT
 status collapsed
 
@@ -2973,19 +3055,32 @@ reference "fig:everything-summation"
 
 \end_inset
 
-.) Note that for some observers such as JB the measurement in in the previous
- section does not find assimilation even at the smallest spacings, however
- the sensitivity measure here is a discounts the nonlinear repulsion term
- 
+.) Note that for some observers such as JB and MC the measurement of carrier
+ sensitivity does not find assimilation even at the smallest spacings; small
+ increments of carrier motion are repulsive for these observers even when
+ the display is dense with elements.
+ However the sensitivity measure here does not include the nonlinear repulsion
+ term 
 \begin_inset Formula $\beta_{I_{b}}C\left|C\right|$
 \end_inset
 
- which can turn increments of carrier motion assimilative at higher carrier
- strengths.
+ which can make increments of carrier motion assimilative for larger values
+ of carrier motion.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+rephrase/replot this this in terms of element number?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
-At larger spacing, weak carrier direction content repels direction judgments.
+Weak carrier motion repels direction judgments.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-repulsion"
@@ -2996,7 +3091,7 @@ name "sub:results-repulsion"
 \end_layout
 
 \begin_layout Standard
-Note that carrier sensitivity measured in the previous section, in addition
+Note that the carrier sensitivity measured in the previous section, in addition
  to the inverse proportionality to spacing, has a constant generally negative
  offset.
  I have referred to this offset as 
@@ -3016,7 +3111,7 @@ reference "fig:results-spacing-summation"
 
 \end_inset
 
- carrier sensitivity does not approach zero at large spacings, but some
+ carrier sensitivity does not approach zero for sparse displays, but some
  usually negative value.
  Carrier motion generally become assimilative when there are more, closely
  packed elements in the display.
@@ -3039,7 +3134,7 @@ ndent component of carrier strength is directly proportional to the number
 \end_layout
 
 \begin_layout Subsubsection
-The repulsion effect is nonlinear in carrier strength.
+Repulsion is nonlinear in carrier strength.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:results-induced-modeling"
@@ -3086,9 +3181,12 @@ reference "fig:results-contours"
 , where moderate values of carrier strength at wider spacings are repulsive
  (blue shades) but become assimilative (red shades) as carrier strength
  is further increased.
- The spacing-dependent assimilation effect contributes to this, but is not
- strong enough at wide spacings to account for the reversal of perceived
- motion.
+ That corresponds to a situation in which, starting with a display with
+ no envelope or carrier motion, a little clockwise carrier is added and
+ the display appears to go counterclockwise, but adding more changes the
+ appearance to clockwise.
+ The summation effect contributes to this, but is not strong enough for
+ sparse displays to account for the reversal of apparent motion.
  There are two notable characteristics of this repulsion.
  The first is that the degree of repulsion appears to be a nonlinear function
  of direction content.
