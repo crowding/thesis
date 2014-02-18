@@ -214,22 +214,29 @@ Model fits in perspective and contour plots
 The following figures illustrate the main effects of the motion model described
  in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand ref
 reference "sec:model"
 
 \end_inset
 
  as fitted to each observer's data.
- They are formatted identically to those presented earlier in 
+ They are formatted identically to 
 \begin_inset CommandInset ref
-LatexCommand nameref
-reference "sec:results-basic"
+LatexCommand ref
+reference "fig:results-3d"
 
 \end_inset
 
  and 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand ref
+reference "fig:results-contours"
+
+\end_inset
+
+, as described in 
+\begin_inset CommandInset ref
+LatexCommand ref
 reference "sub:results-contours"
 
 \end_inset
@@ -372,7 +379,7 @@ status open
 .
  The format of the plot is the same as 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-3d"
 
 \end_inset
@@ -436,7 +443,7 @@ status open
 .
  The format of the plot is the same as 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-contours"
 
 \end_inset
@@ -554,7 +561,6 @@ name "sub:everything-sensitivity"
 \end_layout
 
 \begin_layout Standard
-Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:everything-sensitivity"
@@ -579,13 +585,14 @@ reference "sub:results-sensitivity"
 
 \begin_layout Standard
 \begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -594,7 +601,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<everything-sensitivity,fig.width=7,fig.height=7,cache.extra=file.info("sensitivity
+<<everything-sensitivity,fig.width=7,fig.height=5,cache.extra=file.info("sensitivity
 -plot.RData")$mtime>>=
 \end_layout
 
@@ -653,6 +660,13 @@ reference "fig:results-spacing-sensitivity"
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Sensitivity to carrier motion
 \end_layout
@@ -664,7 +678,7 @@ name "sub:everything-summation"
 
 \end_inset
 
- Figure 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:everything-summation"
@@ -689,13 +703,14 @@ reference "sub:results-basic-summation"
 
 \begin_layout Standard
 \begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -704,7 +719,7 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<everything-summation,fig.width=7,fig.height=7,cache.extra=file.info("summation-plo
+<<everything-summation,fig.width=7,fig.height=5,cache.extra=file.info("summation-plo
 t.RData")$mtime>>=
 \end_layout
 
@@ -770,6 +785,13 @@ reference "sub:results-basic-summation"
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Carrier repulsion
 \end_layout
@@ -781,10 +803,10 @@ name "sub:everything-repulsion"
 
 \end_inset
 
- Figure 
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:everything-summation"
+reference "fig:everything-nonlinearity"
 
 \end_inset
 
@@ -796,7 +818,7 @@ reference "fig:everything-summation"
  The construction is described in 
 \begin_inset CommandInset ref
 LatexCommand formatted
-reference "sub:results-repulsion"
+reference "sub:density-modelong"
 
 \end_inset
 
@@ -805,13 +827,14 @@ reference "sub:results-repulsion"
 
 \begin_layout Standard
 \begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -820,8 +843,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<everything-nonlinearity,fig.width=7,fig.height=7,cache.extra=file.info("repulsion-
-plot.RData",message=FALSE)$mtime>>=
+<<everything-nonlinearity,fig.width=7,fig.height=5,cache.extra=file.info("repulsion-
+plot.RData")$mtime,message=FALSE,warning=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -897,6 +920,13 @@ reference "sub:results-induced-modeling"
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Number and spacing
 \end_layout
@@ -912,86 +942,23 @@ name "sub:everything-numdensity"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:numdensity-data"
-
-\end_inset
-
- Data from 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:density"
+reference "fig:everything-density-predictions"
 
 \end_inset
 
-, after 
+ compares four model predictions for data from 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+, as described in 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:density-measurements"
-
-\end_inset
-
- Vertical axis measures the proportion of responding 
-\begin_inset Quotes eld
-\end_inset
-
-clockwise
-\begin_inset Quotes erd
-\end_inset
-
- to a stimulus, while the horizontal axis measures inter-element spacing;
- colors and labels show the number of moving elements shown.
- See 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:density-methods"
-
-\end_inset
-
- for details.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:everything-summation"
-
-\end_inset
-
- depicts the repulsion to carrier motion 
-\begin_inset Formula $M_{I}$
-\end_inset
-
- for all observers who participated in the experiment.
- The construction is described in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sub:results-repulsion"
+reference "sub:density-modeling"
 
 \end_inset
 
@@ -1000,66 +967,7 @@ reference "sub:results-repulsion"
 
 \begin_layout Standard
 \begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:numdensity-quad-predictions"
-
-\end_inset
-
- Data from 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sec:density"
-
-\end_inset
-
-, after 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:density-measurements"
-
-\end_inset
-
- Vertical axis measures the proportion of responding 
-\begin_inset Quotes eld
-\end_inset
-
-clockwise
-\begin_inset Quotes erd
-\end_inset
-
- to a stimulus, while the horizontal axis measures inter-element spacing;
- colors and labels show the number of moving elements shown.
- See 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:density-methods"
-
-\end_inset
-
- for details.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
@@ -1070,13 +978,8 @@ status open
 
 \begin_layout Plain Layout
 
-%numdensity
-\end_layout
-
-\begin_layout Plain Layout
-
-<<everything-numdensity,fig.width=7,fig.height=7,cache.extra=file.info("density-save.
-RData",message=FALSE)$mtime>>=
+<<everything-density-model, fig.width=7, fig.height=9.5,cache.extra=file.info(c("dens
+ity_save.RData"))$mtime>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1086,13 +989,7 @@ load("density-save.RData")
 
 \begin_layout Plain Layout
 
-invisible(lapply(ls(),function(x) assign(x, get(x), globalenv()))) #make
- everything global
-\end_layout
-
-\begin_layout Plain Layout
-
-grid.draw(density.data.plot)
+grid.draw(all.quad.prediction.plot) 
 \end_layout
 
 \begin_layout Plain Layout
@@ -1115,34 +1012,43 @@ grid.draw(density.data.plot)
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:everything-number-density"
+name "fig:everything-density-predictions"
 
 \end_inset
 
- Data from 
+ Predictions for four models compared to data from 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:results-number"
+reference "sec:number"
 
 \end_inset
 
-; The experiment is described in strength of the repulsion effect as a function
- of carrier strength.
- This is a version of 
+, after 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:results-induced-model-plot"
+reference "fig:density-measurements"
 
 \end_inset
 
- showing all observers; see 
+.
+ Vertical axis measures the proportion of responding 
+\begin_inset Quotes eld
+\end_inset
+
+clockwise
+\begin_inset Quotes erd
+\end_inset
+
+ to a stimulus, while the horizontal axis measures inter-element spacing;
+ colors and labels show the number of moving elements shown.
+ See 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:results-induced-modeling"
+reference "sub:density-methods"
 
 \end_inset
 
- for details on construction.
+ for details.
 \end_layout
 
 \end_inset

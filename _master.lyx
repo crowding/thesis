@@ -82,7 +82,8 @@ When motion is not like movement: how first-order and position-defined motion
 \begin_layout Standard
 \noindent
 \align center
-Peter Meilstrup
+Peter B.
+ Meilstrup
 \end_layout
 
 \begin_layout Standard
@@ -313,16 +314,6 @@ filename "motion_energy_strip.tex"
 \begin_inset CommandInset include
 LatexCommand include
 filename "everything_strip.tex"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand include
-filename "everything2_strip.tex"
 
 \end_inset
 

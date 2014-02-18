@@ -19,6 +19,7 @@ suppressPackageStartupMessages({
   library(grid)
   library(vadr)
   library(reshape2)
+  library(xtable)
   source("latexing.R")
   source("icons.R")
   source("scales.R")
@@ -177,6 +178,32 @@ geom <- layer(geom="raster", geom_params=list(interpolate=TRUE))
  + annotate(label=sprintf("paste('  ',Delta*x==%g)", example$displacement),
             "text", -Inf, Inf, parse=TRUE, hjust=0, vjust=1.4))
 
+## @knitr density-table
+
+#haskish: encode range as complex numbers.
+complex_range <- mkchain(range, complex(real=.[1], imag=.[2]))
+
+formatter <- curr(format, digits=2)
+
+chain(segment.folded,
+      subset(abs(content) > 0 & displacement/sign(content) < 0.45 &
+             ((displacement < 0.4) | (subject != "tl"))),
+      ddply("subject",
+            colwise(complex_range, .cols=c("displacement", "content"))),
+      colwise(function(x) {
+        if (is.complex(x)) {
+          ifelse(Re(x)==Im(x),
+                 formatter(Re(x)),
+                 paste(formatter(Re(x)), formatter(Im(x)), sep=" - "))
+        } else toupper(x)
+      })(),
+      rename(c(subject="Observer",
+               displacement="Envelope displacement",
+               content="Carrier strength")),
+      as.matrix) -> segment.table
+
+print(xtable(segment.table), floating=FALSE)
+
 ## @knitr density-measurements
 density.example.dataset <- subset(segment.folded.spindled.mutilated,
                                   subject %in% density.example.subjects)
@@ -303,13 +330,17 @@ quad.models <- chain(
   mutate(model=I(lapply(modelfile, load_stanfit))))
 
 ## @knitr density-predict
-quad.preds <- chain(
+unfolded.quad.preds <- chain(
   quad.models,
   adply(1, splat(function(model, ...) {
     pred <- predict(predictable(model[[1]]), segment,
                     type="response", se.fit=TRUE)
     cbind(segment, data.frame(pred), model=NA)
-  })),
+  }))
+  )
+
+quad.preds <- chain(
+  unfolded.quad.preds,
   ddply(c("carrier.local", "envelope.local"),
         mutilate.predictions,
         fold=TRUE, spindle=TRUE, collapse=TRUE))
@@ -350,6 +381,42 @@ chain(
 if(FALSE) {
   grid.newpage(); grid.draw(all.quad.prediction.plot)
 }
+
+## @knitr density-effects
+
+effect.coefs <- mkchain[., breaks=c()](
+  mdply(function(model, ...) {
+    cbind(as.data.frame(t(coefficients(model[[1]]))), model=NA)
+  }),
+  melt(id.vars=c("subject", breaks),
+       measure.vars=c("content:spacing", "content:target_number_shown")))
+
+model.effects <- mkchain[
+  .,
+  breaks=c(),
+  formula=cbind(n_cw, n_ccw) ~ content:(spacing+target_number_shown)+content + side](
+    subset(abs(content) > 0 & displacement/sign(content) < 0.45),
+    ddply(c("subject", breaks),
+          function(data) {
+            model=
+            glm(data=data, formula=formula, family=binomial(link="logit"))
+            data.frame(model=I(list(model)))}),
+  effect.coefs(breaks))
+
+prediction.effects <- model.effects(
+  unfolded.quad.preds,
+  formula = fit ~ content:(spacing+target_number_shown)+content + side,
+  c("carrier.local", "envelope.local"))
+
+observed.effects <- model.effects(segment)
+
+(ggplot(prediction.effects)
+ + aes(subject, value)
+ + geom_point(position=position_dodge(width=0.9),
+              aes(color=interaction(carrier.local, envelope.local)),
+              stat="identity")
+ + facet_grid(variable~., scales="free_y")
+ + geom_point(data=observed.effects))
 
 ## @knitr density-j-test
 
@@ -412,9 +479,9 @@ get_test(c(TRUE, FALSE, FALSE, TRUE)) #favors A
 get_test(c(TRUE, FALSE, TRUE, TRUE)) #favors B?
 get_test(c(FALSE, FALSE, TRUE, FALSE)) #favors B
 
-print(get_test(c(TRUE, FALSE, FALSE, TRUE), subject.jtests)) #favors A
-print(get_test(c(TRUE, FALSE, TRUE, TRUE), subject.jtests)) #favors 
-print(get_test(c(FALSE, FALSE, TRUE, FALSE), subject.jtests)) #favors B
+print(get_test(c(FALSE, FALSE, FALSE, TRUE), subject.jtests)) #favors A (carrier local)
+print(get_test(c(TRUE, FALSE, TRUE, TRUE), subject.jtests)) #favors B (envelope local)
+print(get_test(c(TRUE, FALSE, FALSE, TRUE), subject.jtests)) #favors B (envelope local)
 
 ## @knitr density-predict-likelihoods
 quad.subject.lls <- chain(
@@ -425,7 +492,7 @@ quad.subject.lls <- chain(
   subset(subject %in% i.care.about),
   drop_columns(c("model", "fit", "optimized", "modelfile")))
 
-displacement.better <- chain(
+envelope.better <- chain(
   quad.subject.lls,
   subset(carrier.local==FALSE),
   ddply(., c("subject"),

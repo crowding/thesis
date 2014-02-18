@@ -336,12 +336,33 @@ condition_prediction_plot <- function(predictions, data, match, conditions,
     data <- match_df(data, match)
     predictions <- match_df(predictions, match)
   }
+  ix <- 1
+  data$carrier.local %<~% ifelna(2, 3, 1)
+  predictions$carrier.local %<~% ifelna(2, 3, 1)
+  labs <- chain(
+    predictions,
+    ddply(
+      c("carrier.local", "envelope.local"),
+      function(x) {
+        ix <<- ix+1
+        data.frame(label=paste0(" ", LETTERS[ix]), target_number_shown=4,
+                   subject=min(predictions$subject))
+      }),
+    rbind.fill(data.frame(envelope.local=NA, carrier.local=1, label=" A",
+                          target_number_shown=4,
+                          subject=min(predictions$subject))))
+  print(labs)
   chain(data
         , plot.spacing %+% .
         , +pred.spacing(predictions)
-        , +facet_grid(facet.fmla, labeller=condition_facet_labeller)
+        , +facet_grid(facet.fmla, labeller=condition_facet_labeller
+                      )
         , +errorbars(data,
-                     facet=c("carrier.local", "envelope.local", "subject")))
+                     facet=c("carrier.local", "envelope.local", "subject"))
+        , +geom_text(aes(label=label, group=NA),
+                     colour="black", data=labs, y=Inf, x=-Inf,
+                     hjust=0, vjust=1.3)
+        )
 }
 
 condition_prediction_colormap_plot <- function(
@@ -375,16 +396,16 @@ condition_prediction_colormap_plot <- function(
 
 
 ifelna <- function(test, yes, no, na=NA) {
-    if (is.atomic(test)) 
+    if (is.atomic(test))
         storage.mode(test) <- "logical"
-    else test <- if (isS4(test)) 
+    else test <- if (isS4(test))
         as(test, "logical")
     else as.logical(test)
     ans <- test
     ok <- !(nas <- is.na(test))
-    if (any(test[ok])) 
+    if (any(test[ok]))
         ans[test & ok] <- rep(yes, length.out = length(ans))[test & ok]
-    if (any(!test[ok])) 
+    if (any(!test[ok]))
         ans[!test & ok] <- rep(no, length.out = length(ans))[!test & ok]
     if (any(nas))
         ans[nas] <- rep(na, length.out=length(ans))[nas]
@@ -394,8 +415,12 @@ ifelna <- function(test, yes, no, na=NA) {
 condition_facet_labeller <- function(var, value) {
   switch(
     var,
-    carrier.local=
-    ifelna(value, "Carrier local", "Carrier global", "Observed"),
+    carrier.local={
+      if (is.logical(value))
+          ifelna("Carrier local", "Carrier global", "Observed")
+      else
+          c("Observed", "Carrier local", "Carrier global")[value]
+    },
     envelope.local=
     ifelna(value, "Envelope local", "Envelope global", ""),
     subject=paste("Observer", toupper(value)))
