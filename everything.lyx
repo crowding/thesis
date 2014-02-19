@@ -67,7 +67,7 @@ knitr
 \begin_body
 
 \begin_layout Section
-Model fits and data for all observers
+Appendix: Model fits and data for all observers
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:everything"
@@ -818,7 +818,7 @@ reference "fig:everything-nonlinearity"
  The construction is described in 
 \begin_inset CommandInset ref
 LatexCommand formatted
-reference "sub:density-modelong"
+reference "sub:results-induced-modeling"
 
 \end_inset
 
