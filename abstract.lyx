@@ -81,7 +81,7 @@ When objects move, they change position over time.
  When elements were added, sensitivity to position-defined motion decreased
  at the same time as the sensitivity to first-order motion increased; visual
  clutter thus favors first-order motion over position-defined motion.
- These effects is modeled in terms of two mechanisms that each contribute
+ These effects are modeled in terms of two mechanisms that each contribute
  to motion appearance.
  The first-order mechanism sums motion over larger areas of space without
  regard to their position; in the presence of clutter, it sums all signals

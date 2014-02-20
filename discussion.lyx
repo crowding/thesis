@@ -1327,8 +1327,9 @@ a motion-energy detector with a rectifying input nonlinearity) where the
  However, this would require spatial frequency selectivity for second order
  motion in the periphery to drop off faster than for first-order motion.
  An alternate explanation may be that the position-defined motion system
- is responsible for detecting these features in the fovea, but crowgin between
- the object and the hogh-contrast background occurs in the periphery.
+ is responsible for detecting these features in the fovea, but crowding
+ between the object and the high-contrast background prevents this in the
+ periphery.
 \end_layout
 
 \begin_layout Paragraph
@@ -1688,7 +1689,7 @@ status collapsed
  spacing, similarly to the psychophysical results reported here.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection
 Possible neurophysiology of position-defined motion
 \end_layout
 
@@ -1707,8 +1708,8 @@ key "Movshon:1985hb,Simoncelli:1998hb,Rust:2006el"
 .
  Because MT has a much larger receptive field size than V1, MT cells can
  gather information from an object that changes position to pass through
- several V1 receotive fields, so it has been suggested that changes in position
- might be represented in MT 
+ several V1 receptive fields, so it has been suggested that MT activity
+ has an effect on the perceived position of moving objects 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Nishida:1999aa,McGraw:2004aa,Mather:2009aa"
@@ -1734,15 +1735,15 @@ key "Livingstone:2001ao,Ilg:2004qc,Hedges:2011aa"
 Viewing position-defined motion as a feature integration problem, analogous
  to letter recognition, may be useful.
  In this thesis I have found that position-defined motion suffers crowding
- in the same way that object recognition does (and very unlike the spatial
- summation that first-order motion exhibits).
- Perhaps position-motion may use similar mechanisms as feature integration;
- detecting a change in position of a feature over time may be analogous
- to detecting multiple features in a particular relative arrangement, as
- is done in object recognition.
- This leads to an interesting hypothesis: the appearance of object or position
- motion may be carried out in the ventral stream, while most work has focused
- on the dorsal stream.
+ in the same way that object recognition does (and unlike the spatial summation
+ that first-order motion exhibits).
+ Perhaps position-defined motion processing may use similar mechanisms as
+ feature integration; detecting a change in position of a feature over time
+ may be analogous to detecting multiple features in a particular relative
+ arrangement, as is done in object recognition.
+ This suggests an interesting hypothesis: the appearance of object motion
+ may be determined in the ventral stream, while most work has focused on
+ the dorsal stream.
  Consistent with this, there is some evidence for processing of long-range
  apparent motion in the ventral stream 
 \begin_inset CommandInset citation
