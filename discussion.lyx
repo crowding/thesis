@@ -439,7 +439,7 @@ critical distance
 
  as the target-flanker separation which achieves some set elevation of threshold
  for discrimination or recognition, analogous to how parameter 
-\begin_inset Formula $\beta_{\Delta}$
+\begin_inset Formula $cs$
 \end_inset
 
  operates in the model in 
@@ -497,7 +497,7 @@ compulsory averaging,
  which was consistent with what I found for first-order motion.
  But for position-defined motion I found there was no summation.
  In the literature it seems that there are two manifestations of the crowding
- effect, depending on the stimulus: object-level and feature-level.
+ effect, depending on the task: object-level and feature-level.
  At the feature level, discrimination of elementary features like orientation,
  motion direction, spatial frequency, hue, and contrast is impaired in the
  presence of flankers, and there is compulsory averaging 
@@ -536,8 +536,8 @@ key "Zigler:1930aa"
  multiple features, if we allow the multiple features to be arranged over
  time as well as space.
  In other words the detection of envelope motion rests on an encoding and
- comparison of successive positions, rather than a low-level encoding of
- movement 
+ comparison of successive positions, rather than a lower-level encoding
+ of movement 
 \emph on
 per se.
 
@@ -798,7 +798,7 @@ global
  probes 
 \begin_inset CommandInset citation
 LatexCommand citep
-key "Cavanagh:1991fk"
+key "Cavanagh:1991fk,Boulton:1993uq"
 
 \end_inset
 
@@ -806,11 +806,9 @@ key "Cavanagh:1991fk"
 \end_layout
 
 \begin_layout Standard
-In the case of my experiments, neither the carrier or envelope motion 
-\emph on
-in terms of the stimulus
-\emph default
- is constructed to be more local or global than the other.
+In the case of my experiments, neither the carrier or envelope motion, in
+ terms of the stimulus, is constructed to be more local or global than the
+ other.
  For instance, the spatial scale of the step size
 \begin_inset Formula $\Delta x$
 \end_inset
@@ -904,7 +902,7 @@ This was eventually explained by collecting data which varied carrier and
  This model resolved the individual differences into a model of motion response
  that was qualitatively similar for each observer, but for which the proportions
  of contributions of each mechanism differed.
- The revealed that in fact most observers (all but CJ in this sample) do
+ This revealed that in fact most observers (all but CJ in this sample) do
  show repulsion from carrier motion, at weak carrier motion and larger spacings;
  using a weak counterclockwise envelope motion biased most observers' responses
  clockwise.
@@ -1272,7 +1270,7 @@ wide
  bar that moved while reversing the contrast of its background, as illustrated
  in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:mather-stimulus"
 
 \end_inset
@@ -1370,7 +1368,7 @@ key "Zanker:1997vn"
 
 -plots of these stimuli are shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:zanker-stimulus"
 
 \end_inset
@@ -1497,8 +1495,8 @@ key "Shapiro:2008aa,Shapiro:2009aa"
 
 .
  When viewed in the periphery, the motion appears distinctly diagonal, and
- its perceived position position seems to drift far from its true position
- (though whether the apparent position shift correlates to position judgements
+ its perceived position seems to drift far from its true position (though
+ whether the apparent position shift is reflected in position judgements
  has not been well tested.) Additionally the appearance shifts markedly between
  central and peripheral vision, with the envelope motion being more clearly
  visible in central vision.
@@ -1517,8 +1515,8 @@ e between central and peripheral vision, or only due to a parameteric difference
 \end_inset
 
  Similarly, we noticed that the perceived direction of motion could be affected
- by the retinal eccentricity, but we also showed that the proximity of the
- target to adjacent flankers (
+ by the retinal eccentricity, but we also showed that proximity of the target
+ to adjacent flankers controls appearance (
 \begin_inset CommandInset citation
 LatexCommand citealt
 key "Meilstrup:2008aa"
@@ -1564,17 +1562,17 @@ captured
  both contributed a bias, I did not find the sensitivity to carrier motion
  to change as a function of envelope motion.
  This may be due to differences in stimulus parameters explored; I used
- slower envelope motion and faster carrier motion, in general, There was
- a task difference; I asked observers for an overall report of motion appearance
- rather than to discriminate the carrier motion.
+ slower envelope motion and faster carrier motion.
+ There was also a difference in tasks; I asked observers for an overall
+ report of motion appearance rather than to discriminate the carrier motion.
  However, it would not make much sense for a judgement of overall appearance
  to have unchanged sensitivity to carrier motion but for a judgement of
- carrier motion itself has lowered sensitivity.
+ carrier motion itself to have impaired sensitivity.
 \end_layout
 
 \begin_layout Standard
 Alternately, the difference may be due to different ways in which the stimuli
- were controlled.
+ were modulated.
  I controlled envelope motion by varying the spatial step size.
  In contrast, 
 \begin_inset CommandInset citation
@@ -1595,8 +1593,8 @@ y.
  test pulse.
  If the task is to detect first-order motion, and the first-order motion
  system sums over large areas, it is possible that the elevation of threshold
- for detecting the test pulse may be due to the increased counterphase flicker
- masking the test signal 
+ for detecting the test pulse may be due to the increased counterphase flicker,
+ which is known to mask motion signals 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Anderson:1989nx"
@@ -1624,9 +1622,9 @@ key "Butzer:1997ys"
 \end_inset
 
  recorded pursuit eye movements made to theta motion stimuli.
- Observers could initiate pursuit to targets whose object motion disagreed
- with their Fourier motion, but the initial velocity of the pursuit was
- slower for the first couple of hundred milliseconds.
+ Observers could initiate pursuit, in agreement with object motion, to targets
+ whose object motion disagreed with their Fourier motion, but the initial
+ velocity of the pursuit was slower for the first couple of hundred milliseconds.
  
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -1651,6 +1649,40 @@ key "Hawken:2001bs"
  velocity actually appears to have a similar absolute value in both conditions,
  which tends to agree with our finding that carrier and envelope motion
  appear to contribute independently to the judgement of motion direction.
+\end_layout
+
+\begin_layout Standard
+It has been found that different aspects of visual motion affect different
+ phases of oculomotor pursuit; the earliest phases depend on target velocity
+ with little effect of target position, while later phases show an effect
+ of target position 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lisberger:1987bc"
+
+\end_inset
+
+.
+ Additionally, when there is a catch-up saccade, pursuit velocity following
+ the saccade is more precise than preceding the saccade 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Lisberger:1998lr"
+
+\end_inset
+
+.
+ Using between-subjects comparisons, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Wilmer:2007lr"
+
+\end_inset
+
+ found that observer's measured sensitivities on two psychophysical motion-discr
+imination tasks (using first-order and position-defined stimuli) correlated
+ to the precision of the same subjects' pursuit velocity before and after
+ a catch-up saccade.
 \end_layout
 
 \begin_layout Standard
@@ -1681,12 +1713,13 @@ status collapsed
  both the position of the initial saccade endpoint and the postsaccadic
  pursuit velocity were biased by the carrier motion.
  This is consistent with the psychophysics on uncrowded stimuli we saw here.
- We also trained a rhesus macaque on the same task and found that the monkey
+ We trained a rhesus macaque on the same task and found that the monkey
  could also generate pursuit in agreement with envelope motion (but this
  required some training; pursuit velocities captured by carrier motion were
  more prevalent than for human observers.) It also appeared that the precision
  of saccadic endpoints and pursuit velocities was affected by target-flanker
- spacing, similarly to the psychophysical results reported here.
+ spacing, in agreement with the psychophysical results in this thesis relating
+ position motion detection to crowding effects.
 \end_layout
 
 \begin_layout Subsection
@@ -1717,7 +1750,7 @@ key "Nishida:1999aa,McGraw:2004aa,Mather:2009aa"
 \end_inset
 
 .
- However, increasing evidence indicates that position-defined motion actually
+ However, increasing evidence indicates that position-defined motion itself
  has no representation in MT and probably not in MST 
 \begin_inset CommandInset citation
 LatexCommand citep
@@ -1756,8 +1789,8 @@ key "Vaina:2004kx,Zhuo:2003aa"
 \end_layout
 
 \begin_layout Standard
-Unfortunately, the neural loci responsible for crowding remain as mysterious
- as those for object motion.
+Unfortunately, the neural mechanisms responsible for crowding remain as
+ mysterious as those for object motion.
  The spatial interference in crowding is roughly scaled the same as a receptive
  field in V4, which has made V4 one suggestion for a locus of crowding 
 \begin_inset CommandInset citation

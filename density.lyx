@@ -233,7 +233,17 @@ name "sec:results-number"
 
 \end_inset
 
+Experiment 2: Changes in density versus number of elements
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
 Experiment 2
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -909,7 +919,11 @@ name "movie:density-stimuli"
 
 \end_inset
 
-Example stimuli for 
+(
+\family typewriter
+demo_segment.mov
+\family default
+) Example stimuli for 
 \begin_inset CommandInset ref
 LatexCommand nameref
 reference "sec:results-number"
@@ -926,7 +940,7 @@ reference "sec:results-number"
  spacing.
  The numbers index the stimulus set given in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:density-conditions"
 
 \end_inset
@@ -986,7 +1000,20 @@ paperwidth]{%
 \begin_layout Plain Layout
 
 \series bold
-A
+\size large
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+raisebox{1in}{A}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1032,7 +1059,20 @@ status open
 \begin_layout Plain Layout
 
 \series bold
-B
+\size large
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+raisebox{1in}{B}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2171,7 +2211,7 @@ reference "sec:results-number"
 
 \end_inset
 
- and fit it data from both experiments.
+ and fit it to data from both experiments.
  There are four general scenarios under which the model may be extended
  to these stimuli, based on whether the sensitivity to envelope motion was
  determined by spacing (envelope local) or element number (envelope 
@@ -2294,10 +2334,6 @@ I added two parameters to account for possible effect of endpoints and for
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 where 
 \begin_inset Formula $e$
 \end_inset

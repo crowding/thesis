@@ -26,13 +26,13 @@
 \renewcommand{\subsubsectionautorefname}[0]{\S}
 
 \newcommand{\includemov}[3]{
-    \includemovie[poster,repeat,text={
+    %\includemovie[poster,repeat,text={
         \begin{overpic}[width=#1,height=#2]{#3.png}
             \put(3,3){\colorbox{white}%
             {\textsmaller[3]{\url{http://github.com/crowding/analysis/blob/master/#3.mov?raw=true}}}}
         \end{overpic}
 %         \includegraphics[width=#1,height=#2]{#3.png}
-    }]{}{}{#3.mov}
+    %}]{}{}{#3.mov}
     \vspace{0.5em}
 }
 

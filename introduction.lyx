@@ -189,8 +189,8 @@ Accurate motion perception is essential for visually guided movement; complex
  the position and velocity of a moving object, and to anticipate its trajectory
  through space.
  Psychological research on motion perception has established that motion
- can processed by separate mechanisms, an idea that dates back to Wertheimer's
- phenomenological distinction between the 
+ can be processed by separate mechanisms, an idea that dates back to Wertheimer'
+s phenomenological distinction between the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -562,6 +562,11 @@ status open
 
 \begin_layout Plain Layout
 \noindent
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\noindent
 \begin_inset ERT
 status open
 
@@ -580,6 +585,11 @@ relax}
 makebox[
 \backslash
 paperwidth]{%
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -613,9 +623,9 @@ status open
 
 
 \backslash
-includemov{1
+includemov{0.9
 \backslash
-linewidth}{0.4
+linewidth}{0.36
 \backslash
 linewidth}{demo_carenv}
 \end_layout
@@ -651,9 +661,9 @@ status open
 
 
 \backslash
-includemov{1
+includemov{0.9
 \backslash
-linewidth}{0.4
+linewidth}{0.36
 \backslash
 linewidth}{demo_single}
 \end_layout
@@ -689,9 +699,9 @@ status open
 
 
 \backslash
-includemov{1
+includemov{0.9
 \backslash
-linewidth}{0.4
+linewidth}{0.36
 \backslash
 linewidth}{demo_counter}
 \end_layout
@@ -712,12 +722,21 @@ linewidth}{demo_counter}
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
 }
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -748,7 +767,11 @@ name "mov:carenv"
 
 
 \series default
- At left, an element contains carrier (first-order) motion in the absence
+ (
+\family typewriter
+demo_carenv.mov
+\family default
+) At left, an element contains carrier (first-order) motion in the absence
  of higher order motion.
  At right, an element whose carrier motion is balanced, but the envelope
  moves (higher order motion.) 
@@ -762,7 +785,11 @@ name "mov:demo-single"
 
 \end_inset
 
- Single motion elements, moving in circles.
+ (
+\family typewriter
+demo_single.mov
+\family default
+) Single motion elements, moving in circles.
  At left, the carrier motion is opposite the envelope motion.
  At right, the carrier motion is in the same direction as the envelope motion.
  
@@ -777,8 +804,12 @@ name "mov:demo-multiple"
 
 \end_inset
 
- Five elements, each identical to the single element in subfigure B, distributed
- around each fixation point.
+ (
+\family typewriter
+demo_counter.mov
+\family default
+) Five elements, each identical to the single element in subfigure B, distribute
+d around each fixation point.
  When elements are closely spaced, there is an eccentricity-dependent change
  in appearance.
  The appearance of the wheel on the left (with opposing carrier and envelope

@@ -218,7 +218,7 @@ subjects <- chain(data$subject, table, .[.>2000], names)
 \end_layout
 
 \begin_layout Standard
-Observers were the author (P.B.M.) and 
+Observers were the author (PBM) and 
 \begin_inset ERT
 status collapsed
 
@@ -231,8 +231,8 @@ Sexpr{length(subjects[subjects !="pbm"])}
 
 \end_inset
 
- naïve observers.
- All had normal or corrected-to-normal vision.
+ naïve observers (3 male, 7 female.) All had normal or corrected-to-normal
+ vision.
  All observers provided informed written consent, and all procedures involved
  were approved by the Institutional Review Board at the University of Washington.
  
@@ -290,7 +290,28 @@ meter$
 
 \end_inset
 
- and a refresh rate of 
+, spanning 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+Sexpr{visangle <- 2*atan2(calib$size/2, calib$distance); paste(format(visangle,
+ digits=3),collapse="
+\backslash
+
+\backslash
+times")}
+\backslash
+degree$
+\end_layout
+
+\end_inset
+
+in visual angle.
+ The monitor used a refresh rate of 
 \begin_inset ERT
 status collapsed
 
@@ -347,7 +368,7 @@ squared$
  was used; the black point and white point of the display measured against
  that background were 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -368,7 +389,7 @@ squared$
 
  and 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -397,7 +418,7 @@ Observers sat behind a blackout curtain so that ambient illumination was
  mostly due to the monitor and viewed the screen binocularly using a chin
  and forehead rest with the eyes 
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -478,29 +499,6 @@ relax
 
 \begin_layout Plain Layout
 \align center
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-hspace*{-
-\backslash
-dimexpr
-\backslash
-oddsidemargin+1in
-\backslash
-relax}
-\backslash
-makebox[
-\backslash
-paperwidth]{%
-\end_layout
-
-\end_inset
-
-
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="4">
 <features tabularvalignment="middle">
@@ -509,36 +507,57 @@ paperwidth]{%
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
 <row>
-<cell alignment="center" valignment="top" usebox="none">
+<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 
 \series bold
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-raisebox{1in}{A}
+\size large
+A
 \end_layout
 
 \end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
+\begin_layout Plain Layout
 
 \end_layout
 
 \end_inset
 </cell>
 <cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\size large
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-motion-pulse.pdf
-	width 2.5in
+	width 2.25in
 
 \end_inset
 
@@ -547,24 +566,10 @@ raisebox{1in}{A}
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\series bold
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-raisebox{1in}{B}
-\end_layout
-
-\end_inset
-
 
 \end_layout
 
@@ -576,10 +581,19 @@ raisebox{1in}{B}
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-motion-element.pdf
-	width 2.5in
+	width 2.25in
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -593,6 +607,7 @@ raisebox{1in}{B}
 \begin_layout Plain Layout
 
 \series bold
+\size large
 \begin_inset ERT
 status open
 
@@ -616,7 +631,7 @@ raisebox{1in}{C}
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-direction-content.pdf
-	width 5in
+	width 4.5in
 
 \end_inset
 
@@ -638,85 +653,6 @@ raisebox{1in}{C}
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\series bold
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-raisebox{1in}{D}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename stimuli-circle.pdf
-	width 2.5in
-	rotateOrigin center
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\series bold
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-raisebox{1in}{E}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename measurements-task.pdf
-	width 2.5in
-
-\end_inset
-
 
 \end_layout
 
@@ -724,17 +660,6 @@ raisebox{1in}{E}
 </cell>
 </row>
 </lyxtabular>
-
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
 
 \end_inset
 
@@ -802,9 +727,127 @@ We varied the direction of the carrier by mixing two carriers in opposite
  A carrier strength of 0 is counterphase flicker, with equal energy along
  both directions of carrier motion.
  A carrier strength of 1 uses only the clockwise carrier.
- 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+
 \series bold
-D.
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+raisebox{1in}{A}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename stimuli-circle.pdf
+	width 2.5in
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+raisebox{1in}{B}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename measurements-task.pdf
+	width 2.5in
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\series default
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\series bold
+A.
  
 \series default
 
@@ -818,7 +861,7 @@ name "fig:stimuli-circle"
  the directions of carrier and envelope motion along its circumference.
  
 \series bold
-E.
+B.
  
 \series default
 
@@ -832,7 +875,7 @@ name "fig:stimuli-task"
  Observers fixated a central dot, viewed motion stimuli such as in 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "mov:sample-stimuli"
+reference "mov:uncrowded"
 
 \end_inset
 
@@ -842,6 +885,10 @@ reference "mov:sample-stimuli"
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -858,15 +905,18 @@ reference "fig:stimuli"
 
 \end_inset
 
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:stimuli-circle"
+
+\end_inset
+
 .
  The stimuli consisted of a number of identically moving elements arranged
  into a circle centered on the fixation point and moving circumferentially.
  Each element consisted of a series of 5 motion pulses separated by a regular
- spatial 
-\noun on
-displacement
-\noun default
- 
+ spatial displacement 
 \begin_inset Formula $\Delta x$
 \end_inset
 
@@ -944,9 +994,9 @@ Here
 To control the direction and amount of carrier motion I overlaid two pulses
  with opposite directions of carrier motion, with varying amounts of relative
  contrast.
- This is parameterized by the 
+ This is parameterized by the carrier strength
 \noun on
-carrier strength 
+ 
 \begin_inset Formula $C,$
 \end_inset
 
@@ -1017,22 +1067,26 @@ intro
 \begin_layout Standard
 The examples in 
 \begin_inset CommandInset ref
-LatexCommand formatted
-reference "mov:sample-stimuli"
+LatexCommand ref
+reference "sec:lookatthis"
 
 \end_inset
 
  have the following settings, the same as used in 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-link!
-\end_layout
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
 
 \end_inset
 
-Experiment 1 and Experiment 2: 
+ and 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+: 
 \begin_inset ERT
 status collapsed
 
@@ -1151,62 +1205,6 @@ status open
 
 \begin_layout Plain Layout
 I'm sitting on data where I vary the eccentricity.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includemov{3in}{3in}{demo_stimuli}
-\end_layout
-
-\end_inset
-
-
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "mov:sample-stimuli"
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-[MOVIE 2]
-\end_layout
-
-\end_inset
-
- Example stimuli.
- For these experiments, identically scaled stimuli were shown at 6.67 degrees
- eccentricity.
- 
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -1393,7 +1391,7 @@ reference "fig:stimuli-task"
 
 \end_inset
 
-D.
+B.
  A fixation point was presented.
  The computer then waited for the observer to fixate.
  
@@ -1492,14 +1490,15 @@ I used staircase procedures to collect data relating the proportion of clockwise
 .
  For each psychometric function we used two staircases, one 2-up-1-down
  and the other 2-down-1-up, to bracket the particular displacement at which
- subjects were equivocal about perceived direction (PSE).
- In a typical session, 6-8 pairs of staircases, each with a different stimulus
- configuration, were run concurrently, with each staircase operating independent
-ly and trials from all staircases being randomly interleaved.
+ subjects were equivocal about perceived direction (the point of subjective
+ equality or PSE.) In a typical session, 6-8 pairs of staircases, each with
+ a different stimulus configuration, were run concurrently, with each staircase
+ operating independently and trials from all staircases being randomly interleav
+ed.
  Example data from this procedure is shown in 
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:results-spacing-collapse"
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:results-spacing-collapse"
 
 \end_inset
 

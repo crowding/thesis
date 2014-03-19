@@ -32,8 +32,8 @@ main <- function(datafile="data.RData", modelfile="slopeModel.RData",
   if (!interactive()) {
     cairo_pdf(plotfile, onefile=TRUE)
     plot.dev <- dev.cur()
+    on.exit(dev.off(plot.dev), add=TRUE)
   }
-  on.exit(dev.off(plot.dev), add=TRUE)
 
   bind[data=data, ...=] <- as.list(load2env(datafile))
   bind[models=models, ...=] <- as.list(load2env(modelfile))
@@ -326,42 +326,73 @@ pred.spacing <- function(data) {
     labs(x="Spacing"))
 }
 
+condition_facet_labeller <- function(presentation) function(var, value) {
+  if(presentation) {
+    labs <- c(A="Observed",
+              B="First order local\nPosition global",
+              C="First order local\nPosition local",
+              D="First order global\nPosition global",
+              E="First order global\nPosition local")
+  } else {
+    labs <- c(A="Observed",
+              B="Carrier local\nEnvelope global",
+              C="Carrier local\nEnvelope local",
+              D="Carrier global\nEnvelope global",
+              E="Carrier global\nEnvelope local")
+  }
+  switch(
+    var,
+    group=labs[as.character(value)],
+    subject=paste("Observer", toupper(value)),
+    carrier.local=ifelse(value, "Carrier local", "Carrier global"),
+    envelope.local=ifelse(value, "Envelope local", "Envelope global"),
+    )
+}
+
 condition_prediction_plot <- function(predictions, data, match, conditions,
-                                      orientation = c("down", "over")) {
+                                      orientation = c("down", "over"),
+                                      letters=TRUE, presentation=FALSE) {
   orientation <- match.arg(orientation)
   facet.fmla <- switch(orientation,
-                       down=subject ~ carrier.local + envelope.local,
-                       over=carrier.local + envelope.local ~ subject)
+                       down=subject ~ group, #carrier.local + envelope.local,
+                       over=group ~ subject #carrier.local + envelope.local ~ subject
+                       )
   if (!missing(match)) {
     data <- match_df(data, match)
     predictions <- match_df(predictions, match)
   }
-  ix <- 1
-  data$carrier.local %<~% ifelna(2, 3, 1)
-  predictions$carrier.local %<~% ifelna(2, 3, 1)
+  data$carrier.local %<~% ifelna(2, 4, 1)
+  predictions$carrier.local %<~% ifelna(2, 4, 1)
+  predictions %<~% inject(it$group, with(LETTERS[carrier.local+envelope.local]))
+  if (!empty(data)) data$group <- "A" else data$group[] <- "A"
   labs <- chain(
     predictions,
     ddply(
-      c("carrier.local", "envelope.local"),
+      "group",
       function(x) {
-        ix <<- ix+1
-        data.frame(label=paste0(" ", LETTERS[ix]), target_number_shown=4,
-                   subject=min(predictions$subject))
+        data.frame(label=paste0(" ", x$group[1]), target_number_shown=4,
+                   subject=min(as.character(predictions$subject)),
+                   group=x$group[1])
       }),
-    rbind.fill(data.frame(envelope.local=NA, carrier.local=1, label=" A",
+    rbind.fill(data.frame(envelope.local=NA, group="A", label=" A",
                           target_number_shown=4,
-                          subject=min(predictions$subject))))
-  print(labs)
+                          subject=min(as.character(predictions$subject)))))
+
   chain(data
-        , plot.spacing %+% .
+        , if(empty(.)) {
+          put(plot.spacing, it$layers, NULL) %+% predictions
+        } else {
+          plot.spacing %+% .
+        }
         , +pred.spacing(predictions)
-        , +facet_grid(facet.fmla, labeller=condition_facet_labeller
+        , +facet_grid(facet.fmla, labeller=condition_facet_labeller(presentation)
                       )
-        , +errorbars(data,
-                     facet=c("carrier.local", "envelope.local", "subject"))
-        , +geom_text(aes(label=label, group=NA),
-                     colour="black", data=labs, y=Inf, x=-Inf,
-                     hjust=0, vjust=1.3)
+        , if (empty(data)) . else .+errorbars(data, facet="group")
+        , if(!letters) . else .+geom_text(aes(label=label, group=NA),
+                                          colour="black", data=labs, y=Inf, x=-Inf,
+                                          hjust=0, vjust=1.3)
+        , if(!presentation) . else .+theme(strip.text.y=element_text(angle=0),
+                                           strip.background=element_blank())
         )
 }
 
@@ -386,7 +417,7 @@ condition_prediction_colormap_plot <- function(
    + scale_y_discrete("Element number")
    + scale_x_discrete("Spacing")
    + geom_tile(aes(fill=fit), color=NA)
-   + facet_grid(facet.fmla, labeller=condition_facet_labeller)
+   + facet_grid(facet.fmla, labeller=condition_facet_labeller(FALSE))
    + (geom_circle %<<% circle.properties)(data=data,
                         aes(fill=p), color="green", linetype="11")
    + no_grid
@@ -396,34 +427,21 @@ condition_prediction_colormap_plot <- function(
 
 
 ifelna <- function(test, yes, no, na=NA) {
-    if (is.atomic(test))
-        storage.mode(test) <- "logical"
-    else test <- if (isS4(test))
-        as(test, "logical")
-    else as.logical(test)
-    ans <- test
-    ok <- !(nas <- is.na(test))
-    if (any(test[ok]))
-        ans[test & ok] <- rep(yes, length.out = length(ans))[test & ok]
-    if (any(!test[ok]))
-        ans[!test & ok] <- rep(no, length.out = length(ans))[!test & ok]
-    if (any(nas))
-        ans[nas] <- rep(na, length.out=length(ans))[nas]
-    ans
-}
-
-condition_facet_labeller <- function(var, value) {
-  switch(
-    var,
-    carrier.local={
-      if (is.logical(value))
-          ifelna("Carrier local", "Carrier global", "Observed")
-      else
-          c("Observed", "Carrier local", "Carrier global")[value]
-    },
-    envelope.local=
-    ifelna(value, "Envelope local", "Envelope global", ""),
-    subject=paste("Observer", toupper(value)))
+  if (is.null(test)) return(na)
+  if (is.atomic(test))
+      storage.mode(test) <- "logical"
+  else test <- if (isS4(test))
+      as(test, "logical")
+  else as.logical(test)
+  ans <- test
+  ok <- !(nas <- is.na(test))
+  if (any(test[ok]))
+      ans[test & ok] <- rep(yes, length.out = length(ans))[test & ok]
+  if (any(!test[ok]))
+      ans[!test & ok] <- rep(no, length.out = length(ans))[!test & ok]
+  if (any(nas))
+      ans[nas] <- rep(na, length.out=length(ans))[nas]
+  ans
 }
 
 modelmerge <- function(

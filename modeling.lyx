@@ -216,6 +216,11 @@ For
  However, as spacing decreases and there are more elements within the summation
  region, we expect signals from multiple elements to sum, so that the local
  motion signal is proportionate to the direction content of individual elements.
+ A model parameter 
+\begin_inset Formula $\beta_{S}$
+\end_inset
+
+ determines each observer's sensitivity to the first order component: 
 \begin_inset Formula 
 \begin{align*}
 M_{s}=\beta_{S}CN
@@ -392,8 +397,8 @@ B.
 \begin_inset Formula $\beta_{0}$
 \end_inset
 
- is the sensitivity to envelope displacement for isolated, uncrowded targets;
- 
+ is the model parameter controlling sensitivity to envelope displacement
+ for isolated, uncrowded targets; the parameter 
 \begin_inset Formula $S_{C}$
 \end_inset
 
@@ -415,7 +420,7 @@ critical distance
 \end_inset
 
  of crowding 
-\begin_inset Newline linebreak
+\begin_inset Newline newline
 \end_inset
 
 
@@ -469,9 +474,9 @@ A, it might appear to some observers that the carrier motion leftward with
 \end_inset
 
 .
- Since carrier motion has a high temporal frequency its effective speed
- is high, so this can I let this depend on the carrier strength per element
- only.
+ Since carrier motion has a high temporal frequency for the stimuli I use,
+ its effective speed is high, so I let this depend on the carrier strength
+ per element only.
  It has a linear term controlled by a coefficient 
 \begin_inset Formula $\beta_{I_{a}}$
 \end_inset

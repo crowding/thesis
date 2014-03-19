@@ -1,5 +1,6 @@
 ## Rebooted contour plots, Use shading, with a colormap. Also maybe
 ## mess with 3d plotting.
+enableJIT(0) #jesus something's gone wrong with RGL
 
 suppressPackageStartupMessages({
   library(plyr)
@@ -33,6 +34,7 @@ main <- function(infile = "slopeModel.RData",
                  grid = "motion_energy.csv",
                  outlist = "contours/contours.list",
                  fold = c(FALSE, TRUE),
+                 presentation=c(FALSE, TRUE),
                  dev.fun = (if(interactive()) noop
                             else cairo_pdf %<<% dots(width=8, height=6)),
                  devoff = (if (interactive()) noop else dev.off)
@@ -40,6 +42,8 @@ main <- function(infile = "slopeModel.RData",
 
   out <- match.fun(dev.fun)
   fold <- if(is.logical(fold)) fold[[1]] else match.arg(fold)
+  presentation <- if(is.logical(presentation))
+      presentation[[1]] else match.arg(presentation)
   load(infile)
   motion.energy <- chain(grid, read.csv, add_energies)
 
@@ -51,24 +55,24 @@ main <- function(infile = "slopeModel.RData",
   bind[model=bind[model], subject, ...=] <- as.list(model.df[1,])
   open3d(windowRect=c(100L, 100L, 768L, 512L))
   on.exit(rgl.close(), add=TRUE)
-  (Map %<<% model.df)(f = function(model, subject, ...) tryCatch({
+  (Map %<<% model.df)(f = function(model, subject, ...) {
     subject <- as.character(subject)
     cat("plotting subject ", subject, "\n")
     dev.fun(pdf.file <- replace_extension(outlist, "pdf",
-                                      paste0("_", subject, "_2d")))
+                                          paste0("_", subject, "_2d")))
     on.exit(devoff(), add=TRUE)
     plot_contours(motion.energy=motion.energy, model=model, subject=subject,
-                  fold=fold, ...)
+                  fold=fold, presentation=presentation, ...)
     rgl.postscript(
       fmt="pdf",
       (rgl.file <- replace_extension(outlist, "pdf",
-                                      paste0("_", subject, "_3d"))))
+                                     paste0("_", subject, "_3d"))))
     writeLines(c(pdf.file, rgl.file), outlist.conn)
-  }, error=warning))
+  })
 }
 
 plot_contours <- function(model, subject, motion.energy,
-                          fold=FALSE, plot.3d=TRUE, ...) {
+                          fold=FALSE, plot.3d=TRUE, presentation=FALSE, ...) {
   # we want three contour plots along our three axes --
   # spacing, displacement and direction content --
   # maybe even put it in 3d with the other one.
@@ -145,14 +149,20 @@ plot_contours <- function(model, subject, motion.energy,
 
   xvars <- c("displacement", "spacing", "displacement", "displacement")
   yvars <- c("spacing", "content", "content", "content")
+
+  if (presentation) {
+    displacement_scale_nopadding[[2]]$name <- "Position-defined motion"
+    content_scale_y_nopadding[[2]]$name <- "First-order motion"
+  }
+
   xscales <- list(displacement_scale_nopadding,
                   spacing_scale_x_nopadding,
                   displacement_scale_nopadding,
                   displacement_scale_nopadding)
   yscales <- list(spacing_scale_y_nopadding,
-               content_scale_y_nopadding,
-               content_scale_y_nopadding,
-               content_scale_y_nopadding)
+                  content_scale_y_nopadding,
+                  content_scale_y_nopadding,
+                  content_scale_y_nopadding)
 
   spacing.threshold <- 4.5
 
@@ -163,15 +173,27 @@ plot_contours <- function(model, subject, motion.energy,
     here(subset) %<<% dots(spacing >= spacing.threshold),
     here(subset) %<<% dots(spacing < spacing.threshold))
 
-  annotations <- with_arg(
-    x=Inf, y=Inf, geom="text", vjust=1.3, hjust=1.2, size=3,
-    color="black",
-    annotate(label="Carrier = 0"),
-    annotate(label="Envelope = 0"),
-    annotate(label=sprintf("Spacing = %.2g \n(using trials >= %.2g)",
-               wide.spacing, spacing.threshold)),
-    annotate(label=sprintf("Spacing = %.2g \n(using trials < %.2g)",
-               narrow.spacing, spacing.threshold)))
+  if (presentation) {
+    annotations <- with_arg(
+      x=Inf, y=Inf, geom="text", vjust=1.3, hjust=1.2, size=3.5, fontface=2,
+      color="black",
+      annotate(label="First order = 0"),
+      annotate(label="Position motion = 0"),
+      annotate(label=sprintf("Spacing = %.2g \n(using trials >= %.2g)",
+                             wide.spacing, spacing.threshold)),
+      annotate(label=sprintf("Spacing = %.2g \n(using trials < %.2g)",
+                             narrow.spacing, spacing.threshold)))
+  } else {
+    annotations <- with_arg(
+      x=Inf, y=Inf, geom="text", vjust=1.3, hjust=1.2, size=3.5, fontface=2,
+      color="black",
+      annotate(label="Carrier = 0", fontface=2),
+      annotate(label="Envelope = 0", fontface=2),
+      annotate(label=sprintf("Spacing = %.2g \n(using trials >= %.2g)",
+                                       wide.spacing, spacing.threshold)),
+      annotate(label=sprintf("Spacing = %.2g \n(using trials < %.2g)",
+                             narrow.spacing, spacing.threshold)))
+  }
 
   #cook in additional fields that the model may need
   bind[grids, bins] <- lapply(
@@ -237,11 +259,11 @@ plot_contours <- function(model, subject, motion.energy,
 
   #let's also make a 3d plot to serve as a key.
   if(plot.3d) {
-    plot_3d_grids(model=model, grids=grids, bins=bins)
+    plot_3d_grids(model=model, grids=grids, bins=bins, presentation=presentation)
   }
 }
 
-plot_3d_grids <- function(model, grids, fold=FALSE, ...) {
+plot_3d_grids <- function(model, grids, fold=FALSE, presentation=FALSE, ...) {
   #turn data frames in "grids" into matrices for plotting
   bind[x, y, z, value] <- zip(lapply(grids, matrixify), collate=list)
   rgl.clear()
@@ -275,8 +297,10 @@ plot_3d_grids <- function(model, grids, fold=FALSE, ...) {
   zat <- chain(par3d("bbox"), .[5:6], pretty(3), .[c(-1, -length(.))])
   axis3d("z++", expand=1, at=zat)
 
-  mtext3d("Envelope motion", "x--", 0, at=xat[[1]]-0.3, adj=0.1)
-  mtext3d("Carrier strength", 'y-+', 2, at=yat[1] - 0.7, adj=0.3)
+  mtext3d(ifelse(presentation, "Position defined motion", "Envelope motion"),
+          "x--", 0, at=xat[[1]]-0.3, adj=0.1)
+  mtext3d(ifelse(presentation, "First order motion", "Carrier strength"),
+          'y-+', 2, at=yat[1] - 0.7, adj=0.3)
   mtext3d("Spacing", 'z++', 4, at=10)
   ##maybe we want to compute null (PSE) surface...
 }

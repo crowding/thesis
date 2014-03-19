@@ -253,7 +253,7 @@ reference "mov:uncrowded"
  In this demonstration the carrier motion is clockwise and the envelope
  motion is counterclockwise.
  For all observers I have shown this stimulus to, the perceived direction
- of motion is clockwise, in agreement with the envelope motion.
+ of motion is counterclockwise, in agreement with the envelope motion.
  This illustrates that higher order motion can be clearly seen in the periphery,
  and that at these wide element spacings the envelope motion dominates the
  perception.
@@ -366,10 +366,15 @@ name "mov:uncrowded"
 
 \end_inset
 
- An example motion stimulus similar to those used in my experiments.
+ (
+\family typewriter
+demo_circle_6.mov
+\family default
+) An example motion stimulus similar to those used in my experiments.
  There are six elements, with the carrier motion clockwise and the envelope
  counterclockwise.
  The envelope motion dominates the subjective appearance.
+ 
 \end_layout
 
 \end_inset
@@ -462,7 +467,7 @@ reference "sec:results-basic"
 \end_inset
 
  to respond within a restricted time window.
- Observers often reported cases where they gave a mistaken response (i.e.
+ Observers often reported the sensation of giving a mistaken response (i.e.
 \begin_inset ERT
 status open
 
@@ -532,7 +537,11 @@ name "mov:middle"
 
 \end_inset
 
-Same stimulus as 
+(
+\family typewriter
+demo_circle_16.mov
+\family default
+) Same stimulus as 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:uncrowded"
@@ -608,7 +617,11 @@ name "mov:dominated"
 
 \end_inset
 
-A stimulus with 22 identical elements.
+(
+\family typewriter
+demo_circle_16.mov
+\family default
+) A stimulus with 22 identical elements.
  For most observers, carrier motion dominates the appearance.
  
 \end_layout
@@ -673,8 +686,9 @@ direction
  of carrier motion; I sometimes found that adding carrier motion in one
  direction to a stimulus prompted a report that the stimulus was now moving
  in the opposite direction to the change.
- Sometimes I could even find a stimulus where both the carrier and envelope
- motion were clockwise but whose appearance was counterclockwise.
+ Sometimes I could even find a stimulus whose carrier and envelope motion
+ were clockwise but whose appearance was counterclockwise to a particular
+ observer.
  An effort at modeling the processes underlying this behavior will therefore
  have to capture this individual variation and the apparent nonlinearity
  in carrier motion perception.
@@ -806,9 +820,10 @@ Adjusting the spacing from wide to narrow by adding more elements revealed
  the motion was present among other percepts of motion, and could become
  hard to distinguish.
  The largest effect seemed to be for spatial frequency and element size,
- where a change of a factor of four (going from 0.67 to 2.67 cycles per degree
- at 10 degrees eccentricity, the element size scaling inversely) only modestly
- increased the number of elements required for reversal, from 13 to 18.
+ for which a change of a factor of four (going from 0.67 to 2.67 cycles per
+ degree at 10 degrees eccentricity, the element size scaling inversely)
+ only modestly increased the number of elements required for reversal, from
+ 13 to 18.
  Scaling all spatial parameters (element size, eccentricity, envelope velocity,
  spatial frequency) at once did not affect the spacing at reversal; the
  critical spacing scaled with eccentricity.
@@ -856,8 +871,8 @@ reference "mov:demo"
  in peripheral vision interact in such a way that the carrier motion becomes
  more perceptually salient and the envelope motion less so.
  When envelope and carrier motion are put into conflict, the inter-element
- spacing (scaled according to cortical distance) appears to be the most
- reliable determinant of which component wins.
+ spacing (depending on retinal eccentricity) appears to be the most reliable
+ determinant of which component wins.
  In the following sections I report psychophysical experiments designed
  to capture and model the determining factors explaining perceived motion
  direction.

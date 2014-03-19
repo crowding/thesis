@@ -336,7 +336,7 @@ unfolded.quad.preds <- chain(
     pred <- predict(predictable(model[[1]]), segment,
                     type="response", se.fit=TRUE)
     cbind(segment, data.frame(pred), model=NA)
-  }))
+  }), .parallel=TRUE)
   )
 
 quad.preds <- chain(
@@ -367,7 +367,7 @@ chain(
   condition_prediction_plot(
     quad.preds,
     data = mutate(segment.folded.spindled.mutilated,
-                  carrier.local=NA, envelope.local =NA),
+                  carrier.local=NA, envelope.local = NA),
     match=all.match,
     orientation="down",
     conditions=quad.conditions),
@@ -381,6 +381,49 @@ chain(
 if(FALSE) {
   grid.newpage(); grid.draw(all.quad.prediction.plot)
 }
+
+## @knitr presentation-density-plots
+
+print(
+  condition_prediction_plot(
+    quad.preds,
+    data = mutate(segment.folded.spindled.mutilated,
+                  carrier.local=NA, envelope.local=NA),
+    match=quad.match,
+    orientation="over",
+    conditions=quad.conditions,
+    letters=FALSE, presentation=TRUE)
+  + theme(aspect.ratio=1,
+          title = element_text(size=rel(1)))
+  + labs(title="Predictions for local and global models"))
+
+(condition_prediction_plot(
+  subset(quad.preds, carrier.local==FALSE & envelope.local == TRUE),
+  data=chain(segment.folded.spindled.mutilated,
+             mutate(carrier.local=NA, envelope.local=NA),
+             subset(TRUE)),
+  letters=FALSE, presentation=TRUE,
+  match=quad.match,
+  orientation="over",
+  conditions=quad.conditions)
+ + theme(aspect.ratio=1))
+
+
+a_ply(data.frame(carrier.local=c(FALSE, TRUE, TRUE, FALSE),
+                 envelope.local=c(FALSE, TRUE, FALSE, FALSE)),
+      1,
+      function(match) {
+        print(condition_prediction_plot(
+          match_df(quad.preds, match),
+          data=chain(segment.folded.spindled.mutilated,
+                     mutate(carrier.local=NA, envelope.local=NA),
+                     subset(FALSE)),
+          letters=FALSE, presentation=TRUE,
+          match=quad.match,
+          orientation="over",
+          conditions=quad.conditions)
+              + theme(aspect.ratio=1))
+      })
 
 ## @knitr density-effects
 

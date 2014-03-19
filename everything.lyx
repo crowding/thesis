@@ -1019,7 +1019,7 @@ name "fig:everything-density-predictions"
  Predictions for four models compared to data from 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sec:number"
+reference "sec:results-number"
 
 \end_inset
 

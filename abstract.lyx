@@ -63,14 +63,110 @@ knitr
 
 \begin_body
 
-\begin_layout Section
-Abstract
+\begin_layout Standard
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+copyright 
+\end_layout
+
+\end_inset
+
+Copyright 2014
+\begin_inset Newline newline
+\end_inset
+
+Peter B.
+ Meilstrup
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+newgeometry{left=1in,bottom=1in,right=1in,top=1in}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+University of Washington
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\series bold
+\size larger
+Abstract
+\series default
+\size default
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+Adding motion makes movement invisible: spatial interactions in visual motion
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+Peter B Meilstrup
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+Chair of the Supervisory Committee:
+\begin_inset Newline newline
+\end_inset
+
+Professor Michael N.
+ Shadlen
+\begin_inset Newline newline
+\end_inset
+
+Department of Physiology and Biophysics
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\paragraph_spacing double
+\align left
 When objects move, they change position over time.
- However, which mechanisms are capable of tracking these changes in position
- are not well understood.
+ However, the mechanisms in human vision that could be capable of tracking
+ these changes in position are not well understood.
  I constructed stimuli that combined a first-order carrier motion with a
  position-defined envelope movement.
  When viewed in the periphery, the appearance of motion was very sensitive
@@ -97,6 +193,29 @@ When objects move, they change position over time.
  that are moving differently from their background.
  Complementary characteristics and limitations of the two systems each play
  roles in the perception of moving objects.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+restoregeometry
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+clearpage
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body

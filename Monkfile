@@ -46,14 +46,14 @@
 --output density.modeling.pdf
 --output density.modeling.RData
 
---command Rscript
---input combined.model.R
---input --match slopeModel\.RData
---input density.modeling.RData
---input motion_energy.csv
---output combined.model.RData
---output combined.model.pdf
---phony --invisible pdf
+# --command Rscript
+# --input combined.model.R
+# --input --match slopeModel\.RData
+# --input density.modeling.RData
+# --input motion_energy.csv
+# --output combined.model.RData
+# --output combined.model.pdf
+# --phony --invisible pdf
 
 --command Rscript # without folding
 --input contours.R
@@ -70,6 +70,12 @@
 --input motion_energy.csv
 --output --mkdir --listing contours/contours_folded.list TRUE
 --phony --output --invisible intermediate_pdf
+
+--command Rscript # with folding
+--input contours.R
+--input --match slopeModel.RData$
+--input motion_energy.csv
+--output --mkdir --listing contours/contours_presentation.list TRUE TRUE
 
 #how about markov chain monte carlo?
 --command RScript --input compileStan.R

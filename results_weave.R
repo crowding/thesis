@@ -47,7 +47,7 @@ buildModel <- function(modelList, update.arg) {
     fmla <- eval(substitute(update(model$formula, arg), list(arg=update.arg)))
     x <- gnm(formula=fmla, family=family(model), data=model$data, verbose=T)
     if (is.null(x)) {
-      warning("couldn't fit model for .(..1)" %#% unique(model$data$subject))
+      warning(("couldn't fit model for .(..1)") %#% unique(model$data$subject))
       model
     } else x
   })
@@ -186,7 +186,7 @@ spacing.plot <- (
     data=match_df(spacing.bubbles, spacing.examples),
     aes(size=n_obs, y=p)))
   + scale_size_area("Trials", max_size=4)
-  + scale_color_discrete("Element spacing (degrees)",
+  + scale_color_discrete("Spacing (degrees)",
                          labels=function(x)sprintf("%0.2f", as.numeric(x)))
   + scale_y_continuous("P(Response CW)", breaks=c(0,0.5,1))
   + scale_x_continuous("Envelope displacement", breaks=c(-0.25, 0, 0.25),
@@ -200,6 +200,59 @@ stab <- gtable(widths=unit(c(1.4, 1), "null"), heights=unit(c(1), "null"))
 stab %<~% gtable_add_grob(ggplotGrob(spacing.plot), 1, 1)
 stab %<~% gtable_add_grob(ggplotGrob(spacing.sensitivity.plot), 1, 2)
 grid.draw(stab)
+
+## @knitr presentation-spacing-sensitivity
+
+
+##
+(ggplot(
+  spacing.sensitivities,
+  aes(x = spacing,
+      y = displacement,
+      ymin = displacement - sd.displacement,
+      ymax = displacement + sd.displacement,
+      group = subject,
+      color = factor(spacing),
+      label = toupper(subject)))
+ + scale_y_continuous("Position\nsensitivity")
+ + scale_x_continuous("Spacing",
+                      breaks=unique(spacing.sensitivities$spacing),
+                      labels=function(x)sprintf("%0.2f", as.numeric(x)),
+                      limits=c(1.5, 9.5))
+ + geom_hline(yintercept=0, color="gray")
+ + geom_line(color="black")
+ + geom_point()
+ + guides(color="none")
+ + geom_text(aes(y=displacement+dodge),
+             data=subset(spacing.sensitivities, spacing==max(spacing)),
+             color="black", hjust=-0.3, size=2.5)
+ + theme(aspect.ratio=2, axis.title.y=element_text(angle=0))
+ ) -> presentation.spacing.sensitivity.plot
+
+presentation.spacing.plot <- (
+  ggplot(data=match_df(spacing.curves, spacing.examples))
+  + aes(x=displacement, y=fit, yend=NA_real_,
+        color=factor(spacing), group=factor(spacing))
+  + (geom_point(
+    data=match_df(spacing.bubbles, spacing.examples),
+    aes(size=n_obs, y=p)))
+  + scale_size_area("Trials", max_size=4)
+  + scale_color_discrete("Spacing (degrees)",
+                         labels=function(x)sprintf("%0.2f", as.numeric(x)))
+  + scale_y_continuous("P(Response CW)", breaks=c(0,0.5,1))
+  + scale_x_continuous("Position displacement", breaks=c(-0.25, 0, 0.25),
+                       limits=c(-0.5, 0.5))
+  + geom_line()
+  + facet_wrap(~label, ncol=2)
+  + theme(aspect.ratio=1,
+          legend.position="top"))
+
+stab <- gtable(widths=unit(c(1.4, 1), "null"), heights=unit(c(1), "null"))
+stab %<~% gtable_add_grob(ggplotGrob(presentation.spacing.plot), 1, 1)
+stab %<~% gtable_add_grob(ggplotGrob(presentation.spacing.sensitivity.plot), 1, 2)
+grid.newpage()
+grid.draw(stab)
+grid.newpage()
 
 ## ----------------------------------------------------------------------
 ## @knitr results-summation-increases
@@ -222,7 +275,7 @@ chain(data,
       })) -> summation.data
 
 chain(summation.data,
-      ddply(., c("subject", "target_number_shown"),
+      ddply(., c("subject", "target_number_shown", "spacing"),
             mkchain(
               glm(formula = response
                   ~ displacement
@@ -269,7 +322,7 @@ summation.intercepts <- chain(
                                    type='response')),
           mutate(model=NA))
   }),
-  dcast(subject+target_number_shown+displacement~abs(content), value.var="fit"))
+  dcast(subject+spacing+target_number_shown+displacement~abs(content), value.var="fit"))
 
 summation.curves <- chain(
   summation.models,
@@ -317,6 +370,75 @@ summation.plot <- (
 tab <- gtable(widths=unit(c(1.4, 1), "null"), heights=unit(c(1), "null"))
 tab %<~% gtable_add_grob(ggplotGrob(summation.plot), 1, 1)
 tab %<~% gtable_add_grob(ggplotGrob(sensitivities.plot), 1, 2)
+grid.draw(tab)
+
+## @knitr presentation-summation
+
+presentation.summation.curves <- (
+  ggplot(data=match_df(summation.curves, summation.examples))
+  + aes(x=displacement, y=fit, yend=NA_real_,
+        color=factor(content), group=factor(content))
+  + (geom_point(
+    data=match_df(summation.bubbles, summation.examples),
+    aes(size=n_obs, y=p)))
+  + scale_size_area("Trials", max_size=3)
+  + scale_color_discrete("First-order motion strength")
+  + scale_y_continuous("P(Response CW)", breaks=c(0,0.5,1))
+  + scale_x_continuous("Position-defined displacement", breaks=c(-0.25, 0, 0.25),
+                       limits=c(-0.4, 0.4))
+  + geom_line()
+  + (geom_segment(
+    data=match_df(summation.intercepts, summation.examples),
+    color="black",
+    aes(group=NA, xend=displacement, y=`0.1`, yend=`0.2`),
+    arrow=arrow(length=unit(0.05, "inches"), type="closed")))
+  + facet_grid(subject ~ spacing,
+               labeller=function(var, value) {
+                 switch(var,
+                        spacing=paste("Spacing", format(value, digits=3)),
+                        subject = toupper(value))
+               })
+  + theme(aspect.ratio=1,
+          legend.position="top",
+          strip.text.y = element_text(angle=0)))
+
+label_format <- function(...) {
+  function(value) {
+    print(sys.call())
+    format(value, ...)
+  }
+}
+
+label_sprintf <- function(fmt) {
+  function(value) sprintf(fmt, value, variable)
+}
+
+presentation.summation.sensitivities <- (
+  ggplot(
+    summation.sensitivities,
+    aes(x = spacing,
+        y = content,
+        ymin = content - sd.content,
+        ymax = content + sd.content,
+        group = subject,
+        label = toupper(subject)))
+  + scale_y_continuous("First-order\nsensitivity")
+  + scale_x_continuous("Spacing", breaks=unique(summation.sensitivities$spacing),
+                       labels=label_format(digits=3),
+                       limits=c(2, 9.5))
+  + geom_hline(yintercept=0, color="gray")
+  + geom_point()
+  + geom_line(color="black")
+  + guides(color="none")
+  + geom_text(data=subset(summation.sensitivities, target_number_shown==5),
+              color="black", hjust=-0.3, size=2.5)
+  + theme(aspect.ratio=2, axis.title.y=element_text(angle=0))
+  )
+
+grid.newpage()
+tab <- gtable(widths=unit(c(1.4, 1), "null"), heights=unit(c(1), "null"))
+tab %<~% gtable_add_grob(ggplotGrob(presentation.summation.curves), 1, 1)
+tab %<~% gtable_add_grob(ggplotGrob(presentation.summation.sensitivities), 1, 2)
 grid.draw(tab)
 
 ## ----------------------------------------------------------------------
@@ -414,6 +536,11 @@ model_pair_tests <- mkchain[
 sensitivity.tests <- model_pair_tests(sensitivity.stats)
 aggregate.sensitivity.tests <- model_pair_tests(aggregate.sensitivity.stats)
 
+named_max <- function(x) x[which.max(x)]
+
+worst.sensitivity.improvement <-
+    named_max(sensitivity.tests[,"pval", "flat.model", "model"])
+
 #here are some pseudo r-2 measures based on these tables
 hosmer_lemeshow_r2 <- function(tests,
                                models=c("flat.model", "model", "free.model")) {
@@ -510,6 +637,14 @@ save(file="sensitivity-plot.RData",
      sensitivity.plot.data, sensitivity_plot, sensitivity.tests,
      sensitivity.plot.r2, error.segment, r2_label, xaxis)
 
+## @knitr presentation-sensitivity-plot
+
+print(sensitivity_plot(subset(sensitivity.plot.data,
+                              subject %in% sensitivity.example.subjects))
+      + scale_y_continuous("Position\nsensitivity")
+      + labs(title="Sensitivity to position-defined motion declines at narrow spacings")
+      + theme(axis.title.y=element_text(angle=0),
+              plot.title=element_text(size=rel(1.1))))
 
 ## @knitr do-not-run
 
@@ -568,6 +703,9 @@ aggregate.summation.stats <- aggregate_stats(summation.stats)
 summation.tests <- model_pair_tests(summation.stats)
 aggregate.summation.tests <- model_pair_tests(aggregate.summation.stats)
 
+worst.summation.improvement <-
+    named_max(summation.tests[,"pval", "uncensored.flat.model", "uncensored.model"])
+
 summation.plot.data <- rbind.fill %()% Map(
   model=summation.models$uncensored.model, free.model=summation.models$free.model,
   f=function(model, free.model) rbind.fill(
@@ -622,7 +760,15 @@ save(file="summation-plot.RData", summation_plot, xaxis,
 
 ## @knitr do-not-run
 
-summation_plot()
+print(summation_plot())
+
+## @knitr presentation-summation-plot
+
+print(summation_plot(subset(summation.plot.data,
+                            subject %in% sensitivity.example.subjects))
+      + scale_y_continuous("First order\nsensitivity")
+      + labs(title="Sensitivity to first-order motion scales with number of elements")
+      + theme(axis.title.y=element_text(angle=0)))
 
 ## @knitr results-no-pooling
 

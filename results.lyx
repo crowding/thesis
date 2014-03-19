@@ -67,7 +67,18 @@ knitr
 \begin_body
 
 \begin_layout Section
+Experiment 1: Relation of first-order and position motion sensitivity to
+ element spacing.
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
 Experiment 1
+\end_layout
+
+\end_inset
+
+
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:results-basic"
@@ -256,8 +267,8 @@ reference "sec:lookatthis"
  seem to suggest that the perceived change in motion is a function not only
  of the properties of individual elements but of a spacing-dependent interaction
  between nearby elements.
- I explored this spatial interaction by jointly measuring the sensitivity
- to carrier and envelope motion as a function of the distance between elements.
+ In this experiment I measured hoe the sensitivity to carrier and envelope
+ motion changed as a function of the distance between elements.
 \end_layout
 
 \begin_layout Subsection
@@ -329,18 +340,17 @@ reference "sub:methods-staircase"
  Each staircase used a fixed carrier strength and spacing.
  The first training session used four values for spacing and two for carrier
  strength; I used data from this session to select values of spacing and
- carrier strength that likely to provide good information about the effects
- of each variable.
- Further sessions were in two types.
+ carrier strength that were likely to provide good information about the
+ effects of each variable.
+ Subsequent sessions were in two types.
  One focused on the effect of spacing, and tested several spacings at a
  single chosen carrier strength.
  The other focused on the effect of carrier strength, and tested a fixed
  set of carrier strengths (0.1, 0.2, 0.4 and 1.0), at two chosen values of spacing.
- There may be some adaptation when a single carrier strength or limited
- sets of spacings is used for an entire session.
+ It is possible that observers adapted to the set of stimuli when a single
+ carrier strength or limited sets of spacings was used for an entire session.
  However, I found that a single model fits all types of sessions adequately,
  so all data is pooled and presented together.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -640,14 +650,18 @@ Note that sensitivity being discussed is based on the shift in the
 \begin_inset Formula $y$
 \end_inset
 
--intercept rather than a shift in the point of subjective equality.
- Because the slopes of the psychometric functions depend on the spacing
- between elements, one would expect the distance between the points of subjectiv
-e equality to increased even if the sensitivity to carrier motion did not
- change.
- However, since the change in the y-axis intercept is also larger at smaller
- spacings, there is an effect of element number on carrier motion as well
- as an effect of spacing on envelope motion.
+-intercept rather than a shift in the point of subjective equality (where
+ the psychometric function intercepts 
+\begin_inset Formula $p=0.5$
+\end_inset
+
+.) The change in PSE corresponds to the sensitivity divided by the slope
+ of the psychometric function.
+ Therefore a change in slope without a change in sensitivity would still
+ lead to a change in PSE.
+ However, since the change in the y-axis intercept changes with spacing,
+ there is an effect of element number on carrier motion as well as an effect
+ of spacing on envelope motion.
  Both effects contribute to the change of appearance seen in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1074,8 +1088,6 @@ Sexpr{toupper(example.contour.subject)}
 \end_inset
 
 .
- The color scale indicates the probability of responding clockwise according
- to the model fit.
  Four planar sections through the three-dimensional space are shown, and
  correspond to the four panels in 
 \begin_inset CommandInset ref
@@ -1085,6 +1097,8 @@ reference "fig:results-contours"
 \end_inset
 
 .
+ The color scale indicates the probability of responding clockwise according
+ to the model fit.
  Red shades indicate stimuli for which the model predicts clockwise responses
  (i.e.
 \begin_inset space \space{}
@@ -1324,7 +1338,7 @@ clockwise
  in either direction are shown with darker and more saturated colors.
  The four subplots correspond to the four planes shown in 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:results-3d"
 
 \end_inset
@@ -1575,8 +1589,7 @@ reference "fig:results-contours"
 
 \end_inset
 
- does not include a measure of standard error or significance because all
- dimensions in the figure are already mapped to stimulus variables.
+ does not include a measure of standard error or significance.
  Below in 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1594,9 +1607,9 @@ reference "fig:results-contours"
 
 \end_inset
 
- are scaled to the number of observations, which may help give a sense of
- the significance of differences between model and data; one expects larger
- circles to have less difference between observation and model.
+ are scaled to the number of observations, so that the error in each average
+ corresponds inversely to the size of each circle; it is expected that smaller
+ circles will have larger differences between observation and model.
  
 \begin_inset Note Note
 status collapsed
@@ -1613,17 +1626,6 @@ With the unequal sampling, applying t-tests to the residual would not correspond
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-I say, below in 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:results-goodness"
-
-\end_inset
-
- I will...
 \end_layout
 
 \begin_layout Subsubsection
@@ -2280,7 +2282,7 @@ key "Anstis:2011vn"
  point.
  Knowing this, an observer might pool multiple envelope position signals
  in order to improve sensitivity to envelope motion.
- If that is the case than the sensitivity to envelope motion (i.e.
+ If that is the case, then the sensitivity to envelope motion (i.e.
 \begin_inset ERT
 status open
 
@@ -2639,9 +2641,9 @@ status open
 
 there is a crowding effect on the detection of envelope motion.
  As described above, to assess whether the model captures an the effect
- of spacing on sensitivity in the presence of other effects, I compare the
- proposed motel to a null model without this effect and a saturated model
- formed by expanding the parameterization of 
+ of spacing on sensitivity in the presence of other effects, I compare this
+ model to a null model without this effect and a saturated model formed
+ by expanding the parameterization of 
 \begin_inset Formula $\beta_{\Delta}\left(S\right)$
 \end_inset
 
@@ -3008,9 +3010,68 @@ Sexpr{if (all(summation.tests[, "pval", "uncensored.flat.model", "uncensored.mod
 
 \end_inset
 
- observers; in aggregate, the proposed model is successful, obtaining 
+ observers, with the largest 
+\begin_inset Formula $p$
+\end_inset
+
+-value being 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{pretty.pval(worst.sensitivity.improvement)}
+\end_layout
+
+\end_inset
+
+ for observer 
 \begin_inset ERT
 status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{toupper(names(worst.sensitivity.improvement))}
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{sum(summation.tests[, "pval", "model", "free.model"] < 0.05)}
+\end_layout
+
+\end_inset
+
+ of 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+Sexpr{dim(summation.tests)[1]}
+\end_layout
+
+\end_inset
+
+ observers also showed significant differences between proposed and saturated
+ models.
+ In aggregate, the proposed model is successful, obtaining 
+\begin_inset ERT
+status open
 
 \begin_layout Plain Layout
 
@@ -3146,7 +3207,7 @@ name "sub:results-induced-modeling"
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -3155,7 +3216,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<results-induced-modeling,results="hide",echo=FALSE,warning=FALSE>>=
+<<results-induced-modeling,results="hide",echo=FALSE,warning=FALSE,message=FALSE
+>>=
 \end_layout
 
 \begin_layout Plain Layout
