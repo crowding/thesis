@@ -238,7 +238,6 @@ wide
 \end_layout
 
 \begin_layout Standard
-\paragraph_spacing single
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "mov:uncrowded"

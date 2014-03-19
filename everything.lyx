@@ -343,14 +343,16 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
 
 \backslash
-includegraphics[height=2.5in]{contours/contours_folded_{{observer}}_3d.pdf}
+includegraphics[height=3in,keepaspectratio=true]{contours/contours_folded_{{obse
+rver}}_3d.pdf}
 \end_layout
 
 \end_inset
@@ -405,14 +407,15 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
 
 \backslash
-includegraphics[width=1.0
+includegraphics[width=0.9
 \backslash
 textwidth]{contours/contours_folded_{{observer}}_2d.pdf}
 \end_layout
@@ -575,7 +578,7 @@ reference "fig:everything-sensitivity"
  The construction of the measure and the figure is the same as described
  in 
 \begin_inset CommandInset ref
-LatexCommand nameref
+LatexCommand ref
 reference "sub:results-sensitivity"
 
 \end_inset
@@ -978,8 +981,8 @@ status open
 
 \begin_layout Plain Layout
 
-<<everything-density-model, fig.width=7, fig.height=9.5,cache.extra=file.info(c("dens
-ity_save.RData"))$mtime>>=
+<<everything-density-model, fig.width=7, fig.height=9.3,cache.extra=file.info(c("dens
+ity_save.RData"))$mtime, out.width="6in", out.height="8in">>=
 \end_layout
 
 \begin_layout Plain Layout

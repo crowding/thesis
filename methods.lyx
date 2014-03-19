@@ -557,7 +557,7 @@ B
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-motion-pulse.pdf
-	width 2.25in
+	width 2.75in
 
 \end_inset
 
@@ -581,7 +581,7 @@ B
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-motion-element.pdf
-	width 2.25in
+	width 2.75in
 
 \end_inset
 
@@ -631,7 +631,7 @@ raisebox{1in}{C}
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-direction-content.pdf
-	width 4.5in
+	width 5.5in
 
 \end_inset
 
@@ -761,6 +761,7 @@ status open
 \begin_layout Plain Layout
 
 \series bold
+\size larger
 \begin_inset ERT
 status open
 
@@ -784,7 +785,7 @@ raisebox{1in}{A}
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename stimuli-circle.pdf
-	width 2.5in
+	width 3.5in
 	rotateOrigin center
 
 \end_inset
@@ -802,6 +803,7 @@ raisebox{1in}{A}
 \begin_layout Plain Layout
 
 \series bold
+\size larger
 \begin_inset ERT
 status open
 
@@ -825,7 +827,7 @@ raisebox{1in}{B}
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename measurements-task.pdf
-	width 2.5in
+	width 3.5in
 
 \end_inset
 
@@ -1542,7 +1544,11 @@ When staircase procedures were used, they employed randomized folding; a
 
  of 0.2 would actually pseudorandomly present either clockwise (0.2) or counterclo
 ckwise (-0.2) carrier on each trial, with the staircase-controlled envelope
- motion reversing direction accordingly.
+ motion reversing direction 
+\family typewriter
+accordingly
+\family default
+.
 \end_layout
 
 \begin_layout Standard
@@ -1601,6 +1607,91 @@ In some cases observers exhibit a bias toward clockwise or counterclockwise
  When drawing fitted curves to illustrate model predictions, I sum out the
  bias by averaging the model predictions for clockwise and counterclockwise
  conditions.
+\end_layout
+
+\begin_layout Subsection
+Data analysis
+\end_layout
+
+\begin_layout Standard
+Data analysis was performed using the R language 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "R-Core-Team:2013aa"
+
+\end_inset
+
+.
+ Models in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-basic"
+
+\end_inset
+
+ were fit using the 
+\family typewriter
+gnm
+\family default
+ package 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Turner:2012aa"
+
+\end_inset
+
+.
+ Models in 
+\begin_inset CommandInset ref
+LatexCommand nameref
+reference "sec:results-number"
+
+\end_inset
+
+ were fit using the Stan modeling language 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "stan-software:2014"
+
+\end_inset
+
+.
+ Graphics were prepared using the 
+\family typewriter
+ggplot2
+\family default
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Wickham:2009jw"
+
+\end_inset
+
+ and 
+\family typewriter
+rgl
+\family default
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Adler:2013aa"
+
+\end_inset
+
+ packages.
+ Original datasets and analysis scripts for this manuscript will be published
+ online at 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/crowding/thesis
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard

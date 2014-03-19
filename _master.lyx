@@ -19,7 +19,7 @@ knitr
 \language_package default
 \inputencoding utf8
 \fontencoding global
-\font_roman default
+\font_roman times
 \font_sans default
 \font_typewriter default
 \font_default_family default
@@ -34,8 +34,8 @@ knitr
 \output_sync 0
 \bibtex_command default
 \index_command default
-\paperfontsize default
-\spacing single
+\paperfontsize 12
+\spacing double
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -71,7 +71,11 @@ knitr
 \begin_body
 
 \begin_layout Title
-Adding motion makes movement invisible: spatial interactions in visual motion
+Adding motion makes movement invisible:
+\begin_inset Newline newline
+\end_inset
+
+spatial interactions in visual motion
 \end_layout
 
 \begin_layout Standard
@@ -96,6 +100,7 @@ Peter B.
 \end_layout
 
 \begin_layout Standard
+\paragraph_spacing single
 \noindent
 \align center
 A dissertation submitted
@@ -132,6 +137,7 @@ Doctor of Philosophy
 \end_layout
 
 \begin_layout Standard
+\paragraph_spacing single
 \noindent
 \align center
 University of Washington
@@ -172,6 +178,7 @@ John Palmer
 \end_layout
 
 \begin_layout Standard
+\paragraph_spacing single
 \noindent
 \align center
 Program Authorized to Offer Degree:
@@ -337,6 +344,7 @@ status open
 \end_layout
 
 \begin_layout Standard
+\paragraph_spacing single
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "bibliography"

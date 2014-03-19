@@ -706,8 +706,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename numdensity-stimulus.pdf
+	width 4in
 
 \end_inset
 
@@ -965,29 +967,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-hspace*{-
-\backslash
-dimexpr
-\backslash
-oddsidemargin+1in
-\backslash
-relax}
-\backslash
-makebox[
-\backslash
-paperwidth]{%
-\end_layout
-
-\end_inset
-
-
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="2" columns="2">
 <features tabularvalignment="middle">
@@ -1032,7 +1012,7 @@ status open
 
 \begin_layout Plain Layout
 
-<<density-conditions,fig.width=4,fig.height=4,out.width="3in",out.height="3in">>=
+<<density-conditions,fig.width=4,fig.height=4,out.width="3.5in",out.height="3.5in">>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1091,8 +1071,8 @@ status open
 
 \begin_layout Plain Layout
 
-<<density-specifications,fig.width=6,fig.height=4,out.width="4.5in", out.height="3in"
-, echo=FALSE, message=FALSE>>=
+<<density-specifications,fig.width=6,fig.height=4,out.width="5.25in", out.height="3.5i
+n", echo=FALSE, message=FALSE>>=
 \end_layout
 
 \begin_layout Plain Layout
@@ -1120,17 +1100,6 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -1215,7 +1184,6 @@ reference "sec:results-number"
 \end_layout
 
 \begin_layout Standard
-\paragraph_spacing single
 In addition to the moving elements, the display included two stationary
  flanking elements, indicated in 
 \begin_inset CommandInset ref
@@ -2497,8 +2465,9 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -2507,7 +2476,8 @@ status collapsed
 
 \begin_layout Plain Layout
 
-<<density-predict-plot, fig.width=6, fig.height=8>>=
+<<density-predict-plot, fig.width=6, fig.height=8, out.width="5.4in", out.height="7.2i
+n">>=
 \end_layout
 
 \begin_layout Plain Layout

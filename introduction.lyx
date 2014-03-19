@@ -338,13 +338,14 @@ aperture problem
 \begin_inset Quotes erd
 \end_inset
 
-
+ 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Ilildreth:1982aa,Adelson:1982jr"
 
 \end_inset
 
+.
  Combining the component motion signals from V1 cells sensing different
  orientations might allow disambiguation of the true velocity.
  This extraction of pattern motion from component motion appears to be one
@@ -451,7 +452,6 @@ fined, but others use second-order stimuli that also happen to involve the
 \end_layout
 
 \begin_layout Standard
-\paragraph_spacing single
 There is evidence that perception of position-defined motion stimuli may
  have a separate neural substrate from first-order motion.
  For example, adding position-defined motion noise to a display does not
@@ -562,6 +562,7 @@ status open
 
 \begin_layout Plain Layout
 \noindent
+\align center
 \begin_inset Note Note
 status open
 
@@ -597,9 +598,9 @@ paperwidth]{%
 
 \begin_inset Tabular
 <lyxtabular version="3" rows="3" columns="2">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
+<features tabularvalignment="middle" tabularwidth="5in">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
 <row>
 <cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
@@ -607,6 +608,7 @@ paperwidth]{%
 \begin_layout Plain Layout
 
 \series bold
+\size larger
 A
 \end_layout
 
@@ -623,11 +625,7 @@ status open
 
 
 \backslash
-includemov{0.9
-\backslash
-linewidth}{0.36
-\backslash
-linewidth}{demo_carenv}
+includemov{5in}{2in}{demo_carenv}
 \end_layout
 
 \end_inset
@@ -645,6 +643,7 @@ linewidth}{demo_carenv}
 \begin_layout Plain Layout
 
 \series bold
+\size larger
 B
 \end_layout
 
@@ -661,11 +660,7 @@ status open
 
 
 \backslash
-includemov{0.9
-\backslash
-linewidth}{0.36
-\backslash
-linewidth}{demo_single}
+includemov{5in}{2in}{demo_single}
 \end_layout
 
 \end_inset
@@ -683,6 +678,7 @@ linewidth}{demo_single}
 \begin_layout Plain Layout
 
 \series bold
+\size larger
 C
 \end_layout
 
@@ -699,11 +695,7 @@ status open
 
 
 \backslash
-includemov{0.9
-\backslash
-linewidth}{0.36
-\backslash
-linewidth}{demo_counter}
+includemov{5in}{2in}{demo_counter}
 \end_layout
 
 \end_inset
@@ -875,18 +867,7 @@ key "De-Valois:1991jt,Ramachandran:1990aa"
 
 \end_inset
 
-) 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-which is OPPOSITE the normal direction of effect, what gives with these
- pulsated patches?
-\end_layout
-
-\end_inset
-
-.
+).
  
 \end_layout
 
