@@ -618,7 +618,7 @@ name "mov:dominated"
 
 (
 \family typewriter
-demo_circle_16.mov
+demo_circle_22.mov
 \family default
 ) A stimulus with 22 identical elements.
  For most observers, carrier motion dominates the appearance.

@@ -298,19 +298,33 @@ status open
 
 $
 \backslash
-Sexpr{visangle <- 2*atan2(calib$size/2, calib$distance); paste(format(visangle,
- digits=3),collapse="
+Sexpr{
+\end_layout
+
+\begin_layout Plain Layout
+
+    visangle <- 2*atan2(calib$size/2, calib$distance) * 180 / pi; 
+\end_layout
+
+\begin_layout Plain Layout
+
+    paste(format(visangle, digits=3),collapse="
 \backslash
 
 \backslash
-times")}
+times")
+\end_layout
+
+\begin_layout Plain Layout
+
+}
 \backslash
 degree$
 \end_layout
 
 \end_inset
 
-in visual angle.
+ of visual angle.
  The monitor used a refresh rate of 
 \begin_inset ERT
 status collapsed
@@ -1544,11 +1558,7 @@ When staircase procedures were used, they employed randomized folding; a
 
  of 0.2 would actually pseudorandomly present either clockwise (0.2) or counterclo
 ckwise (-0.2) carrier on each trial, with the staircase-controlled envelope
- motion reversing direction 
-\family typewriter
-accordingly
-\family default
-.
+ motion reversing direction accordingly.
 \end_layout
 
 \begin_layout Standard
