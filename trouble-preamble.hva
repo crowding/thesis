@@ -1,0 +1,4 @@
+\newcommand{\RS@ifundefined}[3]{}
+\newcommand{\IfFileExists}[3]{}
+\newcommand{\doublespacing}{}
+\renewcommand{\AtBeginDocument}[1]{}

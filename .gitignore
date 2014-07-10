@@ -78,3 +78,4 @@ DONE
 *.Rnw
 *-tikzDictionary
 cache
+html/*

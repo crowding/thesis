@@ -307,3 +307,16 @@ TRUE
 --input --match .*\\.fit.RData
 --invisible --phony --once plot
 --invisible --phony --once compare
+
+# compile web page version
+--command rm %-f _master.haux && mkdir %-p html
+&& hevea
+%-e _master.aux
+--input trouble-preamble.hva
+--input --match _master.tex
+%-o --output html/_master.html
+--invisible --phony html
+&> --output hevea.log
+
+--command hacha --input --match html/_master.html --output --invisible html/index.html
+--invisible --phony html
