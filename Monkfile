@@ -188,6 +188,8 @@
 --input --invisible _master_preamble.tex
 --output --invisible {0}.pdf
 --output --invisible {0}.fls
+--output --invisible {0}.aux
+--output --invisible {0}.bbl
 --phony --invisible latex
 --invisible --phony pdf
 --invisible --input intermediate_pdf
@@ -308,15 +310,21 @@ TRUE
 --invisible --phony --once plot
 --invisible --phony --once compare
 
+--command cp
+--input --match '(.*)\.bbl'
+--output {0}.hbbl
+
 # compile web page version
 --command rm %-f _master.haux && mkdir %-p html
 && hevea
-%-e _master.aux
 --input trouble-preamble.hva
 --input --match _master.tex
-%-o --output html/_master.html
+--input --invisible _master.hbbl
+%-o --output _master.html
 --invisible --phony html
 &> --output hevea.log
 
---command hacha --input --match html/_master.html --output --invisible html/index.html
+--command hacha
+--input --match _master.html
+%-o --output html/index.html
 --invisible --phony html

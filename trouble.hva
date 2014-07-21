@@ -6,3 +6,59 @@
 \newcommand{\enddoublespace}{}
 \newcommand{\newgeometry}[1]{}
 \newcommand{\restoregeometry}{}
+\renewcommand{\citealt}
+  {\begingroup\def\NAT@pt{p}\NAT@neutral\def\@sep@cite@space{ }%
+   \NAT@IN{\relax}{\relax}{\relax}{\relax}{\relax}%
+   \hva@cite}
+\def\NAT@sep{; }
+
+%This reveals NAT@style is refined as "numbers." Wat.
+%\renewcommand{\@NAT@format@cite}{``NAT@\NAT@style{}@\NAT@pt'' or \csname NAT@\NAT@style{}@\NAT@pt\endcsname}
+
+%So far, it appears that the year is not being passed to NAT@args
+% \renewcommand{\NAT@numbers@y}[5]{[\NAT@year][#1][#2][#3][#4][#5]}
+% \renewcommand{\NAT@args}[4]
+% {args[#1, #2, #3, #4]\def\NAT@num{#1}\def\NAT@year{#2}\def\NAT@auth{#3}%
+% \ifthenelse{\equal{#4}{}}{\let\NAT@long\NAT@auth}{\def\NAT@long{#4}}}
+
+% so NAT@year should be defined????
+
+% so every cite starts by calling NAT@in right
+% \renewcommand{\NAT@IN}[5]
+% {NAT@IN[``#1'', ``#2'', ``#3'', ``#4'', ``#5'']\ifNAT@super
+% \def\@open@cite@one{}%
+% \def\@open@cite@two{\NAT@open@super{}#1}%
+% \else
+% \def\@open@cite@one{#1}%
+% \let\@open@cite@two\relax
+% \fi
+% \def\@close@cite{\NAT@OUT{#2}}%
+% \let\@sep@cite\NAT@sep%
+% \let\@post@cite\NAT@post%
+% \let\@aysep@cite#3\let\NAT@yopen#4\let\NAT@yclose#5}
+
+% \renewcommand{\NAT@format@cite}[3]{format@cite(#1, #2, #3)}
+
+% \renewcommand{\NAT@format@cite}[3]
+% {NAT@format@cite(#1, #2, #3): \@callsubst\NAT@args#1%
+% \@NAT@format@cite
+%   {\NAT@num}
+%   {\NAT@choose@author{\NAT@auth}{\NAT@long}}
+%   {\NAT@year}{#2}{#3}}
+
+%\csname NAT@\NAT@style{}@\NAT@pt\endcsname
+
+% \citeyear appears to call \hva@cite which is \let to be \cite
+% \cite this is \renewcommand to be \ifay...
+% which calls \citep because we ????aren't???? author-year even though natbib
+% is imported with \authoryear ...
+% which 
+% \renewcommand{\citep}
+%   {citep: \begingroup\def\NAT@pt{p}%
+%   \NAT@IN{\NAT@open}{\NAT@close}{\NAT@aysep}{\relax}{\relax}\hva@cite}
+
+% which calls \hva@cite????
+
+% \renewcommand{\cite}{\NAT@ifay{yes \citet}{no \citep}}
+
+\bibcite{Wertheimer:2012aa}{{134}{2012}{{Wertheimer et~al.}}{{}}}

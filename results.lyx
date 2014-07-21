@@ -90,6 +90,27 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%I have no idea, hevea doesn't process some figures in utf8
+\end_layout
+
+\begin_layout Plain Layout
+
+%HEVEA
+\backslash
+inputencoding{latin9}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
@@ -3363,7 +3384,14 @@ reference "sub:results-induced-modeling"
 
  values are computed with reference to a null model which has no repulsion.
  Under this model, all but one observer (the complete set is plotted in
- shows a negative slope of the curve where direction content crosses zero,
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:everything-nonlinearity"
+
+\end_inset
+
+) shows a negative slope of the curve where direction content crosses zero,
  indicating a repulsive effect for weak carrier strength, while the second
  order coefficient weakens or reverses this effect for stronger carriers.
 \end_layout
@@ -3643,6 +3671,26 @@ The other salient feature of induced motion is that it does not appear to
  depend on the number of elements, even at wide spacings.
  To show this, we fit induced motion separately to data with spacings greater
  than 6 degrees...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%HEVEA
+\backslash
+inputencoding{utf8}
 \end_layout
 
 \end_inset

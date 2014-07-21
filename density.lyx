@@ -734,9 +734,9 @@ status open
 
 \begin_layout Plain Layout
 
-
+$
 \backslash
-Sexpr{paste(numbers$min.distance, collapse=" to ")}$
+Sexpr{paste(numbers$min.distance, collapse=" to ")}
 \backslash
 degree$
 \end_layout

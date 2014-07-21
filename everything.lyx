@@ -78,6 +78,23 @@ name "sec:everything"
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+%I have no idea, hevea doesn't process some figures in utf8
+\end_layout
+
+\begin_layout Plain Layout
+
+%HEVEA
+\backslash
+inputencoding{latin9}
+\end_layout
+
+\end_inset
+
 In this section I show the complete collection of model and diagnostic plots
  for all observers.
 \end_layout
@@ -1057,6 +1074,26 @@ reference "sub:density-methods"
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+%HEVEA
+\backslash
+inputencoding{utf8}
 \end_layout
 
 \end_inset
