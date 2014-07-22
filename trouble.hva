@@ -61,4 +61,8 @@
 
 % \renewcommand{\cite}{\NAT@ifay{yes \citet}{no \citep}}
 
-\bibcite{Wertheimer:2012aa}{{134}{2012}{{Wertheimer et~al.}}{{}}}
+
+\renewcommand{\includemov}[3]{
+  \includegraphics[height=#2,width=#1]{#3.png}
+%    \includemovie[poster,repeat,text={}]{}{}{#3.mov}
+}

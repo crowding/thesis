@@ -318,13 +318,20 @@ TRUE
 --command rm %-f _master.haux && mkdir %-p html
 && hevea
 --input trouble-preamble.hva
+--input --invisible trouble.hva
 --input --match _master.tex
 --input --invisible _master.hbbl
+--output --invisible _master.image.tex
 %-o --output _master.html
 --invisible --phony html
 &> --output hevea.log
 
+--command imagen %-pdf %-todir html
+_master --input --invisible --match _master.image.tex
+--output --phony --invisible imagen
+
 --command hacha
+--input --invisible imagen
 --input --match _master.html
 %-o --output html/index.html
 --invisible --phony html
