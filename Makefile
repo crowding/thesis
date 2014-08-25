@@ -12,6 +12,9 @@ monk.makefile: monk/monk.py Monkfile
 
 include monk.makefile
 
+texclean:
+	grep OUTPUT *.fls | cut -d ' ' -f 2- | uniq | xargs rm -f
+
 clean:
 	git clean -dfx
 

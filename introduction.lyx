@@ -625,7 +625,7 @@ status open
 
 
 \backslash
-includemov{5in}{2in}{demo_carenv}
+movstrip{demo_carenv}
 \end_layout
 
 \end_inset
@@ -660,7 +660,7 @@ status open
 
 
 \backslash
-includemov{5in}{2in}{demo_single}
+movstrip{demo_single}
 \end_layout
 
 \end_inset
@@ -695,7 +695,7 @@ status open
 
 
 \backslash
-includemov{5in}{2in}{demo_counter}
+movstrip{demo_counter}
 \end_layout
 
 \end_inset

@@ -347,7 +347,7 @@ status open
 
 
 \backslash
-includemov{3in}{3in}{demo_circle_6}
+movsmall{demo_circle_6}
 \end_layout
 
 \end_inset
@@ -521,7 +521,7 @@ status open
 
 
 \backslash
-includemov{3in}{3in}{demo_circle_16}
+movsmall{demo_circle_16}
 \end_layout
 
 \end_inset
@@ -598,7 +598,7 @@ status open
 
 
 \backslash
-includemov{3in}{3in}{demo_circle_22}
+movsmall{demo_circle_22}
 \end_layout
 
 \end_inset

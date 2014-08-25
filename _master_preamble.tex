@@ -1,7 +1,6 @@
 \input{_preamble}
 
 %extra thngs because lyx doesn't know what preamble I need
-\usepackage{hevea}
 \usepackage{graphicx, color}
 \usepackage{alltt}
 \usepackage[T1]{fontenc}
@@ -23,8 +22,6 @@
   {\def\RSlemtxt{lemma~}\newref{lem}{name = \RSlemtxt}}
   {}
 
-\AtBeginDocument{\providecommand\movref[1]{\ref{mov:#1}}}
-\newcommand{\noun}[1]{\textsc{#1}}
 %% Because html converters don't know tabularnewline
 \providecommand{\tabularnewline}{\\}
 %% The greyedout annotation environment
@@ -35,7 +32,6 @@
 \usepackage{color}
 \definecolor{note_fontcolor}{rgb}{0.80078125, 0.80078125, 0.80078125}
 \usepackage{amsmath}
-\usepackage{trouble}
 
 \makeatother
 

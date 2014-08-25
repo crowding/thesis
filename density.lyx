@@ -903,7 +903,7 @@ status open
 
 
 \backslash
-includemov{3in}{3in}{demo_segment}
+movsmall{demo_segment}
 \end_layout
 
 \end_inset

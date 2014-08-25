@@ -20,21 +20,42 @@
   \checkoddpage%
   \addtolength{\totalleftmargin}{\ifoddpage\oddsidemargin\else\evensidemargin\fi}%
 }
-\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
-\renewcommand{\sectionautorefname}[0]{Section}
-\renewcommand{\subsectionautorefname}[0]{\S}
-\renewcommand{\subsubsectionautorefname}[0]{\S}
 
 \newcommand{\includemov}[3]{
-    %\includemovie[poster,repeat,text={
-        \begin{overpic}[width=#1,height=#2]{#3.png}
-            \put(3,3){\colorbox{white}%
-            {\textsmaller[3]{\url{http://github.com/crowding/analysis/blob/master/#3.mov?raw=true}}}}
-        \end{overpic}
-%         \includegraphics[width=#1,height=#2]{#3.png}
-    %}]{}{}{#3.mov}
-    \vspace{0.5em}
+\errmessage{fix your includemov!}
+}
+
+\newcommand{\movstrip}[1]{
+  \begin{overpic}[width=5in,height=2in]{#1.png}
+    \put(3,3){\colorbox{white}%
+      {\textsmaller[3]{\url{http://github.com/crowding/analysis/blob/master/#1.mov?raw=true}}}}
+  \end{overpic}
+  \vspace{0.5em}
+}
+
+\newcommand{\movsquare}[1]{
+  \begin{overpic}[width=5in,height=5in]{#1.png}
+    \put(3,3){\colorbox{white}%
+      {\textsmaller[3]{\url{http://github.com/crowding/analysis/blob/master/#1.mov?raw=true}}}}
+  \end{overpic}
+  \vspace{0.5em}
+}
+
+\newcommand{\movsmall}[1]{
+  \begin{overpic}[width=3in,height=3in]{#1.png}
+    \put(3,3){\colorbox{white}%
+      {\textsmaller[3]{\url{http://github.com/crowding/analysis/blob/master/#1.mov?raw=true}}}}
+  \end{overpic}
+  \vspace{0.5em}
 }
 
 %imagen screws up on lyx's definition...
 \def\maxwidth{\linewidth}
+
+%actually needed after all
+\newcommand{\Xref}[1]{\autoref{#1}}
+\AtBeginDocument{\providecommand\movref[1]{\Xref{mov:#1}}}
+\renewcommand{\sectionautorefname}[0]{Section}
+\renewcommand{\subsectionautorefname}[0]{\S}
+\renewcommand{\subsubsectionautorefname}[0]{\S}
+\newcommand{\noun}[1]{\textsc{#1}}

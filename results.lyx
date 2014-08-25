@@ -90,27 +90,6 @@ name "sec:results-basic"
 
 \begin_layout Standard
 \begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-%I have no idea, hevea doesn't process some figures in utf8
-\end_layout
-
-\begin_layout Plain Layout
-
-%HEVEA
-\backslash
-inputencoding{latin9}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
 status collapsed
 
 \begin_layout Plain Layout
@@ -3671,26 +3650,6 @@ The other salient feature of induced motion is that it does not appear to
  depend on the number of elements, even at wide spacings.
  To show this, we fit induced motion separately to data with spacings greater
  than 6 degrees...
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-%HEVEA
-\backslash
-inputencoding{utf8}
 \end_layout
 
 \end_inset

@@ -1403,7 +1403,7 @@ name "fig:measurements-schematic"
 The time course of a trial is illustrated in 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:stimuli-task"
+reference "fig:stimuli-circle"
 
 \end_inset
 

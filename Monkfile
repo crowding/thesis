@@ -204,16 +204,24 @@
 --command --input --invisible --match .*_strip\.tex$
 --output --invisible _part1.pdf
 
+--command --once touch
+--once --output --tagged --match --phony chapters
+
 #make "chapter" files
 --command ./chapter --input --invisible chapter
 --input --invisible --match (.*)_strip\\.tex
 --output {0}_chapter.tex
 {0}_strip
 
+--command --once --output --tagged --match --phony --invisible includes
+
 --command osascript poster_frame.applescript
 --input --match (.*)\\.mov
 --output {0}.png
---phony includes
+
+--command --input --match --invisible (.*)\\.mov
+--input --invisible {0}.png
+--output --tagged --invisible includes
 
 --command --output --invisible --match (.*_chapter|_master).pdf
 --input --invisible includes
@@ -229,7 +237,11 @@
 --output --invisible {0}_chapter.fls
 --phony --invisible latex
 --invisible --phony pdf
---invisible --phony chapter
+
+--command --match --invisible --input (.*)_strip\\.tex
+--invisible --phony --output --tagged chapters
+--invisible --input {0}_chapter.tex
+--invisible --input {0}_chapter.pdf
 
 #compile part 1
 --command latexmk
@@ -253,7 +265,8 @@
 --command grep '^OUTPUT' --match --input (.*)\.fls
 | cut %-d "' '" %-f 2- > --output {0}.prod
 
---command Rscript --input --match '(.*)_weave.R$' --output {0}_plots.pdf
+--command Rscript --input --match '(.*)_weave.R$'
+--output {0}_plots.pdf
 --phony --invisible pdf
 
 #compile graffle figures...
@@ -310,28 +323,12 @@ TRUE
 --invisible --phony --once plot
 --invisible --phony --once compare
 
---command cp
---input --match '(.*)\.bbl'
---output {0}.hbbl
+# compile web page versions
+--command htlatex --input --match _master.tex "trouble,2" "" "" %"-interaction=nonstopmode"
+--output _master.html
+--invisible --phony html
 
 # compile web page version
---command rm %-f _master.haux && mkdir %-p html
-&& hevea
---input trouble-preamble.hva
---input --invisible trouble.hva
---input --match _master.tex
---input --invisible _master.hbbl
---output --invisible _master.image.tex
-%-o --output _master.html
---invisible --phony html
-&> --output hevea.log
-
---command imagen %-pdf %-todir html
-_master --input --invisible --match _master.image.tex
---output --phony --invisible imagen
-
---command hacha
---input --invisible imagen
---input --match _master.html
-%-o --output html/index.html
+--command htlatex --input --match (.*_chapter).tex "trouble,2" "" "" %"-interaction=nonstopmode"
+--output {0}.html
 --invisible --phony html
