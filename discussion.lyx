@@ -1087,9 +1087,17 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename Mather1985Stimulus.pdf
-	width 75text%
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.75
+\backslash
+textwidth]{Mather1985Stimulus.pdf}
+\end_layout
 
 \end_inset
 
@@ -1142,9 +1150,17 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename LindnerIlgStimulus.pdf
-	width 100text%
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=1
+\backslash
+textwidth]{LindnerIlgStimulus.pdf}
+\end_layout
 
 \end_inset
 

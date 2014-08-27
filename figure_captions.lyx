@@ -94,10 +94,15 @@ status open
 
 \begin_layout Plain Layout
 (A) 
-\begin_inset Graphics
-	filename content-wide.pdf
-	width 3in
-	rotateOrigin centerBaseline
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{content-wide.pdf}
+\end_layout
 
 \end_inset
 
@@ -111,9 +116,15 @@ status open
 
 \begin_layout Plain Layout
 (B)
-\begin_inset Graphics
-	filename content-narrow.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{content-narrow.pdf}
+\end_layout
 
 \end_inset
 
@@ -129,9 +140,15 @@ status open
 
 \begin_layout Plain Layout
 (C) 
-\begin_inset Graphics
-	filename content-bias.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{content-bias.pdf}
+\end_layout
 
 \end_inset
 
@@ -145,9 +162,15 @@ status open
 
 \begin_layout Plain Layout
 (D)
-\begin_inset Graphics
-	filename content-sensitivity.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{content-sensitivity.pdf}
+\end_layout
 
 \end_inset
 
@@ -244,9 +267,15 @@ status open
 
 \begin_layout Plain Layout
 (A) 
-\begin_inset Graphics
-	filename spacing-shifty.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{spacing-shifty.pdf}
+\end_layout
 
 \end_inset
 
@@ -260,9 +289,15 @@ status open
 
 \begin_layout Plain Layout
 (B) 
-\begin_inset Graphics
-	filename spacing-bias.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{spacing-bias.pdf}
+\end_layout
 
 \end_inset
 
@@ -277,9 +312,15 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename spacing-slopey.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{spacing-slopey.pdf}
+\end_layout
 
 \end_inset
 
@@ -292,9 +333,15 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename spacing-sensitivity.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{spacing-sensitivity.pdf}
+\end_layout
 
 \end_inset
 

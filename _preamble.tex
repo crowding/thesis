@@ -1,5 +1,4 @@
 \usepackage[usenames,dvipsnames]{xcolor}
-\usepackage[colorlinks=true]{hyperref}
 \usepackage{changepage}
 \usepackage{SIunits}
 \usepackage{movie15}
@@ -8,11 +7,6 @@
 \usepackage{sidecap}
 %\usepackage{geometry}
 
-\hypersetup{
-  colorlinks, 
-  citecolor=Blue,
-  linkcolor=Plum,
-  urlcolor=PineGreen}
 
 \newlength{\totalleftmargin}
 \newcommand{\calctotalleftmargin}{%
@@ -52,10 +46,19 @@
 %imagen screws up on lyx's definition...
 \def\maxwidth{\linewidth}
 
+%% \usepackage[colorlinks=true]{hyperref}
+%% \hypersetup{
+%%   colorlinks, 
+%%   citecolor=Blue,
+%%   linkcolor=Plum,
+%%   urlcolor=PineGreen}
+
 %actually needed after all
-\newcommand{\Xref}[1]{\autoref{#1}}
+%% \newcommand{\Xref}[1]{\autoref{#1}}
+\newcommand{\Xref}[1]{\ref{#1}}
 \AtBeginDocument{\providecommand\movref[1]{\Xref{mov:#1}}}
-\renewcommand{\sectionautorefname}[0]{Section}
-\renewcommand{\subsectionautorefname}[0]{\S}
-\renewcommand{\subsubsectionautorefname}[0]{\S}
+%% \renewcommand{\sectionautorefname}[0]{Section}
+%% \renewcommand{\subsectionautorefname}[0]{\S}
+%% \renewcommand{\subsubsectionautorefname}[0]{\S}
 \newcommand{\noun}[1]{\textsc{#1}}
+

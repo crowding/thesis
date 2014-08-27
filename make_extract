@@ -1,0 +1,8 @@
+#!/bin/bash
+
+FILES=$(cat _master.fls | grep '^INPUT' | cut -d ' ' -f 2- | grep -v '^/' | grep -v '\.aux$')
+ACCESSORIES="bibliography.bib trouble.cfg apalike-doi.bste"
+
+for i in $FILES;
+    do ditto "$i" "extract/$i";
+done

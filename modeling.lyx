@@ -239,9 +239,17 @@ status open
 
 \begin_layout Plain Layout
 \align center
-\begin_inset Graphics
-	filename model.pdf
-	width 100text%
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=1
+\backslash
+textwidth]{model.pdf}
+\end_layout
 
 \end_inset
 

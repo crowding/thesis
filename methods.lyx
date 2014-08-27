@@ -569,9 +569,15 @@ B
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename stimuli-motion-pulse.pdf
-	width 2.75in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=2.75in]{stimuli-motion-pulse.pdf}
+\end_layout
 
 \end_inset
 
@@ -593,9 +599,15 @@ B
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename stimuli-motion-element.pdf
-	width 2.75in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=2.75in]{stimuli-motion-element.pdf}
+\end_layout
 
 \end_inset
 
@@ -643,9 +655,15 @@ raisebox{1in}{C}
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename stimuli-direction-content.pdf
-	width 5.5in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=5.5in]{stimuli-direction-content.pdf}
+\end_layout
 
 \end_inset
 
@@ -797,10 +815,15 @@ raisebox{1in}{A}
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename stimuli-circle.pdf
-	width 3.5in
-	rotateOrigin center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3.5in]{stimuli-circle.pdf}
+\end_layout
 
 \end_inset
 
@@ -839,9 +862,15 @@ raisebox{1in}{B}
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename measurements-task.pdf
-	width 3.5in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3.5in]{measurements-task.pdf}
+\end_layout
 
 \end_inset
 
@@ -1241,7 +1270,7 @@ name "sub:methods-task"
 
 \begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -1261,9 +1290,15 @@ status open
 
 \begin_layout Plain Layout
 (B)
-\begin_inset Graphics
-	filename measurements-wide.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{measurements-wide.pdf}
+\end_layout
 
 \end_inset
 
@@ -1279,9 +1314,15 @@ status open
 
 \begin_layout Plain Layout
 (C)
-\begin_inset Graphics
-	filename measurements-narrow.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{measurements-narrow.pdf}
+\end_layout
 
 \end_inset
 
@@ -1297,9 +1338,15 @@ status open
 
 \begin_layout Plain Layout
 (D)
-\begin_inset Graphics
-	filename measurements-measurements.pdf
-	width 3in
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=3in]{measurements-measurements.pdf}
+\end_layout
 
 \end_inset
 
