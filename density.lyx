@@ -85,7 +85,7 @@ knitr
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -95,6 +95,34 @@ status collapsed
 \begin_layout Plain Layout
 
 <<knitr-options,include=FALSE, results="hide">>=
+\end_layout
+
+\begin_layout Plain Layout
+
+knit_hooks$set(plot = function(x, options) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  x = paste(x, collapse = '.') # x is file.ext now instead of c(file, ext)
+\end_layout
+
+\begin_layout Plain Layout
+
+  paste0('
+\backslash
+
+\backslash
+end{kframe}', hook_plot_tex(x, options), '
+\backslash
+
+\backslash
+begin{kframe}')
+\end_layout
+
+\begin_layout Plain Layout
+
+})
 \end_layout
 
 \begin_layout Plain Layout

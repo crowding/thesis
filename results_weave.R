@@ -964,3 +964,4 @@ latex.format(hosmer_lemeshow_r2(aggregate.repulsion.tests), digits=2)
 
 ## @knitr do-not-run
 dev.off()
+
