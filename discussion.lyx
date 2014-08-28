@@ -444,7 +444,7 @@ critical distance
 
  operates in the model in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -1041,7 +1041,7 @@ key "Derrington:1987aa,Serrano-Pedraza:2007aa"
  I modeled the repulsion effect as a subtractive interaction between position-de
 fined and first-order motion in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:model"
 
 \end_inset
@@ -1286,7 +1286,7 @@ wide
  bar that moved while reversing the contrast of its background, as illustrated
  in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:mather-stimulus"
 
 \end_inset
@@ -1296,7 +1296,7 @@ reference "fig:mather-stimulus"
  and the retinal eccentricity at which the stimulus was viewed; in central
  vision, the position-defined motion (rightward in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:mather-stimulus"
 
 \end_inset
@@ -1384,7 +1384,7 @@ key "Zanker:1997vn"
 
 -plots of these stimuli are shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:zanker-stimulus"
 
 \end_inset

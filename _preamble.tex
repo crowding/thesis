@@ -46,19 +46,23 @@
 %imagen screws up on lyx's definition...
 \def\maxwidth{\linewidth}
 
-%% \usepackage[colorlinks=true]{hyperref}
-%% \hypersetup{
-%%   colorlinks, 
-%%   citecolor=Blue,
-%%   linkcolor=Plum,
-%%   urlcolor=PineGreen}
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{
+  colorlinks, 
+  citecolor=Blue,
+  linkcolor=Plum,
+  urlcolor=PineGreen}
 
 %actually needed after all
-%% \newcommand{\Xref}[1]{\autoref{#1}}
-\newcommand{\Xref}[1]{\ref{#1}}
+\newcommand{\Xref}[1]{\autoref{#1}}
+\AtBeginDocument{\renewcommand{\figref}[1]{\autoref{fig:#1}}}
+\AtBeginDocument{\renewcommand{\secref}[1]{\autoref{sec:#1}}}
+\AtBeginDocument{\renewcommand{\subref}[1]{\autoref{sub:#1}}}
+\AtBeginDocument{\renewcommand{\tabref}[1]{\autoref{tab:#1}}}
+%% \newcommand{\Xref}[1]{\ref{#1}}
 \AtBeginDocument{\providecommand\movref[1]{\Xref{mov:#1}}}
-%% \renewcommand{\sectionautorefname}[0]{Section}
-%% \renewcommand{\subsectionautorefname}[0]{\S}
-%% \renewcommand{\subsubsectionautorefname}[0]{\S}
+\renewcommand{\sectionautorefname}[0]{Section}
+\renewcommand{\subsectionautorefname}[0]{\S}
+\renewcommand{\subsubsectionautorefname}[0]{\S}
 \newcommand{\noun}[1]{\textsc{#1}}
 

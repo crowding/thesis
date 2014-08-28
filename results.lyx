@@ -259,7 +259,7 @@ status collapsed
 \begin_layout Standard
 The movies shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:lookatthis"
 
 \end_inset
@@ -330,7 +330,7 @@ circ$
 .
  As described above in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:methods-staircase"
 
 \end_inset
@@ -364,7 +364,7 @@ I first show individual psychometric functions that illustrate the effects
  I will describe and show these effects qualitatively first, then show how
  they are accounted for by the model described in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -402,7 +402,7 @@ First consider the effect of reducing spacing (and simultaneously increasing
  sensitivity to envelope motion.
  I found the latter; an example of this is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-collapse"
 
 \end_inset
@@ -424,7 +424,7 @@ clockwise
  to that stimulus on the vertical axis.
  For 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-collapse"
 
 \end_inset
@@ -435,7 +435,7 @@ reference "fig:results-spacing-collapse"
  spacing has a shallower slope, independently of any shifts it may have.
  Below in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-sensitivity"
 
 \end_inset
@@ -450,7 +450,7 @@ Even if crowding causes interference at smaller spacings, there might still
  with element number at wider spacings, outside the range of spacings that
  might be subject to crowding, but I found no significant effect (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-no-pooling"
 
 \end_inset
@@ -591,7 +591,7 @@ Contrary to the results for envelope motion, the more elements on screen
  carrier motion strength was small; when there were more elements on screen,
  changes in carrier motion had more effect on motion appearance 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -606,7 +606,7 @@ reference "fig:results-summation-increases"
  motion to shift in the direction of carrier motion.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -626,7 +626,7 @@ When more elements were added to the display, the sensitivity to carrier
  associated with an increment of carrier strength.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -637,7 +637,7 @@ reference "fig:results-summation-increases"
  the y-intercept of the psychometric function, illustrated as black arrows
  in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -664,7 +664,7 @@ Note that sensitivity being discussed is based on the shift in the
  of spacing on envelope motion.
  Both effects contribute to the change of appearance seen in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:lookatthis"
 
 \end_inset
@@ -775,7 +775,7 @@ Note that when fewer elements are displayed, incrementing carrier motion
  In other words carrier motion is repulsive in sparse displays.
  In the left column of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -801,7 +801,7 @@ This repulsion means that there are some stimuli for which both envelope
  still counterclockwise; this is the case when the curves pass through the
  lower right quadrants in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -827,7 +827,7 @@ counterclockwise
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
@@ -880,7 +880,7 @@ In the previous section I illustrated that the sensitivity to envelope motion,
  considered an effect of the reduced spacing or of the increased number
  (this will be explored in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:results-number"
 
 \end_inset
@@ -918,7 +918,7 @@ Having given examples illustrating some of the effects that a model should
  capture, this section attempts to present an overview both of the entire
  dataset, and how the model specified in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -934,7 +934,7 @@ This experiment related three parameters -- carrier strength, envelope motion
  One can visualize those variables as forming a three-dimensional space
  illustrated in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
@@ -964,7 +964,7 @@ counterclockwise
  of interest.
  In 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1091,7 +1091,7 @@ Sexpr{toupper(example.contour.subject)}
  Four planar sections through the three-dimensional space are shown, and
  correspond to the four panels in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1179,7 +1179,7 @@ Sexpr{toupper(example.contour.subject)}
 .
  The four plots shown correspond to the four planes shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
@@ -1202,7 +1202,7 @@ Upper left
  envelope motion fixed to zero.
  Residuals collect trials across all envelope motions (see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:model-figure-details"
 
 \end_inset
@@ -1308,14 +1308,14 @@ name "sub:model-figure"
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
 
  and 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1338,7 +1338,7 @@ clockwise
  in either direction are shown with darker and more saturated colors.
  The four subplots correspond to the four planes shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
@@ -1349,7 +1349,7 @@ reference "fig:results-3d"
 \begin_layout Standard
 The colored background in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1386,7 +1386,7 @@ Upper right
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1423,7 +1423,7 @@ name "sub:model-figure-details"
 This section gives technical details of how responses are binned and averaged
  for display in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1535,7 +1535,7 @@ which is the total difference between data and observation, scaled by the
 
 The shading of the circles in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1584,7 +1584,7 @@ reference "fig:results-contours"
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1592,7 +1592,7 @@ reference "fig:results-contours"
  does not include a measure of standard error or significance.
  Below in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-goodness"
 
 \end_inset
@@ -1602,7 +1602,7 @@ reference "sub:results-goodness"
  obtain goodness of fit statistics.
  However, the areas of the plotted circles in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1656,7 +1656,7 @@ I need some consistent names for the three effects of the model.
 
 The four plots in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1785,7 +1785,7 @@ upper right
 \begin_layout Standard
 The upper right panel of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1903,7 +1903,7 @@ While sensitivity to envelope motion decreases when spacing is reduced,
  The combination of the two effects can be seen in comparing the upper right
  and lower right panels of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1923,7 +1923,7 @@ Similar patterns of behavior are found for most observers.
  The set of plots for all observers who participated in this experiment
  is included in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:everything"
 
 \end_inset
@@ -1937,7 +1937,7 @@ It is worth noting the areas where the model is not fully successful at
  Often the repulsion measured at a carrier strength of 0.2 is stronger than
  the model fit, and the repulsion at 0.4 is weaker (see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-induced-model-plot"
 
 \end_inset
@@ -1956,7 +1956,7 @@ Another area where the model does not fully capture the observers' behavior
  would predict.
  This is visible to some extent in the raw data plotted in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-collapse"
 
 \end_inset
@@ -1978,7 +1978,7 @@ Compute deviance (as opposed to Pearson) residuals to underscore this point?
 This is also visible in the bottom row of circles in the lower left panel
  of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -2247,7 +2247,7 @@ status collapsed
 
 I motivated the description of the model proposed in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -2557,7 +2557,7 @@ Sensitivity to displacement collapses at narrow spacing.
  axis measures sensitivity to direction content (corresponding to the slopes
  of the psychometric functions shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-collapse"
 
 \end_inset
@@ -2599,7 +2599,7 @@ clockwise
 .
  Three observers are shown here; the complete set is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-sensitivity"
 
 \end_inset
@@ -2620,7 +2620,7 @@ reference "fig:everything-sensitivity"
 \begin_layout Standard
 A central feature of the proposed model as illustrated in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:model"
 
 \end_inset
@@ -2655,7 +2655,7 @@ there is a crowding effect on the detection of envelope motion.
  The null model uses a constant value of sensitivity at all spacings.
  All other aspects of the model are left as described in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -2666,14 +2666,14 @@ reference "sec:model"
 \begin_layout Standard
 The proposed and saturated models are plotted in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-sensitivity"
 
 \end_inset
 
  for three observers (the entire set is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-sensitivity"
 
 \end_inset
@@ -2682,7 +2682,7 @@ reference "fig:everything-sensitivity"
 s do approach zero as spacing approaches zero.
  Also confirming the analysis in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-no-pooling"
 
 \end_inset
@@ -2911,7 +2911,7 @@ The sensitivity to carrier motion scales with the number of elements.
 n and repulsion.
  Data from three observers is shown here; the complete set is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-summation"
 
 \end_inset
@@ -2976,7 +2976,7 @@ key "Collett:2003aa"
 \begin_layout Standard
 The comparison of proposed and saturated models is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-summation"
 
 \end_inset
@@ -3111,7 +3111,7 @@ Sexpr{sum(hosmer_lemeshow_r2(summation.tests) > 0.9)}
  observers.
  However, some observers are not as well fit (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-summation"
 
 \end_inset
@@ -3167,7 +3167,7 @@ repulsion,
  strength bias the observer's judgements in the opposite direction.
  Thus, in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-summation"
 
 \end_inset
@@ -3180,7 +3180,7 @@ reference "fig:results-spacing-summation"
  carrier strength of an individual element, rather a sum over nearby elements.
  That is, after accounting for summation, which as we saw in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-summation"
 
 \end_inset
@@ -3235,7 +3235,7 @@ status open
  even reverse.
  This effect is visible in the upper left panel of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -3342,7 +3342,7 @@ Effects of motion repulsion at wide spacing.
  Data points are obtained from a model whose repulsion term is saturated
  over carrier motion (see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-goodness"
 
 \end_inset
@@ -3365,7 +3365,7 @@ reference "sub:results-induced-modeling"
  Under this model, all but one observer (the complete set is plotted in
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-nonlinearity"
 
 \end_inset
@@ -3391,7 +3391,7 @@ Similarly to previous sections, I analyze the presence of this nonlinearity
 
 , but is otherwise identical to the full model described above in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -3559,7 +3559,7 @@ Sexpr{toupper(carissas.wierd)}
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-induced-model-plot"
 
 \end_inset

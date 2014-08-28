@@ -218,7 +218,7 @@ repulsion
  biases observers' judgements when elements are widely spaced.
  An example is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-jb-example"
 
 \end_inset

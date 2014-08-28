@@ -124,7 +124,7 @@ library(vadr)
 \begin_layout Standard
 A schematic explanation of our model is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:model"
 
 \end_inset
@@ -135,7 +135,7 @@ reference "fig:model"
 \series bold
 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:carenv"
 
 \end_inset
@@ -154,7 +154,7 @@ A):
 \series bold
 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:carenv"
 
 \end_inset
@@ -173,7 +173,7 @@ B).
 \series bold
 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:carenv"
 
 \end_inset
@@ -190,7 +190,7 @@ C).
 \series bold
 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:carenv"
 
 \end_inset
@@ -395,7 +395,7 @@ This function results in sensitivity that approaches
  at large spacings and approaches zero at small spacings, as plotted in
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:model-uncertainty"
 
 \end_inset
@@ -469,7 +469,7 @@ One addition to this basic model is required to account for a repulsion
  velocity.
  In 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:carenv"
 
 \end_inset
@@ -504,7 +504,7 @@ M_{I}=\left(\beta_{I_{a}}C+\beta_{I_{b}}C\text{\left|C\right|}\right),
 The nonlinear component was necessary to account for a nonmonotonic effect
  of carrier strength on observers' responses (see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-induced-modeling"
 
 \end_inset

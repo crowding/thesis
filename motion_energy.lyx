@@ -140,7 +140,7 @@ key "Banks:1991kl"
  to select the bandwidth parameters of our filters.
  The values we selected are shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "tab:Bandwidth"
 
 \end_inset

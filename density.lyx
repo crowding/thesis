@@ -381,7 +381,7 @@ extent
  of the stimulus, defined as the circumferential distance covered by the
  array of moving elements, as shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-stimulus"
 
 \end_inset
@@ -570,7 +570,7 @@ key "Yantis:1992fk"
 \begin_layout Enumerate
 For similar reasons, element spacing in section 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:results-basic"
 
 \end_inset
@@ -854,7 +854,7 @@ I varied both the spacing and the number of elements used; accordingly,
  the total spatial extent of the stimulus varied from trial to trial.
  The stimuli used are plotted in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset
@@ -948,7 +948,7 @@ reference "sec:results-number"
  spacing.
  The numbers index the stimulus set given in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset
@@ -1132,7 +1132,7 @@ Tick marks on symbols mimic variations in spacing and number of the motion
  elements (which are also shown on the two axes.) Numbered markers denote
  stimuli demonstrated in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "movie:density-stimuli"
 
 \end_inset
@@ -1193,7 +1193,7 @@ reference "sec:results-number"
 In addition to the moving elements, the display included two stationary
  flanking elements, indicated in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-stimulus"
 
 \end_inset
@@ -1281,7 +1281,7 @@ degree$
  measured around the fixation point.
  The movie shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "movie:density-stimuli"
 
 \end_inset
@@ -1289,7 +1289,7 @@ reference "movie:density-stimuli"
  demonstrates these stimuli for the four configurations indicated with numbers
  in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset
@@ -1312,7 +1312,7 @@ reference "sec:results-basic"
  would produce a distinct change in response rate.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-predictions"
 
 \end_inset
@@ -1320,7 +1320,7 @@ reference "fig:density-predictions"
  illustrates the choice of stimulus parameters for one observer, with reference
  to the model fit from Experiment 1 shown as a heatmap as in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -1332,7 +1332,7 @@ reference "fig:results-contours"
  values were preserved in modeling.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "tab:stimuli"
 
 \end_inset
@@ -1469,7 +1469,7 @@ reference "sec:results-number"
  The envelope displacement and carrier strengths were chosen by the experimenter
 ; spacing and element number were prescribed by the stimulus set in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset
@@ -1615,7 +1615,7 @@ reference "sec:results-number"
 .
  Example data for three observers is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-measurements"
 
 \end_inset
@@ -1903,7 +1903,7 @@ this is so discussion
  However, interpreting these patterns of behavior in detail requires correlating
  them with the measurements from 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:results-basic"
 
 \end_inset
@@ -1935,7 +1935,7 @@ In addition to the clear dependence on the spacing and the number of elements,
  of the stimulus.
  This is shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-extent"
 
 \end_inset
@@ -1943,7 +1943,7 @@ reference "fig:density-extent"
 .
  This figure plots the same response rates as 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-measurements"
 
 \end_inset
@@ -2023,7 +2023,7 @@ reference "sec:results-number"
  section will evaluate how the data from this experiment compares against
  the model presented in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:modeling"
 
 \end_inset
@@ -2096,7 +2096,7 @@ name "fig:density-extent"
 \begin_layout Standard
 The lack of interaction can be predicted from the model sketched in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -2112,7 +2112,7 @@ reference "sec:model"
  and the particular stimulus parameters.
  Thus, the model of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -2173,7 +2173,7 @@ status open
 
  I extended the model from 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -2540,7 +2540,7 @@ Alternate predictions for Experiment 2.
 \begin_layout Standard
 Example results are shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-predictions"
 
 \end_inset
@@ -2613,7 +2613,7 @@ Sexpr{nrow(carrier.better)}
  which would tend to make strict likelihood comparisons unreliable.
  Visually comparing the complete set of model predictions (
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-density-predictions"
 
 \end_inset
@@ -2687,7 +2687,7 @@ reference "sec:results-number"
 The model fits to the data from this experiment for all the observers tested
  are shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-conditions"
 
 \end_inset

@@ -820,7 +820,7 @@ d around each fixation point.
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset
@@ -847,7 +847,7 @@ position-defined motion
 .
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset
@@ -874,7 +874,7 @@ key "De-Valois:1991jt,Ramachandran:1990aa"
 \begin_layout Standard
 In 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset
@@ -884,7 +884,7 @@ B, elements have both carrier and envelope motion.
  on the right the carrier and envelope motions are in opposite directions.
  Full details of the construction of this display are given in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:methods"
 
 \end_inset
@@ -892,7 +892,7 @@ reference "sec:methods"
 .
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset
@@ -924,7 +924,7 @@ smoothness,
  motion.
  However, in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset

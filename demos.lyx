@@ -239,7 +239,7 @@ wide
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:uncrowded"
 
 \end_inset
@@ -310,7 +310,7 @@ key "Lu:2001fv"
  Incidentally, when carrier motions are directed opposite to envelope motion,
  as can be seen in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo-single"
 
 \end_inset
@@ -391,7 +391,7 @@ As the number of elements in the display increases and the spacing between
  elements decreases, the appearance of the motion changes.
  The demonstration in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:middle"
 
 \end_inset
@@ -542,7 +542,7 @@ demo_circle_16.mov
 \family default
 ) Same stimulus as 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:uncrowded"
 
 \end_inset
@@ -564,7 +564,7 @@ reference "mov:uncrowded"
 \begin_layout Standard
 The third demonstration in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:dominated"
 
 \end_inset
@@ -699,14 +699,14 @@ I will note in passing an interesting effect of eye movements on motion
  processing.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:eyemovements"
 
 \end_inset
 
  shows a stimulus like in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset
@@ -861,7 +861,7 @@ most confusing;
 \begin_layout Standard
 The demonstrations shown in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "mov:demo"
 
 \end_inset

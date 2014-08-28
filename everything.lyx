@@ -215,7 +215,7 @@ Model fits in perspective and contour plots
 The following figures illustrate the main effects of the motion model described
  in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:model"
 
 \end_inset
@@ -223,21 +223,21 @@ reference "sec:model"
  as fitted to each observer's data.
  They are formatted identically to 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
 
  and 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
 
 , as described in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-contours"
 
 \end_inset
@@ -382,7 +382,7 @@ status open
 .
  The format of the plot is the same as 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-3d"
 
 \end_inset
@@ -447,7 +447,7 @@ status open
 .
  The format of the plot is the same as 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-contours"
 
 \end_inset
@@ -566,7 +566,7 @@ name "sub:everything-sensitivity"
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-sensitivity"
 
 \end_inset
@@ -579,7 +579,7 @@ reference "fig:everything-sensitivity"
  The construction of the measure and the figure is the same as described
  in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-sensitivity"
 
 \end_inset
@@ -684,7 +684,7 @@ name "sub:everything-summation"
 
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-summation"
 
 \end_inset
@@ -764,14 +764,14 @@ name "fig:everything-summation"
  Sensitivity to carrier motion as a function of spacing.
  This is a complete version of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-spacing-summation"
 
 \end_inset
 
  showing all observers; see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-basic-summation"
 
 \end_inset
@@ -809,7 +809,7 @@ name "sub:everything-repulsion"
 
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-nonlinearity"
 
 \end_inset
@@ -899,14 +899,14 @@ name "fig:everything-nonlinearity"
  The strength of the repulsion effect as a function of carrier strength.
  This is a version of 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:results-induced-model-plot"
 
 \end_inset
 
  showing all observers; see 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:results-induced-modeling"
 
 \end_inset
@@ -947,7 +947,7 @@ name "sub:everything-numdensity"
 
 \begin_layout Standard
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:everything-density-predictions"
 
 \end_inset
@@ -961,7 +961,7 @@ reference "sec:results-number"
 
 , as described in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:density-modeling"
 
 \end_inset
@@ -1022,14 +1022,14 @@ name "fig:everything-density-predictions"
 
  Predictions for four models compared to data from 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sec:results-number"
 
 \end_inset
 
 , after 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "fig:density-measurements"
 
 \end_inset
@@ -1047,7 +1047,7 @@ clockwise
  colors and labels show the number of moving elements shown.
  See 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:density-methods"
 
 \end_inset
