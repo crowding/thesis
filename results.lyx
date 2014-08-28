@@ -584,7 +584,7 @@ Points on the graph are scaled according to the number of trials made at
  In the extreme, a particular stimulus configuration might only be visited
  once or twice while the staircase moves past it; these smallest points
  would lie on either 
-\begin_inset Formula $\Pr\left(\mathrm{clockwise}\right)=1$
+\begin_inset Formula $\Pr(\mathrm{clockwise})=1$
 \end_inset
 
  or 0.
@@ -613,18 +613,18 @@ name "sub:results-basic-summation"
 \end_layout
 
 \begin_layout Standard
-Contrary to the results for envelope motion, the more elements on screen
- elements, the more effect carrier motion had on the appearance.
+Contrary to the results for envelope motion, the more elements on screen,
+ the more effect carrier motion had on the appearance.
  That is, when there were few elements on screen, the effect of changing
  carrier motion strength was small; when there were more elements on screen,
- changes in carrier motion had more effect on motion appearance 
+ changes in carrier motion had more effect on motion appearance (
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:results-summation-increases"
 
 \end_inset
 
-.
+).
  This was complicated by a repulsive effect; when few elements were used
  on screen, carrier motion in one direction often caused observers to shift
  their reports of perceived motion in the opposite direction.
