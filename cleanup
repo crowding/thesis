@@ -1,4 +1,4 @@
-$!/bin/bash
+#!/bin/bash
 #clean intermediate files related to latex compilation (not knitr cache)
 
 LATEXMKS=$(cat *.fls | grep '^OUTPUT' | cut -d ' ' -f 2-)

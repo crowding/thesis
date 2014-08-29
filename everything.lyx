@@ -78,14 +78,13 @@ name "sec:everything"
 \end_layout
 
 \begin_layout Standard
-
 In this section I show the complete collection of model and diagnostic plots
  for all observers.
 \end_layout
 
 \begin_layout Standard
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -95,6 +94,34 @@ status collapsed
 \begin_layout Plain Layout
 
 <<setup, echo=FALSE, include=FALSE, cache=FALSE, message=FALSE>>=
+\end_layout
+
+\begin_layout Plain Layout
+
+knit_hooks$set(plot = function(x, options) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  x = paste(x, collapse = '.') # x is file.ext now instead of c(file, ext)
+\end_layout
+
+\begin_layout Plain Layout
+
+  paste0('
+\backslash
+
+\backslash
+end{kframe}', hook_plot_tex(x, options), '
+\backslash
+
+\backslash
+begin{kframe}')
+\end_layout
+
+\begin_layout Plain Layout
+
+})
 \end_layout
 
 \begin_layout Plain Layout
@@ -572,7 +599,7 @@ reference "fig:everything-sensitivity"
 \end_inset
 
  depicts the sensitivity measure 
-\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\begin_inset Formula $\beta_{\Delta x}(s)$
 \end_inset
 
  as a function of spacing.
