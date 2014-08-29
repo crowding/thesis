@@ -1,0 +1,18 @@
+$!/bin/bash
+#clean intermediate files related to latex compilation (not knitr cache)
+
+LATEXMKS=$(cat *.fls | grep '^OUTPUT' | cut -d ' ' -f 2-)
+
+STEMS=$(git ls-files --others --cached | grep '.tex$' | sed -e 's/.tex$/.*/')
+MATCHES=$(eval printf '%s\\n' $STEMS)
+
+FILES=$(comm -12 <(echo "$MATCHES\n$LATEXMKS" | sort) <(git ls-files --others | sort))
+
+echo "$FILES"
+rm $FILES
+
+for i in $(find 'tags' | sed -e 's/^tags\///'); do
+    if [ ! -e $i ]; then
+       echo Removing "tags/$i"; rm "tags/$i";
+    fi;
+done
