@@ -345,5 +345,3 @@ TRUE
 --invisible --phony html
 
 #compile web page version after extracting content?
-
-_master.html:

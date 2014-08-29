@@ -2617,7 +2617,7 @@ clockwise
 \end_inset
 
 .) Curves show the prediction of our model fitted to the same data 
-\begin_inset Formula $\beta_{\Delta x}\left(S\right)$
+\begin_inset Formula $\beta_{\Delta x}(S)$
 \end_inset
 
 , as a function of spacing 
@@ -2921,7 +2921,7 @@ name "fig:results-spacing-summation"
 
 The sensitivity to carrier motion scales with the number of elements.
  The vertical axis measures the sensitivity to carrier motion 
-\begin_inset Formula $M_{s}\left(S\right)$
+\begin_inset Formula $M_{s}(S)$
 \end_inset
 
  as a function of the number of elements used in the stimulus.
