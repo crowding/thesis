@@ -332,6 +332,7 @@ TRUE
 "\"trouble,2\"" "\"\"" "\"\"" "\"-halt-on-error -interaction=nonstopmode\""
  _master.html --output --invisible _master.html
 --invisible --phony html
+--input --invisible trouble.cfg
 
 --command
 --output --invisible _master.html
@@ -342,6 +343,10 @@ TRUE
 --input --match (.*_chapter).tex
 "\"trouble,2\"" "\"\"" "\"\"" "\"-halt-on-error -interaction=nonstopmode\""
 --output {0}.html
---invisible --phony html
 
-#compile web page version after extracting content?
+# extract web page version to subdirectory
+--command --input ./extract_html
+html _master*.{{html,css}}
+--input --invisible --match _master.html
+--output --invisible html/_master.html
+--invisible --phony html
