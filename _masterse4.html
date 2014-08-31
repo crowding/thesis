@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Model details and motivation</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- 2,html --> 
+<meta name="src" content="_master.tex"> 
+<meta name="date" content="2014-08-30 18:05:00"> 
+<link rel="stylesheet" type="text/css" href="_master.css"> 
+</head><body 
+>
+   <!--l. 2--><div class="crosslinks"><p class="noindent">[<a 
+href="_masterse5.html" >next</a>] [<a 
+href="_masterse3.html" >prev</a>] [<a 
+href="_masterse3.html#tail_masterse3.html" >prev-tail</a>] [<a 
+href="#tail_masterse4.html">tail</a>] [<a 
+href="_master.html#_masterse4.html" >up</a>] </p></div>
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ id="x5-110004"></a>Model details and motivation</h3>
+<!--l. 7--><p class="noindent" >A schematic explanation of our model is shown in <a 
+href="#x5-110011">Figure&#x00A0;4.1</a>. The model combines
+two signals to produce decisions about motion direction (<a 
+href="_masterse1.html#x2-10011"><span 
+class="ecbx-1200">Figure</span><span 
+class="ecbx-1200">&#x00A0;1.1</span></a>A): <span 
+class="cmmi-12">M</span><sub><span 
+class="cmr-8">&#x0394;</span></sub> is an
+estimate of the change of position of a tracked target, corresponding to envelope motion in
+these stimuli, and is computed within a restricted region illustrated as the smaller,
+yellow dotted circle. The sensitivity to changes in position is a function of the spacing
+between elements (<a 
+href="_masterse1.html#x2-10011"><span 
+class="ecbx-1200">Figure</span><span 
+class="ecbx-1200">&#x00A0;1.1</span></a>B). <span 
+class="cmmi-12">M</span><sub><span 
+class="cmmi-8">S</span></sub> is a sum of first order motion energy (carrier
+motion in these stimuli) inside a larger region illustrated by the blue dashed outline. The
+sensitivity to first order motion depends on the number of elements falling within the region
+(<a 
+href="_masterse1.html#x2-10011"><span 
+class="ecbx-1200">Figure</span><span 
+class="ecbx-1200">&#x00A0;1.1</span></a>C). These two signals are compared by subtraction, producing a difference signal
+<span 
+class="cmmi-12">M</span><sub><span 
+class="cmmi-8">I</span></sub> (<a 
+href="_masterse1.html#x2-10011"><span 
+class="ecbx-1200">Figure</span><span 
+class="ecbx-1200">&#x00A0;1.1</span></a>D), then all signals are combined to produce a decision. The carrier
+motion input to the subtraction is normalized (it does not depend on the number of
+elements).
+<!--l. 23--><p class="indent" >   For <span 
+class="cmmi-12">M</span><sub><span 
+class="cmmi-8">S</span></sub>, we begin by assuming that the strength of the first order motion signal is linear
+with respect to carrier strength <span 
+class="cmmi-12">C</span>. However, as spacing decreases and there are more
+elements within the summation region, we expect signals from multiple elements to sum,
+so that the local motion signal is proportionate to the direction content of individual
+elements. A model parameter <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">S</span></sub> determines each observer&#8217;s sensitivity to the first order
+component:
+                                                                                         
+                                                                                         
+<table 
+class="align-star">
+                                       <tr><td 
+class="align-odd"><span 
+class="cmmi-12">M</span><sub><span 
+class="cmmi-8">s</span></sub> <span 
+class="cmr-12">= </span><span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">S</span></sub><span 
+class="cmmi-12">CN</span></td>                                       <td 
+class="align-even"></td>                                       <td 
+class="align-label"></td></tr></table>
+<!--l. 35--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+                                                                                         
+                                                                                         
+<a 
+ id="x5-110011"></a>
+                                                                                         
+                                                                                         
+
+<!--l. 37--><p class="noindent" ><img 
+src="model.png" alt="pict"  
+>
+<br /> <div class="caption" 
+><span class="id">Figure&#x00A0;4.1:  </span><span  
+class="content">  Schematic  of  motion  model.  <span 
+class="ecbx-1200">A. </span>The  background  shows  a  typical  motion
+stimulus.  The  motion  stimulus  contains  two  sources  of  information.  The  positional
+displacement of an individual, attended element is computed within a limited region, as
+illustrated by the smaller, circle. First order motion energy is summed over a larger region.
+<span 
+class="ecbx-1200">B. </span>The sensitivity to displacements depends on the distance between elements.   <span 
+class="ecbx-1200">C. </span>The
+sensitivity to carrier motion strength scales with the number of elements. <span 
+class="ecbx-1200">D. </span>If first-order
+velocity differs from position-defined velocity, the difference adds a third signal. All signals
+are weighted to produce a decision.</span></div><!--tex4ht:label?: x5-110011 -->
+                                                                                         
+                                                                                         
+<!--l. 51--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 54--><p class="indent" >   For <span 
+class="cmmi-12">M</span><sub><span 
+class="cmr-8">&#x0394;</span></sub>, assume that envelope motion is computed by taking the difference between successive
+noisy estimates of the position of a given element. The sensitivity to envelope motion <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmr-8">&#x0394;</span></sub> will then
+be inversely proportional to the uncertainty in element position. As flanking elements
+come closer to the tracked element, the visual system will be less able to isolate a single
+element to determine its position, so the sensitivity to changes in position will decline. We
+model this by making the sensitivity <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmr-8">&#x0394;</span></sub><span 
+class="cmr-12">(</span><span 
+class="cmmi-12">S</span><span 
+class="cmr-12">) </span>a sigmoid function of the spacing between
+elements:
+   <center class="par-math-display" >
+<img 
+src="_master2x.png" alt="                                     (        2    )
+M &#x0394; =  &#x03B2;&#x0394; (S)&#x0394;X  , where &#x03B2;&#x0394; (S) = &#x03B2;0  2 - -------SC-
+                                          1 + e- S
+" class="par-math-display" ></center>
+<!--l. 66--><p class="nopar" >
+<!--l. 69--><p class="indent" >   This function results in sensitivity that approaches <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmr-8">0</span></sub> at large spacings and approaches zero at
+small spacings, as plotted in <a 
+href="#x5-110011">Figure&#x00A0;4.1</a>B. <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmr-8">0</span></sub> is the model parameter controlling sensitivity to
+envelope displacement for isolated, uncrowded targets; the parameter <span 
+class="cmmi-12">S</span><sub><span 
+class="cmmi-8">C</span></sub> describes the distance
+over which spatial interference between targets takes place. <span 
+class="cmmi-12">S</span><sub><span 
+class="cmmi-8">C</span></sub> has a natural interpretation as the
+spacing at which the threshold for discriminating a feature (in this case envelope motion) increases
+by a constant factor, which is often used as an empirical definition of the &#8220;critical distance&#8221; of
+crowding <br 
+class="newline" />(<a 
+href="_masterli1.html#XLevi:2002ph">Levi et&#x00A0;al.</a>,&#x00A0;<a 
+href="_masterli1.html#XLevi:2002ph">2002</a>;&#x00A0;<a 
+href="_masterli1.html#XPelli:2008ao">Pelli and Tillman</a>,&#x00A0;<a 
+href="_masterli1.html#XPelli:2008ao">2008</a>;&#x00A0;<a 
+href="_masterli1.html#XWhitney:2011vn">Whitney and Levi</a>,&#x00A0;<a 
+href="_masterli1.html#XWhitney:2011vn">2011</a>).
+<!--l. 81--><p class="indent" >   These two forms for <span 
+class="cmmi-12">M</span><sub><span 
+class="cmmi-8">S</span></sub> and <span 
+class="cmmi-12">M</span><sub><span 
+class="cmr-8">&#x0394;</span></sub>capture the phenomenon that decreasing the spacing
+between elements has opposite effects on the first-order and position-defined motion
+mechanisms. For the carrier motion signal, cramming more elements into the summation region
+increases the strength of the signal, since it is a simple summation of motion energy
+within that region. For the envelope motion signal, cramming more elements into the
+                                                                                         
+                                                                                         
+summation region makes it difficult to estimate the position of any individual element, and
+thereby weakens the signal. Thus, decreasing the spacing results in carrier motion having
+a stronger influence on the perceived motion, and envelope motion having a weaker
+influence.
+<!--l. 93--><p class="indent" >   One addition to this basic model is required to account for a repulsion effect I observed when
+carrier motion velocity disagrees with envelope velocity. In <a 
+href="_masterse1.html#x2-10011">Figure&#x00A0;1.1</a>A, it might appear to some
+observers that the carrier motion leftward with a stationary envelope results in perceived
+motion rightward, and vice versa. I account for this by adding a comparison between
+carrier and envelope velocity, which generates a third component in the model <span 
+class="cmmi-12">M</span><sub><span 
+class="cmmi-8">I</span></sub>. Since
+carrier motion has a high temporal frequency for the stimuli I use, its effective speed
+is high, so I let this depend on the carrier strength per element only. It has a linear
+term controlled by a coefficient <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">I</span><sub><span 
+class="cmmi-6">a</span></sub></sub>and a second-order, nonlinear term controlled by
+<span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">I</span><sub><span 
+class="cmmi-6">b</span></sub></sub>:
+   <center class="math-display" >
+<img 
+src="_master3x.png" alt="MI =  (&#x03B2;IaC + &#x03B2;IbC |C |),
+" class="math-display" ></center>
+<!--l. 106--><p class="nopar" > The nonlinear component was necessary to account for a nonmonotonic effect of carrier strength
+on observers&#8217; responses (see <a 
+href="_masterse5.html#x6-270005.4.6">§&#x00A0;5.4.6</a>.)
+<!--l. 112--><p class="indent" >   These three components contribute to the modeled subjects&#8217; responses according to a
+probabilistic rule;
+   <center class="par-math-display" >
+<img 
+src="_master4x.png" alt="                                         -1                        &#x03BB;
+Pr (clockwise | &#x0394;x, C, s,n) = (1 - &#x03BB;)logit (M &#x0394; + MS  + MI  + k ) +--
+                                                                    2
+" class="par-math-display" ></center>
+                                                                                         
+                                                                                         
+<!--l. 117--><p class="nopar" > where <span 
+class="cmr-12">logit</span><sup><span 
+class="cmsy-8">-</span><span 
+class="cmr-8">1</span></sup><span 
+class="cmr-12">(</span><span 
+class="cmmi-12">r</span><span 
+class="cmr-12">) = </span><img 
+src="_master5x.png" alt="(1 + e-r)"  class="left" align="middle"> <sup><span 
+class="cmsy-8">-</span><span 
+class="cmr-8">1</span></sup> is the standard logistic cumulative distribution function. The free
+parameters of the model are <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmr-8">0</span></sub>, <span 
+class="cmmi-12">S</span><sub><span 
+class="cmmi-8">C</span></sub>, <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">S</span></sub>, <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">I</span><sub><span 
+class="cmmi-6">a</span></sub></sub>, <span 
+class="cmmi-12">&#x03B2;</span><sub><span 
+class="cmmi-8">I</span><sub><span 
+class="cmmi-6">b</span></sub></sub>, and <span 
+class="cmmi-12">k</span>. The bias term <span 
+class="cmmi-12">k </span>accounts for an overall
+clockwise or counterclockwise bias, which some observers exhibit. The lapse rate <span 
+class="cmmi-12">&#x03BB; </span>is intended to
+improve the robustness of the fit (<a 
+href="_masterli1.html#XWichmann:2001kx">Wichmann and Hill</a>,&#x00A0;<a 
+href="_masterli1.html#XWichmann:2001kx">2001</a>); I constrained <span 
+class="cmmi-12">&#x03BB; </span>to lie between 0 and
+0.05.
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+   <!--l. 2--><div class="crosslinks"><p class="noindent">[<a 
+href="_masterse5.html" >next</a>] [<a 
+href="_masterse3.html" >prev</a>] [<a 
+href="_masterse3.html#tail_masterse3.html" >prev-tail</a>] [<a 
+href="_masterse4.html" >front</a>] [<a 
+href="_master.html#_masterse4.html" >up</a>] </p></div>
+<!--l. 2--><p class="indent" >   <a 
+ id="tail_masterse4.html"></a>  
+</body></html> 
