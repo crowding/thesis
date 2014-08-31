@@ -197,6 +197,9 @@
 --invisible --phony pdf
 --invisible --input intermediate_pdf
 
+--command --output --match _master\\.pdf
+--invisible --phony pdf
+
 --command --output --invisible --match (_master|modeling)\\.pdf
 --input --invisible model.pdf
 
@@ -239,7 +242,7 @@
 --output --invisible {0}_chapter.pdf
 --output --invisible {0}_chapter.fls
 --phony --invisible latex
---invisible --phony pdf
+--invisible --phony chapters
 
 --command --match --invisible --input (.*)_strip\\.tex
 --invisible --phony --output --tagged chapters
@@ -255,9 +258,6 @@
 --input --invisible _master_preamble.tex
 --output --invisible _part1.pdf
 --output --invisible _part1.fls
---phony --invisible latex
---invisible --phony pdf
---invisible --phony master
 
 --command --output --match --invisible (.*)_chapter\\.pdf
 --input --invisible {0}_strip.tex
@@ -298,15 +298,15 @@ $(abspath --output {0}.pdf ) pdf
 --invisible --phony --once plot
 --invisible --phony --once compare
 
---command --once Rscript --input --once CompareStanFits.R
---output --once SlopeModel_segment_comparison.pdf
---input --match --once SlopeModel_segment.*\\.fit\\.RData$
---invisible --phony --once plot
---invisible --phony --once compare
+# --command --once Rscript --input --once CompareStanFits.R
+# --output --once SlopeModel_segment_comparison.pdf
+# --input --match --once SlopeModel_segment.*\\.fit\\.RData$
+# --invisible --phony --once plot
+# --invisible --phony --once compare
 
---command --output --match --once --invisible .*_recording.fit.RData$
-600 500 TRUE
---invisible --phony predictions
+# --command --output --match --once --invisible .*_recording.fit.RData$
+# 600 500 TRUE
+# --invisible --phony predictions
 
 --command Rscript --input check_predictions.R
 --output --mkdir checks/{0}.pdf
@@ -330,23 +330,36 @@ TRUE
 --command htlatex
 --input --match _master.tex
 "\"trouble,2\"" "\"\"" "\"\"" "\"-halt-on-error -interaction=nonstopmode\""
- _master.html --output --invisible _master.html
---invisible --phony html
+--output _master.html
 --input --invisible trouble.cfg
+--output --invisible _master.css
+--invisible --phony html
 
 --command
 --output --invisible _master.html
 --input --invisible --match .*_strip.tex
 
-# compile web page version
---command htlatex
---input --match (.*_chapter).tex
-"\"trouble,2\"" "\"\"" "\"\"" "\"-halt-on-error -interaction=nonstopmode\""
---output {0}.html
-
 # extract web page version to subdirectory
 --command --input ./extract_html
-html _master*.{{html,css}}
+html _master*.html
 --input --invisible --match _master.html
 --output --invisible html/_master.html
 --invisible --phony html
+
+--command cat
+--input custom.css
+--input --match (_master).css
+> --output html/{0}.css
+--invisible --phony html
+
+--command --once cp --once %-r
+--input --match static_html/*
+--once html/
+--output --invisible html/index.html
+--invisible --phony html
+
+--command --once cp
+--input --match _master.pdf
+--output html/_master.pdf
+--invisible --phony html
+

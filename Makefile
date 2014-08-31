@@ -1,3 +1,5 @@
+all: $(MAKEFILE_LIST) pdf html
+
 FILES := $(filter-out $(MAKEFILE_LIST),$(shell git ls-files --cached))
 
 .SUFFIXES:
@@ -18,4 +20,4 @@ texclean:
 clean:
 	git clean -dfx
 
-all: $(MAKEFILE_LIST) figures pdf latex html
+.PHONY: all
