@@ -353,9 +353,8 @@ html _master*.html
 --invisible --phony html
 
 --command --once cp --once %-r
---input --match static_html/*
---once html/
---output --invisible html/index.html
+--input --match static_html/(.*)
+--output html/{0}
 --invisible --phony html
 
 --command --once cp
